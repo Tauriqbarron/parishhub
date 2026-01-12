@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth import User, require_auth
 from app.config import settings
-from app.routers import persons
+from app.routers import households, persons, relationships
 
 app = FastAPI(
     title="Parish Database API",
@@ -23,6 +23,9 @@ app.add_middleware(
 
 # Include routers
 app.include_router(persons.router)
+app.include_router(households.router)
+app.include_router(relationships.router)
+app.include_router(relationships.persons_router)
 
 
 @app.get("/api/health")

@@ -72,7 +72,24 @@ class HouseholdMemberResponse(HouseholdMemberBase):
     id: int
 
 
+class PersonSummary(BaseModel):
+    """Brief person info for nested responses."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    first_name: str
+    middle_name: Optional[str] = None
+    last_name: str
+
+
+class HouseholdMemberWithPerson(HouseholdMemberResponse):
+    """HouseholdMember response with person details."""
+
+    person: Optional[PersonSummary] = None
+
+
 class HouseholdWithMembers(HouseholdResponse):
     """Schema for Household with its members."""
 
-    members: list[HouseholdMemberResponse] = []
+    members: list[HouseholdMemberWithPerson] = []

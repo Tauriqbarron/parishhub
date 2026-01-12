@@ -5,9 +5,11 @@ from app.schemas.household import (
     HouseholdMemberCreate,
     HouseholdMemberResponse,
     HouseholdMemberUpdate,
+    HouseholdMemberWithPerson,
     HouseholdResponse,
     HouseholdUpdate,
     HouseholdWithMembers,
+    PersonSummary,
 )
 from app.schemas.person import (
     PersonBase,
@@ -52,6 +54,8 @@ __all__ = [
     "HouseholdMemberCreate",
     "HouseholdMemberUpdate",
     "HouseholdMemberResponse",
+    "HouseholdMemberWithPerson",
+    "PersonSummary",
     # Relationship
     "FamilyRelationshipBase",
     "FamilyRelationshipCreate",
