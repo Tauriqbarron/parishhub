@@ -24,6 +24,17 @@ export default ts.config(
 			parserOptions: {
 				parser: ts.parser
 			}
+		},
+		rules: {
+			'svelte/no-navigation-without-resolve': 'off',
+			'svelte/require-each-key': 'warn',
+			'svelte/prefer-writable-derived': 'off'
+		}
+	},
+	{
+		files: ['**/*.js'],
+		rules: {
+			'@typescript-eslint/no-require-imports': 'off'
 		}
 	},
 	{
