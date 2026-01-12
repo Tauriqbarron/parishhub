@@ -1,6 +1,9 @@
-from fastapi import FastAPI
+from typing import Annotated
+
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.auth import User, require_auth
 from app.config import settings
 
 app = FastAPI(
@@ -28,3 +31,15 @@ async def health_check():
 async def root():
     """Root endpoint."""
     return {"message": "Parish Database API", "docs": "/docs"}
+
+
+@app.get("/api/me")
+async def get_current_user_info(
+    user: Annotated[User, Depends(require_auth)],
+):
+    """Get current authenticated user info."""
+    return {
+        "email": user.email,
+        "name": user.name,
+        "image": user.image,
+    }

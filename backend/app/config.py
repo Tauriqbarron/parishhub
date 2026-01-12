@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     # Google OAuth
     google_client_id: str = ""
     google_client_secret: str = ""
+    authorized_email: str = ""
+    auth_secret: str = ""
 
 
 settings = Settings()

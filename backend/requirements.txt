@@ -16,6 +16,11 @@ pydantic-settings>=2.7.0
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 
+# Google OAuth
+google-auth>=2.28.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+
 # Development
 httpx>=0.28.0
 pytest>=8.0.0
