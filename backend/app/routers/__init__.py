@@ -1,3 +1,3 @@
-from app.routers import households, persons, relationships
+from app.routers import households, persons, relationships, sacraments
 
-__all__ = ["households", "persons", "relationships"]
+__all__ = ["households", "persons", "relationships", "sacraments"]
