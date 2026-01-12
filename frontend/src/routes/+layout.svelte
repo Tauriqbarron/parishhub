@@ -1,39 +1,42 @@
 <script lang="ts">
 	import '../app.css';
-	import { signOut } from '@auth/sveltekit/client';
+	import Header from '$components/Header.svelte';
+	import Nav from '$components/Nav.svelte';
+	import Toast from '$components/Toast.svelte';
 
 	let { children, data } = $props();
+
+	let mobileNavOpen = $state(false);
+
+	function toggleMobileNav() {
+		mobileNavOpen = !mobileNavOpen;
+	}
+
+	function closeMobileNav() {
+		mobileNavOpen = false;
+	}
 </script>
 
 {#if data.session?.user}
 	<div class="min-h-screen bg-gray-100">
-		<header class="bg-white shadow-sm">
-			<div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-				<h1 class="text-xl font-semibold text-gray-900">Parish Database</h1>
-				<div class="flex items-center gap-4">
-					<div class="flex items-center gap-2">
-						{#if data.session.user.image}
-							<img
-								src={data.session.user.image}
-								alt={data.session.user.name || 'User'}
-								class="w-8 h-8 rounded-full"
-							/>
-						{/if}
-						<span class="text-sm text-gray-700">{data.session.user.email}</span>
-					</div>
-					<button
-						onclick={() => signOut()}
-						class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
-					>
-						Sign out
-					</button>
+		<Header
+			session={data.session}
+			onMenuToggle={toggleMobileNav}
+			showMenuButton={true}
+		/>
+
+		<div class="flex">
+			<Nav isOpen={mobileNavOpen} onClose={closeMobileNav} />
+
+			<main class="flex-1 lg:ml-0">
+				<div class="max-w-7xl mx-auto px-4 py-6">
+					{@render children()}
 				</div>
-			</div>
-		</header>
-		<main>
-			{@render children()}
-		</main>
+			</main>
+		</div>
 	</div>
 {:else}
 	{@render children()}
 {/if}
+
+<Toast />
