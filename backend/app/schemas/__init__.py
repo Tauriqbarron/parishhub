@@ -22,6 +22,7 @@ from app.schemas.relationship import (
     FamilyRelationshipResponse,
     FamilyRelationshipUpdate,
 )
+from app.schemas.pagination import PaginatedResponse
 from app.schemas.sacrament import (
     BaptismData,
     ConfirmationData,
@@ -33,6 +34,8 @@ from app.schemas.sacrament import (
 )
 
 __all__ = [
+    # Pagination
+    "PaginatedResponse",
     # Person
     "PersonBase",
     "PersonCreate",
