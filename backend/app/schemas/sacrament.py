@@ -1,7 +1,7 @@
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Annotated, Any, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.sacrament import SacramentType
 
@@ -12,7 +12,7 @@ class SacramentBase(BaseModel):
     person_id: int
     sacrament_type: SacramentType
     date_received: date
-    notes: Optional[str] = None
+    notes: Annotated[Optional[str], Field(max_length=2000)] = None
     additional_data: Optional[dict[str, Any]] = None
 
 
@@ -27,7 +27,7 @@ class SacramentUpdate(BaseModel):
 
     sacrament_type: Optional[SacramentType] = None
     date_received: Optional[date] = None
-    notes: Optional[str] = None
+    notes: Annotated[Optional[str], Field(max_length=2000)] = None
     additional_data: Optional[dict[str, Any]] = None
 
 
@@ -45,23 +45,23 @@ class SacramentResponse(SacramentBase):
 class BaptismData(BaseModel):
     """Schema for baptism-specific additional data."""
 
-    godfather: Optional[str] = None
-    godmother: Optional[str] = None
-    minister: Optional[str] = None
+    godfather: Annotated[Optional[str], Field(max_length=200)] = None
+    godmother: Annotated[Optional[str], Field(max_length=200)] = None
+    minister: Annotated[Optional[str], Field(max_length=200)] = None
 
 
 class ConfirmationData(BaseModel):
     """Schema for confirmation-specific additional data."""
 
-    sponsor: Optional[str] = None
-    confirmation_name: Optional[str] = None
-    bishop: Optional[str] = None
+    sponsor: Annotated[Optional[str], Field(max_length=200)] = None
+    confirmation_name: Annotated[Optional[str], Field(max_length=100)] = None
+    bishop: Annotated[Optional[str], Field(max_length=200)] = None
 
 
 class MarriageData(BaseModel):
     """Schema for marriage-specific additional data."""
 
     spouse_id: Optional[int] = None
-    spouse_name: Optional[str] = None
-    witness1: Optional[str] = None
-    witness2: Optional[str] = None
+    spouse_name: Annotated[Optional[str], Field(max_length=200)] = None
+    witness1: Annotated[Optional[str], Field(max_length=200)] = None
+    witness2: Annotated[Optional[str], Field(max_length=200)] = None

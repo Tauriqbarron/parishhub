@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.household import HouseholdRole
 
@@ -9,11 +9,11 @@ from app.models.household import HouseholdRole
 class HouseholdBase(BaseModel):
     """Base schema for Household with common fields."""
 
-    name: str
-    address_line1: Optional[str] = None
-    address_line2: Optional[str] = None
-    city: Optional[str] = None
-    postal_code: Optional[str] = None
+    name: Annotated[str, Field(min_length=1, max_length=200)]
+    address_line1: Annotated[Optional[str], Field(max_length=255)] = None
+    address_line2: Annotated[Optional[str], Field(max_length=255)] = None
+    city: Annotated[Optional[str], Field(max_length=100)] = None
+    postal_code: Annotated[Optional[str], Field(max_length=20)] = None
 
 
 class HouseholdCreate(HouseholdBase):
@@ -25,11 +25,11 @@ class HouseholdCreate(HouseholdBase):
 class HouseholdUpdate(BaseModel):
     """Schema for updating an existing Household. All fields optional."""
 
-    name: Optional[str] = None
-    address_line1: Optional[str] = None
-    address_line2: Optional[str] = None
-    city: Optional[str] = None
-    postal_code: Optional[str] = None
+    name: Annotated[Optional[str], Field(min_length=1, max_length=200)] = None
+    address_line1: Annotated[Optional[str], Field(max_length=255)] = None
+    address_line2: Annotated[Optional[str], Field(max_length=255)] = None
+    city: Annotated[Optional[str], Field(max_length=100)] = None
+    postal_code: Annotated[Optional[str], Field(max_length=20)] = None
 
 
 class HouseholdResponse(HouseholdBase):
@@ -78,9 +78,9 @@ class PersonSummary(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    first_name: str
-    middle_name: Optional[str] = None
-    last_name: str
+    first_name: Annotated[str, Field(max_length=100)]
+    middle_name: Annotated[Optional[str], Field(max_length=100)] = None
+    last_name: Annotated[str, Field(max_length=100)]
 
 
 class HouseholdMemberWithPerson(HouseholdMemberResponse):
