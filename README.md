@@ -94,3 +94,51 @@ parish-database/
 
 - `GET /api/health` - Health check endpoint
 - `GET /docs` - Swagger API documentation
+
+## Deployment
+
+### Production Docker Deployment
+
+Build and run the production containers:
+
+```bash
+docker-compose -f docker-compose.prod.yml up -d --build
+```
+
+Or build images individually:
+
+```bash
+docker build -t backend ./backend
+docker build -t frontend ./frontend
+```
+
+### Environment Variables
+
+Create a `.env` file with the following variables:
+
+#### Backend
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string (e.g., `postgresql://user:pass@db:5432/parish`) |
+| `FRONTEND_URL` | Frontend URL for CORS (e.g., `https://your-app.com`) |
+| `AUTH_SECRET` | Secret key for authentication |
+
+#### Frontend
+
+| Variable | Description |
+|----------|-------------|
+| `ORIGIN` | Frontend origin URL (e.g., `https://your-app.com`) |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
+| `AUTHORIZED_EMAIL` | Authorized email for access |
+| `AUTH_SECRET` | Secret key for authentication |
+| `BACKEND_URL` | Backend URL (default: `http://backend:8000`) |
+
+#### Database
+
+| Variable | Description |
+|----------|-------------|
+| `POSTGRES_USER` | PostgreSQL username |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `POSTGRES_DB` | PostgreSQL database name |
