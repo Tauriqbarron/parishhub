@@ -78,8 +78,74 @@ export interface Person {
 	updated_at: string;
 }
 
+// Household types and interfaces
+export type HouseholdRole = 'head' | 'spouse' | 'child' | 'other';
+
+export interface Household {
+	id: number;
+	name: string;
+	address_line1: string | null;
+	address_line2: string | null;
+	city: string | null;
+	postal_code: string | null;
+	member_count: number;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface HouseholdMember {
+	person_id: number;
+	household_id: number;
+	role: HouseholdRole;
+	is_primary_household: boolean;
+	person: {
+		id: number;
+		first_name: string;
+		middle_name: string | null;
+		last_name: string;
+	};
+}
+
+export interface HouseholdWithMembers extends Household {
+	members: HouseholdMember[];
+}
+
+export interface HouseholdMembership {
+	household_id: number;
+	person_id: number;
+	role: HouseholdRole;
+	is_primary_household: boolean;
+	household: Household;
+}
+
+// Family relationship types
+export type RelationshipType = 'parent' | 'child' | 'spouse' | 'sibling';
+
+export interface FamilyRelationship {
+	id: number;
+	person_id: number;
+	related_person_id: number;
+	relationship_type: RelationshipType;
+	created_at: string;
+}
+
+export interface FamilyMember {
+	id: number;
+	first_name: string;
+	middle_name: string | null;
+	last_name: string;
+	relationship_id: number;
+}
+
+export interface FamilyTree {
+	parents: FamilyMember[];
+	children: FamilyMember[];
+	spouse: FamilyMember | null;
+	siblings: FamilyMember[];
+}
+
 export interface PersonWithRelations extends Person {
-	household_memberships: unknown[];
+	household_memberships: HouseholdMembership[];
 	sacraments: Sacrament[];
 }
 
@@ -129,4 +195,63 @@ export const personApi = {
 		api.put<Person>(`/persons/${id}`, data),
 
 	delete: (id: number) => api.delete<void>(`/persons/${id}`)
+};
+
+// Sacrament types and interfaces
+export interface SacramentCreate {
+	person_id: number;
+	sacrament_type: SacramentType;
+	date_received: string;
+	notes?: string | null;
+	additional_data?: Record<string, unknown> | null;
+}
+
+export interface SacramentUpdate {
+	sacrament_type?: SacramentType;
+	date_received?: string;
+	notes?: string | null;
+	additional_data?: Record<string, unknown> | null;
+}
+
+// Sacrament API functions
+export const sacramentApi = {
+	getForPerson: (personId: number) => api.get<Sacrament[]>(`/persons/${personId}/sacraments`),
+
+	create: (data: SacramentCreate) => api.post<Sacrament>('/sacraments', data),
+
+	update: (id: number, data: SacramentUpdate) => api.put<Sacrament>(`/sacraments/${id}`, data),
+
+	delete: (id: number) => api.delete<void>(`/sacraments/${id}`)
+};
+
+// Household API functions
+export const householdApi = {
+	list: () => api.get<PaginatedResponse<Household>>('/households'),
+
+	get: (id: number) => api.get<HouseholdWithMembers>(`/households/${id}`),
+
+	addMember: (householdId: number, personId: number, role: HouseholdRole, isPrimary = true) =>
+		api.post<HouseholdMember>(
+			`/households/${householdId}/members?person_id=${personId}&role=${role}&is_primary_household=${isPrimary}`,
+			{}
+		),
+
+	removeMember: (householdId: number, personId: number) =>
+		api.delete<void>(`/households/${householdId}/members/${personId}`)
+};
+
+// Relationship API functions
+export const relationshipApi = {
+	getForPerson: (personId: number) =>
+		api.get<FamilyRelationship[]>(`/persons/${personId}/relationships`),
+
+	getFamilyTree: (personId: number) => api.get<FamilyTree>(`/persons/${personId}/family-tree`),
+
+	create: (personId: number, relatedPersonId: number, relationshipType: RelationshipType) =>
+		api.post<FamilyRelationship>(`/persons/${personId}/relationships`, {
+			related_person_id: relatedPersonId,
+			relationship_type: relationshipType
+		}),
+
+	delete: (relationshipId: number) => api.delete<void>(`/relationships/${relationshipId}`)
 };
