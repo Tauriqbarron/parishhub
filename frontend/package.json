@@ -13,7 +13,8 @@
 	},
 	"dependencies": {
 		"@auth/core": "^0.37.0",
-		"@auth/sveltekit": "^1.7.0"
+		"@auth/sveltekit": "^1.7.0",
+		"chart.js": "^4.5.1"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",

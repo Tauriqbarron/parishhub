@@ -344,3 +344,149 @@ export interface DashboardData {
 export const statisticsApi = {
 	getDashboard: () => api.get<DashboardData>('/statistics/dashboard')
 };
+
+// Analytics types
+export interface Birth {
+	id: number;
+	baby_first_name: string;
+	baby_last_name: string;
+	date_of_birth: string;
+	parent1_id: number | null;
+	parent2_id: number | null;
+	notes: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface BirthCreate {
+	baby_first_name: string;
+	baby_last_name: string;
+	date_of_birth: string;
+	parent1_id?: number | null;
+	parent2_id?: number | null;
+	notes?: string | null;
+}
+
+export interface MassAttendance {
+	id: number;
+	date: string;
+	mass_time: string | null;
+	attendance_count: number;
+	notes: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface MassAttendanceCreate {
+	date: string;
+	mass_time?: string | null;
+	attendance_count: number;
+	notes?: string | null;
+}
+
+export interface PopulationSnapshot {
+	id: number;
+	date: string;
+	registered_members: number;
+	households: number;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface YearlyCount {
+	year: number;
+	count: number;
+}
+
+export interface BirthStatistics {
+	by_year: YearlyCount[];
+	total: number;
+	current_year: number;
+}
+
+export interface AttendanceTrend {
+	weekly_average: number;
+	monthly_average: number;
+	yoy_change_percent: number | null;
+	recent_weeks: Array<{
+		date: string;
+		count: number;
+		mass_time: string | null;
+	}>;
+}
+
+export interface PopulationGrowth {
+	history: PopulationSnapshot[];
+	current_members: number;
+	current_households: number;
+	growth_percent: number | null;
+}
+
+// Births API
+export const birthsApi = {
+	list: (filters: { page?: number; per_page?: number; year?: number } = {}) => {
+		const params = new URLSearchParams();
+		if (filters.page) params.set('page', String(filters.page));
+		if (filters.per_page) params.set('per_page', String(filters.per_page));
+		if (filters.year) params.set('year', String(filters.year));
+		const qs = params.toString();
+		return api.get<PaginatedResponse<Birth>>(`/births${qs ? `?${qs}` : ''}`);
+	},
+
+	get: (id: number) => api.get<Birth>(`/births/${id}`),
+
+	create: (data: BirthCreate) => api.post<Birth>('/births', data),
+
+	update: (id: number, data: Partial<BirthCreate>) => api.put<Birth>(`/births/${id}`, data),
+
+	delete: (id: number) => api.delete<void>(`/births/${id}`),
+
+	getStatistics: (year?: number) => {
+		const qs = year ? `?year=${year}` : '';
+		return api.get<BirthStatistics>(`/births/statistics${qs}`);
+	}
+};
+
+// Mass Attendance API
+export const attendanceApi = {
+	list: (filters: { page?: number; per_page?: number; start_date?: string; end_date?: string } = {}) => {
+		const params = new URLSearchParams();
+		if (filters.page) params.set('page', String(filters.page));
+		if (filters.per_page) params.set('per_page', String(filters.per_page));
+		if (filters.start_date) params.set('start_date', filters.start_date);
+		if (filters.end_date) params.set('end_date', filters.end_date);
+		const qs = params.toString();
+		return api.get<PaginatedResponse<MassAttendance>>(`/mass-attendance${qs ? `?${qs}` : ''}`);
+	},
+
+	get: (id: number) => api.get<MassAttendance>(`/mass-attendance/${id}`),
+
+	create: (data: MassAttendanceCreate) => api.post<MassAttendance>('/mass-attendance', data),
+
+	update: (id: number, data: Partial<MassAttendanceCreate>) =>
+		api.put<MassAttendance>(`/mass-attendance/${id}`, data),
+
+	delete: (id: number) => api.delete<void>(`/mass-attendance/${id}`),
+
+	getStatistics: () => api.get<AttendanceTrend>('/mass-attendance/statistics')
+};
+
+// Population API
+export const populationApi = {
+	list: (filters: { page?: number; per_page?: number } = {}) => {
+		const params = new URLSearchParams();
+		if (filters.page) params.set('page', String(filters.page));
+		if (filters.per_page) params.set('per_page', String(filters.per_page));
+		const qs = params.toString();
+		return api.get<PaginatedResponse<PopulationSnapshot>>(`/population${qs ? `?${qs}` : ''}`);
+	},
+
+	get: (id: number) => api.get<PopulationSnapshot>(`/population/${id}`),
+
+	create: (data: { date: string; registered_members: number; households: number }) =>
+		api.post<PopulationSnapshot>('/population', data),
+
+	delete: (id: number) => api.delete<void>(`/population/${id}`),
+
+	getStatistics: () => api.get<PopulationGrowth>('/population/statistics')
+};

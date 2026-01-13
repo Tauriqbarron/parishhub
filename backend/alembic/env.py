@@ -8,10 +8,14 @@ from app.database import Base
 
 # Import all models to register them with Base.metadata
 from app.models import (  # noqa: F401
+    Birth,
     FamilyRelationship,
     Household,
     HouseholdMember,
+    MassAttendance,
+    ParishStatistic,
     Person,
+    PopulationSnapshot,
     Sacrament,
 )
 

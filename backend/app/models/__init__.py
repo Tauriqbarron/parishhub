@@ -1,3 +1,4 @@
+from app.models.analytics import Birth, MassAttendance, MetricType, ParishStatistic, PopulationSnapshot
 from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.person import Gender, Person
 from app.models.relationship import FamilyRelationship, RelationshipType
@@ -13,4 +14,9 @@ __all__ = [
     "RelationshipType",
     "Sacrament",
     "SacramentType",
+    "Birth",
+    "MassAttendance",
+    "MetricType",
+    "ParishStatistic",
+    "PopulationSnapshot",
 ]
