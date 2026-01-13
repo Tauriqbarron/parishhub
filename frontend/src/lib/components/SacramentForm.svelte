@@ -43,7 +43,8 @@
 	// Available types for selection (marriage can be received multiple times)
 	const availableTypes = $derived(
 		(Object.keys(sacramentLabels) as SacramentType[]).filter(
-			(type) => type === 'marriage' || !receivedTypes.has(type) || sacrament?.sacrament_type === type
+			(type) =>
+				type === 'marriage' || !receivedTypes.has(type) || sacrament?.sacrament_type === type
 		)
 	);
 
@@ -91,11 +92,7 @@
 						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">
 							{isEditing ? 'Edit Sacrament' : 'Add Sacrament'}
 						</h3>
-						<button
-							type="button"
-							onclick={onClose}
-							class="text-gray-400 hover:text-gray-500"
-						>
+						<button type="button" onclick={onClose} class="text-gray-400 hover:text-gray-500">
 							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"

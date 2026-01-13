@@ -230,7 +230,9 @@
 
 								<!-- Search Results -->
 								{#if searchResults.length > 0}
-									<div class="mt-2 border border-gray-200 rounded-md shadow-sm max-h-48 overflow-y-auto">
+									<div
+										class="mt-2 border border-gray-200 rounded-md shadow-sm max-h-48 overflow-y-auto"
+									>
 										{#each searchResults as person (person.id)}
 											<button
 												type="button"
@@ -261,7 +263,7 @@
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							>
 								{#each Object.entries(roleLabels) as [value, label] ([value, label])}
-									<option value={value}>{label}</option>
+									<option {value}>{label}</option>
 								{/each}
 							</select>
 						</div>

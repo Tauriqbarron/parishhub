@@ -414,7 +414,7 @@
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							>
 								{#each Object.entries(relationshipLabels) as [value, label] ([value, label])}
-									<option value={value}>{label}</option>
+									<option {value}>{label}</option>
 								{/each}
 							</select>
 							<p class="mt-1 text-xs text-gray-500">

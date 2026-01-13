@@ -19,11 +19,7 @@
 
 {#if data.session?.user}
 	<div class="min-h-screen bg-gray-100">
-		<Header
-			session={data.session}
-			onMenuToggle={toggleMobileNav}
-			showMenuButton={true}
-		/>
+		<Header session={data.session} onMenuToggle={toggleMobileNav} showMenuButton={true} />
 
 		<div class="flex">
 			<Nav isOpen={mobileNavOpen} onClose={closeMobileNav} />
