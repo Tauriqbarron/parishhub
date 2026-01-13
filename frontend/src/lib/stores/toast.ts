@@ -46,3 +46,5 @@ function createToastStore() {
 }
 
 export const toasts = createToastStore();
+
+export const addToast = toasts.add;
