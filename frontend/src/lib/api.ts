@@ -279,8 +279,7 @@ export const householdApi = {
 
 	create: (data: HouseholdCreate) => api.post<HouseholdWithMembers>('/households', data),
 
-	update: (id: number, data: HouseholdUpdate) =>
-		api.put<Household>(`/households/${id}`, data),
+	update: (id: number, data: HouseholdUpdate) => api.put<Household>(`/households/${id}`, data),
 
 	delete: (id: number) => api.delete<void>(`/households/${id}`),
 
@@ -311,4 +310,37 @@ export const relationshipApi = {
 		}),
 
 	delete: (relationshipId: number) => api.delete<void>(`/relationships/${relationshipId}`)
+};
+
+// Dashboard statistics types and API
+export interface DashboardStats {
+	total_people: number;
+	total_households: number;
+	baptisms_this_year: number;
+	marriages_this_year: number;
+}
+
+export interface RecentActivity {
+	type: string;
+	description: string;
+	timestamp: string;
+}
+
+export interface SacramentTrend {
+	year: number;
+	baptism: number;
+	first_communion: number;
+	confirmation: number;
+	marriage: number;
+	holy_orders: number;
+}
+
+export interface DashboardData {
+	stats: DashboardStats;
+	recent_activity: RecentActivity[];
+	sacrament_trends: SacramentTrend[];
+}
+
+export const statisticsApi = {
+	getDashboard: () => api.get<DashboardData>('/statistics/dashboard')
 };

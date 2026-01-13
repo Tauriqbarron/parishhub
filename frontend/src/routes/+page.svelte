@@ -1,4 +1,13 @@
 <script lang="ts">
+	import { statisticsApi, type DashboardData } from '$lib/api';
+	import StatCard from '$lib/components/StatCard.svelte';
+	import QuickActions from '$lib/components/QuickActions.svelte';
+	import RecentActivity from '$lib/components/RecentActivity.svelte';
+	import SacramentTrendsChart from '$lib/components/SacramentTrendsChart.svelte';
+
+	let dashboardData = $state<DashboardData | null>(null);
+	let loading = $state(true);
+	let error = $state<string | null>(null);
 	let healthStatus = $state<'loading' | 'connected' | 'error'>('loading');
 
 	async function checkHealth() {
@@ -11,72 +20,131 @@
 		}
 	}
 
+	async function loadDashboard() {
+		try {
+			loading = true;
+			error = null;
+			dashboardData = await statisticsApi.getDashboard();
+		} catch (e) {
+			error = e instanceof Error ? e.message : 'Failed to load dashboard data';
+		} finally {
+			loading = false;
+		}
+	}
+
 	$effect(() => {
 		checkHealth();
+		loadDashboard();
 	});
+
+	let currentYear = new Date().getFullYear();
 </script>
 
-<div>
-	<div class="mb-8">
-		<h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-		<p class="text-gray-600 mt-1">Welcome to the Parish Database management system</p>
+<div class="space-y-6">
+	<!-- Page Header -->
+	<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+		<div>
+			<h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+			<p class="text-gray-600 mt-1">Welcome to the Parish Database management system</p>
+		</div>
+		<div class="flex items-center gap-2">
+			<div
+				class="w-3 h-3 rounded-full {healthStatus === 'connected'
+					? 'bg-green-500'
+					: healthStatus === 'loading'
+						? 'bg-yellow-500 animate-pulse'
+						: 'bg-red-500'}"
+			></div>
+			<span class="text-sm text-gray-600">
+				{healthStatus === 'loading'
+					? 'Connecting...'
+					: healthStatus === 'connected'
+						? 'Connected'
+						: 'Offline'}
+			</span>
+		</div>
 	</div>
 
-	<!-- Status Cards -->
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-		<!-- Backend Status Card -->
-		<div class="bg-white rounded-lg shadow p-6">
-			<div class="flex items-center gap-4">
-				<div class="p-3 rounded-full {healthStatus === 'connected' ? 'bg-green-100' : healthStatus === 'loading' ? 'bg-yellow-100' : 'bg-red-100'}">
-					{#if healthStatus === 'loading'}
-						<svg class="w-6 h-6 text-yellow-600 animate-spin" fill="none" viewBox="0 0 24 24">
-							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-						</svg>
-					{:else if healthStatus === 'connected'}
-						<svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-						</svg>
-					{:else}
-						<svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					{/if}
+	{#if loading}
+		<!-- Loading State -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+			{#each Array(4) as _}
+				<div class="bg-white rounded-lg shadow p-6 animate-pulse">
+					<div class="flex items-center gap-4">
+						<div class="p-3 rounded-full bg-gray-200 w-14 h-14"></div>
+						<div class="space-y-2">
+							<div class="h-8 bg-gray-200 rounded w-16"></div>
+							<div class="h-4 bg-gray-200 rounded w-24"></div>
+						</div>
+					</div>
 				</div>
+			{/each}
+		</div>
+	{:else if error}
+		<!-- Error State -->
+		<div class="bg-red-50 border border-red-200 rounded-lg p-6">
+			<div class="flex items-center gap-3">
+				<svg
+					class="w-6 h-6 text-red-600 flex-shrink-0"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+					/>
+				</svg>
 				<div>
-					<h3 class="text-sm font-medium text-gray-500">Backend Status</h3>
-					<p class="text-lg font-semibold {healthStatus === 'connected' ? 'text-green-700' : healthStatus === 'loading' ? 'text-yellow-700' : 'text-red-700'}">
-						{healthStatus === 'loading' ? 'Checking...' : healthStatus === 'connected' ? 'Connected' : 'Unavailable'}
-					</p>
+					<h3 class="text-red-800 font-medium">Failed to load dashboard</h3>
+					<p class="text-red-600 text-sm">{error}</p>
 				</div>
 			</div>
+			<button
+				onclick={loadDashboard}
+				class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+			>
+				Retry
+			</button>
+		</div>
+	{:else if dashboardData}
+		<!-- Statistics Cards -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+			<StatCard
+				value={dashboardData.stats.total_people}
+				label="People"
+				icon="people"
+				href="/people"
+			/>
+			<StatCard
+				value={dashboardData.stats.total_households}
+				label="Households"
+				icon="households"
+				href="/households"
+			/>
+			<StatCard
+				value={dashboardData.stats.baptisms_this_year}
+				label="Baptisms"
+				sublabel="({currentYear})"
+				icon="baptism"
+			/>
+			<StatCard
+				value={dashboardData.stats.marriages_this_year}
+				label="Marriages"
+				sublabel="({currentYear})"
+				icon="marriage"
+			/>
 		</div>
 
-		<!-- Quick Links Card -->
-		<div class="bg-white rounded-lg shadow p-6">
-			<h3 class="text-sm font-medium text-gray-500 mb-4">Quick Actions</h3>
-			<div class="space-y-2">
-				<a href="/people" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-					</svg>
-					<span>Manage People</span>
-				</a>
-				<a href="/households" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-					</svg>
-					<span>Manage Households</span>
-				</a>
-			</div>
-		</div>
+		<!-- Quick Actions -->
+		<QuickActions />
 
-		<!-- Info Card -->
-		<div class="bg-white rounded-lg shadow p-6">
-			<h3 class="text-sm font-medium text-gray-500 mb-4">About</h3>
-			<p class="text-sm text-gray-600">
-				This application helps manage parish records including people, households, and sacraments.
-			</p>
+		<!-- Two-column layout for Recent Activity and Chart -->
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<RecentActivity activities={dashboardData.recent_activity} />
+			<SacramentTrendsChart trends={dashboardData.sacrament_trends} />
 		</div>
-	</div>
+	{/if}
 </div>
