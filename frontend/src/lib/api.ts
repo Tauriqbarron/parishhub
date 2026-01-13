@@ -224,17 +224,74 @@ export const sacramentApi = {
 	delete: (id: number) => api.delete<void>(`/sacraments/${id}`)
 };
 
+// Household filter and create types
+export interface HouseholdFilters {
+	search?: string;
+	sort_by?: 'name' | 'created_at' | 'updated_at';
+	sort_order?: 'asc' | 'desc';
+	page?: number;
+	per_page?: number;
+}
+
+export interface HouseholdCreate {
+	name: string;
+	address_line1?: string | null;
+	address_line2?: string | null;
+	city?: string | null;
+	postal_code?: string | null;
+	members?: Array<{
+		person_id: number;
+		role: HouseholdRole;
+		is_primary_household?: boolean;
+	}>;
+}
+
+export interface HouseholdUpdate {
+	name?: string;
+	address_line1?: string | null;
+	address_line2?: string | null;
+	city?: string | null;
+	postal_code?: string | null;
+}
+
+export interface HouseholdMemberUpdate {
+	role?: HouseholdRole;
+	is_primary_household?: boolean;
+}
+
+function buildHouseholdQueryString(params: HouseholdFilters): string {
+	const searchParams = new URLSearchParams();
+	for (const [key, value] of Object.entries(params)) {
+		if (value !== undefined && value !== null && value !== '') {
+			searchParams.set(key, String(value));
+		}
+	}
+	const qs = searchParams.toString();
+	return qs ? `?${qs}` : '';
+}
+
 // Household API functions
 export const householdApi = {
-	list: () => api.get<PaginatedResponse<Household>>('/households'),
+	list: (filters: HouseholdFilters = {}) =>
+		api.get<PaginatedResponse<Household>>(`/households${buildHouseholdQueryString(filters)}`),
 
 	get: (id: number) => api.get<HouseholdWithMembers>(`/households/${id}`),
+
+	create: (data: HouseholdCreate) => api.post<HouseholdWithMembers>('/households', data),
+
+	update: (id: number, data: HouseholdUpdate) =>
+		api.put<Household>(`/households/${id}`, data),
+
+	delete: (id: number) => api.delete<void>(`/households/${id}`),
 
 	addMember: (householdId: number, personId: number, role: HouseholdRole, isPrimary = true) =>
 		api.post<HouseholdMember>(
 			`/households/${householdId}/members?person_id=${personId}&role=${role}&is_primary_household=${isPrimary}`,
 			{}
 		),
+
+	updateMember: (householdId: number, personId: number, data: HouseholdMemberUpdate) =>
+		api.put<HouseholdMember>(`/households/${householdId}/members/${personId}`, data),
 
 	removeMember: (householdId: number, personId: number) =>
 		api.delete<void>(`/households/${householdId}/members/${personId}`)
