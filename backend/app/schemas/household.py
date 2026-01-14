@@ -70,6 +70,7 @@ class HouseholdMemberResponse(HouseholdMemberBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    household: Optional["HouseholdResponse"] = None
 
 
 class PersonSummary(BaseModel):

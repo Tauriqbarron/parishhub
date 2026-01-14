@@ -3,7 +3,6 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Request, status
-from jose import JWTError, jwt
 from pydantic import BaseModel
 
 from app.config import settings
@@ -19,49 +18,26 @@ class User(BaseModel):
 
 async def get_current_user(request: Request) -> User | None:
     """
-    Extract and verify user from Auth.js session token.
+    Extract user from X-User-Email header set by SvelteKit proxy.
 
-    Auth.js stores session in a cookie named 'authjs.session-token'
-    (or '__Secure-authjs.session-token' in production with HTTPS).
+    The SvelteKit server validates the Auth.js session and passes
+    the authenticated user's email via a trusted header.
     """
-    # Try both cookie names (secure and non-secure)
-    token = request.cookies.get("authjs.session-token") or request.cookies.get(
-        "__Secure-authjs.session-token"
+    # Get user info from headers set by SvelteKit proxy
+    email = request.headers.get("X-User-Email")
+    name = request.headers.get("X-User-Name")
+
+    if not email:
+        return None
+
+    # Verify this is the authorized email
+    if email != settings.authorized_email:
+        return None
+
+    return User(
+        email=email,
+        name=name if name else None,
     )
-
-    if not token:
-        return None
-
-    if not settings.auth_secret:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="AUTH_SECRET not configured",
-        )
-
-    try:
-        # Auth.js uses HS256 by default for JWT encoding
-        payload = jwt.decode(
-            token,
-            settings.auth_secret,
-            algorithms=["HS256"],
-            options={"verify_aud": False},
-        )
-
-        email: str | None = payload.get("email")
-        if email is None:
-            return None
-
-        # Verify this is the authorized email
-        if email != settings.authorized_email:
-            return None
-
-        return User(
-            email=email,
-            name=payload.get("name"),
-            image=payload.get("picture"),
-        )
-    except JWTError:
-        return None
 
 
 async def require_auth(

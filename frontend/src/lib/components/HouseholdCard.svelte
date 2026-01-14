@@ -100,7 +100,7 @@
 			<p class="text-sm text-gray-500 text-center py-4">Not a member of any household</p>
 		{:else}
 			<div class="space-y-3">
-				{#each memberships as membership (membership.household_id)}
+				{#each memberships.filter(m => m.household) as membership (membership.household_id)}
 					<div
 						class="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-gray-50"
 					>
@@ -125,7 +125,7 @@
 									href="/households/{membership.household_id}"
 									class="font-medium text-gray-900 hover:text-blue-600 transition-colors"
 								>
-									{membership.household.name}
+									{membership.household?.name ?? 'Unknown Household'}
 								</a>
 								<div class="text-sm text-gray-500 flex items-center gap-2">
 									<span

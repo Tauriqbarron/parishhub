@@ -6,6 +6,7 @@ from typing import Optional
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
+from app.models.household import HouseholdMember
 from app.models.person import Gender, Person
 from app.models.sacrament import Sacrament, SacramentType
 from app.schemas.person import PersonCreate, PersonUpdate
@@ -34,7 +35,9 @@ class PersonService:
         stmt = (
             select(Person)
             .options(
-                selectinload(Person.household_memberships),
+                selectinload(Person.household_memberships).selectinload(
+                    HouseholdMember.household
+                ),
                 selectinload(Person.sacraments),
                 selectinload(Person.relationships_as_person),
                 selectinload(Person.relationships_as_related),
