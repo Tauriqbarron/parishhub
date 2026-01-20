@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth import User, require_auth
 from app.config import settings
-from app.routers import analytics, households, persons, relationships, sacraments, statistics
+from app.routers import analytics, households, mass_times, persons, relationships, sacraments, statistics
 
 app = FastAPI(
     title="Parish Database API",
@@ -32,6 +32,7 @@ app.include_router(statistics.router)
 app.include_router(analytics.births_router)
 app.include_router(analytics.attendance_router)
 app.include_router(analytics.population_router)
+app.include_router(mass_times.router)
 
 
 @app.get("/api/health")

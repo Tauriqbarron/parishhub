@@ -1,14 +1,24 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { attendanceApi, type MassAttendanceCreate } from '$lib/api';
+	import { attendanceApi, massTimesApi, type MassAttendanceCreate, type MassTime } from '$lib/api';
 	import { addToast } from '$lib/stores/toast';
 
 	let date = $state('');
 	let breakdownByMassTime = $state(false);
-	let massEntries = $state([{ mass_time: '', attendance_count: 0 }]);
+	let massEntries = $state([{ mass_time: '', attendance_count: 0, customTime: false }]);
 	let singleAttendanceCount = $state(0);
 	let notes = $state('');
 	let submitting = $state(false);
+	let massTimeOptions: MassTime[] = $state([]);
+
+	onMount(async () => {
+		try {
+			massTimeOptions = await massTimesApi.list(true);
+		} catch {
+			// Fallback to text input if API fails
+		}
+	});
 
 	// Set default date to previous Sunday
 	$effect(() => {
@@ -21,8 +31,26 @@
 		}
 	});
 
+	function formatTime(timeStr: string): string {
+		const [hours, minutes] = timeStr.split(':');
+		const h = parseInt(hours, 10);
+		const suffix = h >= 12 ? 'PM' : 'AM';
+		const h12 = h % 12 || 12;
+		return `${h12}:${minutes} ${suffix}`;
+	}
+
+	function handleMassTimeChange(index: number, value: string) {
+		if (value === '__other__') {
+			massEntries[index].customTime = true;
+			massEntries[index].mass_time = '';
+		} else {
+			massEntries[index].customTime = false;
+			massEntries[index].mass_time = value;
+		}
+	}
+
 	function addMassEntry() {
-		massEntries = [...massEntries, { mass_time: '', attendance_count: 0 }];
+		massEntries = [...massEntries, { mass_time: '', attendance_count: 0, customTime: false }];
 	}
 
 	function removeMassEntry(index: number) {
@@ -119,12 +147,40 @@
 					<div class="flex gap-4 items-end">
 						<div class="flex-1">
 							<label class="block text-sm font-medium text-gray-700 mb-1">Mass Time</label>
-							<input
-								type="text"
-								placeholder="e.g., 8:00 AM"
-								bind:value={entry.mass_time}
-								class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-							/>
+							{#if massTimeOptions.length > 0 && !entry.customTime}
+								<select
+									value={entry.mass_time}
+									onchange={(e) => handleMassTimeChange(index, (e.target as HTMLSelectElement).value)}
+									class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								>
+									<option value="">Select mass time...</option>
+									{#each massTimeOptions as mt (mt.id)}
+										<option value={mt.name}>{mt.name} ({formatTime(mt.time)})</option>
+									{/each}
+									<option value="__other__">Other (specify)</option>
+								</select>
+							{:else}
+								<div class="flex gap-2">
+									<input
+										type="text"
+										placeholder="e.g., 8:00 AM"
+										bind:value={entry.mass_time}
+										class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									/>
+									{#if massTimeOptions.length > 0 && entry.customTime}
+										<button
+											type="button"
+											onclick={() => { entry.customTime = false; entry.mass_time = ''; }}
+											class="px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-lg text-sm"
+											title="Back to dropdown"
+										>
+											<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+											</svg>
+										</button>
+									{/if}
+								</div>
+							{/if}
 						</div>
 						<div class="w-32">
 							<label class="block text-sm font-medium text-gray-700 mb-1">Count</label>
@@ -155,6 +211,11 @@
 				>
 					+ Add Another Mass Time
 				</button>
+				{#if massTimeOptions.length === 0}
+					<p class="text-xs text-gray-400">
+						<a href="/settings/mass-times" class="text-blue-600 hover:underline">Configure mass times</a> to use a dropdown instead of free text.
+					</p>
+				{/if}
 			</div>
 		{:else}
 			<div>

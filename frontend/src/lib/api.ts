@@ -14,6 +14,10 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 		throw new Error(`API Error: ${response.status} ${response.statusText}`);
 	}
 
+	if (response.status === 204) {
+		return undefined as T;
+	}
+
 	return response.json();
 }
 
@@ -490,4 +494,34 @@ export const populationApi = {
 	delete: (id: number) => api.delete<void>(`/population/${id}`),
 
 	getStatistics: () => api.get<PopulationGrowth>('/population/statistics')
+};
+
+// Mass Times types
+export interface MassTime {
+	id: number;
+	name: string;
+	time: string;
+	day_of_week: number | null;
+	is_active: boolean;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface MassTimeCreate {
+	name: string;
+	time: string;
+	day_of_week?: number | null;
+	is_active?: boolean;
+}
+
+// Mass Times API
+export const massTimesApi = {
+	list: (activeOnly = true) => {
+		const qs = activeOnly ? '?active_only=true' : '?active_only=false';
+		return api.get<MassTime[]>(`/mass-times${qs}`);
+	},
+	get: (id: number) => api.get<MassTime>(`/mass-times/${id}`),
+	create: (data: MassTimeCreate) => api.post<MassTime>('/mass-times', data),
+	update: (id: number, data: Partial<MassTimeCreate>) => api.put<MassTime>(`/mass-times/${id}`, data),
+	delete: (id: number) => api.delete<void>(`/mass-times/${id}`)
 };
