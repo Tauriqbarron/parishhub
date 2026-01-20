@@ -144,6 +144,22 @@ class AttendanceTrend(BaseModel):
     recent_weeks: list[dict]
 
 
+class WeeklyDataPoint(BaseModel):
+    date: str
+    count: int
+
+
+class MassTimeBreakdown(BaseModel):
+    mass_time: str
+    total_attendance: int
+    weekly_average: float
+    recent_weeks: list[WeeklyDataPoint]
+
+
+class AttendanceTrendExtended(AttendanceTrend):
+    by_mass_time: list[MassTimeBreakdown]
+
+
 class PopulationGrowth(BaseModel):
     history: list[PopulationSnapshotResponse]
     current_members: int

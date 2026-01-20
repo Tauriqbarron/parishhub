@@ -10,6 +10,7 @@ from app.auth import User, require_auth
 from app.database import get_db
 from app.schemas.analytics import (
     AttendanceTrend,
+    AttendanceTrendExtended,
     BirthCreate,
     BirthResponse,
     BirthStatistics,
@@ -180,13 +181,14 @@ async def list_attendance(
 
 @attendance_router.get(
     "/statistics",
-    response_model=AttendanceTrend,
+    response_model=AttendanceTrend | AttendanceTrendExtended,
 )
 async def get_attendance_statistics(
     service: Annotated[MassAttendanceService, Depends(get_attendance_service)],
     user: Annotated[User, Depends(require_auth)],
-) -> AttendanceTrend:
-    return service.get_attendance_trends()
+    include_breakdown: Annotated[bool, Query()] = False,
+) -> AttendanceTrend | AttendanceTrendExtended:
+    return service.get_attendance_trends(include_breakdown=include_breakdown)
 
 
 @attendance_router.get(

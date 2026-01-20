@@ -420,6 +420,22 @@ export interface AttendanceTrend {
 	}>;
 }
 
+export interface WeeklyDataPoint {
+	date: string;
+	count: number;
+}
+
+export interface MassTimeBreakdown {
+	mass_time: string;
+	total_attendance: number;
+	weekly_average: number;
+	recent_weeks: WeeklyDataPoint[];
+}
+
+export interface AttendanceTrendExtended extends AttendanceTrend {
+	by_mass_time: MassTimeBreakdown[];
+}
+
 export interface PopulationGrowth {
 	history: PopulationSnapshot[];
 	current_members: number;
@@ -473,7 +489,10 @@ export const attendanceApi = {
 
 	delete: (id: number) => api.delete<void>(`/mass-attendance/${id}`),
 
-	getStatistics: () => api.get<AttendanceTrend>('/mass-attendance/statistics')
+	getStatistics: (includeBreakdown = false) => {
+		const qs = includeBreakdown ? '?include_breakdown=true' : '';
+		return api.get<AttendanceTrend | AttendanceTrendExtended>(`/mass-attendance/statistics${qs}`);
+	}
 };
 
 // Population API

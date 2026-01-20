@@ -11,15 +11,18 @@ from app.models.person import Person
 from app.models.household import Household
 from app.schemas.analytics import (
     AttendanceTrend,
+    AttendanceTrendExtended,
     BirthCreate,
     BirthStatistics,
     BirthUpdate,
     MassAttendanceCreate,
     MassAttendanceUpdate,
+    MassTimeBreakdown,
     PopulationGrowth,
     PopulationSnapshotCreate,
     PopulationSnapshotResponse,
     PopulationSnapshotUpdate,
+    WeeklyDataPoint,
     YearlyCount,
 )
 
@@ -185,7 +188,9 @@ class MassAttendanceService:
         self.db.commit()
         return True
 
-    def get_attendance_trends(self) -> AttendanceTrend:
+    def get_attendance_trends(
+        self, include_breakdown: bool = False
+    ) -> AttendanceTrend | AttendanceTrendExtended:
         today = date.today()
         four_weeks_ago = today - timedelta(weeks=4)
         one_year_ago = today - timedelta(days=365)
@@ -233,6 +238,46 @@ class MassAttendanceService:
             }
             for r in recent_records[:8]
         ]
+
+        if include_breakdown:
+            # Group by mass_time
+            breakdown_stmt = (
+                select(
+                    MassAttendance.mass_time,
+                    func.sum(MassAttendance.attendance_count).label("total"),
+                    func.avg(MassAttendance.attendance_count).label("avg"),
+                )
+                .where(MassAttendance.date >= four_weeks_ago)
+                .group_by(MassAttendance.mass_time)
+            )
+            breakdown_results = self.db.execute(breakdown_stmt).all()
+
+            by_mass_time = []
+            for row in breakdown_results:
+                mass_time_label = row.mass_time or "Unspecified"
+                # Get recent weeks for this specific mass time
+                recent_for_time = [
+                    WeeklyDataPoint(date=str(r.date), count=r.attendance_count)
+                    for r in recent_records
+                    if (r.mass_time or "Unspecified") == mass_time_label
+                ][:8]
+
+                by_mass_time.append(
+                    MassTimeBreakdown(
+                        mass_time=mass_time_label,
+                        total_attendance=int(row.total),
+                        weekly_average=round(float(row.avg), 1),
+                        recent_weeks=recent_for_time,
+                    )
+                )
+
+            return AttendanceTrendExtended(
+                weekly_average=round(weekly_average, 1),
+                monthly_average=round(float(monthly_average), 1),
+                yoy_change_percent=round(yoy_change, 1) if yoy_change else None,
+                recent_weeks=recent_weeks,
+                by_mass_time=by_mass_time,
+            )
 
         return AttendanceTrend(
             weekly_average=round(weekly_average, 1),

@@ -5,7 +5,7 @@
 		attendanceApi,
 		populationApi,
 		type BirthStatistics,
-		type AttendanceTrend,
+		type AttendanceTrendExtended,
 		type PopulationGrowth
 	} from '$lib/api';
 	import BarChart from '$lib/components/charts/BarChart.svelte';
@@ -13,11 +13,14 @@
 	import TrendCard from '$lib/components/charts/TrendCard.svelte';
 	import { addToast } from '$lib/stores/toast';
 
+	const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+
 	let activeTab: 'births' | 'attendance' | 'population' = $state('births');
+	let attendanceView: 'total' | 'breakdown' = $state('total');
 	let loading = $state(true);
 
 	let birthStats: BirthStatistics | null = $state(null);
-	let attendanceStats: AttendanceTrend | null = $state(null);
+	let attendanceStats: AttendanceTrendExtended | null = $state(null);
 	let populationStats: PopulationGrowth | null = $state(null);
 
 	onMount(async () => {
@@ -29,11 +32,11 @@
 		try {
 			const [births, attendance, population] = await Promise.all([
 				birthsApi.getStatistics(),
-				attendanceApi.getStatistics(),
+				attendanceApi.getStatistics(true),
 				populationApi.getStatistics()
 			]);
 			birthStats = births;
-			attendanceStats = attendance;
+			attendanceStats = attendance as AttendanceTrendExtended;
 			populationStats = population;
 		} catch (e) {
 			addToast('Failed to load statistics', 'error');
@@ -145,14 +148,77 @@
 						<p class="text-gray-500 text-center py-8">No birth data available</p>
 					{/if}
 				{:else if activeTab === 'attendance'}
-					{#if attendanceChartLabels.length > 0}
+					<!-- Sub-tabs for Total vs Breakdown -->
+					<div class="flex gap-2 mb-4">
+						<button
+							class="px-3 py-1 text-sm rounded {attendanceView === 'total'
+								? 'bg-blue-100 text-blue-700'
+								: 'text-gray-600 hover:bg-gray-100'}"
+							onclick={() => (attendanceView = 'total')}
+						>
+							Total
+						</button>
+						<button
+							class="px-3 py-1 text-sm rounded {attendanceView === 'breakdown'
+								? 'bg-blue-100 text-blue-700'
+								: 'text-gray-600 hover:bg-gray-100'}"
+							onclick={() => (attendanceView = 'breakdown')}
+						>
+							By Mass Time
+						</button>
+					</div>
+
+					{#if attendanceView === 'total'}
+						{#if attendanceChartLabels.length > 0}
+							<LineChart
+								labels={attendanceChartLabels}
+								datasets={[
+									{
+										label: 'Attendance',
+										data: attendanceChartData,
+										borderColor: '#10B981',
+										fill: true
+									}
+								]}
+								title="Recent Mass Attendance"
+							/>
+						{:else}
+							<p class="text-gray-500 text-center py-8">No attendance data available</p>
+						{/if}
+					{:else if attendanceStats?.by_mass_time?.length}
 						<LineChart
-							labels={attendanceChartLabels}
-							datasets={[{ label: 'Attendance', data: attendanceChartData, borderColor: '#10B981', fill: true }]}
-							title="Recent Mass Attendance"
+							labels={attendanceStats.by_mass_time[0]?.recent_weeks
+								.map((w) => w.date)
+								.reverse() ?? []}
+							datasets={attendanceStats.by_mass_time.map((mt, i) => ({
+								label: mt.mass_time,
+								data: mt.recent_weeks.map((w) => w.count).reverse(),
+								borderColor: COLORS[i % COLORS.length],
+								fill: false
+							}))}
+							title="Attendance by Mass Time"
 						/>
+
+						<table class="w-full mt-4 text-sm">
+							<thead>
+								<tr class="border-b">
+									<th class="text-left py-2">Mass Time</th>
+									<th class="text-right py-2">Weekly Avg</th>
+									<th class="text-right py-2">Total (4 wks)</th>
+								</tr>
+							</thead>
+							<tbody>
+								{#each attendanceStats.by_mass_time as mt}
+									<tr class="border-b">
+										<td class="py-2">{mt.mass_time}</td>
+										<td class="text-right">{mt.weekly_average.toFixed(0)}</td>
+										<td class="text-right">{mt.total_attendance}</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
 					{:else}
-						<p class="text-gray-500 text-center py-8">No attendance data available</p>
+						<p class="text-gray-500 text-center py-8">No breakdown data available</p>
 					{/if}
 				{:else if activeTab === 'population'}
 					{#if populationChartLabels.length > 0}
