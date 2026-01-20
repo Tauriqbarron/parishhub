@@ -7,6 +7,8 @@ from sqlalchemy import extract, func, select
 from sqlalchemy.orm import Session
 
 from app.models.analytics import Birth, MassAttendance, PopulationSnapshot
+from app.models.person import Person
+from app.models.household import Household
 from app.schemas.analytics import (
     AttendanceTrend,
     BirthCreate,
@@ -29,8 +31,19 @@ class BirthService:
         self.db = db
 
     def create(self, data: BirthCreate) -> Birth:
+        # Create the birth record
         birth = Birth(**data.model_dump())
         self.db.add(birth)
+        self.db.flush()  # Get birth ID before creating person
+
+        # Also create a Person record for the baby
+        person = Person(
+            first_name=data.baby_first_name,
+            last_name=data.baby_last_name,
+            date_of_birth=data.date_of_birth,
+        )
+        self.db.add(person)
+
         self.db.commit()
         self.db.refresh(birth)
         return birth
@@ -287,17 +300,19 @@ class PopulationService:
         return True
 
     def get_population_growth(self) -> PopulationGrowth:
-        # Get all snapshots ordered by date
+        # Get current counts from actual tables
+        current_members = self.db.execute(select(func.count(Person.id))).scalar() or 0
+        current_households = self.db.execute(select(func.count(Household.id))).scalar() or 0
+
+        # Get historical snapshots for the chart
         stmt = select(PopulationSnapshot).order_by(PopulationSnapshot.date.desc())
         snapshots = list(self.db.execute(stmt).scalars().all())
 
         history = [PopulationSnapshotResponse.model_validate(s) for s in snapshots]
 
-        current_members = snapshots[0].registered_members if snapshots else 0
-        current_households = snapshots[0].households if snapshots else 0
-
+        # Calculate growth from snapshots if available
         growth_percent = None
-        if len(snapshots) >= 2:
+        if snapshots:
             oldest = snapshots[-1].registered_members
             if oldest > 0:
                 growth_percent = ((current_members - oldest) / oldest) * 100

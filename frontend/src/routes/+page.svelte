@@ -1,14 +1,28 @@
 <script lang="ts">
-	import { statisticsApi, type DashboardData } from '$lib/api';
+	import { statisticsApi, attendanceApi, type DashboardData, type MassAttendanceCreate } from '$lib/api';
 	import StatCard from '$lib/components/StatCard.svelte';
 	import QuickActions from '$lib/components/QuickActions.svelte';
 	import RecentActivity from '$lib/components/RecentActivity.svelte';
 	import SacramentTrendsChart from '$lib/components/SacramentTrendsChart.svelte';
+	import { addToast } from '$lib/stores/toast';
 
 	let dashboardData = $state<DashboardData | null>(null);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 	let healthStatus = $state<'loading' | 'connected' | 'error'>('loading');
+
+	// Quick entry form state
+	let quickEntryDate = $state('');
+	let quickEntryMassTime = $state('');
+	let quickEntryCount = $state(0);
+	let quickEntrySubmitting = $state(false);
+
+	const massTimeOptions = [
+		{ value: '7:00 AM', label: '7:00 AM' },
+		{ value: '9:00 AM', label: '9:00 AM' },
+		{ value: '11:00 AM', label: '11:00 AM' },
+		{ value: '5:00 PM', label: '5:00 PM' }
+	];
 
 	async function checkHealth() {
 		try {
@@ -35,7 +49,37 @@
 	$effect(() => {
 		checkHealth();
 		loadDashboard();
+		// Set default date to previous Sunday
+		const today = new Date();
+		const dayOfWeek = today.getDay();
+		const previousSunday = new Date(today);
+		previousSunday.setDate(today.getDate() - dayOfWeek - (dayOfWeek === 0 ? 7 : 0));
+		quickEntryDate = previousSunday.toISOString().split('T')[0];
 	});
+
+	async function submitQuickEntry() {
+		if (!quickEntryDate || quickEntryCount <= 0) {
+			addToast('Please enter a valid date and attendance count', 'error');
+			return;
+		}
+
+		quickEntrySubmitting = true;
+		try {
+			const data: MassAttendanceCreate = {
+				date: quickEntryDate,
+				mass_time: quickEntryMassTime || undefined,
+				attendance_count: quickEntryCount
+			};
+			await attendanceApi.create(data);
+			addToast('Attendance recorded successfully', 'success');
+			quickEntryCount = 0;
+			quickEntryMassTime = '';
+		} catch (e) {
+			addToast('Failed to record attendance', 'error');
+		} finally {
+			quickEntrySubmitting = false;
+		}
+	}
 
 	let currentYear = new Date().getFullYear();
 </script>
@@ -136,6 +180,52 @@
 				sublabel="({currentYear})"
 				icon="marriage"
 			/>
+		</div>
+
+		<!-- Quick Entry: Sunday Attendance -->
+		<div class="bg-white rounded-lg shadow p-6">
+			<h3 class="text-lg font-medium text-gray-900 mb-4">Quick Entry: Sunday Attendance</h3>
+			<form onsubmit={(e) => { e.preventDefault(); submitQuickEntry(); }} class="flex flex-wrap gap-4 items-end">
+				<div>
+					<label for="quick-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+					<input
+						type="date"
+						id="quick-date"
+						bind:value={quickEntryDate}
+						class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+					/>
+				</div>
+				<div>
+					<label for="quick-mass-time" class="block text-sm font-medium text-gray-700 mb-1">Mass Time</label>
+					<select
+						id="quick-mass-time"
+						bind:value={quickEntryMassTime}
+						class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+					>
+						<option value="">All Masses</option>
+						{#each massTimeOptions as option}
+							<option value={option.value}>{option.label}</option>
+						{/each}
+					</select>
+				</div>
+				<div>
+					<label for="quick-count" class="block text-sm font-medium text-gray-700 mb-1">Attendance Count</label>
+					<input
+						type="number"
+						id="quick-count"
+						bind:value={quickEntryCount}
+						min="0"
+						class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-32"
+					/>
+				</div>
+				<button
+					type="submit"
+					disabled={quickEntrySubmitting}
+					class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+				>
+					{quickEntrySubmitting ? 'Saving...' : 'Record'}
+				</button>
+			</form>
 		</div>
 
 		<!-- Quick Actions -->

@@ -63,6 +63,11 @@ async function proxyRequest(
 
 	try {
 		const response = await fetch(`${BACKEND_URL}/api/${path}${search}`, fetchOptions);
+
+		if (response.status === 204) {
+			return new Response(null, { status: 204 });
+		}
+
 		const data = await response.text();
 
 		return new Response(data, {

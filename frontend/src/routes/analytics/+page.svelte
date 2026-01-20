@@ -6,8 +6,7 @@
 		populationApi,
 		type BirthStatistics,
 		type AttendanceTrend,
-		type PopulationGrowth,
-		type MassAttendanceCreate
+		type PopulationGrowth
 	} from '$lib/api';
 	import BarChart from '$lib/components/charts/BarChart.svelte';
 	import LineChart from '$lib/components/charts/LineChart.svelte';
@@ -21,19 +20,7 @@
 	let attendanceStats: AttendanceTrend | null = $state(null);
 	let populationStats: PopulationGrowth | null = $state(null);
 
-	// Quick entry form state
-	let quickEntryDate = $state('');
-	let quickEntryCount = $state(0);
-	let quickEntrySubmitting = $state(false);
-
 	onMount(async () => {
-		// Set default date to previous Sunday
-		const today = new Date();
-		const dayOfWeek = today.getDay();
-		const previousSunday = new Date(today);
-		previousSunday.setDate(today.getDate() - dayOfWeek - (dayOfWeek === 0 ? 7 : 0));
-		quickEntryDate = previousSunday.toISOString().split('T')[0];
-
 		await loadAllStats();
 	});
 
@@ -52,30 +39,6 @@
 			addToast('Failed to load statistics', 'error');
 		} finally {
 			loading = false;
-		}
-	}
-
-	async function submitQuickEntry() {
-		if (!quickEntryDate || quickEntryCount <= 0) {
-			addToast('Please enter a valid date and attendance count', 'error');
-			return;
-		}
-
-		quickEntrySubmitting = true;
-		try {
-			const data: MassAttendanceCreate = {
-				date: quickEntryDate,
-				attendance_count: quickEntryCount
-			};
-			await attendanceApi.create(data);
-			addToast('Attendance recorded successfully', 'success');
-			quickEntryCount = 0;
-			// Refresh attendance stats
-			attendanceStats = await attendanceApi.getStatistics();
-		} catch (e) {
-			addToast('Failed to record attendance', 'error');
-		} finally {
-			quickEntrySubmitting = false;
 		}
 	}
 
@@ -110,20 +73,6 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="flex justify-between items-center mb-8">
 		<h1 class="text-2xl font-bold text-gray-900">Parish Analytics</h1>
-		<div class="flex gap-2">
-			<a
-				href="/analytics/births/new"
-				class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-			>
-				Record Birth
-			</a>
-			<a
-				href="/analytics/attendance/new"
-				class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-			>
-				Record Attendance
-			</a>
-		</div>
 	</div>
 
 	{#if loading}
@@ -213,43 +162,22 @@
 							title="Population Over Time"
 						/>
 					{:else}
-						<p class="text-gray-500 text-center py-8">No population data available</p>
+						<div class="text-center py-8">
+							<div class="grid grid-cols-2 gap-4 max-w-md mx-auto mb-4">
+								<div class="bg-purple-50 rounded-lg p-4">
+									<p class="text-3xl font-bold text-purple-600">{populationStats?.current_members ?? 0}</p>
+									<p class="text-sm text-gray-600">Registered Members</p>
+								</div>
+								<div class="bg-purple-50 rounded-lg p-4">
+									<p class="text-3xl font-bold text-purple-600">{populationStats?.current_households ?? 0}</p>
+									<p class="text-sm text-gray-600">Households</p>
+								</div>
+							</div>
+							<p class="text-gray-500 text-sm">No historical data yet. Population snapshots will appear here over time.</p>
+						</div>
 					{/if}
 				{/if}
 			</div>
-		</div>
-
-		<!-- Quick Entry Widget -->
-		<div class="bg-white rounded-lg shadow p-6">
-			<h3 class="text-lg font-medium text-gray-900 mb-4">Quick Entry: Sunday Attendance</h3>
-			<form onsubmit={(e) => { e.preventDefault(); submitQuickEntry(); }} class="flex flex-wrap gap-4 items-end">
-				<div>
-					<label for="quick-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-					<input
-						type="date"
-						id="quick-date"
-						bind:value={quickEntryDate}
-						class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-					/>
-				</div>
-				<div>
-					<label for="quick-count" class="block text-sm font-medium text-gray-700 mb-1">Attendance Count</label>
-					<input
-						type="number"
-						id="quick-count"
-						bind:value={quickEntryCount}
-						min="0"
-						class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-32"
-					/>
-				</div>
-				<button
-					type="submit"
-					disabled={quickEntrySubmitting}
-					class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-				>
-					{quickEntrySubmitting ? 'Saving...' : 'Record'}
-				</button>
-			</form>
 		</div>
 	{/if}
 </div>
