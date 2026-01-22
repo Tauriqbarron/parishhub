@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { statisticsApi, attendanceApi, type DashboardData, type MassAttendanceCreate } from '$lib/api';
+	import { statisticsApi, attendanceApi, massTimesApi, type DashboardData, type MassAttendanceCreate, type MassTime } from '$lib/api';
 	import StatCard from '$lib/components/StatCard.svelte';
 	import QuickActions from '$lib/components/QuickActions.svelte';
 	import RecentActivity from '$lib/components/RecentActivity.svelte';
@@ -16,13 +16,7 @@
 	let quickEntryMassTime = $state('');
 	let quickEntryCount = $state(0);
 	let quickEntrySubmitting = $state(false);
-
-	const massTimeOptions = [
-		{ value: '7:00 AM', label: '7:00 AM' },
-		{ value: '9:00 AM', label: '9:00 AM' },
-		{ value: '11:00 AM', label: '11:00 AM' },
-		{ value: '5:00 PM', label: '5:00 PM' }
-	];
+	let massTimeOptions = $state<MassTime[]>([]);
 
 	async function checkHealth() {
 		try {
@@ -46,9 +40,18 @@
 		}
 	}
 
+	async function loadMassTimes() {
+		try {
+			massTimeOptions = await massTimesApi.list(true);
+		} catch {
+			massTimeOptions = [];
+		}
+	}
+
 	$effect(() => {
 		checkHealth();
 		loadDashboard();
+		loadMassTimes();
 		// Set default date to previous Sunday
 		const today = new Date();
 		const dayOfWeek = today.getDay();
@@ -203,8 +206,8 @@
 						class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 					>
 						<option value="">All Masses</option>
-						{#each massTimeOptions as option}
-							<option value={option.value}>{option.label}</option>
+						{#each massTimeOptions as massTime}
+							<option value={massTime.time}>{massTime.name} ({massTime.time})</option>
 						{/each}
 					</select>
 				</div>
