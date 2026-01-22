@@ -45,16 +45,21 @@ class SacramentResponse(SacramentBase):
 class BaptismData(BaseModel):
     """Schema for baptism-specific additional data."""
 
+    godfather_id: Optional[int] = None
     godfather: Annotated[Optional[str], Field(max_length=200)] = None
+    godmother_id: Optional[int] = None
     godmother: Annotated[Optional[str], Field(max_length=200)] = None
+    minister_id: Optional[int] = None
     minister: Annotated[Optional[str], Field(max_length=200)] = None
 
 
 class ConfirmationData(BaseModel):
     """Schema for confirmation-specific additional data."""
 
+    sponsor_id: Optional[int] = None
     sponsor: Annotated[Optional[str], Field(max_length=200)] = None
     confirmation_name: Annotated[Optional[str], Field(max_length=100)] = None
+    bishop_id: Optional[int] = None
     bishop: Annotated[Optional[str], Field(max_length=200)] = None
 
 
@@ -63,5 +68,7 @@ class MarriageData(BaseModel):
 
     spouse_id: Optional[int] = None
     spouse_name: Annotated[Optional[str], Field(max_length=200)] = None
+    witness1_id: Optional[int] = None
     witness1: Annotated[Optional[str], Field(max_length=200)] = None
+    witness2_id: Optional[int] = None
     witness2: Annotated[Optional[str], Field(max_length=200)] = None

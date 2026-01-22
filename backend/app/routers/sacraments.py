@@ -15,9 +15,40 @@ from app.schemas.sacrament import (
     SacramentResponse,
     SacramentUpdate,
 )
+from app.services.person import PersonService
 from app.services.sacrament import SacramentService, SacramentValidationError
 
 router = APIRouter(prefix="/api/sacraments", tags=["sacraments"])
+
+# Person ID fields to validate in additional_data
+PERSON_ID_FIELDS = [
+    "godfather_id",
+    "godmother_id",
+    "minister_id",
+    "sponsor_id",
+    "bishop_id",
+    "spouse_id",
+    "witness1_id",
+    "witness2_id",
+]
+
+
+def validate_person_ids(
+    db: Session, additional_data: Optional[dict[str, Any]]
+) -> None:
+    """Validate that all person ID references in additional_data exist."""
+    if not additional_data:
+        return
+    person_service = PersonService(db)
+    for field in PERSON_ID_FIELDS:
+        person_id = additional_data.get(field)
+        if person_id is not None:
+            person = person_service.get_by_id(person_id)
+            if not person:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Person with ID {person_id} not found for field '{field}'",
+                )
 
 # Secondary router for person-nested endpoints
 persons_router = APIRouter(prefix="/api/persons", tags=["persons"])
@@ -38,6 +69,7 @@ async def create_sacrament(
     sacrament_data: SacramentCreate,
     service: Annotated[SacramentService, Depends(get_sacrament_service)],
     user: Annotated[User, Depends(require_auth)],
+    db: Session = Depends(get_db),
 ) -> SacramentResponse:
     """
     Create a new sacrament record.
@@ -56,6 +88,7 @@ async def create_sacrament(
     - First Communion must be after Baptism
     - Confirmation must be after First Communion
     """
+    validate_person_ids(db, sacrament_data.additional_data)
     try:
         sacrament = service.create(sacrament_data)
         return SacramentResponse.model_validate(sacrament)
@@ -174,6 +207,7 @@ async def update_sacrament(
     sacrament_data: SacramentUpdate,
     service: Annotated[SacramentService, Depends(get_sacrament_service)],
     user: Annotated[User, Depends(require_auth)],
+    db: Session = Depends(get_db),
 ) -> SacramentResponse:
     """
     Update a sacrament record (partial update supported).
@@ -181,6 +215,7 @@ async def update_sacrament(
     Only fields provided in the request body will be updated.
     Note: person_id cannot be changed after creation.
     """
+    validate_person_ids(db, sacrament_data.additional_data)
     try:
         sacrament = service.update(sacrament_id, sacrament_data)
         if not sacrament:
@@ -230,6 +265,7 @@ async def create_person_sacrament(
     sacrament_data: SacramentCreate,
     service: Annotated[SacramentService, Depends(get_sacrament_service)],
     user: Annotated[User, Depends(require_auth)],
+    db: Session = Depends(get_db),
 ) -> SacramentResponse:
     """
     Record a sacrament for a specific person.
@@ -237,6 +273,7 @@ async def create_person_sacrament(
     This is an alternative to POST /api/sacraments that automatically
     sets the person_id from the URL.
     """
+    validate_person_ids(db, sacrament_data.additional_data)
     # Override person_id from URL
     sacrament_data_dict = sacrament_data.model_dump()
     sacrament_data_dict["person_id"] = person_id
