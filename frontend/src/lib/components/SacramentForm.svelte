@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Sacrament, SacramentType } from '$lib/api';
+	import PersonSearchInput from './PersonSearchInput.svelte';
 
 	interface Props {
 		sacrament: Sacrament | null;
@@ -173,31 +174,63 @@
 							</div>
 						{:else if sacramentType === 'marriage'}
 							<div>
-								<label for="spouse_name" class="block text-sm font-medium text-gray-700">
-									Spouse Name
-								</label>
-								<input
-									type="text"
-									id="spouse_name"
-									value={additionalData.spouse_name ?? ''}
-									oninput={(e) =>
-										(additionalData = { ...additionalData, spouse_name: e.currentTarget.value })}
-									placeholder="Name of spouse"
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								<label class="block text-sm font-medium text-gray-700">Spouse</label>
+								<PersonSearchInput
+									value={additionalData.spouse_id
+										? { id: additionalData.spouse_id as number, name: (additionalData.spouse_name as string) ?? '' }
+										: additionalData.spouse_name
+											? { name: additionalData.spouse_name as string }
+											: null}
+									placeholder="Search or enter spouse name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, spouse_id: selection.id, spouse_name: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, spouse_id: null, spouse_name: selection.name };
+										} else {
+											additionalData = { ...additionalData, spouse_id: null, spouse_name: null };
+										}
+									}}
 								/>
 							</div>
 							<div>
-								<label for="witnesses" class="block text-sm font-medium text-gray-700">
-									Witnesses
-								</label>
-								<input
-									type="text"
-									id="witnesses"
-									value={additionalData.witnesses ?? ''}
-									oninput={(e) =>
-										(additionalData = { ...additionalData, witnesses: e.currentTarget.value })}
-									placeholder="Names of witnesses"
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								<label class="block text-sm font-medium text-gray-700">Witness 1</label>
+								<PersonSearchInput
+									value={additionalData.witness1_id
+										? { id: additionalData.witness1_id as number, name: (additionalData.witness1 as string) ?? '' }
+										: additionalData.witness1
+											? { name: additionalData.witness1 as string }
+											: null}
+									placeholder="Search or enter witness name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, witness1_id: selection.id, witness1: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, witness1_id: null, witness1: selection.name };
+										} else {
+											additionalData = { ...additionalData, witness1_id: null, witness1: null };
+										}
+									}}
+								/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700">Witness 2</label>
+								<PersonSearchInput
+									value={additionalData.witness2_id
+										? { id: additionalData.witness2_id as number, name: (additionalData.witness2 as string) ?? '' }
+										: additionalData.witness2
+											? { name: additionalData.witness2 as string }
+											: null}
+									placeholder="Search or enter witness name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, witness2_id: selection.id, witness2: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, witness2_id: null, witness2: selection.name };
+										} else {
+											additionalData = { ...additionalData, witness2_id: null, witness2: null };
+										}
+									}}
 								/>
 							</div>
 						{:else if sacramentType === 'holy_orders'}
