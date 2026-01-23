@@ -203,18 +203,79 @@
 									}}
 								/>
 							</div>
-						{:else if sacramentType === 'first_communion' || sacramentType === 'confirmation'}
+						{:else if sacramentType === 'first_communion'}
 							<div>
-								<label for="sponsor" class="block text-sm font-medium text-gray-700">
-									Sponsor
+								<label class="block text-sm font-medium text-gray-700">Sponsor</label>
+								<PersonSearchInput
+									value={additionalData.sponsor_id
+										? { id: additionalData.sponsor_id as number, name: (additionalData.sponsor as string) ?? '' }
+										: additionalData.sponsor
+											? { name: additionalData.sponsor as string }
+											: null}
+									placeholder="Search or enter sponsor name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, sponsor_id: selection.id, sponsor: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, sponsor_id: null, sponsor: selection.name };
+										} else {
+											additionalData = { ...additionalData, sponsor_id: null, sponsor: null };
+										}
+									}}
+								/>
+							</div>
+						{:else if sacramentType === 'confirmation'}
+							<div>
+								<label class="block text-sm font-medium text-gray-700">Sponsor</label>
+								<PersonSearchInput
+									value={additionalData.sponsor_id
+										? { id: additionalData.sponsor_id as number, name: (additionalData.sponsor as string) ?? '' }
+										: additionalData.sponsor
+											? { name: additionalData.sponsor as string }
+											: null}
+									placeholder="Search or enter sponsor name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, sponsor_id: selection.id, sponsor: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, sponsor_id: null, sponsor: selection.name };
+										} else {
+											additionalData = { ...additionalData, sponsor_id: null, sponsor: null };
+										}
+									}}
+								/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700">Bishop</label>
+								<PersonSearchInput
+									value={additionalData.bishop_id
+										? { id: additionalData.bishop_id as number, name: (additionalData.bishop as string) ?? '' }
+										: additionalData.bishop
+											? { name: additionalData.bishop as string }
+											: null}
+									placeholder="Search or enter bishop name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, bishop_id: selection.id, bishop: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, bishop_id: null, bishop: selection.name };
+										} else {
+											additionalData = { ...additionalData, bishop_id: null, bishop: null };
+										}
+									}}
+								/>
+							</div>
+							<div>
+								<label for="confirmation_name" class="block text-sm font-medium text-gray-700">
+									Confirmation Name
 								</label>
 								<input
 									type="text"
-									id="sponsor"
-									value={additionalData.sponsor ?? ''}
+									id="confirmation_name"
+									value={additionalData.confirmation_name ?? ''}
 									oninput={(e) =>
-										(additionalData = { ...additionalData, sponsor: e.currentTarget.value })}
-									placeholder="Name of sponsor"
+										(additionalData = { ...additionalData, confirmation_name: e.currentTarget.value })}
+									placeholder="Confirmation name (if different)"
 									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 							</div>
