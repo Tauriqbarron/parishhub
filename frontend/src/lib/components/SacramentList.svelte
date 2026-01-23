@@ -46,6 +46,50 @@
 		return sacraments.find((s) => s.sacrament_type === type);
 	}
 
+	function renderPersonField(
+		additionalData: Record<string, unknown> | null,
+		idField: string,
+		nameField: string
+	): { id: number | null; name: string | null } | null {
+		if (!additionalData) return null;
+		const id = additionalData[idField] as number | null;
+		const name = additionalData[nameField] as string | null;
+		if (!name) return null;
+		return { id, name };
+	}
+
+	function getPersonFields(
+		type: SacramentType
+	): Array<{ label: string; idField: string; nameField: string }> {
+		switch (type) {
+			case 'baptism':
+				return [
+					{ label: 'Godfather', idField: 'godfather_id', nameField: 'godfather' },
+					{ label: 'Godmother', idField: 'godmother_id', nameField: 'godmother' },
+					{ label: 'Minister', idField: 'minister_id', nameField: 'minister' }
+				];
+			case 'first_communion':
+				return [{ label: 'Sponsor', idField: 'sponsor_id', nameField: 'sponsor' }];
+			case 'confirmation':
+				return [
+					{ label: 'Sponsor', idField: 'sponsor_id', nameField: 'sponsor' },
+					{ label: 'Bishop', idField: 'bishop_id', nameField: 'bishop' }
+				];
+			case 'marriage':
+				return [
+					{ label: 'Spouse', idField: 'spouse_id', nameField: 'spouse_name' },
+					{ label: 'Witness 1', idField: 'witness1_id', nameField: 'witness1' },
+					{ label: 'Witness 2', idField: 'witness2_id', nameField: 'witness2' }
+				];
+			case 'holy_orders':
+				return [
+					{ label: 'Ordaining Bishop', idField: 'ordaining_bishop_id', nameField: 'ordaining_bishop' }
+				];
+			default:
+				return [];
+		}
+	}
+
 	const receivedTypes = $derived(new Set(sacraments.map((s) => s.sacrament_type)));
 </script>
 
@@ -112,6 +156,51 @@
 										<span class="italic">{sacrament.notes}</span>
 									{/if}
 								</div>
+								{#each getPersonFields(type) as field}
+									{@const person = renderPersonField(sacrament.additional_data, field.idField, field.nameField)}
+									{#if person}
+										<div class="text-sm {colors.text} opacity-75">
+											{field.label}:
+											{#if person.id}
+												<svg
+													class="inline w-3 h-3 mr-0.5"
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+													/>
+												</svg>
+												<a
+													href="/people/{person.id}"
+													class="underline hover:no-underline"
+													onclick={(e) => e.stopPropagation()}
+												>
+													{person.name}
+												</a>
+											{:else}
+												<svg
+													class="inline w-3 h-3 mr-0.5"
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+													/>
+												</svg>
+												{person.name}
+											{/if}
+										</div>
+									{/if}
+								{/each}
 							{:else}
 								<div class="text-sm text-gray-400">Not received</div>
 							{/if}
