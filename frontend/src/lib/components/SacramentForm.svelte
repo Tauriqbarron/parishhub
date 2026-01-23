@@ -144,17 +144,63 @@
 						<!-- Type-specific fields -->
 						{#if sacramentType === 'baptism'}
 							<div>
-								<label for="godparents" class="block text-sm font-medium text-gray-700">
-									Godparents
-								</label>
-								<input
-									type="text"
-									id="godparents"
-									value={additionalData.godparents ?? ''}
-									oninput={(e) =>
-										(additionalData = { ...additionalData, godparents: e.currentTarget.value })}
-									placeholder="Names of godparents"
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								<label class="block text-sm font-medium text-gray-700">Godfather</label>
+								<PersonSearchInput
+									value={additionalData.godfather_id
+										? { id: additionalData.godfather_id as number, name: (additionalData.godfather as string) ?? '' }
+										: additionalData.godfather
+											? { name: additionalData.godfather as string }
+											: null}
+									placeholder="Search or enter godfather name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, godfather_id: selection.id, godfather: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, godfather_id: null, godfather: selection.name };
+										} else {
+											additionalData = { ...additionalData, godfather_id: null, godfather: null };
+										}
+									}}
+								/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700">Godmother</label>
+								<PersonSearchInput
+									value={additionalData.godmother_id
+										? { id: additionalData.godmother_id as number, name: (additionalData.godmother as string) ?? '' }
+										: additionalData.godmother
+											? { name: additionalData.godmother as string }
+											: null}
+									placeholder="Search or enter godmother name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, godmother_id: selection.id, godmother: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, godmother_id: null, godmother: selection.name };
+										} else {
+											additionalData = { ...additionalData, godmother_id: null, godmother: null };
+										}
+									}}
+								/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700">Minister</label>
+								<PersonSearchInput
+									value={additionalData.minister_id
+										? { id: additionalData.minister_id as number, name: (additionalData.minister as string) ?? '' }
+										: additionalData.minister
+											? { name: additionalData.minister as string }
+											: null}
+									placeholder="Search or enter minister name"
+									onSelect={(selection) => {
+										if (selection && 'id' in selection) {
+											additionalData = { ...additionalData, minister_id: selection.id, minister: selection.name };
+										} else if (selection) {
+											additionalData = { ...additionalData, minister_id: null, minister: selection.name };
+										} else {
+											additionalData = { ...additionalData, minister_id: null, minister: null };
+										}
+									}}
 								/>
 							</div>
 						{:else if sacramentType === 'first_communion' || sacramentType === 'confirmation'}
