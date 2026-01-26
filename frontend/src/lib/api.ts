@@ -544,3 +544,47 @@ export const massTimesApi = {
 	update: (id: number, data: Partial<MassTimeCreate>) => api.put<MassTime>(`/mass-times/${id}`, data),
 	delete: (id: number) => api.delete<void>(`/mass-times/${id}`)
 };
+
+// Registration types
+export interface RegistrationSubmitResponse {
+	success: boolean;
+	household_id: number;
+	member_ids: number[];
+	message: string;
+}
+
+// Registration API
+export const registrationApi = {
+	submit: (session: {
+		id: string;
+		household: {
+			name: string;
+			address: string;
+			city: string;
+			state: string;
+			zipCode: string;
+			phone: string;
+			email: string;
+		};
+		members: Array<{
+			tempId: string;
+			firstName: string;
+			middleName: string;
+			lastName: string;
+			dateOfBirth: string;
+			gender: string;
+			phone: string;
+			email: string;
+			isHeadOfHousehold: boolean;
+			sacraments: Array<{
+				type: string;
+				date: string;
+				additionalData: Record<string, unknown>;
+			}>;
+			relationships: Array<{
+				targetTempId: string;
+				relationshipType: string;
+			}>;
+		}>;
+	}) => api.post<RegistrationSubmitResponse>('/registration/submit', session)
+};

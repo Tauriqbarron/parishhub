@@ -3,11 +3,13 @@
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
 	import ProgressIndicator from '$lib/components/registration/ProgressIndicator.svelte';
 	import StepNavigation from '$lib/components/registration/StepNavigation.svelte';
+	import ReviewStep from '$lib/components/registration/ReviewStep.svelte';
 
 	const steps = ['Household Info', 'Add Family Members', 'Relationships', 'Sacraments', 'Review'];
 
 	let currentStep = $state(0);
 	let isSubmitting = $state(false);
+	let registrationComplete = $state(false);
 
 	onMount(() => {
 		const session = registrationSessionStore.initSession();
@@ -28,9 +30,18 @@
 		}
 	}
 
+	function goToStep(step: number) {
+		currentStep = step;
+		registrationSessionStore.setCurrentStep(step);
+	}
+
+	function handleComplete() {
+		registrationComplete = true;
+	}
+
 	async function handleSubmit() {
 		isSubmitting = true;
-		// TODO: Implement submission logic via api.ts
+		// Submission is handled by ReviewStep
 		isSubmitting = false;
 	}
 </script>
@@ -71,21 +82,23 @@
 						<p>Sacrament form will be implemented here.</p>
 					</div>
 				{:else if currentStep === 4}
-					<div class="text-center text-gray-500">
-						<h2 class="text-xl font-semibold text-gray-900 mb-4">Review</h2>
-						<p>Review and submit form will be implemented here.</p>
-					</div>
+					<ReviewStep
+						on:goToStep={(e) => goToStep(e.detail)}
+						on:complete={handleComplete}
+					/>
 				{/if}
 			</div>
 
-			<StepNavigation
-				{currentStep}
-				totalSteps={steps.length}
-				onPrevious={goToPrevious}
-				onNext={goToNext}
-				onSubmit={handleSubmit}
-				{isSubmitting}
-			/>
+			{#if currentStep < 4 && !registrationComplete}
+				<StepNavigation
+					{currentStep}
+					totalSteps={steps.length}
+					onPrevious={goToPrevious}
+					onNext={goToNext}
+					onSubmit={handleSubmit}
+					{isSubmitting}
+				/>
+			{/if}
 		</div>
 	</div>
 </div>
