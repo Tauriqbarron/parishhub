@@ -17,8 +17,12 @@ export interface RegistrationMemberRelationship {
 export interface RegistrationMember {
 	tempId: string;
 	firstName: string;
+	middleName: string;
 	lastName: string;
 	dateOfBirth: string;
+	gender: 'male' | 'female' | 'other' | '';
+	phone: string;
+	email: string;
 	isHeadOfHousehold: boolean;
 	sacraments: RegistrationMemberSacrament[];
 	relationships: RegistrationMemberRelationship[];
