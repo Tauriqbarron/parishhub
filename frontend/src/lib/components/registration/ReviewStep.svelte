@@ -11,6 +11,18 @@
 	let error = $state('');
 	let submitted = $state(false);
 
+	let allRelationships = $derived(
+		session.members.flatMap((m) =>
+			m.relationships.map((r) => ({
+				from: m,
+				to: getMemberByTempId(r.targetTempId),
+				type: r.relationshipType
+			}))
+		)
+	);
+
+	let membersWithSacraments = $derived(session.members.filter((m) => m.sacraments.length > 0));
+
 	const sacramentLabels: Record<string, string> = {
 		baptism: 'Baptism',
 		first_communion: 'First Communion',
@@ -210,13 +222,6 @@
 				</button>
 			</div>
 			<div class="p-4">
-				{@const allRelationships = session.members.flatMap((m) =>
-					m.relationships.map((r) => ({
-						from: m,
-						to: getMemberByTempId(r.targetTempId),
-						type: r.relationshipType
-					}))
-				)}
 				{#if allRelationships.length === 0}
 					<p class="text-sm text-gray-500 italic">No relationships defined.</p>
 				{:else}
@@ -253,7 +258,6 @@
 				</button>
 			</div>
 			<div class="p-4">
-				{@const membersWithSacraments = session.members.filter((m) => m.sacraments.length > 0)}
 				{#if membersWithSacraments.length === 0}
 					<p class="text-sm text-gray-500 italic">No sacraments recorded.</p>
 				{:else}

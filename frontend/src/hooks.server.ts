@@ -1,8 +1,21 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
 import Google from '@auth/sveltekit/providers/google';
 import { env } from '$env/dynamic/private';
+import type { Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
 
-export const { handle, signIn, signOut } = SvelteKitAuth({
+// Rewrite URL to HTTPS when behind a reverse proxy
+const httpsRedirect: Handle = async ({ event, resolve }) => {
+	if (env.AUTH_URL) {
+		const url = new URL(event.request.url);
+		url.protocol = 'https:';
+		url.host = new URL(env.AUTH_URL).host;
+		event.request = new Request(url.toString(), event.request);
+	}
+	return resolve(event);
+};
+
+const { handle: authHandle, signIn, signOut } = SvelteKitAuth({
 	providers: [
 		Google({
 			clientId: env.GOOGLE_CLIENT_ID,
@@ -40,3 +53,6 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 		error: '/login'
 	}
 });
+
+export const handle = sequence(httpsRedirect, authHandle);
+export { signIn, signOut };

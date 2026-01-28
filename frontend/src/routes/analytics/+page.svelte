@@ -46,26 +46,26 @@
 	}
 
 	// Derived chart data
-	let birthChartLabels = $derived(birthStats?.by_year.map((y) => String(y.year)).reverse() ?? []);
-	let birthChartData = $derived(birthStats?.by_year.map((y) => y.count).reverse() ?? []);
+	let birthChartLabels = $derived((birthStats?.by_year ?? []).map((y) => String(y.year)).reverse());
+	let birthChartData = $derived((birthStats?.by_year ?? []).map((y) => y.count).reverse());
 
 	let attendanceChartLabels = $derived(
-		attendanceStats?.recent_weeks.map((w) => w.date).reverse() ?? []
+		(attendanceStats?.recent_weeks ?? []).map((w) => w.date).reverse()
 	);
 	let attendanceChartData = $derived(
-		attendanceStats?.recent_weeks.map((w) => w.count).reverse() ?? []
+		(attendanceStats?.recent_weeks ?? []).map((w) => w.count).reverse()
 	);
 
 	let populationChartLabels = $derived(
-		populationStats?.history.map((s) => s.date).reverse() ?? []
+		(populationStats?.history ?? []).map((s) => s.date).reverse()
 	);
 	let populationChartData = $derived(
-		populationStats?.history.map((s) => s.registered_members).reverse() ?? []
+		(populationStats?.history ?? []).map((s) => s.registered_members).reverse()
 	);
 
 	// Current year births
 	let birthsThisYear = $derived(
-		birthStats?.by_year.find((y) => y.year === birthStats?.current_year)?.count ?? 0
+		(birthStats?.by_year ?? []).find((y) => y.year === birthStats?.current_year)?.count ?? 0
 	);
 </script>
 

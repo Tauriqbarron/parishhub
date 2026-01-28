@@ -3,6 +3,10 @@
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
 	import ProgressIndicator from '$lib/components/registration/ProgressIndicator.svelte';
 	import StepNavigation from '$lib/components/registration/StepNavigation.svelte';
+	import HouseholdStep from '$lib/components/registration/HouseholdStep.svelte';
+	import FamilyMembersStep from '$lib/components/registration/FamilyMembersStep.svelte';
+	import RelationshipsStep from '$lib/components/registration/RelationshipsStep.svelte';
+	import SacramentsStep from '$lib/components/registration/SacramentsStep.svelte';
 	import ReviewStep from '$lib/components/registration/ReviewStep.svelte';
 
 	const steps = ['Household Info', 'Add Family Members', 'Relationships', 'Sacraments', 'Review'];
@@ -62,25 +66,13 @@
 
 			<div class="min-h-[300px] py-6">
 				{#if currentStep === 0}
-					<div class="text-center text-gray-500">
-						<h2 class="text-xl font-semibold text-gray-900 mb-4">Household Information</h2>
-						<p>Household form will be implemented here.</p>
-					</div>
+					<HouseholdStep />
 				{:else if currentStep === 1}
-					<div class="text-center text-gray-500">
-						<h2 class="text-xl font-semibold text-gray-900 mb-4">Add Family Members</h2>
-						<p>Family member form will be implemented here.</p>
-					</div>
+					<FamilyMembersStep />
 				{:else if currentStep === 2}
-					<div class="text-center text-gray-500">
-						<h2 class="text-xl font-semibold text-gray-900 mb-4">Relationships</h2>
-						<p>Relationship form will be implemented here.</p>
-					</div>
+					<RelationshipsStep />
 				{:else if currentStep === 3}
-					<div class="text-center text-gray-500">
-						<h2 class="text-xl font-semibold text-gray-900 mb-4">Sacraments</h2>
-						<p>Sacrament form will be implemented here.</p>
-					</div>
+					<SacramentsStep />
 				{:else if currentStep === 4}
 					<ReviewStep
 						on:goToStep={(e) => goToStep(e.detail)}

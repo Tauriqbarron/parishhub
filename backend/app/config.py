@@ -14,7 +14,11 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://postgres:postgres@localhost:5432/parish_db"
 
     # CORS
-    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    cors_origins: list[str] = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://handed-astrology-corners-outlets.trycloudflare.com",
+    ]
 
     # Security
     secret_key: str = "change-me-in-production"
