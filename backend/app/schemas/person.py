@@ -9,7 +9,27 @@ from app.models.person import Gender
 PHONE_REGEX = re.compile(r"^\+?[\d\s\-().]{7,20}$")
 
 
-class PersonBase(BaseModel):
+class PersonValidatorMixin:
+    """Mixin class providing common validators for Person schemas."""
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        if not PHONE_REGEX.match(v):
+            raise ValueError("Invalid phone number format")
+        return v
+
+    @field_validator("date_of_birth")
+    @classmethod
+    def validate_dob_not_future(cls, v: Optional[date]) -> Optional[date]:
+        if v is not None and v > date.today():
+            raise ValueError("Date of birth cannot be in the future")
+        return v
+
+
+class PersonBase(PersonValidatorMixin, BaseModel):
     """Base schema for Person with common fields."""
 
     first_name: Annotated[str, Field(min_length=1, max_length=100)]
@@ -25,22 +45,6 @@ class PersonBase(BaseModel):
     postal_code: Annotated[Optional[str], Field(max_length=20)] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
 
-    @field_validator("phone")
-    @classmethod
-    def validate_phone(cls, v: Optional[str]) -> Optional[str]:
-        if v is None:
-            return v
-        if not PHONE_REGEX.match(v):
-            raise ValueError("Invalid phone number format")
-        return v
-
-    @field_validator("date_of_birth")
-    @classmethod
-    def validate_dob_not_future(cls, v: Optional[date]) -> Optional[date]:
-        if v is not None and v > date.today():
-            raise ValueError("Date of birth cannot be in the future")
-        return v
-
 
 class PersonCreate(PersonBase):
     """Schema for creating a new Person."""
@@ -48,7 +52,7 @@ class PersonCreate(PersonBase):
     pass
 
 
-class PersonUpdate(BaseModel):
+class PersonUpdate(PersonValidatorMixin, BaseModel):
     """Schema for updating an existing Person. All fields optional."""
 
     first_name: Annotated[Optional[str], Field(min_length=1, max_length=100)] = None
@@ -63,22 +67,6 @@ class PersonUpdate(BaseModel):
     city: Annotated[Optional[str], Field(max_length=100)] = None
     postal_code: Annotated[Optional[str], Field(max_length=20)] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
-
-    @field_validator("phone")
-    @classmethod
-    def validate_phone(cls, v: Optional[str]) -> Optional[str]:
-        if v is None:
-            return v
-        if not PHONE_REGEX.match(v):
-            raise ValueError("Invalid phone number format")
-        return v
-
-    @field_validator("date_of_birth")
-    @classmethod
-    def validate_dob_not_future(cls, v: Optional[date]) -> Optional[date]:
-        if v is not None and v > date.today():
-            raise ValueError("Date of birth cannot be in the future")
-        return v
 
 
 class PersonResponse(PersonBase):

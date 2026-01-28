@@ -115,10 +115,15 @@ class FamilyRelationshipService:
         - spouse: spouse person (if any)
         - siblings: list of sibling persons
         """
-        # Get all relationships where this person is the subject
-        relationships = self.get_relationships_for_person(person_id)
+        # Get all relationships with related persons eagerly loaded (fixes N+1 query)
+        stmt = (
+            select(FamilyRelationship)
+            .options(selectinload(FamilyRelationship.related_person))
+            .where(FamilyRelationship.person_id == person_id)
+        )
+        relationships = list(self.db.execute(stmt).scalars().all())
 
-        family_tree = {
+        family_tree: dict = {
             "parents": [],
             "children": [],
             "spouse": None,
@@ -126,7 +131,7 @@ class FamilyRelationshipService:
         }
 
         for rel in relationships:
-            related_person = self.db.get(Person, rel.related_person_id)
+            related_person = rel.related_person
             if not related_person:
                 continue
 

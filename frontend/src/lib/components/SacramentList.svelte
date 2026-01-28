@@ -95,12 +95,13 @@
 
 <div class="bg-white rounded-lg shadow">
 	<div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-		<h2 class="text-lg font-medium text-gray-900">Sacraments</h2>
+		<h2 class="text-lg font-medium text-gray-900" id="sacraments-heading">Sacraments</h2>
 		<button
 			onclick={onAdd}
 			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
+			aria-label="Add sacrament"
 		>
-			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
 			</svg>
 			Add
@@ -124,7 +125,7 @@
 								: 'bg-gray-200 text-gray-400'}"
 						>
 							{#if sacrament}
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"
@@ -133,7 +134,7 @@
 									/>
 								</svg>
 							{:else}
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"
@@ -167,6 +168,8 @@
 													fill="none"
 													stroke="currentColor"
 													viewBox="0 0 24 24"
+													aria-hidden="true"
+													role="img"
 												>
 													<path
 														stroke-linecap="round"
@@ -188,6 +191,8 @@
 													fill="none"
 													stroke="currentColor"
 													viewBox="0 0 24 24"
+													aria-hidden="true"
+													role="img"
 												>
 													<path
 														stroke-linecap="round"
@@ -208,13 +213,13 @@
 					</div>
 
 					{#if sacrament}
-						<div class="flex items-center gap-1">
+						<div class="flex items-center gap-1" role="group" aria-label="Sacrament actions">
 							<button
 								onclick={() => onEdit(sacrament)}
 								class="p-1.5 rounded hover:bg-white/50 {colors.text} transition-colors"
-								title="Edit"
+								aria-label="Edit {sacramentLabels[type]} sacrament"
 							>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"
@@ -226,9 +231,9 @@
 							<button
 								onclick={() => onDelete(sacrament)}
 								class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
-								title="Delete"
+								aria-label="Delete {sacramentLabels[type]} sacrament"
 							>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"

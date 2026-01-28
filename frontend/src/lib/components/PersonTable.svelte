@@ -48,8 +48,8 @@
 	}
 </script>
 
-<div class="overflow-x-auto">
-	<table class="min-w-full divide-y divide-gray-200">
+<div class="overflow-x-auto" role="region" aria-label="People list">
+	<table class="min-w-full divide-y divide-gray-200" aria-label="People table">
 		<thead class="bg-gray-50">
 			<tr>
 				<th
@@ -217,6 +217,10 @@
 			{#each persons as person (person.id)}
 				<tr
 					onclick={() => onRowClick(person)}
+					onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRowClick(person); }}}
+					tabindex="0"
+					role="button"
+					aria-label="View details for {formatName(person)}"
 					class="hover:bg-gray-50 cursor-pointer transition-colors"
 				>
 					<td class="px-6 py-4 whitespace-nowrap">
@@ -241,9 +245,9 @@
 								onRowClick(person);
 							}}
 							class="text-gray-400 hover:text-gray-600 mr-3"
-							title="View"
+							aria-label="View {formatName(person)}"
 						>
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -264,9 +268,9 @@
 								onEdit(person);
 							}}
 							class="text-blue-400 hover:text-blue-600"
-							title="Edit"
+							aria-label="Edit {formatName(person)}"
 						>
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"

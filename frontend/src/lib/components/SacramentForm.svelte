@@ -76,6 +76,7 @@
 	aria-labelledby="modal-title"
 	role="dialog"
 	aria-modal="true"
+	tabindex="-1"
 	onclick={handleBackdropClick}
 >
 	<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -85,6 +86,7 @@
 		<!-- Modal panel -->
 		<div
 			class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+			role="document"
 			onclick={(e) => e.stopPropagation()}
 		>
 			<form onsubmit={handleSubmit}>
@@ -93,8 +95,8 @@
 						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">
 							{isEditing ? 'Edit Sacrament' : 'Add Sacrament'}
 						</h3>
-						<button type="button" onclick={onClose} class="text-gray-400 hover:text-gray-500">
-							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<button type="button" onclick={onClose} class="text-gray-400 hover:text-gray-500" aria-label="Close modal">
+							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -109,13 +111,15 @@
 						<!-- Sacrament Type -->
 						<div>
 							<label for="sacrament_type" class="block text-sm font-medium text-gray-700">
-								Sacrament Type *
+								Sacrament Type <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
 							</label>
 							<select
 								id="sacrament_type"
+								name="sacrament_type"
 								bind:value={sacramentType}
 								disabled={isEditing}
 								required
+								aria-required="true"
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100"
 							>
 								{#each availableTypes as type (type)}
@@ -130,13 +134,15 @@
 						<!-- Date Received -->
 						<div>
 							<label for="date_received" class="block text-sm font-medium text-gray-700">
-								Date Received *
+								Date Received <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
 							</label>
 							<input
 								type="date"
 								id="date_received"
+								name="date_received"
 								bind:value={dateReceived}
 								required
+								aria-required="true"
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							/>
 						</div>
@@ -365,6 +371,7 @@
 							<label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
 							<textarea
 								id="notes"
+								name="notes"
 								bind:value={notes}
 								rows="3"
 								placeholder="Additional notes..."

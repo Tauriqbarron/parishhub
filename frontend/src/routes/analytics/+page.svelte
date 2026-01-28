@@ -6,7 +6,10 @@
 		populationApi,
 		type BirthStatistics,
 		type AttendanceTrendExtended,
-		type PopulationGrowth
+		type PopulationGrowth,
+		type YearlyCount,
+		type WeeklyDataPoint,
+		type PopulationSnapshot
 	} from '$lib/api';
 	import BarChart from '$lib/components/charts/BarChart.svelte';
 	import LineChart from '$lib/components/charts/LineChart.svelte';
@@ -18,6 +21,7 @@
 	let activeTab: 'births' | 'attendance' | 'population' = $state('births');
 	let attendanceView: 'total' | 'breakdown' = $state('total');
 	let loading = $state(true);
+	let error = $state<string | null>(null);
 
 	let birthStats: BirthStatistics | null = $state(null);
 	let attendanceStats: AttendanceTrendExtended | null = $state(null);
@@ -29,6 +33,7 @@
 
 	async function loadAllStats() {
 		loading = true;
+		error = null;
 		try {
 			const [births, attendance, population] = await Promise.all([
 				birthsApi.getStatistics(),
@@ -39,6 +44,7 @@
 			attendanceStats = attendance as AttendanceTrendExtended;
 			populationStats = population;
 		} catch (e) {
+			error = e instanceof Error ? e.message : 'Failed to load statistics';
 			addToast('Failed to load statistics', 'error');
 		} finally {
 			loading = false;
@@ -46,26 +52,32 @@
 	}
 
 	// Derived chart data
-	let birthChartLabels = $derived((birthStats?.by_year ?? []).map((y) => String(y.year)).reverse());
-	let birthChartData = $derived((birthStats?.by_year ?? []).map((y) => y.count).reverse());
+	let birthChartLabels = $derived(
+		(birthStats as BirthStatistics | null)?.by_year?.map((y) => String(y.year)).reverse() ?? []
+	);
+	let birthChartData = $derived(
+		(birthStats as BirthStatistics | null)?.by_year?.map((y) => y.count).reverse() ?? []
+	);
 
 	let attendanceChartLabels = $derived(
-		(attendanceStats?.recent_weeks ?? []).map((w) => w.date).reverse()
+		(attendanceStats as AttendanceTrendExtended | null)?.recent_weeks?.map((w) => w.date).reverse() ?? []
 	);
 	let attendanceChartData = $derived(
-		(attendanceStats?.recent_weeks ?? []).map((w) => w.count).reverse()
+		(attendanceStats as AttendanceTrendExtended | null)?.recent_weeks?.map((w) => w.count).reverse() ?? []
 	);
 
 	let populationChartLabels = $derived(
-		(populationStats?.history ?? []).map((s) => s.date).reverse()
+		(populationStats as PopulationGrowth | null)?.history?.map((s) => s.date).reverse() ?? []
 	);
 	let populationChartData = $derived(
-		(populationStats?.history ?? []).map((s) => s.registered_members).reverse()
+		(populationStats as PopulationGrowth | null)?.history?.map((s) => s.registered_members).reverse() ?? []
 	);
 
 	// Current year births
 	let birthsThisYear = $derived(
-		(birthStats?.by_year ?? []).find((y) => y.year === birthStats?.current_year)?.count ?? 0
+		(birthStats as BirthStatistics | null)?.by_year?.find(
+			(y) => y.year === (birthStats as BirthStatistics | null)?.current_year
+		)?.count ?? 0
 	);
 </script>
 
@@ -81,6 +93,37 @@
 	{#if loading}
 		<div class="flex items-center justify-center h-64">
 			<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+		</div>
+	{:else if error}
+		<div class="bg-red-50 border border-red-200 rounded-lg p-6" role="alert" aria-live="assertive">
+			<div class="flex items-center gap-3">
+				<svg
+					class="w-6 h-6 text-red-600 flex-shrink-0"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+					role="img"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+					/>
+				</svg>
+				<div>
+					<h3 class="text-red-800 font-medium">Failed to load analytics</h3>
+					<p class="text-red-600 text-sm">{error}</p>
+				</div>
+			</div>
+			<button
+				onclick={loadAllStats}
+				class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+				aria-label="Retry loading analytics"
+			>
+				Retry
+			</button>
 		</div>
 	{:else}
 		<!-- Key Metrics Cards -->

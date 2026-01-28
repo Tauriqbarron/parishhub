@@ -50,7 +50,14 @@
 	let formWitness2 = $state('');
 	let formWitness2TempId = $state('');
 
-	let members = $derived($registrationSessionStore.members);
+	let members = $state(registrationSessionStore.getSession().members);
+
+	$effect(() => {
+		const unsubscribe = registrationSessionStore.subscribe((session) => {
+			members = session.members;
+		});
+		return unsubscribe;
+	});
 
 	function getMemberName(m: RegistrationMember): string {
 		return `${m.firstName} ${m.lastName}`.trim() || 'Unnamed Member';

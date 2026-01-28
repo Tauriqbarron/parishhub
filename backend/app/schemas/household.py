@@ -94,3 +94,9 @@ class HouseholdWithMembers(HouseholdResponse):
     """Schema for Household with its members."""
 
     members: list[HouseholdMemberWithPerson] = []
+
+
+class HouseholdCreateWithMembers(HouseholdCreate):
+    """Schema for creating a household with optional initial members."""
+
+    members: Optional[list[dict]] = None

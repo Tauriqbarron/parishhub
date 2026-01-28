@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { statisticsApi, attendanceApi, massTimesApi, type DashboardData, type MassAttendanceCreate, type MassTime } from '$lib/api';
+	import { statisticsApi, attendanceApi, massTimesApi, api, type DashboardData, type MassAttendanceCreate, type MassTime } from '$lib/api';
 	import StatCard from '$lib/components/StatCard.svelte';
 	import QuickActions from '$lib/components/QuickActions.svelte';
 	import RecentActivity from '$lib/components/RecentActivity.svelte';
@@ -20,8 +20,7 @@
 
 	async function checkHealth() {
 		try {
-			const response = await fetch('/api/health');
-			const data = await response.json();
+			const data = await api.health();
 			healthStatus = data.status === 'ok' ? 'connected' : 'error';
 		} catch {
 			healthStatus = 'error';

@@ -31,3 +31,29 @@ class FamilyRelationshipResponse(FamilyRelationshipBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+
+
+class CreateRelationshipRequest(BaseModel):
+    """Request body for creating a relationship."""
+
+    related_person_id: int
+    relationship_type: RelationshipType
+
+
+class FamilyMember(BaseModel):
+    """A family member in the family tree response."""
+
+    id: int
+    first_name: str
+    middle_name: str | None = None
+    last_name: str
+    relationship_id: int
+
+
+class FamilyTreeResponse(BaseModel):
+    """Response for family tree endpoint."""
+
+    parents: list[FamilyMember]
+    children: list[FamilyMember]
+    spouse: FamilyMember | None
+    siblings: list[FamilyMember]

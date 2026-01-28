@@ -108,12 +108,13 @@
 
 <div class="bg-white rounded-lg shadow">
 	<div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-		<h2 class="text-lg font-medium text-gray-900">Family</h2>
+		<h2 class="text-lg font-medium text-gray-900" id="family-tree-heading">Family</h2>
 		<button
 			onclick={openAddModal}
 			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
+			aria-label="Add family relationship"
 		>
-			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
 			</svg>
 			Add
@@ -138,6 +139,8 @@
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
+										aria-hidden="true"
+										role="img"
 									>
 										<path
 											stroke-linecap="round"
@@ -157,9 +160,9 @@
 							<button
 								onclick={() => onRemoveRelationship(familyTree.spouse!.relationship_id)}
 								class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
-								title="Remove relationship"
+								aria-label="Remove spouse relationship with {formatName(familyTree.spouse)}"
 							>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"
@@ -184,6 +187,7 @@
 									<div class="flex items-center gap-3">
 										<div
 											class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 text-sm font-medium"
+											aria-hidden="true"
 										>
 											P
 										</div>
@@ -197,9 +201,9 @@
 									<button
 										onclick={() => onRemoveRelationship(parent.relationship_id)}
 										class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
-										title="Remove relationship"
+										aria-label="Remove parent relationship with {formatName(parent)}"
 									>
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
@@ -226,6 +230,7 @@
 									<div class="flex items-center gap-3">
 										<div
 											class="w-8 h-8 rounded-full bg-green-200 flex items-center justify-center text-green-600 text-sm font-medium"
+											aria-hidden="true"
 										>
 											C
 										</div>
@@ -239,9 +244,9 @@
 									<button
 										onclick={() => onRemoveRelationship(child.relationship_id)}
 										class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
-										title="Remove relationship"
+										aria-label="Remove child relationship with {formatName(child)}"
 									>
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
@@ -268,6 +273,7 @@
 									<div class="flex items-center gap-3">
 										<div
 											class="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center text-purple-600 text-sm font-medium"
+											aria-hidden="true"
 										>
 											S
 										</div>
@@ -281,9 +287,9 @@
 									<button
 										onclick={() => onRemoveRelationship(sibling.relationship_id)}
 										class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
-										title="Remove relationship"
+										aria-label="Remove sibling relationship with {formatName(sibling)}"
 									>
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
@@ -327,8 +333,9 @@
 							type="button"
 							onclick={() => (showAddModal = false)}
 							class="text-gray-400 hover:text-gray-500"
+							aria-label="Close modal"
 						>
-							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -343,20 +350,22 @@
 						<!-- Search for person -->
 						<div>
 							<label for="search" class="block text-sm font-medium text-gray-700">
-								Search Person *
+								Search Person <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
 							</label>
 							<div class="mt-1 relative">
 								<input
 									type="text"
 									id="search"
+									name="search"
 									bind:value={searchQuery}
 									oninput={() => searchPeople()}
 									placeholder="Type at least 2 characters..."
+									aria-required="true"
 									class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 								{#if isSearching}
-									<div class="absolute right-3 top-1/2 -translate-y-1/2">
-										<svg class="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+									<div class="absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
+										<svg class="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24" role="img">
 											<circle
 												class="opacity-25"
 												cx="12"
@@ -406,18 +415,21 @@
 						<!-- Relationship type -->
 						<div>
 							<label for="relationship_type" class="block text-sm font-medium text-gray-700">
-								Relationship Type *
+								Relationship Type <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
 							</label>
 							<select
 								id="relationship_type"
+								name="relationship_type"
 								bind:value={selectedRelationshipType}
+								aria-required="true"
+								aria-describedby="relationship-help"
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							>
 								{#each Object.entries(relationshipLabels) as [value, label] ([value, label])}
 									<option {value}>{label}</option>
 								{/each}
 							</select>
-							<p class="mt-1 text-xs text-gray-500">
+							<p id="relationship-help" class="mt-1 text-xs text-gray-500">
 								This describes the selected person's relationship to this person
 							</p>
 						</div>

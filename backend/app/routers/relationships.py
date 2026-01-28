@@ -3,13 +3,16 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.auth import User, require_auth
 from app.database import get_db
-from app.models.relationship import RelationshipType
-from app.schemas.relationship import FamilyRelationshipCreate, FamilyRelationshipResponse
+from app.schemas.relationship import (
+    CreateRelationshipRequest,
+    FamilyRelationshipCreate,
+    FamilyRelationshipResponse,
+    FamilyTreeResponse,
+)
 from app.services.relationship import FamilyRelationshipService
 
 router = APIRouter(tags=["relationships"])
@@ -18,32 +21,6 @@ router = APIRouter(tags=["relationships"])
 def get_relationship_service(db: Session = Depends(get_db)) -> FamilyRelationshipService:
     """Dependency to get FamilyRelationshipService instance."""
     return FamilyRelationshipService(db)
-
-
-class CreateRelationshipRequest(BaseModel):
-    """Request body for creating a relationship."""
-
-    related_person_id: int
-    relationship_type: RelationshipType
-
-
-class FamilyMember(BaseModel):
-    """A family member in the family tree response."""
-
-    id: int
-    first_name: str
-    middle_name: str | None = None
-    last_name: str
-    relationship_id: int
-
-
-class FamilyTreeResponse(BaseModel):
-    """Response for family tree endpoint."""
-
-    parents: list[FamilyMember]
-    children: list[FamilyMember]
-    spouse: FamilyMember | None
-    siblings: list[FamilyMember]
 
 
 # Endpoints under /api/persons/{id}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
+	import { get } from 'svelte/store';
 
 	interface Props {
 		onStartOver?: () => void;
@@ -8,15 +9,23 @@
 	let { onStartOver }: Props = $props();
 
 	let dismissed = $state(false);
+	let session = $state(get(registrationSessionStore));
+
+	$effect(() => {
+		const unsubscribe = registrationSessionStore.subscribe((s) => {
+			session = s;
+		});
+		return unsubscribe;
+	});
 
 	const lastUpdated = $derived(
-		$registrationSessionStore?.lastUpdated
-			? new Date($registrationSessionStore.lastUpdated).toLocaleString()
+		session?.lastUpdated
+			? new Date(session.lastUpdated).toLocaleString()
 			: null
 	);
 
 	const hasExistingSession = $derived(
-		$registrationSessionStore?.id && $registrationSessionStore?.lastUpdated && !dismissed
+		session?.id && session?.lastUpdated && !dismissed
 	);
 
 	function handleStartOver() {

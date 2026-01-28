@@ -74,8 +74,8 @@
 				<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 					<div class="flex items-center justify-between mb-4">
 						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">Create Household</h3>
-						<button type="button" onclick={onClose} class="text-gray-400 hover:text-gray-500">
-							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<button type="button" onclick={onClose} class="text-gray-400 hover:text-gray-500" aria-label="Close modal">
+							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -89,17 +89,21 @@
 					<div class="space-y-4">
 						<div>
 							<label for="name" class="block text-sm font-medium text-gray-700">
-								Household Name <span class="text-red-500">*</span>
+								Household Name <span aria-hidden="true" class="text-red-500">*</span><span class="sr-only">(required)</span>
 							</label>
 							<input
 								type="text"
 								id="name"
+								name="name"
 								bind:value={form.name}
 								placeholder="e.g., The Smith Family"
+								aria-required="true"
+								aria-invalid={errors.name ? 'true' : undefined}
+								aria-describedby={errors.name ? 'name-error' : undefined}
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							/>
 							{#if errors.name}
-								<p class="mt-1 text-sm text-red-600">{errors.name}</p>
+								<p id="name-error" class="mt-1 text-sm text-red-600" role="alert">{errors.name}</p>
 							{/if}
 						</div>
 
@@ -110,6 +114,7 @@
 							<input
 								type="text"
 								id="address_line1"
+								name="address_line1"
 								bind:value={form.address_line1}
 								placeholder="Street address"
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -123,6 +128,7 @@
 							<input
 								type="text"
 								id="address_line2"
+								name="address_line2"
 								bind:value={form.address_line2}
 								placeholder="Apartment, suite, etc."
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -135,6 +141,7 @@
 								<input
 									type="text"
 									id="city"
+									name="city"
 									bind:value={form.city}
 									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
@@ -146,6 +153,7 @@
 								<input
 									type="text"
 									id="postal_code"
+									name="postal_code"
 									bind:value={form.postal_code}
 									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>

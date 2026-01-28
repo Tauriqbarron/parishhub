@@ -3,13 +3,21 @@
 	import type { RegistrationSession, RegistrationMember } from '$lib/stores/registrationSession';
 	import { registrationApi } from '$lib/api';
 	import { createEventDispatcher } from 'svelte';
+	import { get } from 'svelte/store';
 
 	const dispatch = createEventDispatcher<{ complete: void; goToStep: number }>();
 
-	let session = $derived($registrationSessionStore);
+	let session = $state<RegistrationSession>(get(registrationSessionStore));
 	let submitting = $state(false);
 	let error = $state('');
 	let submitted = $state(false);
+
+	$effect(() => {
+		const unsubscribe = registrationSessionStore.subscribe((s) => {
+			session = s;
+		});
+		return unsubscribe;
+	});
 
 	let allRelationships = $derived(
 		session.members.flatMap((m) =>

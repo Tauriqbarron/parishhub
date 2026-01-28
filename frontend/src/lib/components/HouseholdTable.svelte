@@ -29,8 +29,8 @@
 	}
 </script>
 
-<div class="overflow-x-auto">
-	<table class="min-w-full divide-y divide-gray-200">
+<div class="overflow-x-auto" role="region" aria-label="Households list">
+	<table class="min-w-full divide-y divide-gray-200" aria-label="Households table">
 		<thead class="bg-gray-50">
 			<tr>
 				<th
@@ -104,6 +104,10 @@
 			{#each households as household (household.id)}
 				<tr
 					onclick={() => onRowClick(household)}
+					onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRowClick(household); }}}
+					tabindex="0"
+					role="button"
+					aria-label="View details for {household.name}"
 					class="hover:bg-gray-50 cursor-pointer transition-colors"
 				>
 					<td class="px-6 py-4 whitespace-nowrap">
@@ -114,6 +118,8 @@
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
+									aria-hidden="true"
+									role="img"
 								>
 									<path
 										stroke-linecap="round"
@@ -144,9 +150,9 @@
 								onRowClick(household);
 							}}
 							class="text-gray-400 hover:text-gray-600 mr-3"
-							title="View"
+							aria-label="View {household.name}"
 						>
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -167,9 +173,9 @@
 								onEdit(household);
 							}}
 							class="text-blue-400 hover:text-blue-600"
-							title="Edit"
+							aria-label="Edit {household.name}"
 						>
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"

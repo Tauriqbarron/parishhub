@@ -10,6 +10,7 @@ from app.database import get_db
 from app.models.household import HouseholdRole
 from app.schemas.household import (
     HouseholdCreate,
+    HouseholdCreateWithMembers,
     HouseholdMemberCreate,
     HouseholdMemberResponse,
     HouseholdMemberUpdate,
@@ -26,12 +27,6 @@ router = APIRouter(prefix="/api/households", tags=["households"])
 def get_household_service(db: Session = Depends(get_db)) -> HouseholdService:
     """Dependency to get HouseholdService instance."""
     return HouseholdService(db)
-
-
-class HouseholdCreateWithMembers(HouseholdCreate):
-    """Schema for creating a household with optional initial members."""
-
-    members: Optional[list[dict]] = None
 
 
 @router.post(

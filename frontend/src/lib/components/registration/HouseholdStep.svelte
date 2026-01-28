@@ -1,8 +1,16 @@
 <script lang="ts">
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
 	import Tooltip from '$lib/components/Tooltip.svelte';
+	import { get } from 'svelte/store';
 
-	let household = $derived($registrationSessionStore.household);
+	let household = $derived(get(registrationSessionStore).household);
+
+	$effect(() => {
+		const unsubscribe = registrationSessionStore.subscribe((session) => {
+			household = session.household;
+		});
+		return unsubscribe;
+	});
 
 	let errors = $state<Record<string, string>>({});
 

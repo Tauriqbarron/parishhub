@@ -1,3 +1,6 @@
+import os
+
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,14 +23,25 @@ class Settings(BaseSettings):
         "https://handed-astrology-corners-outlets.trycloudflare.com",
     ]
 
-    # Security
-    secret_key: str = "change-me-in-production"
+    # Security - REQUIRED: must be set via SECRET_KEY environment variable
+    secret_key: str
 
     # Google OAuth
     google_client_id: str = ""
     google_client_secret: str = ""
     authorized_email: str = ""
     auth_secret: str = ""
+
+    @field_validator("secret_key")
+    @classmethod
+    def validate_secret_key(cls, v: str) -> str:
+        if not v or v == "change-me-in-production":
+            raise ValueError(
+                "SECRET_KEY environment variable must be set to a secure value"
+            )
+        if len(v) < 32:
+            raise ValueError("SECRET_KEY must be at least 32 characters long")
+        return v
 
 
 settings = Settings()

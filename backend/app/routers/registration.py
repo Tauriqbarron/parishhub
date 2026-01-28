@@ -18,6 +18,7 @@ from app.schemas.registration import (
     RegistrationURLConfig,
     RegistrationURLResponse,
 )
+from app.services.relationship import FamilyRelationshipService
 
 router = APIRouter(prefix="/api/register", tags=["registration"])
 url_router = APIRouter(prefix="/api/v1/registration", tags=["registration-config"])
@@ -33,14 +34,6 @@ RELATIONSHIP_TYPE_MAP = {
     "sibling": RelationshipType.SIBLING,
 }
 
-# Inverse relationships for bidirectional creation
-INVERSE_RELATIONSHIPS = {
-    RelationshipType.PARENT: RelationshipType.CHILD,
-    RelationshipType.CHILD: RelationshipType.PARENT,
-    RelationshipType.SPOUSE: RelationshipType.SPOUSE,
-    RelationshipType.SIBLING: RelationshipType.SIBLING,
-}
-
 # Mapping from frontend sacrament types to model enum
 SACRAMENT_TYPE_MAP = {
     "baptism": SacramentType.BAPTISM,
@@ -48,6 +41,15 @@ SACRAMENT_TYPE_MAP = {
     "confirmation": SacramentType.CONFIRMATION,
     "marriage": SacramentType.MARRIAGE,
     "holy_orders": SacramentType.HOLY_ORDERS,
+}
+
+# Sacrament order for validation (earlier sacraments must be created first)
+SACRAMENT_ORDER = {
+    SacramentType.BAPTISM: 0,
+    SacramentType.FIRST_COMMUNION: 1,
+    SacramentType.CONFIRMATION: 2,
+    SacramentType.MARRIAGE: 3,
+    SacramentType.HOLY_ORDERS: 4,
 }
 
 # Mapping from frontend gender to model enum
@@ -153,8 +155,8 @@ async def submit_registration(
             )
             db.add(relationship)
 
-            # Create inverse relationship
-            inverse_type = INVERSE_RELATIONSHIPS[rel_type]
+            # Create inverse relationship using the canonical mapping
+            inverse_type = FamilyRelationshipService.INVERSE_RELATIONSHIPS[rel_type]
             inverse_relationship = FamilyRelationship(
                 person_id=to_person_id,
                 related_person_id=from_person_id,
@@ -162,7 +164,9 @@ async def submit_registration(
             )
             db.add(inverse_relationship)
 
-        # Step 5: Create sacraments
+        # Step 5: Create sacraments (pre-sorted by sacrament order to ensure
+        # prerequisite sacraments like baptism are created before dependent ones)
+        validated_sacraments = []
         for sac in data.sacraments:
             person_id = temp_id_to_person_id.get(sac.member_temp_id)
 
@@ -179,6 +183,13 @@ async def submit_registration(
                     detail=f"Invalid sacrament type: {sac.sacrament_type}",
                 )
 
+            if sac.date:
+                validated_sacraments.append((sac, person_id, sac_type))
+
+        # Sort sacraments by type order (baptism first, then first_communion, etc.)
+        validated_sacraments.sort(key=lambda x: SACRAMENT_ORDER.get(x[2], 99))
+
+        for sac, person_id, sac_type in validated_sacraments:
             # Build additional_data with church and minister if provided
             additional_data = sac.additional_data.copy() if sac.additional_data else {}
             if sac.church:
@@ -186,15 +197,13 @@ async def submit_registration(
             if sac.minister:
                 additional_data["minister"] = sac.minister
 
-            # Only create sacrament if we have a date
-            if sac.date:
-                sacrament = Sacrament(
-                    person_id=person_id,
-                    sacrament_type=sac_type,
-                    date_received=sac.date,
-                    additional_data=additional_data if additional_data else None,
-                )
-                db.add(sacrament)
+            sacrament = Sacrament(
+                person_id=person_id,
+                sacrament_type=sac_type,
+                date_received=sac.date,
+                additional_data=additional_data if additional_data else None,
+            )
+            db.add(sacrament)
 
         # Commit all changes
         db.commit()

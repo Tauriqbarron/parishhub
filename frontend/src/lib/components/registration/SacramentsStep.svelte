@@ -1,8 +1,16 @@
 <script lang="ts">
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
 	import MemberSacraments from './MemberSacraments.svelte';
+	import { get } from 'svelte/store';
 
-	let members = $derived($registrationSessionStore.members);
+	let members = $derived(get(registrationSessionStore).members);
+
+	$effect(() => {
+		const unsubscribe = registrationSessionStore.subscribe((session) => {
+			members = session.members;
+		});
+		return unsubscribe;
+	});
 
 	export function isValid(): boolean {
 		return true;
