@@ -23,7 +23,13 @@
 - **API:** All fetch calls must go through `src/lib/api.ts`. Do not use `fetch` directly in components.
 - **Styling:** Use Tailwind utility classes. Do not write custom CSS in `<style>` blocks unless necessary.
 
-## 3. Test & Verification
+## 3. Background Task Behavior
+
+- **Auto-Poll:** When running background tasks, poll for completion and report results immediately - do NOT wait for user to ask.
+- **Task Tracking:** Store task IDs and check TaskOutput periodically until complete.
+- **Immediate Reporting:** When a background task finishes, summarize results in the next response.
+
+## 4. Test & Verification
 
 - **Frontend:** Run `npm run check` only if editing TypeScript types.
 - **Backend:** Do not restart the Docker container unless the issue explicitly requires database config changes.

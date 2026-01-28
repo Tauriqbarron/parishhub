@@ -12,3 +12,11 @@
 # OS
 .DS_Store
 Thumbs.db
+
+# AI Tools
+.goose/
+CLAUDE.md
+
+# Coverage
+coverage/
+**/coverage/

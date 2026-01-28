@@ -29,7 +29,16 @@ async function proxyRequest(
 	locals: App.Locals
 ): Promise<Response> {
 	// Get session from Auth.js
-	const session = await locals.auth();
+	let session;
+	try {
+		session = await locals.auth();
+	} catch (error) {
+		console.error('Auth error:', error);
+		return new Response(JSON.stringify({ detail: 'Authentication error' }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' }
+		});
+	}
 
 	if (!session?.user?.email) {
 		return new Response(JSON.stringify({ detail: 'Not authenticated' }), {
