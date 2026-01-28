@@ -553,6 +553,16 @@ export interface RegistrationSubmitResponse {
 	message: string;
 }
 
+// Registration URL types
+export interface RegistrationURLConfig {
+	base_url: string;
+}
+
+export interface RegistrationURLResponse {
+	base_url: string;
+	registration_url: string;
+}
+
 // Registration API
 export const registrationApi = {
 	submit: (session: {
@@ -586,5 +596,10 @@ export const registrationApi = {
 				relationshipType: string;
 			}>;
 		}>;
-	}) => api.post<RegistrationSubmitResponse>('/registration/submit', session)
+	}) => api.post<RegistrationSubmitResponse>('/registration/submit', session),
+
+	getUrl: () => api.get<RegistrationURLResponse>('/v1/registration/url'),
+
+	updateUrl: (config: RegistrationURLConfig) =>
+		api.put<RegistrationURLResponse>('/v1/registration/url', config)
 };
