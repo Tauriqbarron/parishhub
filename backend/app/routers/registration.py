@@ -1,16 +1,29 @@
 """API router for public registration endpoint."""
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.auth import User, require_auth
 from app.database import get_db
 from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.person import Gender, Person
 from app.models.relationship import FamilyRelationship, RelationshipType
 from app.models.sacrament import Sacrament, SacramentType
-from app.schemas.registration import RegistrationResponse, RegistrationSubmission
+from app.models.settings import Setting
+from app.schemas.registration import (
+    RegistrationResponse,
+    RegistrationSubmission,
+    RegistrationURLConfig,
+    RegistrationURLResponse,
+)
 
 router = APIRouter(prefix="/api/register", tags=["registration"])
+url_router = APIRouter(prefix="/api/v1/registration", tags=["registration-config"])
+
+REGISTRATION_URL_KEY = "registration_base_url"
+REGISTRATION_PATH = "/register"
 
 # Mapping from frontend relationship types to model enum
 RELATIONSHIP_TYPE_MAP = {
@@ -200,3 +213,71 @@ async def submit_registration(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Registration failed: {str(e)}",
         )
+
+
+@url_router.get(
+    "/url",
+    response_model=RegistrationURLResponse,
+    summary="Get registration URL configuration",
+)
+async def get_registration_url(
+    user: Annotated[User, Depends(require_auth)],
+    db: Session = Depends(get_db),
+) -> RegistrationURLResponse:
+    """
+    Get the current registration URL configuration.
+
+    Returns the base URL and full registration URL for QR code generation.
+    Requires authentication.
+    """
+    setting = db.query(Setting).filter(Setting.key == REGISTRATION_URL_KEY).first()
+
+    if not setting:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Registration URL not configured. Please set a base URL first.",
+        )
+
+    base_url = setting.value.rstrip("/")
+    registration_url = f"{base_url}{REGISTRATION_PATH}"
+
+    return RegistrationURLResponse(
+        base_url=base_url,
+        registration_url=registration_url,
+    )
+
+
+@url_router.put(
+    "/url",
+    response_model=RegistrationURLResponse,
+    summary="Update registration URL configuration",
+)
+async def update_registration_url(
+    config: RegistrationURLConfig,
+    user: Annotated[User, Depends(require_auth)],
+    db: Session = Depends(get_db),
+) -> RegistrationURLResponse:
+    """
+    Update the base URL for public registration.
+
+    This URL is used for QR code generation (e.g., Cloudflare tunnel URL).
+    Requires authentication.
+    """
+    base_url = config.base_url.rstrip("/")
+
+    setting = db.query(Setting).filter(Setting.key == REGISTRATION_URL_KEY).first()
+
+    if setting:
+        setting.value = base_url
+    else:
+        setting = Setting(key=REGISTRATION_URL_KEY, value=base_url)
+        db.add(setting)
+
+    db.commit()
+
+    registration_url = f"{base_url}{REGISTRATION_PATH}"
+
+    return RegistrationURLResponse(
+        base_url=base_url,
+        registration_url=registration_url,
+    )

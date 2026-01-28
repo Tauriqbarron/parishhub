@@ -34,6 +34,7 @@ app.include_router(analytics.attendance_router)
 app.include_router(analytics.population_router)
 app.include_router(mass_times.router)
 app.include_router(registration.router)
+app.include_router(registration.url_router)
 
 
 @app.get("/api/health")

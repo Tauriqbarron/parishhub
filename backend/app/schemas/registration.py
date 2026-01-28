@@ -60,3 +60,21 @@ class RegistrationResponse(BaseModel):
 
     household_id: int
     message: str = "Registration submitted successfully"
+
+
+class RegistrationURLConfig(BaseModel):
+    """Configuration for registration URL base."""
+
+    base_url: str = Field(
+        min_length=1,
+        description="Base URL for public registration (e.g., https://your-domain.com)",
+    )
+
+
+class RegistrationURLResponse(BaseModel):
+    """Response with full registration URL."""
+
+    base_url: str
+    registration_url: str = Field(
+        description="Full URL for public registration page"
+    )

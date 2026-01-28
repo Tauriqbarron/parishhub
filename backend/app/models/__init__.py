@@ -3,6 +3,7 @@ from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.person import Gender, Person
 from app.models.relationship import FamilyRelationship, RelationshipType
 from app.models.sacrament import Sacrament, SacramentType
+from app.models.settings import Setting
 
 __all__ = [
     "Gender",
@@ -19,4 +20,5 @@ __all__ = [
     "MetricType",
     "ParishStatistic",
     "PopulationSnapshot",
+    "Setting",
 ]
