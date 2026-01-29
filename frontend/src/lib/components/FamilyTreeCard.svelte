@@ -318,6 +318,7 @@
 		role="dialog"
 		aria-modal="true"
 		onclick={handleBackdropClick}
+		tabindex="-1"
 	>
 		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
@@ -325,6 +326,7 @@
 			<div
 				class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
 				onclick={(e) => e.stopPropagation()}
+				role="document"
 			>
 				<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 					<div class="flex items-center justify-between mb-4">

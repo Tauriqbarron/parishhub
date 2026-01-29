@@ -143,7 +143,7 @@
 						<!-- Person Selection -->
 						{#if selectedPerson}
 							<div>
-								<label id="selected-person-label" class="block text-sm font-medium text-gray-700 mb-1">Selected Person</label>
+								<span id="selected-person-label" class="block text-sm font-medium text-gray-700 mb-1">Selected Person</span>
 								<div
 									class="flex items-center justify-between p-3 rounded-lg border border-blue-200 bg-blue-50"
 									aria-labelledby="selected-person-label"

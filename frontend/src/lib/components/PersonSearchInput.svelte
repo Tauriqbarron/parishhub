@@ -134,6 +134,8 @@
 			{placeholder}
 			aria-label="Search for a person"
 			aria-autocomplete="list"
+			role="combobox"
+			aria-haspopup="listbox"
 			aria-expanded={showDropdown && (searchResults.length > 0 || searchQuery.length >= 2)}
 			class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 		/>
