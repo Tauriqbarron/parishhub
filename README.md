@@ -1,31 +1,82 @@
 # Parish Database
 
-A web based application for storing and searching information about parish members and families.
+A comprehensive web-based application designed for parishes to manage member information, families, sacraments, and attendance records. This solution provides tools for administrative staff to maintain accurate records and generate insightful analytics about their community.
 
-## Tech Stack
+## 🚀 Features
 
-- **Frontend**: SvelteKit with TypeScript, Tailwind CSS
-- **Backend**: FastAPI with SQLAlchemy
+- **Member Management**: Detailed profiles for individual parishioners including contact info, dates of birth, and gender.
+- **Household Tracking**: Group members into households with defined roles (Head of Household, Spouse, Child, etc.).
+- **Sacramental Registry**: Record and track sacraments (Baptism, First Communion, Confirmation, Marriage, etc.) for each member.
+- **Family Relationships**: Dynamic linking of family members (parents, children, siblings) to understand community connections.
+- **Mass Attendance**: Track attendance numbers for different mass times and services.
+- **Analytics & Reporting**:
+    - Population growth trends.
+    - Mass attendance statistics.
+    - Birth statistics and demographics.
+- **Public Registration**: Configurable public-facing forms for new family registration.
+- **Secure Authentication**: Protected API endpoints requiring authentication.
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: [SvelteKit 2](https://kit.svelte.dev/)
+- **Language**: TypeScript
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Authentication**: Auth.js (@auth/sveltekit)
+- **Visualization**: Chart.js for analytics dashboards
+- **Testing**: Vitest, Testing Library
+
+### Backend
+- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.11+)
+- **Database ORM**: [SQLAlchemy 2.0](https://www.sqlalchemy.org/) (Async)
+- **Validation**: Pydantic v2
+- **Migrations**: Alembic
+- **Analysis & Rate Limiting**: Slowapi
+- **Testing**: Pytest, HTTPX
+
+### Infrastructure & Database
 - **Database**: PostgreSQL
+- **Containerization**: Docker & Docker Compose
 
-## Prerequisites
+## 📋 Prerequisites
 
-- Node.js 18+
-- Python 3.11+
-- Docker and Docker Compose
+- [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
+- **OR** for local development:
+    - Node.js 18+
+    - Python 3.11+
+    - PostgreSQL 15+
 
-## Getting Started
+## ⚡ Getting Started (Docker)
 
-### 1. Start the Database
+The easiest way to run the application is using Docker Compose.
 
+1. **Clone the repository**
+   ```bash
+   git clone <repository_url>
+   cd parish-database
+   ```
+
+2. **Start the application**
+   ```bash
+   docker-compose up -d
+   ```
+   
+   - **Frontend**: http://localhost:5173
+   - **Backend API**: http://localhost:8000
+   - **API Docs (Swagger)**: http://localhost:8000/docs
+   - **Database**: localhost:5432
+
+## 💻 Local Development Setup
+
+If you prefer to run services individually for development:
+
+### 1. Database Setup
+Ensure you have a PostgreSQL database running. You can use the docker-compose file to just run the db:
 ```bash
-docker-compose up -d
+docker-compose up -d db
 ```
 
-This starts PostgreSQL on `localhost:5432`.
-
-### 2. Set Up the Backend
-
+### 2. Backend Setup
 ```bash
 cd backend
 
@@ -36,109 +87,59 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Copy environment file
+# Copy environment example
 cp ../.env.example .env
+# Edit .env to match your local database credentials if needed
 
-# Run the backend
+# Run migrations
+alembic upgrade head
+
+# Start server
 uvicorn app.main:app --reload
 ```
 
-The API runs on `http://localhost:8000`. API docs at `http://localhost:8000/docs`.
-
-### 3. Set Up the Frontend
-
+### 3. Frontend Setup
 ```bash
 cd frontend
 
 # Install dependencies
 npm install
 
-# Run the frontend
+# Start development server
 npm run dev
 ```
 
-The frontend runs on `http://localhost:5173`.
+## 🧪 Testing
 
-## Project Structure
+### Backend
+```bash
+cd backend
+pytest
+```
+
+### Frontend
+```bash
+cd frontend
+npm run test  # Run unit tests
+npm run check # Run TypeScript check
+```
+
+## 📁 Project Structure
 
 ```
 parish-database/
-├── frontend/                 # SvelteKit application
-│   ├── src/
-│   │   ├── lib/
-│   │   │   ├── components/   # Reusable UI components
-│   │   │   ├── stores/       # Svelte stores
-│   │   │   └── api.ts        # API client
-│   │   ├── routes/           # SvelteKit routes
-│   │   └── app.html
-│   ├── package.json
-│   ├── svelte.config.js
-│   └── vite.config.ts
-├── backend/                  # FastAPI application
+├── backend/               # FastAPI application
 │   ├── app/
-│   │   ├── main.py           # FastAPI app entry
-│   │   ├── config.py         # Settings management
-│   │   ├── database.py       # SQLAlchemy setup
-│   │   ├── models/           # SQLAlchemy models
-│   │   ├── schemas/          # Pydantic schemas
-│   │   ├── routers/          # API route handlers
-│   │   └── services/         # Business logic
-│   ├── alembic/              # Database migrations
-│   ├── requirements.txt
-│   └── alembic.ini
-├── docker-compose.yml        # Local development
-└── .env.example
+│   │   ├── models/        # SQLAlchemy Database Models
+│   │   ├── routers/       # API Endpoints (Controllers)
+│   │   ├── schemas/       # Pydantic Schemas (Data Transfer Objects)
+│   │   └── services/      # Business Logic
+│   ├── tests/             # Pytest tests
+│   └── alembic/           # Database migrations
+├── frontend/              # SvelteKit application
+│   ├── src/
+│   │   ├── lib/           # Components, stores, and utilities
+│   │   └── routes/        # Application pages
+│   └── static/            # Static assets
+└── docker-compose.yml     # Container orchestration
 ```
-
-## API Endpoints
-
-- `GET /api/health` - Health check endpoint
-- `GET /docs` - Swagger API documentation
-
-## Deployment
-
-### Production Docker Deployment
-
-Build and run the production containers:
-
-```bash
-docker-compose -f docker-compose.prod.yml up -d --build
-```
-
-Or build images individually:
-
-```bash
-docker build -t backend ./backend
-docker build -t frontend ./frontend
-```
-
-### Environment Variables
-
-Create a `.env` file with the following variables:
-
-#### Backend
-
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string (e.g., `postgresql://user:pass@db:5432/parish`) |
-| `FRONTEND_URL` | Frontend URL for CORS (e.g., `https://your-app.com`) |
-| `AUTH_SECRET` | Secret key for authentication |
-
-#### Frontend
-
-| Variable | Description |
-|----------|-------------|
-| `ORIGIN` | Frontend origin URL (e.g., `https://your-app.com`) |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
-| `AUTHORIZED_EMAIL` | Authorized email for access |
-| `AUTH_SECRET` | Secret key for authentication |
-| `BACKEND_URL` | Backend URL (default: `http://backend:8000`) |
-
-#### Database
-
-| Variable | Description |
-|----------|-------------|
-| `POSTGRES_USER` | PostgreSQL username |
-| `POSTGRES_PASSWORD` | PostgreSQL password |
-| `POSTGRES_DB` | PostgreSQL database name |
