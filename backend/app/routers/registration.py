@@ -1,5 +1,6 @@
 """API router for public registration endpoint."""
 
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -52,6 +53,8 @@ SACRAMENT_ORDER = {
     SacramentType.MARRIAGE: 3,
     SacramentType.HOLY_ORDERS: 4,
 }
+
+logger = logging.getLogger(__name__)
 
 # Mapping from frontend gender to model enum
 GENDER_MAP = {
@@ -221,9 +224,10 @@ async def submit_registration(
         raise
     except Exception as e:
         db.rollback()
+        logger.error(f"Registration failed: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Registration failed: {str(e)}",
+            detail="Registration failed. Please try again or contact the parish office.",
         )
 
 
