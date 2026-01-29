@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     )
 
     # Database
-    database_url: str = "postgresql://postgres:postgres@localhost:5432/parish_db"
+    database_url: str
 
     # CORS
     cors_origins: list[str] = [
