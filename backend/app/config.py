@@ -20,7 +20,6 @@ class Settings(BaseSettings):
     cors_origins: list[str] = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://handed-astrology-corners-outlets.trycloudflare.com",
     ]
 
     # Security - REQUIRED: must be set via SECRET_KEY environment variable
