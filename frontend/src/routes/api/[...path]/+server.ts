@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
 import { env } from '$env/dynamic/private';
+import { createHmac } from 'crypto';
 
 const BACKEND_URL = env.BACKEND_URL || 'http://localhost:8000';
 
@@ -55,10 +56,18 @@ async function proxyRequest(
 		});
 	}
 
+	// Generate HMAC signature
+	const timestamp = Math.floor(Date.now() / 1000).toString();
+	const signature = createHmac('sha256', env.AUTH_SECRET)
+		.update(`${timestamp}.${session.user.email}`)
+		.digest('hex');
+
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
 		'X-User-Email': session.user.email,
-		'X-User-Name': session.user.name || ''
+		'X-User-Name': session.user.name || '',
+		'X-Auth-Timestamp': timestamp,
+		'X-Auth-Signature': signature
 	};
 
 	const fetchOptions: RequestInit = {
