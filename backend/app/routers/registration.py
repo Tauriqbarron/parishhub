@@ -2,11 +2,12 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.auth import User, require_auth
 from app.database import get_db
+from app.limiter import limiter
 from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.person import Gender, Person
 from app.models.relationship import FamilyRelationship, RelationshipType
@@ -66,7 +67,9 @@ GENDER_MAP = {
     status_code=status.HTTP_201_CREATED,
     summary="Submit public registration",
 )
+@limiter.limit("5/minute")
 async def submit_registration(
+    request: Request,
     data: RegistrationSubmission,
     db: Session = Depends(get_db),
 ) -> RegistrationResponse:
