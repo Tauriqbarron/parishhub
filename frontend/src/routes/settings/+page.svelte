@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { registrationApi, type RegistrationURLResponse } from '$lib/api';
+	import { api, registrationApi, type RegistrationURLResponse } from '$lib/api';
 	import { addToast } from '$lib/stores/toast';
 
 	let baseUrl = $state('');
@@ -60,8 +60,7 @@
 	async function downloadQrCode() {
 		if (!registrationUrl) return;
 		try {
-			const response = await fetch(getQrCodeUrl());
-			const blob = await response.blob();
+			const blob = await api.download(getQrCodeUrl());
 			const url = window.URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;

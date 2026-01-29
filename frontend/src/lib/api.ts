@@ -41,6 +41,14 @@ export const api = {
 			method: 'DELETE'
 		}),
 
+	download: async (url: string): Promise<Blob> => {
+		const response = await fetch(url);
+		if (!response.ok) {
+			throw new Error(`Download Error: ${response.status} ${response.statusText}`);
+		}
+		return response.blob();
+	},
+
 	health: () => request<{ status: string }>('/health')
 };
 
