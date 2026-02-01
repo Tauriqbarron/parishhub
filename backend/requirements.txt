@@ -14,17 +14,10 @@ pydantic-settings>=2.7.0
 email-validator>=2.0.0
 
 # Security
-python-jose[cryptography]>=3.3.0
-passlib[bcrypt]>=1.7.4
-
-# Google OAuth
-google-auth>=2.28.0
-google-auth-oauthlib>=1.2.0
-google-auth-httplib2>=0.2.0
+# python-jose, passlib, and jwcrypto removed as they are unused and contain vulnerabilities
 
 # Development
 httpx>=0.28.0
 pytest>=8.0.0
 pytest-asyncio>=0.25.0
-jwcrypto
 slowapi>=0.1.9
