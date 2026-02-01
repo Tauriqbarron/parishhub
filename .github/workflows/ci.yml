@@ -62,6 +62,12 @@ jobs:
           pip install ruff
           ruff check app/
 
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Run pip-audit
+        run: pip-audit --strict --desc on
+
       - name: Run tests
         run: pytest tests/ -v
         env:
