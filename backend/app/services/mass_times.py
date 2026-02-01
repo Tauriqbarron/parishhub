@@ -26,7 +26,7 @@ class MassTimeService:
     def get_list(self, active_only: bool = True) -> list[MassTime]:
         stmt = select(MassTime)
         if active_only:
-            stmt = stmt.where(MassTime.is_active == True)
+            stmt = stmt.where(MassTime.is_active.is_(True))
         stmt = stmt.order_by(MassTime.time)
         return list(self.db.execute(stmt).scalars().all())
 

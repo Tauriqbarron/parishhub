@@ -143,7 +143,7 @@ async def submit_registration(
             if not from_person_id or not to_person_id:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid relationship: member temp_id not found",
+                    detail="Invalid relationship: member temp_id not found",
                 )
 
             rel_type = RELATIONSHIP_TYPE_MAP.get(rel.relationship_type.lower())
@@ -179,7 +179,7 @@ async def submit_registration(
             if not person_id:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid sacrament: member temp_id not found",
+                    detail="Invalid sacrament: member temp_id not found",
                 )
 
             sac_type = SACRAMENT_TYPE_MAP.get(sac.sacrament_type.lower())

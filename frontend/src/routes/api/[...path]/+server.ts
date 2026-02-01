@@ -58,7 +58,14 @@ async function proxyRequest(
 
 	// Generate HMAC signature
 	const timestamp = Math.floor(Date.now() / 1000).toString();
-	const signature = createHmac('sha256', env.AUTH_SECRET)
+	const authSecret = env.AUTH_SECRET;
+	if (!authSecret) {
+		return new Response(JSON.stringify({ detail: 'Server configuration error' }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' }
+		});
+	}
+	const signature = createHmac('sha256', authSecret)
 		.update(`${timestamp}.${session.user.email}`)
 		.digest('hex');
 

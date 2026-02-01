@@ -5,7 +5,7 @@ from typing import Optional
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.models.household import Household, HouseholdMember, HouseholdRole
+from app.models.household import Household, HouseholdMember
 from app.models.person import Person
 from app.schemas.household import (
     HouseholdCreate,
