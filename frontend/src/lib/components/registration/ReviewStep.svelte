@@ -102,7 +102,8 @@
 		</div>
 		<h2 class="text-2xl font-bold text-gray-900 mb-2">Registration Submitted!</h2>
 		<p class="text-gray-600">
-			Thank you for registering with our parish. We will review your information and contact you shortly.
+			Thank you for registering with our parish. We will review your information and contact you
+			shortly.
 		</p>
 	</div>
 {:else}
@@ -122,7 +123,12 @@
 					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+						/>
 					</svg>
 					Edit
 				</button>
@@ -140,7 +146,8 @@
 								{session.household.address}
 								{#if session.household.city}, {session.household.city}{/if}
 								{#if session.household.state}, {session.household.state}{/if}
-								{#if session.household.zipCode} {session.household.zipCode}{/if}
+								{#if session.household.zipCode}
+									{session.household.zipCode}{/if}
 							{:else}
 								—
 							{/if}
@@ -172,7 +179,12 @@
 					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+						/>
 					</svg>
 					Edit
 				</button>
@@ -184,7 +196,9 @@
 					<div class="space-y-3">
 						{#each session.members as member}
 							<div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-								<div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+								<div
+									class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
+								>
 									<span class="text-blue-600 font-medium">
 										{member.firstName.charAt(0)}{member.lastName.charAt(0)}
 									</span>
@@ -193,17 +207,23 @@
 									<div class="flex items-center gap-2">
 										<p class="text-sm font-medium text-gray-900">{getMemberName(member)}</p>
 										{#if member.isHeadOfHousehold}
-											<span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Head</span>
+											<span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full"
+												>Head</span
+											>
 										{/if}
 									</div>
 									<p class="text-sm text-gray-500">
 										{#if member.dateOfBirth}{formatDate(member.dateOfBirth)}{/if}
-										{#if member.dateOfBirth && member.gender} · {/if}
+										{#if member.dateOfBirth && member.gender}
+											·
+										{/if}
 										{#if member.gender}{formatGender(member.gender)}{/if}
 									</p>
 									{#if member.email || member.phone}
 										<p class="text-sm text-gray-500">
-											{member.email || ''}{member.email && member.phone ? ' · ' : ''}{member.phone || ''}
+											{member.email || ''}{member.email && member.phone
+												? ' · '
+												: ''}{member.phone || ''}
 										</p>
 									{/if}
 								</div>
@@ -224,7 +244,12 @@
 					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+						/>
 					</svg>
 					Edit
 				</button>
@@ -239,7 +264,9 @@
 								<li class="text-sm text-gray-700">
 									<span class="font-medium">{getMemberName(rel.from)}</span>
 									<span class="text-gray-500"> is </span>
-									<span class="font-medium text-blue-600">{relationshipLabels[rel.type] || rel.type}</span>
+									<span class="font-medium text-blue-600"
+										>{relationshipLabels[rel.type] || rel.type}</span
+									>
 									<span class="text-gray-500"> of </span>
 									<span class="font-medium">{getMemberName(rel.to)}</span>
 								</li>
@@ -260,7 +287,12 @@
 					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+						/>
 					</svg>
 					Edit
 				</button>
@@ -275,9 +307,21 @@
 								<p class="text-sm font-medium text-gray-900 mb-2">{getMemberName(member)}</p>
 								<div class="flex flex-wrap gap-2">
 									{#each member.sacraments as sacrament}
-										<span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm">
-											<svg class="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+										<span
+											class="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm"
+										>
+											<svg
+												class="w-3 h-3 text-green-600"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M5 13l4 4L19 7"
+												/>
 											</svg>
 											{sacramentLabels[sacrament.type] || sacrament.type}
 											{#if sacrament.date}
@@ -313,8 +357,19 @@
 				>
 					{#if submitting}
 						<svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+							<circle
+								class="opacity-25"
+								cx="12"
+								cy="12"
+								r="10"
+								stroke="currentColor"
+								stroke-width="4"
+							></circle>
+							<path
+								class="opacity-75"
+								fill="currentColor"
+								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+							></path>
 						</svg>
 						Submitting...
 					{:else}

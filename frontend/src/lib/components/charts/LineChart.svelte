@@ -1,8 +1,27 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Chart, LineController, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler } from 'chart.js';
+	import {
+		Chart,
+		LineController,
+		CategoryScale,
+		LinearScale,
+		PointElement,
+		LineElement,
+		Tooltip,
+		Legend,
+		Filler
+	} from 'chart.js';
 
-	Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
+	Chart.register(
+		LineController,
+		CategoryScale,
+		LinearScale,
+		PointElement,
+		LineElement,
+		Tooltip,
+		Legend,
+		Filler
+	);
 
 	interface Props {
 		labels: string[];
@@ -28,8 +47,11 @@
 				datasets: datasets.map((ds, i) => ({
 					label: ds.label,
 					data: ds.data,
-					borderColor: ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5],
-					backgroundColor: ds.fill ? `${ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]}20` : undefined,
+					borderColor:
+						ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5],
+					backgroundColor: ds.fill
+						? `${ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]}20`
+						: undefined,
 					fill: ds.fill ?? false,
 					tension: 0.3
 				}))
@@ -64,8 +86,11 @@
 			chart.data.datasets = datasets.map((ds, i) => ({
 				label: ds.label,
 				data: ds.data,
-				borderColor: ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5],
-				backgroundColor: ds.fill ? `${ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]}20` : undefined,
+				borderColor:
+					ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5],
+				backgroundColor: ds.fill
+					? `${ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]}20`
+					: undefined,
 				fill: ds.fill ?? false,
 				tension: 0.3
 			}));

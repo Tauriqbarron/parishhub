@@ -83,7 +83,11 @@
 				];
 			case 'holy_orders':
 				return [
-					{ label: 'Ordaining Bishop', idField: 'ordaining_bishop_id', nameField: 'ordaining_bishop' }
+					{
+						label: 'Ordaining Bishop',
+						idField: 'ordaining_bishop_id',
+						nameField: 'ordaining_bishop'
+					}
 				];
 			default:
 				return [];
@@ -101,7 +105,14 @@
 			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
 			aria-label="Add sacrament"
 		>
-			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+			<svg
+				class="w-4 h-4 mr-1"
+				fill="none"
+				stroke="currentColor"
+				viewBox="0 0 24 24"
+				aria-hidden="true"
+				role="img"
+			>
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
 			</svg>
 			Add
@@ -125,7 +136,14 @@
 								: 'bg-gray-200 text-gray-400'}"
 						>
 							{#if sacrament}
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+								<svg
+									class="w-4 h-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+									role="img"
+								>
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"
@@ -134,7 +152,14 @@
 									/>
 								</svg>
 							{:else}
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+								<svg
+									class="w-4 h-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+									role="img"
+								>
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"
@@ -158,7 +183,11 @@
 									{/if}
 								</div>
 								{#each getPersonFields(type) as field}
-									{@const person = renderPersonField(sacrament.additional_data, field.idField, field.nameField)}
+									{@const person = renderPersonField(
+										sacrament.additional_data,
+										field.idField,
+										field.nameField
+									)}
 									{#if person}
 										<div class="text-sm {colors.text} opacity-75">
 											{field.label}:
@@ -219,7 +248,14 @@
 								class="p-1.5 rounded hover:bg-white/50 {colors.text} transition-colors"
 								aria-label="Edit {sacramentLabels[type]} sacrament"
 							>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+								<svg
+									class="w-4 h-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+									role="img"
+								>
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"
@@ -233,7 +269,14 @@
 								class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
 								aria-label="Delete {sacramentLabels[type]} sacrament"
 							>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+								<svg
+									class="w-4 h-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+									role="img"
+								>
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"

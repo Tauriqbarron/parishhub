@@ -478,7 +478,9 @@ export const birthsApi = {
 
 // Mass Attendance API
 export const attendanceApi = {
-	list: (filters: { page?: number; per_page?: number; start_date?: string; end_date?: string } = {}) => {
+	list: (
+		filters: { page?: number; per_page?: number; start_date?: string; end_date?: string } = {}
+	) => {
 		const params = new URLSearchParams();
 		if (filters.page) params.set('page', String(filters.page));
 		if (filters.per_page) params.set('per_page', String(filters.per_page));
@@ -549,7 +551,8 @@ export const massTimesApi = {
 	},
 	get: (id: number) => api.get<MassTime>(`/mass-times/${id}`),
 	create: (data: MassTimeCreate) => api.post<MassTime>('/mass-times', data),
-	update: (id: number, data: Partial<MassTimeCreate>) => api.put<MassTime>(`/mass-times/${id}`, data),
+	update: (id: number, data: Partial<MassTimeCreate>) =>
+		api.put<MassTime>(`/mass-times/${id}`, data),
 	delete: (id: number) => api.delete<void>(`/mass-times/${id}`)
 };
 

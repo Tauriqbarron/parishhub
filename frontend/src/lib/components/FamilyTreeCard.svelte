@@ -114,7 +114,14 @@
 			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
 			aria-label="Add family relationship"
 		>
-			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+			<svg
+				class="w-4 h-4 mr-1"
+				fill="none"
+				stroke="currentColor"
+				viewBox="0 0 24 24"
+				aria-hidden="true"
+				role="img"
+			>
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
 			</svg>
 			Add
@@ -162,7 +169,14 @@
 								class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
 								aria-label="Remove spouse relationship with {formatName(familyTree.spouse)}"
 							>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+								<svg
+									class="w-4 h-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+									role="img"
+								>
 									<path
 										stroke-linecap="round"
 										stroke-linejoin="round"
@@ -203,7 +217,14 @@
 										class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
 										aria-label="Remove parent relationship with {formatName(parent)}"
 									>
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+										<svg
+											class="w-4 h-4"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+											aria-hidden="true"
+											role="img"
+										>
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
@@ -246,7 +267,14 @@
 										class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
 										aria-label="Remove child relationship with {formatName(child)}"
 									>
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+										<svg
+											class="w-4 h-4"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+											aria-hidden="true"
+											role="img"
+										>
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
@@ -289,7 +317,14 @@
 										class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
 										aria-label="Remove sibling relationship with {formatName(sibling)}"
 									>
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+										<svg
+											class="w-4 h-4"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+											aria-hidden="true"
+											role="img"
+										>
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
@@ -337,7 +372,14 @@
 							class="text-gray-400 hover:text-gray-500"
 							aria-label="Close modal"
 						>
-							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+							<svg
+								class="h-6 w-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -352,7 +394,9 @@
 						<!-- Search for person -->
 						<div>
 							<label for="search" class="block text-sm font-medium text-gray-700">
-								Search Person <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
+								Search Person <span aria-hidden="true">*</span><span class="sr-only"
+									>(required)</span
+								>
 							</label>
 							<div class="mt-1 relative">
 								<input
@@ -367,7 +411,12 @@
 								/>
 								{#if isSearching}
 									<div class="absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
-										<svg class="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24" role="img">
+										<svg
+											class="w-4 h-4 animate-spin text-gray-400"
+											fill="none"
+											viewBox="0 0 24 24"
+											role="img"
+										>
 											<circle
 												class="opacity-25"
 												cx="12"
@@ -417,7 +466,9 @@
 						<!-- Relationship type -->
 						<div>
 							<label for="relationship_type" class="block text-sm font-medium text-gray-700">
-								Relationship Type <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
+								Relationship Type <span aria-hidden="true">*</span><span class="sr-only"
+									>(required)</span
+								>
 							</label>
 							<select
 								id="relationship_type"

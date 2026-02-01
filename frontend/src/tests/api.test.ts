@@ -166,9 +166,12 @@ describe('API Module', () => {
 				notes: null
 			});
 
-			expect(mockFetch).toHaveBeenCalledWith('/api/persons', expect.objectContaining({
-				method: 'POST'
-			}));
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/api/persons',
+				expect.objectContaining({
+					method: 'POST'
+				})
+			);
 		});
 
 		it('should update a person', async () => {
@@ -180,9 +183,12 @@ describe('API Module', () => {
 
 			await personApi.update(1, { first_name: 'Jane' });
 
-			expect(mockFetch).toHaveBeenCalledWith('/api/persons/1', expect.objectContaining({
-				method: 'PUT'
-			}));
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/api/persons/1',
+				expect.objectContaining({
+					method: 'PUT'
+				})
+			);
 		});
 
 		it('should delete a person', async () => {
@@ -193,9 +199,12 @@ describe('API Module', () => {
 
 			await personApi.delete(1);
 
-			expect(mockFetch).toHaveBeenCalledWith('/api/persons/1', expect.objectContaining({
-				method: 'DELETE'
-			}));
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/api/persons/1',
+				expect.objectContaining({
+					method: 'DELETE'
+				})
+			);
 		});
 	});
 
@@ -246,9 +255,12 @@ describe('API Module', () => {
 
 			await householdApi.create({ name: 'New Family' });
 
-			expect(mockFetch).toHaveBeenCalledWith('/api/households', expect.objectContaining({
-				method: 'POST'
-			}));
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/api/households',
+				expect.objectContaining({
+					method: 'POST'
+				})
+			);
 		});
 
 		it('should add member to household', async () => {
@@ -274,9 +286,12 @@ describe('API Module', () => {
 
 			await householdApi.removeMember(1, 2);
 
-			expect(mockFetch).toHaveBeenCalledWith('/api/households/1/members/2', expect.objectContaining({
-				method: 'DELETE'
-			}));
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/api/households/1/members/2',
+				expect.objectContaining({
+					method: 'DELETE'
+				})
+			);
 		});
 	});
 
@@ -315,9 +330,12 @@ describe('API Module', () => {
 				date_received: '2024-01-15'
 			});
 
-			expect(mockFetch).toHaveBeenCalledWith('/api/sacraments', expect.objectContaining({
-				method: 'POST'
-			}));
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/api/sacraments',
+				expect.objectContaining({
+					method: 'POST'
+				})
+			);
 		});
 
 		it('should delete a sacrament', async () => {
@@ -328,9 +346,12 @@ describe('API Module', () => {
 
 			await sacramentApi.delete(1);
 
-			expect(mockFetch).toHaveBeenCalledWith('/api/sacraments/1', expect.objectContaining({
-				method: 'DELETE'
-			}));
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/api/sacraments/1',
+				expect.objectContaining({
+					method: 'DELETE'
+				})
+			);
 		});
 	});
 });

@@ -104,10 +104,7 @@
 
 				<div>
 					<div class="flex items-center">
-						<label
-							for="middleName-{member.tempId}"
-							class="block text-sm font-medium text-gray-700"
-						>
+						<label for="middleName-{member.tempId}" class="block text-sm font-medium text-gray-700">
 							Middle Name
 						</label>
 						<Tooltip text="Middle name (optional)" />

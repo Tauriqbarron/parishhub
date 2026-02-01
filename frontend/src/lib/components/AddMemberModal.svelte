@@ -127,8 +127,20 @@
 				<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 					<div class="flex items-center justify-between mb-4">
 						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">Add Member</h3>
-						<button type="button" onclick={onClose} class="text-gray-400 hover:text-gray-500" aria-label="Close modal">
-							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+						<button
+							type="button"
+							onclick={onClose}
+							class="text-gray-400 hover:text-gray-500"
+							aria-label="Close modal"
+						>
+							<svg
+								class="h-6 w-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -143,7 +155,10 @@
 						<!-- Person Selection -->
 						{#if selectedPerson}
 							<div>
-								<span id="selected-person-label" class="block text-sm font-medium text-gray-700 mb-1">Selected Person</span>
+								<span
+									id="selected-person-label"
+									class="block text-sm font-medium text-gray-700 mb-1">Selected Person</span
+								>
 								<div
 									class="flex items-center justify-between p-3 rounded-lg border border-blue-200 bg-blue-50"
 									aria-labelledby="selected-person-label"
@@ -181,7 +196,14 @@
 										class="p-1.5 rounded hover:bg-blue-100 text-blue-600 transition-colors"
 										aria-label="Remove selection"
 									>
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+										<svg
+											class="w-4 h-4"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+											aria-hidden="true"
+											role="img"
+										>
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
@@ -195,7 +217,9 @@
 						{:else}
 							<div>
 								<label for="person-search" class="block text-sm font-medium text-gray-700">
-									Search Person <span aria-hidden="true" class="text-red-500">*</span><span class="sr-only">(required)</span>
+									Search Person <span aria-hidden="true" class="text-red-500">*</span><span
+										class="sr-only">(required)</span
+									>
 								</label>
 								<div class="relative mt-1">
 									<input
@@ -234,7 +258,8 @@
 										</div>
 									{/if}
 									<span id="search-status" class="sr-only" aria-live="polite">
-										{#if isSearching}Searching...{:else if searchResults.length > 0}{searchResults.length} results found{/if}
+										{#if isSearching}Searching...{:else if searchResults.length > 0}{searchResults.length}
+											results found{/if}
 									</span>
 								</div>
 
@@ -265,7 +290,9 @@
 						<!-- Role Selection -->
 						<div>
 							<label for="role" class="block text-sm font-medium text-gray-700">
-								Role <span aria-hidden="true" class="text-red-500">*</span><span class="sr-only">(required)</span>
+								Role <span aria-hidden="true" class="text-red-500">*</span><span class="sr-only"
+									>(required)</span
+								>
 							</label>
 							<select
 								id="role"

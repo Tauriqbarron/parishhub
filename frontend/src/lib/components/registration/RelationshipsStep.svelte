@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
-	import type { RegistrationMember, RegistrationMemberRelationship } from '$lib/stores/registrationSession';
+	import type {
+		RegistrationMember,
+		RegistrationMemberRelationship
+	} from '$lib/stores/registrationSession';
 	import { get } from 'svelte/store';
 
 	const relationshipTypes = [
@@ -121,9 +124,7 @@
 </script>
 
 <div class="space-y-4">
-	<p class="text-gray-600">
-		Define how each family member is related to others in the household.
-	</p>
+	<p class="text-gray-600">Define how each family member is related to others in the household.</p>
 
 	{#if members.length <= 1}
 		<div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
@@ -168,9 +169,7 @@
 						{#each member.relationships as rel}
 							{@const targetMember = getMemberById(rel.targetTempId)}
 							{#if targetMember}
-								<div
-									class="flex items-center justify-between bg-gray-50 rounded px-3 py-2 text-sm"
-								>
+								<div class="flex items-center justify-between bg-gray-50 rounded px-3 py-2 text-sm">
 									<span>
 										<span class="text-gray-600">{getRelationshipLabel(rel.relationshipType)}</span>
 										<span class="font-medium ml-1">{getMemberName(targetMember)}</span>

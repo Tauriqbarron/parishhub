@@ -95,8 +95,20 @@
 						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">
 							{isEditing ? 'Edit Sacrament' : 'Add Sacrament'}
 						</h3>
-						<button type="button" onclick={onClose} class="text-gray-400 hover:text-gray-500" aria-label="Close modal">
-							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+						<button
+							type="button"
+							onclick={onClose}
+							class="text-gray-400 hover:text-gray-500"
+							aria-label="Close modal"
+						>
+							<svg
+								class="h-6 w-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -111,7 +123,9 @@
 						<!-- Sacrament Type -->
 						<div>
 							<label for="sacrament_type" class="block text-sm font-medium text-gray-700">
-								Sacrament Type <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
+								Sacrament Type <span aria-hidden="true">*</span><span class="sr-only"
+									>(required)</span
+								>
 							</label>
 							<select
 								id="sacrament_type"
@@ -134,7 +148,9 @@
 						<!-- Date Received -->
 						<div>
 							<label for="date_received" class="block text-sm font-medium text-gray-700">
-								Date Received <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
+								Date Received <span aria-hidden="true">*</span><span class="sr-only"
+									>(required)</span
+								>
 							</label>
 							<input
 								type="date"
@@ -153,16 +169,27 @@
 								<label class="block text-sm font-medium text-gray-700">Godfather</label>
 								<PersonSearchInput
 									value={additionalData.godfather_id
-										? { id: additionalData.godfather_id as number, name: (additionalData.godfather as string) ?? '' }
+										? {
+												id: additionalData.godfather_id as number,
+												name: (additionalData.godfather as string) ?? ''
+											}
 										: additionalData.godfather
 											? { name: additionalData.godfather as string }
 											: null}
 									placeholder="Search or enter godfather name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, godfather_id: selection.id, godfather: selection.name };
+											additionalData = {
+												...additionalData,
+												godfather_id: selection.id,
+												godfather: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, godfather_id: null, godfather: selection.name };
+											additionalData = {
+												...additionalData,
+												godfather_id: null,
+												godfather: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, godfather_id: null, godfather: null };
 										}
@@ -173,16 +200,27 @@
 								<label class="block text-sm font-medium text-gray-700">Godmother</label>
 								<PersonSearchInput
 									value={additionalData.godmother_id
-										? { id: additionalData.godmother_id as number, name: (additionalData.godmother as string) ?? '' }
+										? {
+												id: additionalData.godmother_id as number,
+												name: (additionalData.godmother as string) ?? ''
+											}
 										: additionalData.godmother
 											? { name: additionalData.godmother as string }
 											: null}
 									placeholder="Search or enter godmother name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, godmother_id: selection.id, godmother: selection.name };
+											additionalData = {
+												...additionalData,
+												godmother_id: selection.id,
+												godmother: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, godmother_id: null, godmother: selection.name };
+											additionalData = {
+												...additionalData,
+												godmother_id: null,
+												godmother: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, godmother_id: null, godmother: null };
 										}
@@ -193,16 +231,27 @@
 								<label class="block text-sm font-medium text-gray-700">Minister</label>
 								<PersonSearchInput
 									value={additionalData.minister_id
-										? { id: additionalData.minister_id as number, name: (additionalData.minister as string) ?? '' }
+										? {
+												id: additionalData.minister_id as number,
+												name: (additionalData.minister as string) ?? ''
+											}
 										: additionalData.minister
 											? { name: additionalData.minister as string }
 											: null}
 									placeholder="Search or enter minister name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, minister_id: selection.id, minister: selection.name };
+											additionalData = {
+												...additionalData,
+												minister_id: selection.id,
+												minister: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, minister_id: null, minister: selection.name };
+											additionalData = {
+												...additionalData,
+												minister_id: null,
+												minister: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, minister_id: null, minister: null };
 										}
@@ -214,16 +263,27 @@
 								<label class="block text-sm font-medium text-gray-700">Sponsor</label>
 								<PersonSearchInput
 									value={additionalData.sponsor_id
-										? { id: additionalData.sponsor_id as number, name: (additionalData.sponsor as string) ?? '' }
+										? {
+												id: additionalData.sponsor_id as number,
+												name: (additionalData.sponsor as string) ?? ''
+											}
 										: additionalData.sponsor
 											? { name: additionalData.sponsor as string }
 											: null}
 									placeholder="Search or enter sponsor name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, sponsor_id: selection.id, sponsor: selection.name };
+											additionalData = {
+												...additionalData,
+												sponsor_id: selection.id,
+												sponsor: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, sponsor_id: null, sponsor: selection.name };
+											additionalData = {
+												...additionalData,
+												sponsor_id: null,
+												sponsor: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, sponsor_id: null, sponsor: null };
 										}
@@ -235,16 +295,27 @@
 								<label class="block text-sm font-medium text-gray-700">Sponsor</label>
 								<PersonSearchInput
 									value={additionalData.sponsor_id
-										? { id: additionalData.sponsor_id as number, name: (additionalData.sponsor as string) ?? '' }
+										? {
+												id: additionalData.sponsor_id as number,
+												name: (additionalData.sponsor as string) ?? ''
+											}
 										: additionalData.sponsor
 											? { name: additionalData.sponsor as string }
 											: null}
 									placeholder="Search or enter sponsor name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, sponsor_id: selection.id, sponsor: selection.name };
+											additionalData = {
+												...additionalData,
+												sponsor_id: selection.id,
+												sponsor: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, sponsor_id: null, sponsor: selection.name };
+											additionalData = {
+												...additionalData,
+												sponsor_id: null,
+												sponsor: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, sponsor_id: null, sponsor: null };
 										}
@@ -255,16 +326,27 @@
 								<label class="block text-sm font-medium text-gray-700">Bishop</label>
 								<PersonSearchInput
 									value={additionalData.bishop_id
-										? { id: additionalData.bishop_id as number, name: (additionalData.bishop as string) ?? '' }
+										? {
+												id: additionalData.bishop_id as number,
+												name: (additionalData.bishop as string) ?? ''
+											}
 										: additionalData.bishop
 											? { name: additionalData.bishop as string }
 											: null}
 									placeholder="Search or enter bishop name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, bishop_id: selection.id, bishop: selection.name };
+											additionalData = {
+												...additionalData,
+												bishop_id: selection.id,
+												bishop: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, bishop_id: null, bishop: selection.name };
+											additionalData = {
+												...additionalData,
+												bishop_id: null,
+												bishop: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, bishop_id: null, bishop: null };
 										}
@@ -280,7 +362,10 @@
 									id="confirmation_name"
 									value={additionalData.confirmation_name ?? ''}
 									oninput={(e) =>
-										(additionalData = { ...additionalData, confirmation_name: e.currentTarget.value })}
+										(additionalData = {
+											...additionalData,
+											confirmation_name: e.currentTarget.value
+										})}
 									placeholder="Confirmation name (if different)"
 									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
@@ -290,16 +375,27 @@
 								<label class="block text-sm font-medium text-gray-700">Spouse</label>
 								<PersonSearchInput
 									value={additionalData.spouse_id
-										? { id: additionalData.spouse_id as number, name: (additionalData.spouse_name as string) ?? '' }
+										? {
+												id: additionalData.spouse_id as number,
+												name: (additionalData.spouse_name as string) ?? ''
+											}
 										: additionalData.spouse_name
 											? { name: additionalData.spouse_name as string }
 											: null}
 									placeholder="Search or enter spouse name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, spouse_id: selection.id, spouse_name: selection.name };
+											additionalData = {
+												...additionalData,
+												spouse_id: selection.id,
+												spouse_name: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, spouse_id: null, spouse_name: selection.name };
+											additionalData = {
+												...additionalData,
+												spouse_id: null,
+												spouse_name: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, spouse_id: null, spouse_name: null };
 										}
@@ -310,16 +406,27 @@
 								<label class="block text-sm font-medium text-gray-700">Witness 1</label>
 								<PersonSearchInput
 									value={additionalData.witness1_id
-										? { id: additionalData.witness1_id as number, name: (additionalData.witness1 as string) ?? '' }
+										? {
+												id: additionalData.witness1_id as number,
+												name: (additionalData.witness1 as string) ?? ''
+											}
 										: additionalData.witness1
 											? { name: additionalData.witness1 as string }
 											: null}
 									placeholder="Search or enter witness name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, witness1_id: selection.id, witness1: selection.name };
+											additionalData = {
+												...additionalData,
+												witness1_id: selection.id,
+												witness1: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, witness1_id: null, witness1: selection.name };
+											additionalData = {
+												...additionalData,
+												witness1_id: null,
+												witness1: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, witness1_id: null, witness1: null };
 										}
@@ -330,16 +437,27 @@
 								<label class="block text-sm font-medium text-gray-700">Witness 2</label>
 								<PersonSearchInput
 									value={additionalData.witness2_id
-										? { id: additionalData.witness2_id as number, name: (additionalData.witness2 as string) ?? '' }
+										? {
+												id: additionalData.witness2_id as number,
+												name: (additionalData.witness2 as string) ?? ''
+											}
 										: additionalData.witness2
 											? { name: additionalData.witness2 as string }
 											: null}
 									placeholder="Search or enter witness name"
 									onSelect={(selection) => {
 										if (selection && 'id' in selection) {
-											additionalData = { ...additionalData, witness2_id: selection.id, witness2: selection.name };
+											additionalData = {
+												...additionalData,
+												witness2_id: selection.id,
+												witness2: selection.name
+											};
 										} else if (selection) {
-											additionalData = { ...additionalData, witness2_id: null, witness2: selection.name };
+											additionalData = {
+												...additionalData,
+												witness2_id: null,
+												witness2: selection.name
+											};
 										} else {
 											additionalData = { ...additionalData, witness2_id: null, witness2: null };
 										}

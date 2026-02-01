@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
-	import type { RegistrationMember, RegistrationMemberSacrament } from '$lib/stores/registrationSession';
+	import type {
+		RegistrationMember,
+		RegistrationMemberSacrament
+	} from '$lib/stores/registrationSession';
 
 	interface Props {
 		member: RegistrationMember;
@@ -226,7 +229,11 @@
 		});
 	}
 
-	function getPersonDisplay(data: Record<string, unknown>, tempIdKey: string, nameKey: string): string | null {
+	function getPersonDisplay(
+		data: Record<string, unknown>,
+		tempIdKey: string,
+		nameKey: string
+	): string | null {
 		const name = data[nameKey] as string | undefined;
 		return name || null;
 	}
@@ -261,7 +268,9 @@
 			<div class="mt-4 space-y-3">
 				{#each member.sacraments as sacrament, index}
 					{@const colors = sacramentColors[sacrament.type] || sacramentColors.baptism}
-					<div class="flex items-start justify-between p-3 rounded-lg {colors.bg} {colors.border} border">
+					<div
+						class="flex items-start justify-between p-3 rounded-lg {colors.bg} {colors.border} border"
+					>
 						<div>
 							<div class="font-medium {colors.text}">{getSacramentLabel(sacrament.type)}</div>
 							<div class="text-sm {colors.text} opacity-75">
@@ -279,18 +288,30 @@
 							{#if sacrament.type === 'baptism'}
 								{#if getPersonDisplay(sacrament.additionalData, 'godfatherTempId', 'godfather')}
 									<div class="text-sm {colors.text} opacity-75">
-										Godfather: {getPersonDisplay(sacrament.additionalData, 'godfatherTempId', 'godfather')}
+										Godfather: {getPersonDisplay(
+											sacrament.additionalData,
+											'godfatherTempId',
+											'godfather'
+										)}
 									</div>
 								{/if}
 								{#if getPersonDisplay(sacrament.additionalData, 'godmotherTempId', 'godmother')}
 									<div class="text-sm {colors.text} opacity-75">
-										Godmother: {getPersonDisplay(sacrament.additionalData, 'godmotherTempId', 'godmother')}
+										Godmother: {getPersonDisplay(
+											sacrament.additionalData,
+											'godmotherTempId',
+											'godmother'
+										)}
 									</div>
 								{/if}
 							{:else if sacrament.type === 'confirmation'}
 								{#if getPersonDisplay(sacrament.additionalData, 'sponsorTempId', 'sponsor')}
 									<div class="text-sm {colors.text} opacity-75">
-										Sponsor: {getPersonDisplay(sacrament.additionalData, 'sponsorTempId', 'sponsor')}
+										Sponsor: {getPersonDisplay(
+											sacrament.additionalData,
+											'sponsorTempId',
+											'sponsor'
+										)}
 									</div>
 								{/if}
 								{#if sacrament.additionalData.confirmationName}
@@ -306,12 +327,20 @@
 								{/if}
 								{#if getPersonDisplay(sacrament.additionalData, 'witness1TempId', 'witness1')}
 									<div class="text-sm {colors.text} opacity-75">
-										Witness 1: {getPersonDisplay(sacrament.additionalData, 'witness1TempId', 'witness1')}
+										Witness 1: {getPersonDisplay(
+											sacrament.additionalData,
+											'witness1TempId',
+											'witness1'
+										)}
 									</div>
 								{/if}
 								{#if getPersonDisplay(sacrament.additionalData, 'witness2TempId', 'witness2')}
 									<div class="text-sm {colors.text} opacity-75">
-										Witness 2: {getPersonDisplay(sacrament.additionalData, 'witness2TempId', 'witness2')}
+										Witness 2: {getPersonDisplay(
+											sacrament.additionalData,
+											'witness2TempId',
+											'witness2'
+										)}
 									</div>
 								{/if}
 							{/if}
@@ -356,7 +385,8 @@
 				{@const colors = sacramentColors[addingType] || sacramentColors.baptism}
 				<div class="mt-4 p-4 border rounded-lg {colors.bg} {colors.border}">
 					<h4 class="font-medium {colors.text} mb-3">
-						{editingIndex !== null ? 'Edit' : 'Add'} {getSacramentLabel(addingType)}
+						{editingIndex !== null ? 'Edit' : 'Add'}
+						{getSacramentLabel(addingType)}
 					</h4>
 
 					<div class="space-y-3">
@@ -407,7 +437,9 @@
 									<select
 										id="godfather-select-{member.tempId}"
 										bind:value={formGodfatherTempId}
-										onchange={() => { if (formGodfatherTempId) formGodfather = ''; }}
+										onchange={() => {
+											if (formGodfatherTempId) formGodfather = '';
+										}}
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
 									>
 										<option value="">Select household member...</option>
@@ -419,7 +451,9 @@
 										type="text"
 										id="godfather-{member.tempId}"
 										bind:value={formGodfather}
-										oninput={() => { if (formGodfather) formGodfatherTempId = ''; }}
+										oninput={() => {
+											if (formGodfather) formGodfatherTempId = '';
+										}}
 										placeholder="Or enter name..."
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									/>
@@ -431,7 +465,9 @@
 									<select
 										id="godmother-select-{member.tempId}"
 										bind:value={formGodfatherTempId2}
-										onchange={() => { if (formGodfatherTempId2) formGodmother = ''; }}
+										onchange={() => {
+											if (formGodfatherTempId2) formGodmother = '';
+										}}
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
 									>
 										<option value="">Select household member...</option>
@@ -443,7 +479,9 @@
 										type="text"
 										id="godmother-{member.tempId}"
 										bind:value={formGodmother}
-										oninput={() => { if (formGodmother) formGodfatherTempId2 = ''; }}
+										oninput={() => {
+											if (formGodmother) formGodfatherTempId2 = '';
+										}}
 										placeholder="Or enter name..."
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									/>
@@ -458,7 +496,9 @@
 									<select
 										id="sponsor-select-{member.tempId}"
 										bind:value={formSponsorTempId}
-										onchange={() => { if (formSponsorTempId) formSponsor = ''; }}
+										onchange={() => {
+											if (formSponsorTempId) formSponsor = '';
+										}}
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
 									>
 										<option value="">Select household member...</option>
@@ -470,13 +510,18 @@
 										type="text"
 										id="sponsor-{member.tempId}"
 										bind:value={formSponsor}
-										oninput={() => { if (formSponsor) formSponsorTempId = ''; }}
+										oninput={() => {
+											if (formSponsor) formSponsorTempId = '';
+										}}
 										placeholder="Or enter name..."
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									/>
 								</div>
 								<div>
-									<label for="confirmation-name-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+									<label
+										for="confirmation-name-{member.tempId}"
+										class="block text-sm text-gray-700 mb-1"
+									>
 										Confirmation Name
 									</label>
 									<input
@@ -496,7 +541,9 @@
 								<select
 									id="spouse-select-{member.tempId}"
 									bind:value={formSpouseTempId}
-									onchange={() => { if (formSpouseTempId) formSpouse = ''; }}
+									onchange={() => {
+										if (formSpouseTempId) formSpouse = '';
+									}}
 									class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
 								>
 									<option value="">Select household member...</option>
@@ -508,7 +555,9 @@
 									type="text"
 									id="spouse-{member.tempId}"
 									bind:value={formSpouse}
-									oninput={() => { if (formSpouse) formSpouseTempId = ''; }}
+									oninput={() => {
+										if (formSpouse) formSpouseTempId = '';
+									}}
 									placeholder="Or enter spouse name..."
 									class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 								/>
@@ -521,7 +570,9 @@
 									<select
 										id="witness1-select-{member.tempId}"
 										bind:value={formWitness1TempId}
-										onchange={() => { if (formWitness1TempId) formWitness1 = ''; }}
+										onchange={() => {
+											if (formWitness1TempId) formWitness1 = '';
+										}}
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
 									>
 										<option value="">Select household member...</option>
@@ -533,7 +584,9 @@
 										type="text"
 										id="witness1-{member.tempId}"
 										bind:value={formWitness1}
-										oninput={() => { if (formWitness1) formWitness1TempId = ''; }}
+										oninput={() => {
+											if (formWitness1) formWitness1TempId = '';
+										}}
 										placeholder="Or enter name..."
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									/>
@@ -545,7 +598,9 @@
 									<select
 										id="witness2-select-{member.tempId}"
 										bind:value={formWitness2TempId}
-										onchange={() => { if (formWitness2TempId) formWitness2 = ''; }}
+										onchange={() => {
+											if (formWitness2TempId) formWitness2 = '';
+										}}
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
 									>
 										<option value="">Select household member...</option>
@@ -557,7 +612,9 @@
 										type="text"
 										id="witness2-{member.tempId}"
 										bind:value={formWitness2}
-										oninput={() => { if (formWitness2) formWitness2TempId = ''; }}
+										oninput={() => {
+											if (formWitness2) formWitness2TempId = '';
+										}}
 										placeholder="Or enter name..."
 										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									/>
@@ -599,12 +656,32 @@
 									: 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'}"
 							>
 								{#if existing}
-									<svg class="inline w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+									<svg
+										class="inline w-3 h-3 mr-1"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M5 13l4 4L19 7"
+										/>
 									</svg>
 								{:else}
-									<svg class="inline w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+									<svg
+										class="inline w-3 h-3 mr-1"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M12 4v16m8-8H4"
+										/>
 									</svg>
 								{/if}
 								{type.label}

@@ -39,9 +39,7 @@
 				/>
 			</svg>
 			<p class="mt-2 text-sm text-gray-500">No family members added yet</p>
-			<p class="text-xs text-gray-400">
-				Go back to the Family Members step to add members first
-			</p>
+			<p class="text-xs text-gray-400">Go back to the Family Members step to add members first</p>
 		</div>
 	{:else}
 		<div class="space-y-3">

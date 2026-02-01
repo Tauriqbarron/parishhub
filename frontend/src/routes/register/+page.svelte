@@ -74,10 +74,7 @@
 				{:else if currentStep === 3}
 					<SacramentsStep />
 				{:else if currentStep === 4}
-					<ReviewStep
-						on:goToStep={(e) => goToStep(e.detail)}
-						on:complete={handleComplete}
-					/>
+					<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
 				{/if}
 			</div>
 

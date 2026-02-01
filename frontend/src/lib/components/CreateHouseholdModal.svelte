@@ -76,8 +76,20 @@
 				<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 					<div class="flex items-center justify-between mb-4">
 						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">Create Household</h3>
-						<button type="button" onclick={onClose} class="text-gray-400 hover:text-gray-500" aria-label="Close modal">
-							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+						<button
+							type="button"
+							onclick={onClose}
+							class="text-gray-400 hover:text-gray-500"
+							aria-label="Close modal"
+						>
+							<svg
+								class="h-6 w-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -91,7 +103,9 @@
 					<div class="space-y-4">
 						<div>
 							<label for="name" class="block text-sm font-medium text-gray-700">
-								Household Name <span aria-hidden="true" class="text-red-500">*</span><span class="sr-only">(required)</span>
+								Household Name <span aria-hidden="true" class="text-red-500">*</span><span
+									class="sr-only">(required)</span
+								>
 							</label>
 							<input
 								type="text"

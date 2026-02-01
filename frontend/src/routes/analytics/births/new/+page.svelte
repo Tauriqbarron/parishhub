@@ -120,7 +120,13 @@
 		<h1 class="text-2xl font-bold text-gray-900">Record Birth</h1>
 	</div>
 
-	<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="bg-white rounded-lg shadow p-6 space-y-6">
+	<form
+		onsubmit={(e) => {
+			e.preventDefault();
+			handleSubmit();
+		}}
+		class="bg-white rounded-lg shadow p-6 space-y-6"
+	>
 		<!-- Baby Name -->
 		<div class="grid grid-cols-2 gap-4">
 			<div>
@@ -171,13 +177,14 @@
 			{#if parent1Id}
 				<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg">
 					<span class="flex-1">{parent1Name}</span>
-					<button
-						type="button"
-						onclick={clearParent1}
-						class="text-gray-400 hover:text-gray-600"
-					>
+					<button type="button" onclick={clearParent1} class="text-gray-400 hover:text-gray-600">
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M6 18L18 6M6 6l12 12"
+							/>
 						</svg>
 					</button>
 				</div>
@@ -188,19 +195,22 @@
 					value={parent1Search}
 					oninput={(e) => searchParent1((e.target as HTMLInputElement).value)}
 					onfocus={() => parent1Results.length > 0 && (showParent1Dropdown = true)}
-					onblur={() => setTimeout(() => showParent1Dropdown = false, 200)}
+					onblur={() => setTimeout(() => (showParent1Dropdown = false), 200)}
 					placeholder="Search by name..."
 					class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 				/>
 				{#if showParent1Dropdown && parent1Results.length > 0}
-					<div class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-auto">
+					<div
+						class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-auto"
+					>
 						{#each parent1Results as person}
 							<button
 								type="button"
 								onclick={() => selectParent1(person)}
 								class="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100"
 							>
-								{person.first_name} {person.last_name}
+								{person.first_name}
+								{person.last_name}
 							</button>
 						{/each}
 					</div>
@@ -216,13 +226,14 @@
 			{#if parent2Id}
 				<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg">
 					<span class="flex-1">{parent2Name}</span>
-					<button
-						type="button"
-						onclick={clearParent2}
-						class="text-gray-400 hover:text-gray-600"
-					>
+					<button type="button" onclick={clearParent2} class="text-gray-400 hover:text-gray-600">
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M6 18L18 6M6 6l12 12"
+							/>
 						</svg>
 					</button>
 				</div>
@@ -233,19 +244,22 @@
 					value={parent2Search}
 					oninput={(e) => searchParent2((e.target as HTMLInputElement).value)}
 					onfocus={() => parent2Results.length > 0 && (showParent2Dropdown = true)}
-					onblur={() => setTimeout(() => showParent2Dropdown = false, 200)}
+					onblur={() => setTimeout(() => (showParent2Dropdown = false), 200)}
 					placeholder="Search by name..."
 					class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 				/>
 				{#if showParent2Dropdown && parent2Results.length > 0}
-					<div class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-auto">
+					<div
+						class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-auto"
+					>
 						{#each parent2Results as person}
 							<button
 								type="button"
 								onclick={() => selectParent2(person)}
 								class="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100"
 							>
-								{person.first_name} {person.last_name}
+								{person.first_name}
+								{person.last_name}
 							</button>
 						{/each}
 					</div>
@@ -255,7 +269,9 @@
 
 		<!-- Notes -->
 		<div>
-			<label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
+			<label for="notes" class="block text-sm font-medium text-gray-700 mb-1"
+				>Notes (optional)</label
+			>
 			<textarea
 				id="notes"
 				bind:value={notes}

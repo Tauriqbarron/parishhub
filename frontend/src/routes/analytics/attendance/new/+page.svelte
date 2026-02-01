@@ -116,7 +116,13 @@
 		<h1 class="text-2xl font-bold text-gray-900">Record Mass Attendance</h1>
 	</div>
 
-	<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="bg-white rounded-lg shadow p-6 space-y-6">
+	<form
+		onsubmit={(e) => {
+			e.preventDefault();
+			handleSubmit();
+		}}
+		class="bg-white rounded-lg shadow p-6 space-y-6"
+	>
 		<div>
 			<label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
 			<input
@@ -150,7 +156,8 @@
 							{#if massTimeOptions.length > 0 && !entry.customTime}
 								<select
 									value={entry.mass_time}
-									onchange={(e) => handleMassTimeChange(index, (e.target as HTMLSelectElement).value)}
+									onchange={(e) =>
+										handleMassTimeChange(index, (e.target as HTMLSelectElement).value)}
 									class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								>
 									<option value="">Select mass time...</option>
@@ -170,12 +177,20 @@
 									{#if massTimeOptions.length > 0 && entry.customTime}
 										<button
 											type="button"
-											onclick={() => { entry.customTime = false; entry.mass_time = ''; }}
+											onclick={() => {
+												entry.customTime = false;
+												entry.mass_time = '';
+											}}
 											class="px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-lg text-sm"
 											title="Back to dropdown"
 										>
 											<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+												/>
 											</svg>
 										</button>
 									{/if}
@@ -198,7 +213,12 @@
 								class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
 							>
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M6 18L18 6M6 6l12 12"
+									/>
 								</svg>
 							</button>
 						{/if}
@@ -213,13 +233,17 @@
 				</button>
 				{#if massTimeOptions.length === 0}
 					<p class="text-xs text-gray-400">
-						<a href="/settings/mass-times" class="text-blue-600 hover:underline">Configure mass times</a> to use a dropdown instead of free text.
+						<a href="/settings/mass-times" class="text-blue-600 hover:underline"
+							>Configure mass times</a
+						> to use a dropdown instead of free text.
 					</p>
 				{/if}
 			</div>
 		{:else}
 			<div>
-				<label for="count" class="block text-sm font-medium text-gray-700 mb-1">Attendance Count</label>
+				<label for="count" class="block text-sm font-medium text-gray-700 mb-1"
+					>Attendance Count</label
+				>
 				<input
 					type="number"
 					id="count"
@@ -232,7 +256,9 @@
 		{/if}
 
 		<div>
-			<label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
+			<label for="notes" class="block text-sm font-medium text-gray-700 mb-1"
+				>Notes (optional)</label
+			>
 			<textarea
 				id="notes"
 				bind:value={notes}

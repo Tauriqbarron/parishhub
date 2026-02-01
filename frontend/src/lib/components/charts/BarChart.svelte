@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Chart, BarController, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
+	import {
+		Chart,
+		BarController,
+		CategoryScale,
+		LinearScale,
+		BarElement,
+		Tooltip,
+		Legend
+	} from 'chart.js';
 
 	Chart.register(BarController, CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -27,7 +35,8 @@
 				datasets: datasets.map((ds, i) => ({
 					label: ds.label,
 					data: ds.data,
-					backgroundColor: ds.backgroundColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]
+					backgroundColor:
+						ds.backgroundColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]
 				}))
 			},
 			options: {
@@ -60,7 +69,8 @@
 			chart.data.datasets = datasets.map((ds, i) => ({
 				label: ds.label,
 				data: ds.data,
-				backgroundColor: ds.backgroundColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]
+				backgroundColor:
+					ds.backgroundColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]
 			}));
 			chart.update();
 		}

@@ -19,14 +19,10 @@
 	});
 
 	const lastUpdated = $derived(
-		session?.lastUpdated
-			? new Date(session.lastUpdated).toLocaleString()
-			: null
+		session?.lastUpdated ? new Date(session.lastUpdated).toLocaleString() : null
 	);
 
-	const hasExistingSession = $derived(
-		session?.id && session?.lastUpdated && !dismissed
-	);
+	const hasExistingSession = $derived(session?.id && session?.lastUpdated && !dismissed);
 
 	function handleStartOver() {
 		if (onStartOver) {
@@ -52,12 +48,17 @@
 			aria-label="Dismiss"
 		>
 			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M6 18L18 6M6 6l12 12"
+				/>
 			</svg>
 		</button>
 		<p class="text-yellow-800 pr-6">
-			<strong>Welcome back!</strong> We found your saved progress from {lastUpdated}.
-			You can continue where you left off.
+			<strong>Welcome back!</strong> We found your saved progress from {lastUpdated}. You can
+			continue where you left off.
 		</p>
 		<button
 			type="button"

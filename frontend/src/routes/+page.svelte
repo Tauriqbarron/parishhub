@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { statisticsApi, attendanceApi, massTimesApi, api, type DashboardData, type MassAttendanceCreate, type MassTime } from '$lib/api';
+	import {
+		statisticsApi,
+		attendanceApi,
+		massTimesApi,
+		api,
+		type DashboardData,
+		type MassAttendanceCreate,
+		type MassTime
+	} from '$lib/api';
 	import StatCard from '$lib/components/StatCard.svelte';
 	import QuickActions from '$lib/components/QuickActions.svelte';
 	import RecentActivity from '$lib/components/RecentActivity.svelte';
@@ -187,7 +195,13 @@
 		<!-- Quick Entry: Sunday Attendance -->
 		<div class="bg-white rounded-lg shadow p-6">
 			<h3 class="text-lg font-medium text-gray-900 mb-4">Quick Entry: Sunday Attendance</h3>
-			<form onsubmit={(e) => { e.preventDefault(); submitQuickEntry(); }} class="flex flex-wrap gap-4 items-end">
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+					submitQuickEntry();
+				}}
+				class="flex flex-wrap gap-4 items-end"
+			>
 				<div>
 					<label for="quick-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
 					<input
@@ -198,7 +212,9 @@
 					/>
 				</div>
 				<div>
-					<label for="quick-mass-time" class="block text-sm font-medium text-gray-700 mb-1">Mass Time</label>
+					<label for="quick-mass-time" class="block text-sm font-medium text-gray-700 mb-1"
+						>Mass Time</label
+					>
 					<select
 						id="quick-mass-time"
 						bind:value={quickEntryMassTime}
@@ -211,7 +227,9 @@
 					</select>
 				</div>
 				<div>
-					<label for="quick-count" class="block text-sm font-medium text-gray-700 mb-1">Attendance Count</label>
+					<label for="quick-count" class="block text-sm font-medium text-gray-700 mb-1"
+						>Attendance Count</label
+					>
 					<input
 						type="number"
 						id="quick-count"

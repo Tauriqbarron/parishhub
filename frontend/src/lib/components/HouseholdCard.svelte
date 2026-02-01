@@ -90,7 +90,14 @@
 			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
 			aria-label="Add to household"
 		>
-			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+			<svg
+				class="w-4 h-4 mr-1"
+				fill="none"
+				stroke="currentColor"
+				viewBox="0 0 24 24"
+				aria-hidden="true"
+				role="img"
+			>
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
 			</svg>
 			Add
@@ -101,7 +108,7 @@
 			<p class="text-sm text-gray-500 text-center py-4">Not a member of any household</p>
 		{:else}
 			<div class="space-y-3">
-				{#each memberships.filter(m => m.household) as membership (membership.household_id)}
+				{#each memberships.filter((m) => m.household) as membership (membership.household_id)}
 					<div
 						class="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-gray-50"
 					>
@@ -151,7 +158,14 @@
 							class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
 							aria-label="Remove from {membership.household?.name ?? 'household'}"
 						>
-							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+							<svg
+								class="w-4 h-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -196,7 +210,14 @@
 							class="text-gray-400 hover:text-gray-500"
 							aria-label="Close modal"
 						>
-							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+							<svg
+								class="h-6 w-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -215,7 +236,9 @@
 						<div class="space-y-4">
 							<div>
 								<label for="household" class="block text-sm font-medium text-gray-700">
-									Select Household <span aria-hidden="true">*</span><span class="sr-only">(required)</span>
+									Select Household <span aria-hidden="true">*</span><span class="sr-only"
+										>(required)</span
+									>
 								</label>
 								<select
 									id="household"
@@ -232,7 +255,10 @@
 							</div>
 
 							<div>
-								<label for="role" class="block text-sm font-medium text-gray-700">Role <span aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
+								<label for="role" class="block text-sm font-medium text-gray-700"
+									>Role <span aria-hidden="true">*</span><span class="sr-only">(required)</span
+									></label
+								>
 								<select
 									id="role"
 									name="role"

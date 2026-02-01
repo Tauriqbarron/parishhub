@@ -122,9 +122,7 @@
 
 		<div>
 			<div class="flex items-center">
-				<label for="state" class="block text-sm font-medium text-gray-700">
-					State/Province
-				</label>
+				<label for="state" class="block text-sm font-medium text-gray-700"> State/Province </label>
 				<Tooltip text="State, province, or region" />
 			</div>
 			<input
@@ -141,9 +139,7 @@
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 		<div>
 			<div class="flex items-center">
-				<label for="zipCode" class="block text-sm font-medium text-gray-700">
-					Postal Code
-				</label>
+				<label for="zipCode" class="block text-sm font-medium text-gray-700"> Postal Code </label>
 				<Tooltip text="ZIP code or postal code" />
 			</div>
 			<input
@@ -158,9 +154,7 @@
 
 		<div>
 			<div class="flex items-center">
-				<label for="phone" class="block text-sm font-medium text-gray-700">
-					Phone Number
-				</label>
+				<label for="phone" class="block text-sm font-medium text-gray-700"> Phone Number </label>
 				<Tooltip text="Primary contact number for the household (optional)" />
 			</div>
 			<input
@@ -176,9 +170,7 @@
 
 	<div>
 		<div class="flex items-center">
-			<label for="email" class="block text-sm font-medium text-gray-700">
-				Email Address
-			</label>
+			<label for="email" class="block text-sm font-medium text-gray-700"> Email Address </label>
 			<Tooltip text="Primary email for household communications (optional)" />
 		</div>
 		<input

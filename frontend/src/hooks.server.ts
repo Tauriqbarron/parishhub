@@ -19,7 +19,11 @@ const httpsRedirect: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-const { handle: authHandle, signIn, signOut } = SvelteKitAuth({
+const {
+	handle: authHandle,
+	signIn,
+	signOut
+} = SvelteKitAuth({
 	providers: [
 		Google({
 			clientId: env.GOOGLE_CLIENT_ID,

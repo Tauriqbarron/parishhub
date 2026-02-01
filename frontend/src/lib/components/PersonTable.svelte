@@ -217,7 +217,12 @@
 			{#each persons as person (person.id)}
 				<tr
 					onclick={() => onRowClick(person)}
-					onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRowClick(person); }}}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							onRowClick(person);
+						}
+					}}
 					tabindex="0"
 					role="button"
 					aria-label="View details for {formatName(person)}"
@@ -247,7 +252,14 @@
 							class="text-gray-400 hover:text-gray-600 mr-3"
 							aria-label="View {formatName(person)}"
 						>
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+							<svg
+								class="h-5 w-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -270,7 +282,14 @@
 							class="text-blue-400 hover:text-blue-600"
 							aria-label="Edit {formatName(person)}"
 						>
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+							<svg
+								class="h-5 w-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"

@@ -180,9 +180,7 @@ function createRegistrationSessionStore() {
 				const updated = {
 					...session,
 					lastUpdated: new Date().toISOString(),
-					members: session.members.map((m) =>
-						m.tempId === tempId ? { ...m, ...memberData } : m
-					)
+					members: session.members.map((m) => (m.tempId === tempId ? { ...m, ...memberData } : m))
 				};
 				debouncedSave(updated);
 				return updated;

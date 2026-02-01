@@ -3,7 +3,15 @@
 	import { massTimesApi, type MassTime, type MassTimeCreate } from '$lib/api';
 	import { addToast } from '$lib/stores/toast';
 
-	const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+	const DAYS_OF_WEEK = [
+		'Monday',
+		'Tuesday',
+		'Wednesday',
+		'Thursday',
+		'Friday',
+		'Saturday',
+		'Sunday'
+	];
 
 	let massTimes: MassTime[] = $state([]);
 	let loading = $state(true);
@@ -126,8 +134,18 @@
 			</div>
 		{:else if massTimes.length === 0}
 			<div class="p-6 text-center">
-				<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+				<svg
+					class="mx-auto h-12 w-12 text-gray-400"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+					/>
 				</svg>
 				<h3 class="mt-2 text-sm font-medium text-gray-900">No mass times configured</h3>
 				<p class="mt-1 text-sm text-gray-500">Add mass times to use in attendance tracking.</p>
@@ -136,33 +154,60 @@
 			<table class="min-w-full divide-y divide-gray-200">
 				<thead class="bg-gray-50">
 					<tr>
-						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-						<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+						<th
+							class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Name</th
+						>
+						<th
+							class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Time</th
+						>
+						<th
+							class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Day</th
+						>
+						<th
+							class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Status</th
+						>
+						<th
+							class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Actions</th
+						>
 					</tr>
 				</thead>
 				<tbody class="bg-white divide-y divide-gray-200">
 					{#each massTimes as mt (mt.id)}
 						<tr class={mt.is_active ? '' : 'bg-gray-50 opacity-60'}>
-							<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{mt.name}</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTime(mt.time)}</td>
+							<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+								>{mt.name}</td
+							>
+							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+								>{formatTime(mt.time)}</td
+							>
 							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
 								{mt.day_of_week !== null ? DAYS_OF_WEEK[mt.day_of_week] : 'Any'}
 							</td>
 							<td class="px-6 py-4 whitespace-nowrap">
 								<button
 									onclick={() => toggleActive(mt)}
-									class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {mt.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}"
+									class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {mt.is_active
+										? 'bg-green-100 text-green-800'
+										: 'bg-gray-100 text-gray-800'}"
 								>
 									{mt.is_active ? 'Active' : 'Inactive'}
 								</button>
 							</td>
 							<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-								<button onclick={() => openEditModal(mt)} class="text-blue-600 hover:text-blue-900 mr-4">Edit</button>
+								<button
+									onclick={() => openEditModal(mt)}
+									class="text-blue-600 hover:text-blue-900 mr-4">Edit</button
+								>
 								{#if mt.is_active}
-									<button onclick={() => handleDelete(mt.id)} class="text-red-600 hover:text-red-900">Deactivate</button>
+									<button
+										onclick={() => handleDelete(mt.id)}
+										class="text-red-600 hover:text-red-900">Deactivate</button
+									>
 								{/if}
 							</td>
 						</tr>

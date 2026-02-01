@@ -9,7 +9,13 @@
 	let { value, label, trend, trendLabel }: Props = $props();
 
 	let trendDirection = $derived(
-		trend === null || trend === undefined ? 'neutral' : trend > 0 ? 'up' : trend < 0 ? 'down' : 'neutral'
+		trend === null || trend === undefined
+			? 'neutral'
+			: trend > 0
+				? 'up'
+				: trend < 0
+					? 'down'
+					: 'neutral'
 	);
 </script>
 
@@ -23,12 +29,22 @@
 			<div class="flex items-center gap-1">
 				{#if trendDirection === 'up'}
 					<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M5 10l7-7m0 0l7 7m-7-7v18"
+						/>
 					</svg>
 					<span class="text-sm font-medium text-green-500">+{trend.toFixed(1)}%</span>
 				{:else if trendDirection === 'down'}
 					<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M19 14l-7 7m0 0l-7-7m7 7V3"
+						/>
 					</svg>
 					<span class="text-sm font-medium text-red-500">{trend.toFixed(1)}%</span>
 				{:else}

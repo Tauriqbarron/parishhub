@@ -104,7 +104,12 @@
 			{#each households as household (household.id)}
 				<tr
 					onclick={() => onRowClick(household)}
-					onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRowClick(household); }}}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							onRowClick(household);
+						}
+					}}
 					tabindex="0"
 					role="button"
 					aria-label="View details for {household.name}"
@@ -152,7 +157,14 @@
 							class="text-gray-400 hover:text-gray-600 mr-3"
 							aria-label="View {household.name}"
 						>
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+							<svg
+								class="h-5 w-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -175,7 +187,14 @@
 							class="text-blue-400 hover:text-blue-600"
 							aria-label="Edit {household.name}"
 						>
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" role="img">
+							<svg
+								class="h-5 w-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+								role="img"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
