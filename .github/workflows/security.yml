@@ -1,0 +1,61 @@
+name: Security
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  docker-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build backend image
+        run: docker build -t parish-backend:scan ./backend
+      
+      - name: Build frontend image
+        run: docker build -t parish-frontend:scan ./frontend
+      
+      - name: Run Trivy on backend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'parish-backend:scan'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+      
+      - name: Run Trivy on frontend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'parish-frontend:scan'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+      
+      - name: Generate SARIF report (backend)
+        if: always()
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'parish-backend:scan'
+          format: 'sarif'
+          output: 'trivy-backend.sarif'
+      
+      - name: Generate SARIF report (frontend)
+        if: always()
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'parish-frontend:scan'
+          format: 'sarif'
+          output: 'trivy-frontend.sarif'
+      
+      - name: Upload Trivy results to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: '.'
