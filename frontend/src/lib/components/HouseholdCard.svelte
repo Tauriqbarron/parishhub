@@ -35,7 +35,7 @@
 			// Filter out households the person is already a member of
 			const currentHouseholdIds = new Set(memberships.map((m) => m.household_id));
 			availableHouseholds = response.items.filter((h) => !currentHouseholdIds.has(h.id));
-		} catch (err) {
+		} catch {
 			toasts.error('Failed to load households');
 		}
 	}
@@ -56,8 +56,8 @@
 			selectedHouseholdId = null;
 			selectedRole = 'other';
 			onUpdate();
-		} catch (err) {
-			toasts.error(err instanceof Error ? err.message : 'Failed to add to household');
+		} catch {
+			toasts.error('Failed to add to household');
 		} finally {
 			isLoading = false;
 		}
@@ -70,8 +70,8 @@
 			await householdApi.removeMember(householdId, personId);
 			toasts.success('Removed from household');
 			onUpdate();
-		} catch (err) {
-			toasts.error(err instanceof Error ? err.message : 'Failed to remove from household');
+		} catch {
+			toasts.error('Failed to remove from household');
 		}
 	}
 

@@ -40,8 +40,8 @@
 			loading = true;
 			error = null;
 			dashboardData = await statisticsApi.getDashboard();
-		} catch (e) {
-			error = e instanceof Error ? e.message : 'Failed to load dashboard data';
+		} catch {
+			error = 'Failed to load dashboard data';
 		} finally {
 			loading = false;
 		}
@@ -62,6 +62,7 @@
 		// Set default date to previous Sunday
 		const today = new Date();
 		const dayOfWeek = today.getDay();
+		// eslint-disable-next-line svelte/prefer-svelte-reactivity
 		const previousSunday = new Date(today);
 		previousSunday.setDate(today.getDate() - dayOfWeek - (dayOfWeek === 0 ? 7 : 0));
 		quickEntryDate = previousSunday.toISOString().split('T')[0];
@@ -84,7 +85,7 @@
 			addToast('Attendance recorded successfully', 'success');
 			quickEntryCount = 0;
 			quickEntryMassTime = '';
-		} catch (e) {
+		} catch {
 			addToast('Failed to record attendance', 'error');
 		} finally {
 			quickEntrySubmitting = false;
@@ -122,7 +123,7 @@
 	{#if loading}
 		<!-- Loading State -->
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			{#each Array(4) as _}
+			{#each [1, 2, 3, 4] as n (n)}
 				<div class="bg-white rounded-lg shadow p-6 animate-pulse">
 					<div class="flex items-center gap-4">
 						<div class="p-3 rounded-full bg-gray-200 w-14 h-14"></div>

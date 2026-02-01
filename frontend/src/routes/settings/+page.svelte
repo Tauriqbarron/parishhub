@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { api, registrationApi, type RegistrationURLResponse } from '$lib/api';
+	import { api, registrationApi } from '$lib/api';
 	import { addToast } from '$lib/stores/toast';
 
 	let baseUrl = $state('');

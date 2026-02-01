@@ -31,7 +31,7 @@
 			const response = await personApi.list({ search: query, per_page: 5 });
 			parent1Results = response.items;
 			showParent1Dropdown = true;
-		} catch (e) {
+		} catch {
 			parent1Results = [];
 		}
 	}
@@ -46,7 +46,7 @@
 			const response = await personApi.list({ search: query, per_page: 5 });
 			parent2Results = response.items;
 			showParent2Dropdown = true;
-		} catch (e) {
+		} catch {
 			parent2Results = [];
 		}
 	}
@@ -98,7 +98,7 @@
 			await birthsApi.create(data);
 			addToast('Birth recorded successfully', 'success');
 			goto('/analytics');
-		} catch (e) {
+		} catch {
 			addToast('Failed to record birth', 'error');
 		} finally {
 			submitting = false;

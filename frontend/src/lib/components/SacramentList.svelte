@@ -93,8 +93,6 @@
 				return [];
 		}
 	}
-
-	const receivedTypes = $derived(new Set(sacraments.map((s) => s.sacrament_type)));
 </script>
 
 <div class="bg-white rounded-lg shadow">

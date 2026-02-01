@@ -85,7 +85,7 @@
 		isEditing = false;
 	}
 
-	function handleMemberAdded(member: HouseholdMember) {
+	function handleMemberAdded() {
 		showAddMemberModal = false;
 		loadHousehold();
 	}

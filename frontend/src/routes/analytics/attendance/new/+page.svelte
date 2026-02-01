@@ -25,6 +25,7 @@
 		if (!date) {
 			const today = new Date();
 			const dayOfWeek = today.getDay();
+			// eslint-disable-next-line svelte/prefer-svelte-reactivity
 			const previousSunday = new Date(today);
 			previousSunday.setDate(today.getDate() - dayOfWeek - (dayOfWeek === 0 ? 7 : 0));
 			date = previousSunday.toISOString().split('T')[0];
@@ -94,7 +95,7 @@
 
 			addToast('Attendance recorded successfully', 'success');
 			goto('/analytics');
-		} catch (e) {
+		} catch {
 			addToast('Failed to record attendance', 'error');
 		} finally {
 			submitting = false;

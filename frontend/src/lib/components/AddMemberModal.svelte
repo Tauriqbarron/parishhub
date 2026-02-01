@@ -51,7 +51,7 @@
 				const response = await personApi.list({ search: value, per_page: 10 });
 				// Filter out existing members
 				searchResults = response.items.filter((p) => !existingMemberIds.includes(p.id));
-			} catch (err) {
+			} catch {
 				toasts.error('Failed to search people');
 			} finally {
 				isSearching = false;
@@ -87,8 +87,8 @@
 			);
 			toasts.success('Member added successfully');
 			onSave(member);
-		} catch (err) {
-			toasts.error(err instanceof Error ? err.message : 'Failed to add member');
+		} catch {
+			toasts.error('Failed to add member');
 		} finally {
 			isLoading = false;
 		}
@@ -106,9 +106,7 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_interactive_supports_focus -->
 <div
 	class="fixed inset-0 z-50 overflow-y-auto"
 	aria-labelledby="modal-title"

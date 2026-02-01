@@ -6,10 +6,7 @@
 		populationApi,
 		type BirthStatistics,
 		type AttendanceTrendExtended,
-		type PopulationGrowth,
-		type YearlyCount,
-		type WeeklyDataPoint,
-		type PopulationSnapshot
+		type PopulationGrowth
 	} from '$lib/api';
 	import BarChart from '$lib/components/charts/BarChart.svelte';
 	import LineChart from '$lib/components/charts/LineChart.svelte';

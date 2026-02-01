@@ -62,7 +62,7 @@
 		try {
 			const response: PaginatedResponse<Person> = await personApi.list({ search: searchQuery });
 			availablePeople = response.items.filter((p) => !existingRelatedIds.has(p.id));
-		} catch (err) {
+		} catch {
 			toasts.error('Failed to search people');
 		} finally {
 			isSearching = false;
@@ -85,8 +85,8 @@
 			toasts.success('Relationship added successfully');
 			showAddModal = false;
 			onUpdate();
-		} catch (err) {
-			toasts.error(err instanceof Error ? err.message : 'Failed to add relationship');
+		} catch {
+			toasts.error('Failed to add relationship');
 		} finally {
 			isLoading = false;
 		}

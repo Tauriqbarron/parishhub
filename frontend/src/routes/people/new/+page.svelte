@@ -106,7 +106,7 @@
 		try {
 			const response: PaginatedResponse<Household> = await householdApi.list();
 			availableHouseholds = response.items;
-		} catch (err) {
+		} catch {
 			toasts.error('Failed to load households');
 		} finally {
 			loadingHouseholds = false;
@@ -145,14 +145,14 @@
 			if (addToHousehold && selectedHouseholdId) {
 				try {
 					await householdApi.addMember(selectedHouseholdId, person.id, householdRole);
-				} catch (err) {
+				} catch {
 					toasts.warning('Person created but failed to add to household');
 				}
 			}
 
 			return person;
-		} catch (err) {
-			toasts.error(err instanceof Error ? err.message : 'Failed to create person');
+		} catch {
+			toasts.error('Failed to create person');
 			return null;
 		} finally {
 			isSaving = false;
