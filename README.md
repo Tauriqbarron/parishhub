@@ -143,3 +143,13 @@ parish-database/
 │   └── static/            # Static assets
 └── docker-compose.yml     # Container orchestration
 ```
+
+## 🚀 Deployment
+
+For production deployment instructions, including TLS/SSL configuration, see [PRODUCTION_DEPLOYMENT.md](docs/PRODUCTION_DEPLOYMENT.md).
+
+### Docker Compose
+```bash
+# Production mode
+docker-compose -f docker-compose.prod.yml up -d
+```

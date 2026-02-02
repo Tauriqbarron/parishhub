@@ -27,11 +27,11 @@ Database Security: We utilize SQLAlchemy 2.0's parameterized queries to mitigate
 Rate Limiting: Slowapi is configured on public-facing registration routes to prevent brute-force and DoS attacks.
 
 🛠️ Security Hardening (Production)
-When moving from development to production, the following must be implemented:
+We provide a production-ready configuration that implements:
 
-TLS/SSL: All traffic must be served over HTTPS.
+TLS/SSL: All traffic is served over HTTPS via an Nginx reverse proxy with automated Let's Encrypt renewal. See [PRODUCTION_DEPLOYMENT.md](docs/PRODUCTION_DEPLOYMENT.md).
 
-Environment Secrets: Never commit .env files. Use a secure Secret Management system.
+Environment Secrets: Use a secure Secret Management system. Never commit `.env` files.
 
 Database Encryption: Enable Transparent Data Encryption (TDE) for the PostgreSQL volume.
 
