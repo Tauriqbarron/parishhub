@@ -11,7 +11,7 @@ from slowapi.errors import RateLimitExceeded
 from app.auth import User, require_auth
 from app.config import settings
 from app.limiter import limiter
-from app.routers import analytics, households, mass_times, persons, registration, relationships, sacraments, statistics
+from app.routers import analytics, deaths, households, mass_times, persons, registration, relationships, sacraments, statistics
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -54,6 +54,8 @@ app.include_router(relationships.router)
 app.include_router(relationships.persons_router)
 app.include_router(sacraments.router)
 app.include_router(sacraments.persons_router)
+app.include_router(deaths.router)
+app.include_router(deaths.persons_router)
 app.include_router(statistics.router)
 app.include_router(analytics.births_router)
 app.include_router(analytics.attendance_router)
