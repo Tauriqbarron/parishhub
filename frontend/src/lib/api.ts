@@ -451,6 +451,55 @@ export interface PopulationGrowth {
 	growth_percent: number | null;
 }
 
+// Death types
+export interface Death {
+	id: number;
+	person_id: number;
+	date_of_death: string;
+	place_of_death: string | null;
+	cause_of_death: string | null;
+	burial_date: string | null;
+	burial_location: string | null;
+	funeral_date: string | null;
+	funeral_location: string | null;
+	officiating_priest_id: number | null;
+	notes: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface DeathCreate {
+	person_id: number;
+	date_of_death: string;
+	place_of_death?: string | null;
+	cause_of_death?: string | null;
+	burial_date?: string | null;
+	burial_location?: string | null;
+	funeral_date?: string | null;
+	funeral_location?: string | null;
+	officiating_priest_id?: number | null;
+	notes?: string | null;
+}
+
+export interface DeathWithPerson extends Death {
+	person: {
+		id: number;
+		first_name: string;
+		last_name: string;
+	};
+	officiating_priest: {
+		id: number;
+		first_name: string;
+		last_name: string;
+	} | null;
+}
+
+export interface DeathStatistics {
+	by_year: YearlyCount[];
+	total: number;
+	current_year_count: number;
+}
+
 // Births API
 export const birthsApi = {
 	list: (filters: { page?: number; per_page?: number; year?: number } = {}) => {
@@ -523,6 +572,33 @@ export const populationApi = {
 	delete: (id: number) => api.delete<void>(`/population/${id}`),
 
 	getStatistics: () => api.get<PopulationGrowth>('/population/statistics')
+};
+
+// Deaths API
+export const deathsApi = {
+	list: (filters: { page?: number; per_page?: number; year?: number } = {}) => {
+		const params = new URLSearchParams();
+		if (filters.page) params.set('page', String(filters.page));
+		if (filters.per_page) params.set('per_page', String(filters.per_page));
+		if (filters.year) params.set('year', String(filters.year));
+		const qs = params.toString();
+		return api.get<PaginatedResponse<DeathWithPerson>>(`/deaths${qs ? `?${qs}` : ''}`);
+	},
+
+	get: (id: number) => api.get<DeathWithPerson>(`/deaths/${id}`),
+
+	create: (data: DeathCreate) => api.post<Death>('/deaths', data),
+
+	update: (id: number, data: Partial<DeathCreate>) => api.put<Death>(`/deaths/${id}`, data),
+
+	delete: (id: number) => api.delete<void>(`/deaths/${id}`),
+
+	getStatistics: (year?: number) => {
+		const qs = year ? `?year=${year}` : '';
+		return api.get<DeathStatistics>(`/deaths/statistics${qs}`);
+	},
+
+	getForPerson: (personId: number) => api.get<DeathWithPerson>(`/persons/${personId}/death`)
 };
 
 // Mass Times types
