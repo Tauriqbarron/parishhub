@@ -18,6 +18,7 @@ class SacramentType(str, PyEnum):
     CONFIRMATION = "confirmation"
     MARRIAGE = "marriage"
     HOLY_ORDERS = "holy_orders"
+    ANOINTING = "anointing"
 
 
 class Sacrament(Base):

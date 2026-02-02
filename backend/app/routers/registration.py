@@ -43,6 +43,7 @@ SACRAMENT_TYPE_MAP = {
     "confirmation": SacramentType.CONFIRMATION,
     "marriage": SacramentType.MARRIAGE,
     "holy_orders": SacramentType.HOLY_ORDERS,
+    "anointing": SacramentType.ANOINTING,
 }
 
 # Sacrament order for validation (earlier sacraments must be created first)
@@ -52,6 +53,7 @@ SACRAMENT_ORDER = {
     SacramentType.CONFIRMATION: 2,
     SacramentType.MARRIAGE: 3,
     SacramentType.HOLY_ORDERS: 4,
+    SacramentType.ANOINTING: 5,
 }
 
 logger = logging.getLogger(__name__)
@@ -126,7 +128,11 @@ async def submit_registration(
             temp_id_to_person_id[member.temp_id] = person.id
 
             # Step 3: Add person as household member
-            role = HouseholdRole.HEAD if member.is_head_of_household else HouseholdRole.OTHER
+            role = (
+                HouseholdRole.HEAD
+                if member.is_head_of_household
+                else HouseholdRole.OTHER
+            )
             household_member = HouseholdMember(
                 household_id=household.id,
                 person_id=person.id,
@@ -179,37 +185,84 @@ async def submit_registration(
             if not person_id:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Invalid sacrament: member temp_id not found",
+                    detail=f"Invalid sacrament: member temp_id '{sac.member_temp_id}' not found. Available temp_ids: {list(temp_id_to_person_id.keys())}",
                 )
 
-            sac_type = SACRAMENT_TYPE_MAP.get(sac.sacrament_type.lower())
+            if not sac.sacrament_type or not sac.sacrament_type.strip():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Sacrament type cannot be empty",
+                )
+
+            sac_type = SACRAMENT_TYPE_MAP.get(sac.sacrament_type.lower().strip())
             if not sac_type:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid sacrament type: {sac.sacrament_type}",
+                    detail=f"Invalid sacrament type: '{sac.sacrament_type}'. Valid types: {list(SACRAMENT_TYPE_MAP.keys())}",
                 )
 
-            if sac.date:
-                validated_sacraments.append((sac, person_id, sac_type))
+            if not sac.date:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Sacrament date is required for {sac.sacrament_type}",
+                )
+
+            # Validate date is not in the future for most sacraments (except some special cases)
+            from datetime import date
+
+            if sac.date > date.today():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Sacrament date '{sac.date}' cannot be in the future for {sac.sacrament_type}",
+                )
+
+            validated_sacraments.append((sac, person_id, sac_type))
 
         # Sort sacraments by type order (baptism first, then first_communion, etc.)
         validated_sacraments.sort(key=lambda x: SACRAMENT_ORDER.get(x[2], 99))
 
         for sac, person_id, sac_type in validated_sacraments:
-            # Build additional_data with church and minister if provided
-            additional_data = sac.additional_data.copy() if sac.additional_data else {}
-            if sac.church:
-                additional_data["church"] = sac.church
-            if sac.minister:
-                additional_data["minister"] = sac.minister
+            try:
+                # Build additional_data with church and minister if provided
+                additional_data = (
+                    sac.additional_data.copy() if sac.additional_data else {}
+                )
+                if sac.church:
+                    if not sac.church.strip():
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Church name cannot be empty for {sac.sacrament_type}",
+                        )
+                    additional_data["church"] = sac.church.strip()
+                if sac.minister:
+                    if not sac.minister.strip():
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Minister name cannot be empty for {sac.sacrament_type}",
+                        )
+                    additional_data["minister"] = sac.minister.strip()
 
-            sacrament = Sacrament(
-                person_id=person_id,
-                sacrament_type=sac_type,
-                date_received=sac.date,
-                additional_data=additional_data if additional_data else None,
-            )
-            db.add(sacrament)
+                sacrament = Sacrament(
+                    person_id=person_id,
+                    sacrament_type=sac_type,
+                    date_received=sac.date,
+                    additional_data=additional_data if additional_data else None,
+                )
+                db.add(sacrament)
+            except ValueError as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Invalid sacrament data for {sac.sacrament_type}: {str(e)}",
+                )
+            except Exception as e:
+                logger.error(
+                    f"Error creating sacrament {sac.sacrament_type} for person {person_id}: {str(e)}",
+                    exc_info=True,
+                )
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Failed to create {sac.sacrament_type} record. Please check the data and try again.",
+                )
 
         # Commit all changes
         db.commit()
