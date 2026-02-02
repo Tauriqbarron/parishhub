@@ -75,6 +75,7 @@ class PersonResponse(PersonBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    death: Optional["DeathResponse"] = None
     created_at: datetime
     updated_at: datetime
 
@@ -89,5 +90,7 @@ class PersonWithRelations(PersonResponse):
 # Forward reference imports for type hints
 from app.schemas.household import HouseholdMemberResponse  # noqa: E402
 from app.schemas.sacrament import SacramentResponse  # noqa: E402
+from app.schemas.death import DeathResponse  # noqa: E402
 
 PersonWithRelations.model_rebuild()
+PersonResponse.model_rebuild()

@@ -7,6 +7,7 @@
 		max_age?: number;
 		has_sacrament?: SacramentType;
 		missing_sacrament?: SacramentType;
+		is_deceased?: boolean;
 	}
 
 	interface Props {
@@ -25,6 +26,12 @@
 		{ value: 'other', label: 'Other' }
 	];
 
+	const deceasedOptions: { value: 'all' | 'living' | 'deceased'; label: string }[] = [
+		{ value: 'all', label: 'All Statuses' },
+		{ value: 'living', label: 'Living' },
+		{ value: 'deceased', label: 'Deceased' }
+	];
+
 	const sacramentOptions: { value: SacramentType | ''; label: string }[] = [
 		{ value: '', label: 'Any' },
 		{ value: 'baptism', label: 'Baptism' },
@@ -39,6 +46,7 @@
 	let maxAge = $state<number | undefined>(undefined);
 	let hasSacrament = $state<SacramentType | ''>('');
 	let missingSacrament = $state<SacramentType | ''>('');
+	let statusFilter = $state<'all' | 'living' | 'deceased'>('all');
 
 	$effect(() => {
 		gender = filters.gender || '';
@@ -46,6 +54,8 @@
 		maxAge = filters.max_age;
 		hasSacrament = filters.has_sacrament || '';
 		missingSacrament = filters.missing_sacrament || '';
+		statusFilter =
+			filters.is_deceased === true ? 'deceased' : filters.is_deceased === false ? 'living' : 'all';
 	});
 
 	function applyFilters() {
@@ -54,7 +64,8 @@
 			min_age: minAge,
 			max_age: maxAge,
 			has_sacrament: hasSacrament || undefined,
-			missing_sacrament: missingSacrament || undefined
+			missing_sacrament: missingSacrament || undefined,
+			is_deceased: statusFilter === 'deceased' ? true : statusFilter === 'living' ? false : undefined
 		});
 	}
 
@@ -64,11 +75,17 @@
 		maxAge = undefined;
 		hasSacrament = '';
 		missingSacrament = '';
+		statusFilter = 'all';
 		onFilterChange({});
 	}
 
 	const hasActiveFilters = $derived(
-		gender || minAge !== undefined || maxAge !== undefined || hasSacrament || missingSacrament
+		gender ||
+			minAge !== undefined ||
+			maxAge !== undefined ||
+			hasSacrament ||
+			missingSacrament ||
+			statusFilter !== 'all'
 	);
 </script>
 
@@ -119,6 +136,21 @@
 						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 					>
 						{#each genderOptions as option (option.value)}
+							<option value={option.value}>{option.label}</option>
+						{/each}
+					</select>
+				</div>
+
+				<!-- Status Filter -->
+				<div>
+					<label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+					<select
+						id="status"
+						bind:value={statusFilter}
+						onchange={applyFilters}
+						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+					>
+						{#each deceasedOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
 						{/each}
 					</select>

@@ -41,6 +41,7 @@ class PersonService:
                 selectinload(Person.sacraments),
                 selectinload(Person.relationships_as_person),
                 selectinload(Person.relationships_as_related),
+                selectinload(Person.death),
             )
             .where(Person.id == person_id)
         )
@@ -56,6 +57,7 @@ class PersonService:
         max_age: Optional[int] = None,
         has_sacrament: Optional[SacramentType] = None,
         missing_sacrament: Optional[SacramentType] = None,
+        is_deceased: Optional[bool] = None,
         sort_by: str = "last_name",
         sort_order: str = "asc",
     ) -> tuple[list[Person], int]:
@@ -64,7 +66,7 @@ class PersonService:
 
         Returns tuple of (items, total_count).
         """
-        stmt = select(Person)
+        stmt = select(Person).options(selectinload(Person.death))
 
         # Search filter
         if search:
@@ -80,6 +82,15 @@ class PersonService:
         # Gender filter
         if gender:
             stmt = stmt.where(Person.gender == gender)
+
+        # Deceased filter
+        if is_deceased is not None:
+            from app.models.death import Death
+
+            if is_deceased:
+                stmt = stmt.where(Person.id.in_(select(Death.person_id)))
+            else:
+                stmt = stmt.where(Person.id.notin_(select(Death.person_id)))
 
         # Age filters
         today = date.today()

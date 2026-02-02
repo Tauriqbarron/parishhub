@@ -229,7 +229,18 @@
 					class="hover:bg-gray-50 cursor-pointer transition-colors"
 				>
 					<td class="px-6 py-4 whitespace-nowrap">
-						<div class="text-sm font-medium text-gray-900">{formatName(person)}</div>
+						<div class="flex items-center">
+							<div class="text-sm font-medium text-gray-900">{formatName(person)}</div>
+							{#if person.death}
+								<span class="ml-2 inline-flex items-center text-red-600" title="Deceased">
+									<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+										<path
+											d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+										/>
+									</svg>
+								</span>
+							{/if}
+						</div>
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<div class="text-sm text-gray-900">{calculateAge(person.date_of_birth) ?? '-'}</div>

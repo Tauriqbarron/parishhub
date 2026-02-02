@@ -160,6 +160,7 @@ export interface FamilyTree {
 export interface PersonWithRelations extends Person {
 	household_memberships: HouseholdMembership[];
 	sacraments: Sacrament[];
+	death: DeathWithPerson | null;
 }
 
 export interface PaginatedResponse<T> {
@@ -177,6 +178,7 @@ export interface PersonFilters {
 	max_age?: number;
 	has_sacrament?: SacramentType;
 	missing_sacrament?: SacramentType;
+	is_deceased?: boolean;
 	sort_by?: 'first_name' | 'last_name' | 'email' | 'created_at' | 'updated_at' | 'date_of_birth';
 	sort_order?: 'asc' | 'desc';
 	page?: number;

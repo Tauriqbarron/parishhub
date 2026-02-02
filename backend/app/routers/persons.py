@@ -87,6 +87,9 @@ async def list_persons(
     missing_sacrament: Annotated[
         Optional[SacramentType], Query(description="Filter by sacrament NOT received")
     ] = None,
+    is_deceased: Annotated[
+        Optional[bool], Query(description="Filter by deceased status")
+    ] = None,
     sort_by: Annotated[
         str,
         Query(
@@ -108,6 +111,7 @@ async def list_persons(
     - Filter by age range (min_age, max_age)
     - Filter by sacrament received (has_sacrament)
     - Filter by sacrament NOT received (missing_sacrament)
+    - Filter by deceased status (is_deceased)
     - Sorting by various fields
     """
     items, total = service.get_list(
@@ -119,6 +123,7 @@ async def list_persons(
         max_age=max_age,
         has_sacrament=has_sacrament,
         missing_sacrament=missing_sacrament,
+        is_deceased=is_deceased,
         sort_by=sort_by,
         sort_order=sort_order,
     )

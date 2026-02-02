@@ -26,7 +26,21 @@
 <div class="bg-white rounded-lg shadow p-6">
 	<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 		<div class="min-w-0">
-			<h1 class="text-2xl font-bold text-gray-900 truncate">{formatName(person)}</h1>
+			<div class="flex items-center gap-3">
+				<h1 class="text-2xl font-bold text-gray-900 truncate">{formatName(person)}</h1>
+				{#if isDeceased}
+					<span
+						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200"
+					>
+						<svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+							<path
+								d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+							/>
+						</svg>
+						Deceased
+					</span>
+				{/if}
+			</div>
 			<div class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
 				{#if person.email}
 					<a href="mailto:{person.email}" class="hover:text-blue-600 transition-colors">
