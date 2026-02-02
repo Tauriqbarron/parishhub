@@ -4,9 +4,11 @@
 		birthsApi,
 		attendanceApi,
 		populationApi,
+		deathsApi,
 		type BirthStatistics,
 		type AttendanceTrendExtended,
-		type PopulationGrowth
+		type PopulationGrowth,
+		type DeathStatistics
 	} from '$lib/api';
 	import BarChart from '$lib/components/charts/BarChart.svelte';
 	import LineChart from '$lib/components/charts/LineChart.svelte';
@@ -15,7 +17,7 @@
 
 	const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
 
-	let activeTab: 'births' | 'attendance' | 'population' = $state('births');
+	let activeTab: 'births' | 'attendance' | 'population' | 'deaths' = $state('births');
 	let attendanceView: 'total' | 'breakdown' = $state('total');
 	let loading = $state(true);
 	let error = $state<string | null>(null);
@@ -23,6 +25,7 @@
 	let birthStats: BirthStatistics | null = $state(null);
 	let attendanceStats: AttendanceTrendExtended | null = $state(null);
 	let populationStats: PopulationGrowth | null = $state(null);
+	let deathStats: DeathStatistics | null = $state(null);
 
 	onMount(async () => {
 		await loadAllStats();
@@ -32,14 +35,16 @@
 		loading = true;
 		error = null;
 		try {
-			const [births, attendance, population] = await Promise.all([
+			const [births, attendance, population, deaths] = await Promise.all([
 				birthsApi.getStatistics(),
 				attendanceApi.getStatistics(true),
-				populationApi.getStatistics()
+				populationApi.getStatistics(),
+				deathsApi.getStatistics()
 			]);
 			birthStats = births;
 			attendanceStats = attendance as AttendanceTrendExtended;
 			populationStats = population;
+			deathStats = deaths;
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Failed to load statistics';
 			addToast('Failed to load statistics', 'error');
@@ -76,12 +81,22 @@
 			.reverse() ?? []
 	);
 
+	let deathChartLabels = $derived(
+		(deathStats as DeathStatistics | null)?.by_year?.map((y) => String(y.year)).reverse() ?? []
+	);
+	let deathChartData = $derived(
+		(deathStats as DeathStatistics | null)?.by_year?.map((y) => y.count).reverse() ?? []
+	);
+
 	// Current year births
 	let birthsThisYear = $derived(
 		(birthStats as BirthStatistics | null)?.by_year?.find(
 			(y) => y.year === (birthStats as BirthStatistics | null)?.current_year
 		)?.count ?? 0
 	);
+
+	// Current year deaths
+	let deathsThisYear = $derived(deathStats?.current_year_count ?? 0);
 </script>
 
 <svelte:head>
@@ -130,12 +145,18 @@
 		</div>
 	{:else}
 		<!-- Key Metrics Cards -->
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+		<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 			<TrendCard
 				value={birthsThisYear}
 				label="Births This Year"
 				trend={null}
 				trendLabel="Recorded births in {birthStats?.current_year}"
+			/>
+			<TrendCard
+				value={deathsThisYear}
+				label="Deaths This Year"
+				trend={null}
+				trendLabel="Recorded deaths in {new Date().getFullYear()}"
 			/>
 			<TrendCard
 				value={attendanceStats?.weekly_average.toFixed(0) ?? '0'}
@@ -163,6 +184,15 @@
 						onclick={() => (activeTab = 'births')}
 					>
 						Births
+					</button>
+					<button
+						class="px-6 py-4 text-sm font-medium border-b-2 transition-colors {activeTab ===
+						'deaths'
+							? 'border-red-500 text-red-600'
+							: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
+						onclick={() => (activeTab = 'deaths')}
+					>
+						Deaths
 					</button>
 					<button
 						class="px-6 py-4 text-sm font-medium border-b-2 transition-colors {activeTab ===
@@ -195,6 +225,16 @@
 						/>
 					{:else}
 						<p class="text-gray-500 text-center py-8">No birth data available</p>
+					{/if}
+				{:else if activeTab === 'deaths'}
+					{#if deathChartLabels.length > 0}
+						<BarChart
+							labels={deathChartLabels}
+							datasets={[{ label: 'Deaths', data: deathChartData, backgroundColor: '#EF4444' }]}
+							title="Deaths by Year"
+						/>
+					{:else}
+						<p class="text-gray-500 text-center py-8">No death data available</p>
 					{/if}
 				{:else if activeTab === 'attendance'}
 					<!-- Sub-tabs for Total vs Breakdown -->

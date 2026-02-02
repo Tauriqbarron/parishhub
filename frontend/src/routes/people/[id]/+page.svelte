@@ -5,16 +5,21 @@
 		personApi,
 		sacramentApi,
 		relationshipApi,
+		deathsApi,
 		type PersonWithRelations,
 		type Person,
 		type FamilyTree,
-		type Sacrament
+		type Sacrament,
+		type DeathWithPerson,
+		type DeathCreate
 	} from '$lib/api';
 	import { toasts } from '$lib/stores/toast';
 	import PersonHeader from '$lib/components/PersonHeader.svelte';
 	import PersonalInfo from '$lib/components/PersonalInfo.svelte';
 	import SacramentList from '$lib/components/SacramentList.svelte';
 	import SacramentForm from '$lib/components/SacramentForm.svelte';
+	import DeathRecord from '$lib/components/DeathRecord.svelte';
+	import DeathForm from '$lib/components/DeathForm.svelte';
 	import HouseholdCard from '$lib/components/HouseholdCard.svelte';
 	import FamilyTreeCard from '$lib/components/FamilyTreeCard.svelte';
 
@@ -26,6 +31,8 @@
 	let isSaving = $state(false);
 	let showSacramentForm = $state(false);
 	let editingSacrament = $state<Sacrament | null>(null);
+	let showDeathForm = $state(false);
+	let editingDeath = $state<DeathWithPerson | null>(null);
 
 	// Form state for editing
 	let editForm = $state<Partial<Person>>({});
@@ -147,6 +154,48 @@
 		}
 	}
 
+	function handleAddDeath() {
+		editingDeath = null;
+		showDeathForm = true;
+	}
+
+	function handleEditDeath() {
+		editingDeath = person?.death ?? null;
+		showDeathForm = true;
+	}
+
+	async function handleDeathSave(data: DeathCreate) {
+		if (!person) return;
+
+		try {
+			if (person.death) {
+				await deathsApi.update(person.death.id, data);
+				toasts.success('Death record updated successfully');
+			} else {
+				await deathsApi.create(data);
+				toasts.success('Death record created successfully');
+			}
+			await loadPerson();
+			showDeathForm = false;
+			editingDeath = null;
+		} catch (err) {
+			toasts.error(err instanceof Error ? err.message : 'Failed to save death record');
+		}
+	}
+
+	async function handleDeleteDeath() {
+		if (!person?.death) return;
+		if (!confirm('Are you sure you want to delete this death record?')) return;
+
+		try {
+			await deathsApi.delete(person.death.id);
+			toasts.success('Death record deleted successfully');
+			await loadPerson();
+		} catch (err) {
+			toasts.error(err instanceof Error ? err.message : 'Failed to delete death record');
+		}
+	}
+
 	async function handleRemoveRelationship(relationshipId: number) {
 		if (!confirm('Are you sure you want to remove this relationship?')) return;
 
@@ -239,12 +288,21 @@
 			onToggleEdit={toggleEdit}
 			onSave={handleSave}
 			onCancel={handleCancel}
+			onRecordDeath={handleAddDeath}
 		/>
 
 		<!-- Main content grid -->
 		<div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
 			<!-- Left column -->
 			<div class="space-y-6">
+				{#if person.death}
+					<DeathRecord
+						death={person.death}
+						onEdit={handleEditDeath}
+						onDelete={handleDeleteDeath}
+					/>
+				{/if}
+
 				<!-- Personal Info -->
 				<PersonalInfo {person} {isEditing} bind:editForm />
 
@@ -288,6 +346,19 @@
 			onClose={() => {
 				showSacramentForm = false;
 				editingSacrament = null;
+			}}
+		/>
+	{/if}
+
+	<!-- Death Form Modal -->
+	{#if showDeathForm && person}
+		<DeathForm
+			death={editingDeath}
+			personId={person.id}
+			onSave={handleDeathSave}
+			onClose={() => {
+				showDeathForm = false;
+				editingDeath = null;
 			}}
 		/>
 	{/if}
