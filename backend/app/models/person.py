@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from app.models.household import HouseholdMember
     from app.models.relationship import FamilyRelationship
     from app.models.sacrament import Sacrament
+    from app.models.death import Death
 
 
 class Gender(str, PyEnum):
@@ -66,6 +67,13 @@ class Person(Base):
         "FamilyRelationship",
         foreign_keys="FamilyRelationship.related_person_id",
         back_populates="related_person",
+        cascade="all, delete-orphan",
+    )
+    death: Mapped[Optional["Death"]] = relationship(
+        "Death",
+        foreign_keys="Death.person_id",
+        back_populates="person",
+        uselist=False,
         cascade="all, delete-orphan",
     )
 

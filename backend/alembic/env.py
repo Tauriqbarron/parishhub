@@ -9,14 +9,17 @@ from app.database import Base
 # Import all models to register them with Base.metadata
 from app.models import (  # noqa: F401
     Birth,
+    Death,
     FamilyRelationship,
     Household,
     HouseholdMember,
     MassAttendance,
+    MassTime,
     ParishStatistic,
     Person,
     PopulationSnapshot,
     Sacrament,
+    Setting,
 )
 
 config = context.config
