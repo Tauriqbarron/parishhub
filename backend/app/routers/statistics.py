@@ -79,7 +79,7 @@ async def get_dashboard_statistics(
         .order_by(Death.created_at.desc())
         .limit(5)
     )
-    recent_deaths = db.execute(recent_deaths_stmt).scalars().all()
+    recent_deaths = service.db.execute(recent_deaths_stmt).scalars().all()
 
     for death in recent_deaths:
         recent_activity.append(
