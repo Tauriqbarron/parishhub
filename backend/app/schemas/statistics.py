@@ -32,6 +32,7 @@ class SacramentTrend(BaseModel):
     confirmation: int
     marriage: int
     holy_orders: int
+    anointing: int
 
 
 class DashboardData(BaseModel):

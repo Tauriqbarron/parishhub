@@ -104,6 +104,7 @@ async def get_dashboard_statistics(
             confirmation=t.get("confirmation", 0),
             marriage=t.get("marriage", 0),
             holy_orders=t.get("holy_orders", 0),
+            anointing=t.get("anointing", 0),
         )
         for t in trends_data
     ]
