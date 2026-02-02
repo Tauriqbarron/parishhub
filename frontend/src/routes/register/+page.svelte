@@ -14,6 +14,8 @@
 	let currentStep = $state(0);
 	let isSubmitting = $state(false);
 	let registrationComplete = $state(false);
+	let stepComponents: Record<number, any> = {};
+	let showValidationError = $state(false);
 
 	onMount(() => {
 		const session = registrationSessionStore.initSession();
@@ -27,10 +29,35 @@
 		}
 	}
 
+	function validateCurrentStep(): boolean {
+		const currentStepComponent = stepComponents[currentStep];
+		if (!currentStepComponent) {
+			return false;
+		}
+
+		const isValid = currentStepComponent.isValid();
+		if (!isValid) {
+			showValidationError = true;
+			// Hide error message after user interaction
+			setTimeout(() => {
+				showValidationError = false;
+			}, 5000);
+		} else {
+			showValidationError = false;
+		}
+
+		return isValid;
+	}
+
 	function goToNext() {
+		if (!validateCurrentStep()) {
+			return;
+		}
+
 		if (currentStep < steps.length - 1) {
 			currentStep++;
 			registrationSessionStore.setCurrentStep(currentStep);
+			showValidationError = false; // Reset error when changing steps
 		}
 	}
 
@@ -66,13 +93,13 @@
 
 			<div class="min-h-[300px] py-6">
 				{#if currentStep === 0}
-					<HouseholdStep />
+					<HouseholdStep bind:this={stepComponents[0]} />
 				{:else if currentStep === 1}
-					<FamilyMembersStep />
+					<FamilyMembersStep bind:this={stepComponents[1]} />
 				{:else if currentStep === 2}
-					<RelationshipsStep />
+					<RelationshipsStep bind:this={stepComponents[2]} />
 				{:else if currentStep === 3}
-					<SacramentsStep />
+					<SacramentsStep bind:this={stepComponents[3]} />
 				{:else if currentStep === 4}
 					<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
 				{/if}
@@ -86,6 +113,8 @@
 					onNext={goToNext}
 					onSubmit={handleSubmit}
 					{isSubmitting}
+					validateCurrentStep={validateCurrentStep}
+					{showValidationError}
 				/>
 			{/if}
 		</div>
