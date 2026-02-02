@@ -68,6 +68,28 @@ async def get_dashboard_statistics(
             )
         )
 
+    # Recent deaths recorded
+    from app.models.death import Death
+    from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+
+    recent_deaths_stmt = (
+        select(Death)
+        .options(selectinload(Death.person))
+        .order_by(Death.created_at.desc())
+        .limit(5)
+    )
+    recent_deaths = db.execute(recent_deaths_stmt).scalars().all()
+
+    for death in recent_deaths:
+        recent_activity.append(
+            RecentActivity(
+                type="death_recorded",
+                description=f"{death.person.first_name} {death.person.last_name} death recorded",
+                timestamp=death.created_at,
+            )
+        )
+
     # Sort by timestamp and take top 10
     recent_activity.sort(key=lambda x: x.timestamp, reverse=True)
     recent_activity = recent_activity[:10]

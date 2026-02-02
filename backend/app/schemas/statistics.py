@@ -12,6 +12,7 @@ class DashboardStats(BaseModel):
     total_households: int
     baptisms_this_year: int
     marriages_this_year: int
+    deaths_this_year: int
 
 
 class RecentActivity(BaseModel):

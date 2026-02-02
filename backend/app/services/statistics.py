@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.models.household import Household
 from app.models.person import Person
 from app.models.sacrament import Sacrament, SacramentType
+from app.models.death import Death
 
 
 class StatisticsService:
@@ -34,6 +35,13 @@ class StatisticsService:
         stmt = select(func.count(Sacrament.id)).where(
             Sacrament.sacrament_type == sacrament_type,
             extract("year", Sacrament.date_received) == year,
+        )
+        return self.db.execute(stmt).scalar() or 0
+
+    def get_deaths_by_year(self, year: int) -> int:
+        """Get count of deaths for a specific year."""
+        stmt = select(func.count(Death.id)).where(
+            extract("year", Death.date_of_death) == year,
         )
         return self.db.execute(stmt).scalar() or 0
 
@@ -91,4 +99,5 @@ class StatisticsService:
             "marriages_this_year": self.get_sacraments_by_type_and_year(
                 SacramentType.MARRIAGE, current_year
             ),
+            "deaths_this_year": self.get_deaths_by_year(current_year),
         }

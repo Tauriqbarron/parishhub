@@ -333,6 +333,7 @@ export interface DashboardStats {
 	total_households: number;
 	baptisms_this_year: number;
 	marriages_this_year: number;
+	deaths_this_year: number;
 }
 
 export interface RecentActivity {

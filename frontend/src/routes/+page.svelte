@@ -166,7 +166,7 @@
 		</div>
 	{:else if dashboardData}
 		<!-- Statistics Cards -->
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 			<StatCard
 				value={dashboardData.stats.total_people}
 				label="People"
@@ -190,6 +190,12 @@
 				label="Marriages"
 				sublabel="({currentYear})"
 				icon="marriage"
+			/>
+			<StatCard
+				value={dashboardData.stats.deaths_this_year}
+				label="Deaths"
+				sublabel="({currentYear})"
+				icon="death"
 			/>
 		</div>
 
