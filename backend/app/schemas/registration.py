@@ -1,6 +1,6 @@
 """Schemas for public registration endpoint."""
 
-from datetime import date
+from datetime import date as Date
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -9,34 +9,43 @@ from pydantic import BaseModel, Field
 class RegistrationMember(BaseModel):
     """A member in the registration submission."""
 
-    temp_id: str  # Frontend temporary ID for relationship mapping
-    first_name: str = Field(min_length=1, max_length=100)
-    middle_name: Optional[str] = Field(default=None, max_length=100)
-    last_name: str = Field(min_length=1, max_length=100)
-    date_of_birth: Optional[date] = None
+    # Accept both snake_case and camelCase for compatibility
+    temp_id: str = Field(
+        alias="tempId"
+    )  # Frontend temporary ID for relationship mapping
+    first_name: str = Field(min_length=1, max_length=100, alias="firstName")
+    middle_name: Optional[str] = Field(default=None, max_length=100, alias="middleName")
+    last_name: str = Field(min_length=1, max_length=100, alias="lastName")
+    date_of_birth: Optional[Date] = Field(default=None, alias="dateOfBirth")
     gender: Optional[str] = None
     phone: Optional[str] = Field(default=None, max_length=20)
     email: Optional[str] = None
-    is_head_of_household: bool = False
+    is_head_of_household: bool = Field(default=False, alias="isHeadOfHousehold")
+
+    model_config = {"populate_by_name": True}  # Allow both alias and field names
 
 
 class RegistrationRelationship(BaseModel):
-    """A relationship between two members in the registration."""
+    """A relationship between two members in registration."""
 
-    from_temp_id: str
-    to_temp_id: str
-    relationship_type: str
+    from_temp_id: str = Field(alias="fromTempId")
+    to_temp_id: str = Field(alias="toTempId")
+    relationship_type: str = Field(alias="relationshipType")
+
+    model_config = {"populate_by_name": True}  # Allow both alias and field names
 
 
 class RegistrationSacrament(BaseModel):
     """A sacrament record for a member in the registration."""
 
-    member_temp_id: str
-    sacrament_type: str
-    date: Optional[date] = None
+    member_temp_id: str = Field(alias="memberTempId")
+    sacrament_type: str = Field(alias="sacramentType")
+    date: Optional[Date] = None
     church: Optional[str] = None
     minister: Optional[str] = None
-    additional_data: dict = Field(default_factory=dict)
+    additional_data: dict = Field(default_factory=dict, alias="additionalData")
+
+    model_config = {"populate_by_name": True}  # Allow both alias and field names
 
 
 class RegistrationSubmission(BaseModel):
@@ -46,13 +55,15 @@ class RegistrationSubmission(BaseModel):
     street_address: Optional[str] = Field(default=None, max_length=255)
     city: Optional[str] = Field(default=None, max_length=100)
     state: Optional[str] = Field(default=None, max_length=100)
-    postal_code: Optional[str] = Field(default=None, max_length=20)
+    postal_code: Optional[str] = Field(default=None, max_length=20, alias="zipCode")
     country: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=20)
     email: Optional[str] = None
     members: list[RegistrationMember]
     relationships: list[RegistrationRelationship] = Field(default_factory=list)
     sacraments: list[RegistrationSacrament] = Field(default_factory=list)
+
+    model_config = {"populate_by_name": True}  # Allow both alias and field names
 
 
 class RegistrationResponse(BaseModel):
@@ -75,6 +86,4 @@ class RegistrationURLResponse(BaseModel):
     """Response with full registration URL."""
 
     base_url: str
-    registration_url: str = Field(
-        description="Full URL for public registration page"
-    )
+    registration_url: str = Field(description="Full URL for public registration page")
