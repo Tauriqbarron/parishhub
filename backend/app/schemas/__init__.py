@@ -1,3 +1,11 @@
+from app.schemas.death import (
+    DeathBase,
+    DeathCreate,
+    DeathResponse,
+    DeathUpdate,
+    DeathWithPerson,
+    DeathStatistics,
+)
 from app.schemas.household import (
     HouseholdBase,
     HouseholdCreate,
@@ -69,4 +77,11 @@ __all__ = [
     "BaptismData",
     "ConfirmationData",
     "MarriageData",
+    # Death
+    "DeathBase",
+    "DeathCreate",
+    "DeathUpdate",
+    "DeathResponse",
+    "DeathWithPerson",
+    "DeathStatistics",
 ]
