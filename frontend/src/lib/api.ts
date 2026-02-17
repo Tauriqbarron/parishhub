@@ -60,7 +60,8 @@ export type SacramentType =
 	| 'first_communion'
 	| 'confirmation'
 	| 'marriage'
-	| 'holy_orders';
+	| 'holy_orders'
+	| 'anointing';
 
 export interface Sacrament {
 	id: number;
@@ -349,6 +350,7 @@ export interface SacramentTrend {
 	confirmation: number;
 	marriage: number;
 	holy_orders: number;
+	anointing: number;
 }
 
 export interface DashboardData {
