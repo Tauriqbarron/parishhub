@@ -16,6 +16,7 @@ Thumbs.db
 # AI Tools
 .goose/
 .gemini/
+.memory/
 custom_skills/
 CLAUDE.md
 
