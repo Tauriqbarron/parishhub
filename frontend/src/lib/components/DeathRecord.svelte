@@ -155,17 +155,17 @@
 							{death.officiating_priest.first_name} {death.officiating_priest.last_name}
 						</a>
 					</p>
-				{:else if death.officiating_priest_id}
-					<div>
-						<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-							Officiating Priest
-						</h3>
-						<p class="mt-1 text-base text-gray-900 italic text-gray-500">
-							Priest ID: {death.officiating_priest_id}
-						</p>
-					</div>
-				{/if}
-			</div>
+				</div>
+			{:else if death.officiating_priest_id}
+				<div>
+					<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+						Officiating Priest
+					</h3>
+					<p class="mt-1 text-base text-gray-900 italic text-gray-500">
+						Priest ID: {death.officiating_priest_id}
+					</p>
+				</div>
+			{/if}
 		</div>
 
 		<!-- Notes -->
