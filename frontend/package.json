@@ -12,7 +12,8 @@
 		"format": "prettier --write .",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@auth/core": "^0.37.0",
@@ -37,7 +38,9 @@
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^3.0.0",
 		"globals": "^16.0.0",
+		"husky": "^9.1.7",
 		"jsdom": "^27.4.0",
+		"lint-staged": "^16.3.3",
 		"postcss": "^8.5.1",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
@@ -49,5 +52,9 @@
 		"vite": "^6.0.0",
 		"vitest": "^4.0.17"
 	},
-	"type": "module"
+	"type": "module",
+	"lint-staged": {
+		"*.{svelte,ts,tsx,js}": ["npm run check", "npm run lint"],
+		"*.{svelte,ts,tsx,js,css}": "prettier --write"
+	}
 }
