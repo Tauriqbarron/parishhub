@@ -1,10 +1,9 @@
 <script lang="ts">
 	interface Props {
 		onRecordSacrament?: () => void;
-		onRecordDeath?: () => void;
 	}
 
-	let { onRecordSacrament, onRecordDeath }: Props = $props();
+	let { onRecordSacrament }: Props = $props();
 </script>
 
 <div class="bg-white rounded-lg shadow p-6">
