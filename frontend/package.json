@@ -54,7 +54,10 @@
 	},
 	"type": "module",
 	"lint-staged": {
-		"*.{svelte,ts,tsx,js}": ["npm run check", "npm run lint"],
+		"*.{svelte,ts,tsx,js}": [
+			"npm run check",
+			"npm run lint"
+		],
 		"*.{svelte,ts,tsx,js,css}": "prettier --write"
 	}
 }
