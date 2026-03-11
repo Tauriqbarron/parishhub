@@ -14,6 +14,7 @@
 	let currentStep = $state(0);
 	let isSubmitting = $state(false);
 	let registrationComplete = $state(false);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let stepComponents: Record<number, any> = {};
 	let showValidationError = $state(false);
 
