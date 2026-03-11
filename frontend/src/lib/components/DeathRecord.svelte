@@ -152,7 +152,8 @@
 					</h3>
 					<p class="mt-1 text-base text-gray-900">
 						<a href="/people/{death.officiating_priest.id}" class="text-blue-600 hover:underline">
-							{death.officiating_priest.first_name} {death.officiating_priest.last_name}
+							{death.officiating_priest.first_name}
+							{death.officiating_priest.last_name}
 						</a>
 					</p>
 				</div>

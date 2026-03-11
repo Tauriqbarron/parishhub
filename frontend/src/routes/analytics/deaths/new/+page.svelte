@@ -187,7 +187,9 @@
 		<div>
 			<label class="block text-sm font-medium text-gray-700 mb-1">Officiating Priest</label>
 			<PersonSearchInput
-				value={officiatingPriestId ? { id: officiatingPriestId, name: officiatingPriestName } : null}
+				value={officiatingPriestId
+					? { id: officiatingPriestId, name: officiatingPriestName }
+					: null}
 				placeholder="Search for a priest..."
 				onSelect={(selection) => {
 					if (selection && 'id' in selection) {

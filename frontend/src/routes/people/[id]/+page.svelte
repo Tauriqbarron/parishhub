@@ -296,11 +296,7 @@
 			<!-- Left column -->
 			<div class="space-y-6">
 				{#if person.death}
-					<DeathRecord
-						death={person.death}
-						onEdit={handleEditDeath}
-						onDelete={handleDeleteDeath}
-					/>
+					<DeathRecord death={person.death} onEdit={handleEditDeath} onDelete={handleDeleteDeath} />
 				{/if}
 
 				<!-- Personal Info -->

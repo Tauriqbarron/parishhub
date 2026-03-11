@@ -65,7 +65,8 @@
 			max_age: maxAge,
 			has_sacrament: hasSacrament || undefined,
 			missing_sacrament: missingSacrament || undefined,
-			is_deceased: statusFilter === 'deceased' ? true : statusFilter === 'living' ? false : undefined
+			is_deceased:
+				statusFilter === 'deceased' ? true : statusFilter === 'living' ? false : undefined
 		});
 	}
 

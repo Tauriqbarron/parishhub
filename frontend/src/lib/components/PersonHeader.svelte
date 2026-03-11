@@ -11,7 +11,8 @@
 		onRecordDeath?: () => void;
 	}
 
-	let { person, isEditing, isSaving, onToggleEdit, onSave, onCancel, onRecordDeath }: Props = $props();
+	let { person, isEditing, isSaving, onToggleEdit, onSave, onCancel, onRecordDeath }: Props =
+		$props();
 
 	const isDeceased = $derived(person.death !== null);
 

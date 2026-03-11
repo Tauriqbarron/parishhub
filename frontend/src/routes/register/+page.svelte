@@ -113,7 +113,7 @@
 					onNext={goToNext}
 					onSubmit={handleSubmit}
 					{isSubmitting}
-					validateCurrentStep={validateCurrentStep}
+					{validateCurrentStep}
 					{showValidationError}
 				/>
 			{/if}
