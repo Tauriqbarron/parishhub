@@ -117,7 +117,7 @@ fi
 
 # Bring up services with new images
 log "Restarting services..."
-docker compose -f "$COMPOSE_FILE" up -d --no-deps backend frontend nginx
+docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate backend frontend nginx
 
 # Health check loop
 log "Waiting for health check..."
