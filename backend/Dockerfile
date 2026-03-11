@@ -1,7 +1,8 @@
 FROM python:3.11-slim
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir "jaraco.context>=6.1.0" "wheel>=0.46.2"
 COPY ./app ./app
 COPY alembic.ini .
 COPY ./alembic ./alembic
