@@ -16,24 +16,19 @@ class Settings(BaseSettings):
     # Database
     database_url: str
 
-    # CORS
-    cors_origins: list[str] = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ]
+    # CORS — stored as str to avoid pydantic-settings JSON parse errors
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def parse_cors_origins(cls, v):
-        if isinstance(v, str):
-            try:
-                parsed = json.loads(v)
-                if isinstance(parsed, list):
-                    return parsed
-            except (json.JSONDecodeError, TypeError):
-                pass
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
-        return v
+    @property
+    def cors_origins_list(self) -> list[str]:
+        v = self.cors_origins
+        try:
+            parsed = json.loads(v)
+            if isinstance(parsed, list):
+                return parsed
+        except (json.JSONDecodeError, TypeError):
+            pass
+        return [origin.strip() for origin in v.split(",") if origin.strip()]
 
     # Security - REQUIRED: must be set via SECRET_KEY environment variable
     secret_key: str

@@ -99,9 +99,13 @@ docker compose -f "$COMPOSE_FILE" exec -T db \
     "${BACKUP_DIR}/pre-deploy-${CURRENT_COMMIT:0:8}-${TIMESTAMP}.sql.gz"
 log "Backup saved to ${BACKUP_DIR}/pre-deploy-${CURRENT_COMMIT:0:8}-${TIMESTAMP}.sql.gz"
 
-# Build new images
+# Build new images (no-cache in force mode to ensure fresh build from CI checkout)
 log "Building images..."
-docker compose -f "$COMPOSE_FILE" build backend frontend
+if [ "$FORCE_DEPLOY" = true ]; then
+    docker compose -f "$COMPOSE_FILE" build --no-cache backend frontend
+else
+    docker compose -f "$COMPOSE_FILE" build backend frontend
+fi
 
 # Run database migrations using new image
 log "Running database migrations..."
