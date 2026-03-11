@@ -3,6 +3,8 @@ CVE-2025-68121
 CVE-2025-58183
 CVE-2025-22871
 CVE-2025-22870
+CVE-2025-61726
 
-# glob vulnerability in npm bundled with Node.js base image - not in application code
+# npm-bundled package vulnerabilities in Node.js base image - not in application code
 CVE-2025-64756
+CVE-2026-26996
