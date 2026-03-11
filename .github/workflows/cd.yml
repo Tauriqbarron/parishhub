@@ -11,6 +11,9 @@ jobs:
     runs-on: [self-hosted, linux, parish-prod]
     if: github.event.workflow_run.conclusion == 'success'
     timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
     concurrency:
       group: production-deploy
       cancel-in-progress: false
@@ -21,7 +24,9 @@ jobs:
 
       - name: Ensure directories exist
         run: |
+          mkdir -p /var/log/parish-deploy /var/backups/parish-db 2>/dev/null || \
           sudo mkdir -p /var/log/parish-deploy /var/backups/parish-db
+          chown "$(whoami)" /var/log/parish-deploy /var/backups/parish-db 2>/dev/null || \
           sudo chown "$(whoami)" /var/log/parish-deploy /var/backups/parish-db
 
       - name: Deploy
