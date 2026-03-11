@@ -19,6 +19,9 @@ Thumbs.db
 custom_skills/
 CLAUDE.md
 
+# Docs
+docs/
+
 # Coverage
 coverage/
 **/coverage/
