@@ -29,6 +29,9 @@ jobs:
           chown "$(whoami)" /var/log/parish-deploy /var/backups/parish-db 2>/dev/null || \
           sudo chown "$(whoami)" /var/log/parish-deploy /var/backups/parish-db
 
+      - name: Copy .env file
+        run: cp /home/deploy/parish-database/.env .env
+
       - name: Deploy
         run: bash scripts/deploy.sh
 
