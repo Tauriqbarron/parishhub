@@ -55,8 +55,27 @@ CURRENT_COMMIT="$(git rev-parse HEAD)"
 log "Deploying commit: ${CURRENT_COMMIT}"
 
 if [ "$PREVIOUS_COMMIT" = "$CURRENT_COMMIT" ]; then
-    log "No new commits. Skipping deploy."
-    exit 0
+    log "No new commits."
+    # Still verify the service is running
+    if curl -sf "$HEALTH_URL" > /dev/null 2>&1; then
+        log "Service is healthy. Nothing to do."
+        exit 0
+    fi
+    log "Service is not healthy. Restarting containers..."
+    docker compose -f "$COMPOSE_FILE" up -d
+    log "Waiting for health check..."
+    for i in $(seq 1 "$MAX_HEALTH_RETRIES"); do
+        if curl -sf "$HEALTH_URL" > /dev/null 2>&1; then
+            log "Health check passed (attempt ${i}/${MAX_HEALTH_RETRIES})"
+            log "=== Service restored ==="
+            exit 0
+        fi
+        if [ "$i" -eq "$MAX_HEALTH_RETRIES" ]; then
+            log "ERROR: Health check failed after ${MAX_HEALTH_RETRIES} attempts"
+            exit 1
+        fi
+        sleep "$HEALTH_INTERVAL"
+    done
 fi
 
 # Pre-deploy database backup

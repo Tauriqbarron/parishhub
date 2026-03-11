@@ -35,9 +35,17 @@ jobs:
       - name: Verify deployment
         run: |
           echo "Deployed commit: $(git rev-parse --short HEAD)"
-          curl -sf http://localhost:8000/api/health
-          echo ""
-          echo "Deployment verified successfully."
+          for i in $(seq 1 12); do
+            if curl -sf http://localhost:8000/api/health; then
+              echo ""
+              echo "Deployment verified successfully."
+              exit 0
+            fi
+            echo "Health check attempt ${i}/12 failed, retrying in 5s..."
+            sleep 5
+          done
+          echo "Health check failed after 12 attempts"
+          exit 1
 
       - name: Create issue on failure
         if: failure()
