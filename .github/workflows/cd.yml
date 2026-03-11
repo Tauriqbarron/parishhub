@@ -33,7 +33,7 @@ jobs:
         run: cp /home/deploy/parish-database/.env .env
 
       - name: Deploy
-        run: bash scripts/deploy.sh
+        run: bash scripts/deploy.sh --force
 
       - name: Verify deployment
         run: |

@@ -11,6 +11,14 @@ LOG_DIR="/var/log/parish-deploy"
 BACKUP_DIR="/var/backups/parish-db"
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
 LOG_FILE="${LOG_DIR}/deploy-${TIMESTAMP}.log"
+FORCE_DEPLOY=false
+
+# Parse flags
+for arg in "$@"; do
+    case "$arg" in
+        --force) FORCE_DEPLOY=true ;;
+    esac
+done
 
 # --- Helpers ---
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"; }
@@ -48,20 +56,26 @@ fi
 PREVIOUS_COMMIT="$(git rev-parse HEAD)"
 log "Previous commit: ${PREVIOUS_COMMIT}"
 
-# Pull latest code
-log "Pulling latest code..."
-git pull origin main
-CURRENT_COMMIT="$(git rev-parse HEAD)"
+# Pull latest code (skip in CI/force mode since checkout already has latest)
+if [ "$FORCE_DEPLOY" = true ]; then
+    log "Force deploy mode — skipping git pull."
+    CURRENT_COMMIT="$(git rev-parse HEAD)"
+else
+    log "Pulling latest code..."
+    git pull origin main
+    CURRENT_COMMIT="$(git rev-parse HEAD)"
+fi
 log "Deploying commit: ${CURRENT_COMMIT}"
 
-if [ "$PREVIOUS_COMMIT" = "$CURRENT_COMMIT" ]; then
+if [ "$FORCE_DEPLOY" = false ] && [ "$PREVIOUS_COMMIT" = "$CURRENT_COMMIT" ]; then
     log "No new commits."
     # Still verify the service is running
     if curl -sf "$HEALTH_URL" > /dev/null 2>&1; then
         log "Service is healthy. Nothing to do."
         exit 0
     fi
-    log "Service is not healthy. Restarting containers..."
+    log "Service is not healthy. Rebuilding and restarting containers..."
+    docker compose -f "$COMPOSE_FILE" build backend
     docker compose -f "$COMPOSE_FILE" up -d
     log "Waiting for health check..."
     for i in $(seq 1 "$MAX_HEALTH_RETRIES"); do
