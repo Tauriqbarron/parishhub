@@ -31,12 +31,10 @@
 				<h1 class="text-2xl font-bold text-gray-900 truncate">{formatName(person)}</h1>
 				{#if isDeceased}
 					<span
-						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200"
+						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200"
 					>
 						<svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
-							<path
-								d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
-							/>
+							<path d="M12 2c.3 0 .5.2.5.5v9.5h9.5c.3 0 .5.2.5.5s-.2.5-.5.5H12.5v9.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V12.5H2c-.3 0-.5-.2-.5-.5s.2-.5.5-.5h9.5V2.5c0-.3.2-.5.5-.5z"/>
 						</svg>
 						Deceased
 					</span>
@@ -98,15 +96,10 @@
 				{#if !isDeceased && onRecordDeath}
 					<button
 						onclick={onRecordDeath}
-						class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+						class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
 					>
-						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-							/>
+						<svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+							<path d="M12 2c.3 0 .5.2.5.5v9.5h9.5c.3 0 .5.2.5.5s-.2.5-.5.5H12.5v9.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V12.5H2c-.3 0-.5-.2-.5-.5s.2-.5.5-.5h9.5V2.5c0-.3.2-.5.5-.5z"/>
 						</svg>
 						Record Death
 					</button>

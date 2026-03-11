@@ -54,13 +54,8 @@
 						/>
 					</svg>
 				{:else if icon === 'death'}
-					<svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
-						/>
+					<svg class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M12 2c.3 0 .5.2.5.5v9.5h9.5c.3 0 .5.2.5.5s-.2.5-.5.5H12.5v9.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V12.5H2c-.3 0-.5-.2-.5-.5s.2-.5.5-.5h9.5V2.5c0-.3.2-.5.5-.5z"/>
 					</svg>
 				{/if}
 			</div>
@@ -76,7 +71,7 @@
 {:else}
 	<div class="bg-white rounded-lg shadow p-6">
 		<div class="flex items-center gap-4">
-			<div class="p-3 rounded-full {icon === 'death' ? 'bg-red-100' : 'bg-blue-100'}">
+			<div class="p-3 rounded-full {icon === 'death' ? 'bg-gray-100' : 'bg-blue-100'}">
 				{#if icon === 'people'}
 					<svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -114,13 +109,8 @@
 						/>
 					</svg>
 				{:else if icon === 'death'}
-					<svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
-						/>
+					<svg class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M12 2c.3 0 .5.2.5.5v9.5h9.5c.3 0 .5.2.5.5s-.2.5-.5.5H12.5v9.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V12.5H2c-.3 0-.5-.2-.5-.5s.2-.5.5-.5h9.5V2.5c0-.3.2-.5.5-.5z"/>
 					</svg>
 				{/if}
 			</div>

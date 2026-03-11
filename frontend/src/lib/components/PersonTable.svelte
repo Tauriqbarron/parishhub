@@ -232,11 +232,9 @@
 						<div class="flex items-center">
 							<div class="text-sm font-medium text-gray-900">{formatName(person)}</div>
 							{#if person.death}
-								<span class="ml-2 inline-flex items-center text-red-600" title="Deceased">
+								<span class="ml-2 inline-flex items-center text-gray-600" title="Deceased">
 									<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-										<path
-											d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
-										/>
+										<path d="M12 2c.3 0 .5.2.5.5v9.5h9.5c.3 0 .5.2.5.5s-.2.5-.5.5H12.5v9.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V12.5H2c-.3 0-.5-.2-.5-.5s.2-.5.5-.5h9.5V2.5c0-.3.2-.5.5-.5z"/>
 									</svg>
 								</span>
 							{/if}
