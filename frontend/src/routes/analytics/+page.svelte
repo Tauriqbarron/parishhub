@@ -25,7 +25,7 @@
 	let birthStats: BirthStatistics | null = $state(null);
 	let attendanceStats: AttendanceTrendExtended | null = $state(null);
 	let populationStats: PopulationGrowth | null = $state(null);
-	let deathStats: DeathStatistics | null = $state(null);
+	let deathStats = $state<DeathStatistics | null>(null);
 
 	onMount(async () => {
 		await loadAllStats();

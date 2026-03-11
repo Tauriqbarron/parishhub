@@ -12,7 +12,8 @@
 		first_communion: 'FC',
 		confirmation: 'C',
 		marriage: 'M',
-		holy_orders: 'HO'
+		holy_orders: 'HO',
+		anointing: 'A'
 	};
 
 	const sacramentColors: Record<SacramentType, string> = {
@@ -20,7 +21,8 @@
 		first_communion: 'bg-purple-100 text-purple-800',
 		confirmation: 'bg-green-100 text-green-800',
 		marriage: 'bg-pink-100 text-pink-800',
-		holy_orders: 'bg-amber-100 text-amber-800'
+		holy_orders: 'bg-amber-100 text-amber-800',
+		anointing: 'bg-teal-100 text-teal-800'
 	};
 
 	const sacramentLabels: Record<SacramentType, string> = {
@@ -28,7 +30,8 @@
 		first_communion: 'First Communion',
 		confirmation: 'Confirmation',
 		marriage: 'Marriage',
-		holy_orders: 'Holy Orders'
+		holy_orders: 'Holy Orders',
+		anointing: 'Anointing of the Sick'
 	};
 
 	const uniqueSacramentTypes = $derived(
@@ -38,7 +41,8 @@
 				'first_communion',
 				'confirmation',
 				'marriage',
-				'holy_orders'
+				'holy_orders',
+				'anointing'
 			];
 			return order.indexOf(a) - order.indexOf(b);
 		})

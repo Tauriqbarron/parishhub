@@ -29,7 +29,8 @@
 		first_communion: 'First Communion',
 		confirmation: 'Confirmation',
 		marriage: 'Marriage',
-		holy_orders: 'Holy Orders'
+		holy_orders: 'Holy Orders',
+		anointing: 'Anointing of the Sick'
 	};
 
 	// Get sacrament types that are already received (excluding the one being edited)

@@ -15,7 +15,8 @@
 		'first_communion',
 		'confirmation',
 		'marriage',
-		'holy_orders'
+		'holy_orders',
+		'anointing'
 	];
 
 	const sacramentLabels: Record<SacramentType, string> = {
@@ -23,7 +24,8 @@
 		first_communion: 'First Communion',
 		confirmation: 'Confirmation',
 		marriage: 'Marriage',
-		holy_orders: 'Holy Orders'
+		holy_orders: 'Holy Orders',
+		anointing: 'Anointing of the Sick'
 	};
 
 	const sacramentColors: Record<SacramentType, { bg: string; text: string; border: string }> = {
@@ -31,7 +33,8 @@
 		first_communion: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' },
 		confirmation: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200' },
 		marriage: { bg: 'bg-pink-50', text: 'text-pink-700', border: 'border-pink-200' },
-		holy_orders: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' }
+		holy_orders: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+		anointing: { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200' }
 	};
 
 	function formatDate(date: string): string {
