@@ -62,14 +62,21 @@ const httpsRedirect: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-// Bypass authentication for public routes (registration page)
-const publicRoutes: Handle = async ({ event, resolve }) => {
-	const publicPaths = ['/register', '/register/success'];
+// Protect non-public routes by requiring authentication
+const protectRoutes: Handle = async ({ event, resolve }) => {
+	const publicPaths = ['/register', '/login', '/api/auth'];
 	if (publicPaths.some((path) => event.url.pathname.startsWith(path))) {
 		return resolve(event);
 	}
-	return authHandle({ event, resolve });
+	const session = await event.locals.auth();
+	if (!session) {
+		return new Response(null, {
+			status: 303,
+			headers: { location: '/login' }
+		});
+	}
+	return resolve(event);
 };
 
-export const handle = sequence(httpsRedirect, publicRoutes);
+export const handle = sequence(httpsRedirect, authHandle, protectRoutes);
 export { signIn, signOut };
