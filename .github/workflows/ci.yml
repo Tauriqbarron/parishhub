@@ -85,4 +85,4 @@ jobs:
           DATABASE_URL: sqlite:///./test.db
           SECRET_KEY: test-secret-key-for-ci-pipeline-minimum-32-chars
           AUTH_SECRET: test-secret-key-for-ci-pipeline-minimum-32-chars
-          AUTHORIZED_EMAIL: test@example.com
+          AUTHORIZED_EMAILS: test@example.com

@@ -35,9 +35,7 @@ def verify_signature(email: str, timestamp: str, signature: str) -> bool:
 
     message = f"{timestamp}.{email}"
     expected_signature = hmac.new(
-        settings.auth_secret.encode(),
-        message.encode(),
-        hashlib.sha256
+        settings.auth_secret.encode(), message.encode(), hashlib.sha256
     ).hexdigest()
 
     return hmac.compare_digest(expected_signature, signature)
@@ -63,8 +61,8 @@ async def get_current_user(request: Request) -> User | None:
     if not verify_signature(email, timestamp, signature):
         return None
 
-    # Verify this is the authorized email
-    if email != settings.authorized_email:
+    # Verify this is an authorized email
+    if email not in settings.authorized_emails_list:
         return None
 
     return User(

@@ -49,7 +49,11 @@ async function proxyRequest(
 	}
 
 	// Verify authorized email
-	if (session.user.email !== env.AUTHORIZED_EMAIL) {
+	const authorizedEmails = (env.AUTHORIZED_EMAILS || '')
+		.split(',')
+		.map((e) => e.trim())
+		.filter(Boolean);
+	if (!authorizedEmails.includes(session.user.email)) {
 		return new Response(JSON.stringify({ detail: 'Not authorized' }), {
 			status: 403,
 			headers: { 'Content-Type': 'application/json' }

@@ -36,7 +36,12 @@ class Settings(BaseSettings):
     # Google OAuth
     google_client_id: str = ""
     google_client_secret: str = ""
-    authorized_email: str = ""
+    authorized_emails: str = ""
+
+    @property
+    def authorized_emails_list(self) -> list[str]:
+        return [e.strip() for e in self.authorized_emails.split(",") if e.strip()]
+
     auth_secret: str = ""
 
     @field_validator("secret_key")

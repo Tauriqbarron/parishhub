@@ -19,13 +19,15 @@ const {
 	trustHost: true,
 	callbacks: {
 		signIn({ user }) {
-			// Only allow the single authorized email
-			const authorizedEmail = env.AUTHORIZED_EMAIL;
-			if (!authorizedEmail) {
-				console.error('AUTHORIZED_EMAIL environment variable is not set');
+			const authorizedEmails = (env.AUTHORIZED_EMAILS || '')
+				.split(',')
+				.map((e) => e.trim())
+				.filter(Boolean);
+			if (authorizedEmails.length === 0) {
+				console.error('AUTHORIZED_EMAILS environment variable is not set');
 				return false;
 			}
-			return user.email === authorizedEmail;
+			return authorizedEmails.includes(user.email ?? '');
 		},
 		session({ session, token }) {
 			// Pass user info to the session
