@@ -10,7 +10,7 @@
 		<div class="max-w-3xl mx-auto px-4 py-4">
 			<div class="flex items-center justify-center">
 				<div class="text-center">
-					<h1 class="text-xl font-semibold text-blue-900">St. Mary's Parish</h1>
+					<h1 class="text-xl font-semibold text-blue-900">St Anne's Parish - FSSP NZ</h1>
 					<p class="text-sm text-gray-500">Member Registration</p>
 				</div>
 			</div>

@@ -4,21 +4,6 @@ import { env } from '$env/dynamic/private';
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
-// Rewrite URL to HTTPS when behind a reverse proxy (skip for localhost)
-const httpsRedirect: Handle = async ({ event, resolve }) => {
-	if (env.AUTH_URL) {
-		const authUrl = new URL(env.AUTH_URL);
-		// Only rewrite if AUTH_URL is HTTPS (i.e., behind a real proxy)
-		if (authUrl.protocol === 'https:') {
-			const url = new URL(event.request.url);
-			url.protocol = 'https:';
-			url.host = authUrl.host;
-			event.request = new Request(url.toString(), event.request);
-		}
-	}
-	return resolve(event);
-};
-
 const {
 	handle: authHandle,
 	signIn,
@@ -62,5 +47,29 @@ const {
 	}
 });
 
-export const handle = sequence(httpsRedirect, authHandle);
+// Rewrite URL to HTTPS when behind a reverse proxy (skip for localhost)
+const httpsRedirect: Handle = async ({ event, resolve }) => {
+	if (env.AUTH_URL) {
+		const authUrl = new URL(env.AUTH_URL);
+		// Only rewrite if AUTH_URL is HTTPS (i.e., behind a real proxy)
+		if (authUrl.protocol === 'https:') {
+			const url = new URL(event.request.url);
+			url.protocol = 'https:';
+			url.host = authUrl.host;
+			event.request = new Request(url.toString(), event.request);
+		}
+	}
+	return resolve(event);
+};
+
+// Bypass authentication for public routes (registration page)
+const publicRoutes: Handle = async ({ event, resolve }) => {
+	const publicPaths = ['/register', '/register/success'];
+	if (publicPaths.some((path) => event.url.pathname.startsWith(path))) {
+		return resolve(event);
+	}
+	return authHandle({ event, resolve });
+};
+
+export const handle = sequence(httpsRedirect, publicRoutes);
 export { signIn, signOut };
