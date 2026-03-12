@@ -102,7 +102,7 @@
 		</div>
 		<h2 class="text-2xl font-bold text-gray-900 mb-2">Registration Submitted!</h2>
 		<p class="text-gray-600">
-			Thank you for registering with our parish. We will review your information and contact you
+			Thank you for registering with our chaplaincy. We will review your information and contact you
 			shortly.
 		</p>
 	</div>

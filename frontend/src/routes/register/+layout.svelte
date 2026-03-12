@@ -10,7 +10,7 @@
 		<div class="max-w-3xl mx-auto px-4 py-4">
 			<div class="flex items-center justify-center">
 				<div class="text-center">
-					<h1 class="text-xl font-semibold text-blue-900">St Anne's Parish - FSSP NZ</h1>
+					<h1 class="text-xl font-semibold text-blue-900">Auckland Latin Mass chaplaincy</h1>
 					<p class="text-sm text-gray-500">Member Registration</p>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 	</main>
 
 	<footer class="py-6 text-center text-sm text-gray-500">
-		<p>Need help? Contact the parish office</p>
+		<p>Need help? Contact the chaplaincy office</p>
 	</footer>
 </div>
 

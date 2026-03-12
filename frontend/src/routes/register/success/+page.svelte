@@ -25,7 +25,7 @@
 	{/if}
 
 	<p class="text-gray-600">
-		Your information has been submitted to the parish office. A staff member may contact you if any
+		Your information has been submitted to the chaplaincy office. A staff member may contact you if any
 		additional information is needed.
 	</p>
 </div>

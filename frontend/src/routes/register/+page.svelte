@@ -79,13 +79,13 @@
 </script>
 
 <svelte:head>
-	<title>Parish Registration</title>
+	<title>Chaplaincy Registration</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50">
 	<div class="max-w-3xl mx-auto px-4 py-8">
 		<div class="text-center mb-8">
-			<h1 class="text-3xl font-bold text-gray-900">Parish Registration</h1>
+			<h1 class="text-3xl font-bold text-gray-900">Chaplaincy Registration</h1>
 			<p class="mt-2 text-gray-600">Welcome! Please complete the registration form below.</p>
 		</div>
 
