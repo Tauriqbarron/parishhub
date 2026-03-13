@@ -11,11 +11,28 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 	});
 
 	if (!response.ok) {
-		throw new Error(`API Error: ${response.status} ${response.statusText}`);
+		// Try to extract a useful error message from the response
+		let message = 'Something went wrong. Please try again.';
+		try {
+			const contentType = response.headers.get('Content-Type') || '';
+			if (contentType.includes('application/json')) {
+				const errorData = await response.json();
+				message = errorData.detail || errorData.message || message;
+			}
+		} catch {
+			// Response wasn't valid JSON — use generic message
+		}
+		throw new Error(message);
 	}
 
 	if (response.status === 204) {
 		return undefined as T;
+	}
+
+	// Guard against non-JSON responses on success too
+	const contentType = response.headers.get('Content-Type') || '';
+	if (!contentType.includes('application/json')) {
+		throw new Error('Something went wrong. Please try again.');
 	}
 
 	return response.json();
@@ -688,7 +705,51 @@ export const registrationApi = {
 				relationshipType: string;
 			}>;
 		}>;
-	}) => api.post<RegistrationSubmitResponse>('/registration/submit', session),
+	}) => {
+		// Flatten relationships and sacraments from nested member arrays
+		// into top-level arrays matching the backend schema
+		const relationships = session.members.flatMap((m) =>
+			m.relationships.map((r) => ({
+				fromTempId: m.tempId,
+				toTempId: r.targetTempId,
+				relationshipType: r.relationshipType
+			}))
+		);
+
+		const sacraments = session.members.flatMap((m) =>
+			m.sacraments.map((s) => ({
+				memberTempId: m.tempId,
+				sacramentType: s.type,
+				date: s.date || null,
+				additionalData: s.additionalData || {}
+			}))
+		);
+
+		const payload = {
+			household_name: session.household.name,
+			street_address: session.household.address || null,
+			city: session.household.city || null,
+			state: session.household.state || null,
+			zipCode: session.household.zipCode || null,
+			phone: session.household.phone || null,
+			email: session.household.email || null,
+			members: session.members.map((m) => ({
+				tempId: m.tempId,
+				firstName: m.firstName,
+				middleName: m.middleName || null,
+				lastName: m.lastName,
+				dateOfBirth: m.dateOfBirth || null,
+				gender: m.gender || null,
+				phone: m.phone || null,
+				email: m.email || null,
+				isHeadOfHousehold: m.isHeadOfHousehold
+			})),
+			relationships,
+			sacraments
+		};
+
+		return api.post<RegistrationSubmitResponse>('/register', payload);
+	},
 
 	getUrl: () => api.get<RegistrationURLResponse>('/v1/registration/url'),
 

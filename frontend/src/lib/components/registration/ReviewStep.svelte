@@ -86,7 +86,13 @@
 			submitted = true;
 			dispatch('complete');
 		} catch (e) {
-			error = e instanceof Error ? e.message : 'An error occurred while submitting';
+			const raw = e instanceof Error ? e.message : '';
+			// Never show raw/technical errors to the user
+			if (raw && !raw.includes('<') && !raw.includes('token') && !raw.includes('JSON')) {
+				error = raw;
+			} else {
+				error = 'Unable to submit your registration right now. Please try again later or contact the parish office.';
+			}
 		} finally {
 			submitting = false;
 		}
