@@ -91,7 +91,8 @@
 			if (raw && !raw.includes('<') && !raw.includes('token') && !raw.includes('JSON')) {
 				error = raw;
 			} else {
-				error = 'Unable to submit your registration right now. Please try again later or contact the parish office.';
+				error =
+					'Unable to submit your registration right now. Please try again later or contact the parish office.';
 			}
 		} finally {
 			submitting = false;

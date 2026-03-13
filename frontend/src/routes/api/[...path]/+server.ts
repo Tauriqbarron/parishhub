@@ -32,9 +32,7 @@ async function proxyRequest(
 	body: string | null,
 	locals: App.Locals
 ): Promise<Response> {
-	const isPublic = PUBLIC_API_PATHS.some(
-		(p) => path === p || path.startsWith(`${p}/`)
-	);
+	const isPublic = PUBLIC_API_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
 
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json'
