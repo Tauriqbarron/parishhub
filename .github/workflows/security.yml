@@ -12,17 +12,18 @@ jobs:
     permissions:
       contents: read
       security-events: write
+      actions: read
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Build backend image
         run: docker build -t parish-backend:scan ./backend
-      
+
       - name: Build frontend image
         run: docker build -t parish-frontend:scan ./frontend
-      
+
       - name: Run Trivy on backend
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'parish-backend:scan'
           format: 'table'
@@ -30,9 +31,9 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-      
+
       - name: Run Trivy on frontend
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'parish-frontend:scan'
           format: 'table'
@@ -41,10 +42,10 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           trivyignores: 'frontend/.trivyignore'
-      
+
       - name: Generate SARIF report (backend)
         if: always()
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'parish-backend:scan'
           format: 'sarif'
@@ -52,7 +53,7 @@ jobs:
 
       - name: Generate SARIF report (frontend)
         if: always()
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'parish-frontend:scan'
           format: 'sarif'
@@ -61,7 +62,7 @@ jobs:
       - name: Upload backend Trivy results
         if: always()
         continue-on-error: true
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-backend.sarif'
           category: 'trivy-backend'
@@ -69,7 +70,7 @@ jobs:
       - name: Upload frontend Trivy results
         if: always()
         continue-on-error: true
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-frontend.sarif'
           category: 'trivy-frontend'
