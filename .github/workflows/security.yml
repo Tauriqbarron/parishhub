@@ -23,7 +23,7 @@ jobs:
         run: docker build -t parish-frontend:scan ./frontend
 
       - name: Run Trivy on backend
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: 'parish-backend:scan'
           format: 'table'
@@ -33,7 +33,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Run Trivy on frontend
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: 'parish-frontend:scan'
           format: 'table'
@@ -45,19 +45,21 @@ jobs:
 
       - name: Generate SARIF report (backend)
         if: always()
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: 'parish-backend:scan'
           format: 'sarif'
           output: 'trivy-backend.sarif'
+          exit-code: '0'
 
       - name: Generate SARIF report (frontend)
         if: always()
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: 'parish-frontend:scan'
           format: 'sarif'
           output: 'trivy-frontend.sarif'
+          exit-code: '0'
 
       - name: Upload backend Trivy results
         if: always()
