@@ -8,6 +8,8 @@ from starlette.responses import Response
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
 from app.auth import User, require_auth
 from app.config import settings
 from app.limiter import limiter
@@ -63,6 +65,14 @@ app.include_router(analytics.population_router)
 app.include_router(mass_times.router)
 app.include_router(registration.router)
 app.include_router(registration.url_router)
+
+
+# Prometheus metrics instrumentation
+Instrumentator(
+    should_group_status_codes=False,
+    should_ignore_untemplated=True,
+    excluded_handlers=["/metrics"],
+).instrument(app).expose(app, endpoint="/metrics")
 
 
 @app.get("/api/health")
