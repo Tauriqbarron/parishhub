@@ -233,9 +233,10 @@ class MassAttendanceService:
         )
         recent_records = list(self.db.execute(recent_stmt).scalars().all())
 
-        # Calculate weekly average (last 4 weeks)
+        # Calculate weekly average based on actual date range
         weekly_total = sum(r.attendance_count for r in recent_records)
-        weekly_average = weekly_total / 4 if recent_records else 0.0
+        num_weeks = max(((range_end - range_start).days / 7), 1)
+        weekly_average = weekly_total / num_weeks if recent_records else 0.0
 
         # Calculate monthly average (last 12 months)
         monthly_stmt = select(func.avg(MassAttendance.attendance_count)).where(
@@ -259,13 +260,14 @@ class MassAttendanceService:
         if prev_year_avg and prev_year_avg > 0:
             yoy_change = ((current_year_avg - prev_year_avg) / prev_year_avg) * 100
 
+        # Aggregate by date (sum across mass times) for chart display
+        date_totals: dict[str, int] = {}
+        for r in recent_records:
+            d = str(r.date)
+            date_totals[d] = date_totals.get(d, 0) + r.attendance_count
         recent_weeks = [
-            {
-                "date": str(r.date),
-                "count": r.attendance_count,
-                "mass_time": r.mass_time,
-            }
-            for r in recent_records[:8]
+            {"date": d, "count": c, "mass_time": None}
+            for d, c in sorted(date_totals.items())
         ]
 
         if include_breakdown:
@@ -302,7 +304,7 @@ class MassAttendanceService:
                         and row.mass_time_id is None
                         and (r.mass_time or "Unspecified") == label
                     )
-                ][:8]
+                ]
 
                 by_mass_time.append(
                     MassTimeBreakdown(

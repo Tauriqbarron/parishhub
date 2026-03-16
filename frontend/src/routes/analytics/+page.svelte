@@ -125,14 +125,10 @@
 	);
 
 	let attendanceChartLabels = $derived(
-		(attendanceStats as AttendanceTrendExtended | null)?.recent_weeks
-			?.map((w) => w.date)
-			.reverse() ?? []
+		(attendanceStats as AttendanceTrendExtended | null)?.recent_weeks?.map((w) => w.date) ?? []
 	);
 	let attendanceChartData = $derived(
-		(attendanceStats as AttendanceTrendExtended | null)?.recent_weeks
-			?.map((w) => w.count)
-			.reverse() ?? []
+		(attendanceStats as AttendanceTrendExtended | null)?.recent_weeks?.map((w) => w.count) ?? []
 	);
 
 	let populationChartLabels = $derived(
