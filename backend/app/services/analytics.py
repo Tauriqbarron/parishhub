@@ -3,10 +3,11 @@
 from datetime import date, timedelta
 from typing import Optional
 
-from sqlalchemy import extract, func, select
-from sqlalchemy.orm import Session
+from sqlalchemy import case, extract, func, select
+from sqlalchemy.orm import Session, joinedload
 
 from app.models.analytics import Birth, MassAttendance, PopulationSnapshot
+from app.models.mass_times import MassTime
 from app.models.person import Person
 from app.models.household import Household
 from app.schemas.analytics import (
@@ -131,14 +132,25 @@ class MassAttendanceService:
         self.db = db
 
     def create(self, data: MassAttendanceCreate) -> MassAttendance:
-        attendance = MassAttendance(**data.model_dump())
+        dump = data.model_dump()
+        # If mass_time_id provided, resolve name for denormalized string column
+        if dump.get("mass_time_id"):
+            mt = self.db.get(MassTime, dump["mass_time_id"])
+            if mt:
+                dump["mass_time"] = mt.name
+        attendance = MassAttendance(**dump)
         self.db.add(attendance)
         self.db.commit()
         self.db.refresh(attendance)
         return attendance
 
     def get_by_id(self, attendance_id: int) -> Optional[MassAttendance]:
-        return self.db.get(MassAttendance, attendance_id)
+        stmt = (
+            select(MassAttendance)
+            .options(joinedload(MassAttendance.mass_time_rel))
+            .where(MassAttendance.id == attendance_id)
+        )
+        return self.db.execute(stmt).scalars().first()
 
     def get_list(
         self,
@@ -147,21 +159,28 @@ class MassAttendanceService:
         start_date: Optional[date] = None,
         end_date: Optional[date] = None,
     ) -> tuple[list[MassAttendance], int]:
-        stmt = select(MassAttendance)
+        stmt = select(MassAttendance).options(joinedload(MassAttendance.mass_time_rel))
 
         if start_date:
             stmt = stmt.where(MassAttendance.date >= start_date)
         if end_date:
             stmt = stmt.where(MassAttendance.date <= end_date)
 
-        count_stmt = select(func.count()).select_from(stmt.subquery())
+        count_stmt = select(func.count()).select_from(
+            select(MassAttendance.id)
+            .where(
+                *([MassAttendance.date >= start_date] if start_date else []),
+                *([MassAttendance.date <= end_date] if end_date else []),
+            )
+            .subquery()
+        )
         total = self.db.execute(count_stmt).scalar() or 0
 
         stmt = stmt.order_by(MassAttendance.date.desc())
         offset = (page - 1) * per_page
         stmt = stmt.offset(offset).limit(per_page)
 
-        items = list(self.db.execute(stmt).scalars().all())
+        items = list(self.db.execute(stmt).scalars().unique().all())
         return items, total
 
     def update(
@@ -172,6 +191,11 @@ class MassAttendanceService:
             return None
 
         update_data = data.model_dump(exclude_unset=True)
+        # If mass_time_id provided, resolve name for denormalized string column
+        if "mass_time_id" in update_data and update_data["mass_time_id"]:
+            mt = self.db.get(MassTime, update_data["mass_time_id"])
+            if mt:
+                update_data["mass_time"] = mt.name
         for field, value in update_data.items():
             setattr(attendance, field, value)
 
@@ -245,32 +269,45 @@ class MassAttendanceService:
         ]
 
         if include_breakdown:
-            # Group by mass_time
+            # Group by mass_time_id (FK), falling back to string for old records
+            mass_time_label = case(
+                (MassTime.name.isnot(None), MassTime.name),
+                (MassAttendance.mass_time.isnot(None), MassAttendance.mass_time),
+                else_="Unspecified",
+            )
             breakdown_stmt = (
                 select(
-                    MassAttendance.mass_time,
+                    MassAttendance.mass_time_id,
+                    mass_time_label.label("mass_time_label"),
                     func.sum(MassAttendance.attendance_count).label("total"),
                     func.avg(MassAttendance.attendance_count).label("avg"),
                 )
+                .outerjoin(MassTime, MassAttendance.mass_time_id == MassTime.id)
                 .where(MassAttendance.date >= range_start)
                 .where(MassAttendance.date <= range_end)
-                .group_by(MassAttendance.mass_time)
+                .group_by(MassAttendance.mass_time_id, mass_time_label)
             )
             breakdown_results = self.db.execute(breakdown_stmt).all()
 
             by_mass_time = []
             for row in breakdown_results:
-                mass_time_label = row.mass_time or "Unspecified"
+                label = row.mass_time_label
                 # Get recent weeks for this specific mass time
                 recent_for_time = [
                     WeeklyDataPoint(date=str(r.date), count=r.attendance_count)
                     for r in recent_records
-                    if (r.mass_time or "Unspecified") == mass_time_label
+                    if (r.mass_time_id == row.mass_time_id)
+                    or (
+                        r.mass_time_id is None
+                        and row.mass_time_id is None
+                        and (r.mass_time or "Unspecified") == label
+                    )
                 ][:8]
 
                 by_mass_time.append(
                     MassTimeBreakdown(
-                        mass_time=mass_time_label,
+                        mass_time=label,
+                        mass_time_id=row.mass_time_id,
                         total_attendance=int(row.total),
                         weekly_average=round(float(row.avg), 1),
                         recent_weeks=recent_for_time,

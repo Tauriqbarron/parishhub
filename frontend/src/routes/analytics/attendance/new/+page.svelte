@@ -6,7 +6,9 @@
 
 	let date = $state('');
 	let breakdownByMassTime = $state(false);
-	let massEntries = $state([{ mass_time: '', attendance_count: 0, customTime: false }]);
+	let massEntries = $state([
+		{ mass_time_id: null as number | null, mass_time: '', attendance_count: 0, customTime: false }
+	]);
 	let singleAttendanceCount = $state(0);
 	let notes = $state('');
 	let submitting = $state(false);
@@ -43,15 +45,25 @@
 	function handleMassTimeChange(index: number, value: string) {
 		if (value === '__other__') {
 			massEntries[index].customTime = true;
+			massEntries[index].mass_time_id = null;
 			massEntries[index].mass_time = '';
+		} else if (value) {
+			massEntries[index].customTime = false;
+			massEntries[index].mass_time_id = parseInt(value, 10);
+			const mt = massTimeOptions.find((m) => m.id === massEntries[index].mass_time_id);
+			massEntries[index].mass_time = mt?.name ?? '';
 		} else {
 			massEntries[index].customTime = false;
-			massEntries[index].mass_time = value;
+			massEntries[index].mass_time_id = null;
+			massEntries[index].mass_time = '';
 		}
 	}
 
 	function addMassEntry() {
-		massEntries = [...massEntries, { mass_time: '', attendance_count: 0, customTime: false }];
+		massEntries = [
+			...massEntries,
+			{ mass_time_id: null, mass_time: '', attendance_count: 0, customTime: false }
+		];
 	}
 
 	function removeMassEntry(index: number) {
@@ -72,7 +84,8 @@
 					if (entry.attendance_count > 0) {
 						const data: MassAttendanceCreate = {
 							date,
-							mass_time: entry.mass_time || null,
+							mass_time_id: entry.mass_time_id || undefined,
+							mass_time: entry.mass_time_id ? undefined : entry.mass_time || null,
 							attendance_count: entry.attendance_count,
 							notes: notes || null
 						};
@@ -156,14 +169,14 @@
 							<label class="block text-sm font-medium text-gray-700 mb-1">Mass Time</label>
 							{#if massTimeOptions.length > 0 && !entry.customTime}
 								<select
-									value={entry.mass_time}
+									value={entry.mass_time_id ?? ''}
 									onchange={(e) =>
 										handleMassTimeChange(index, (e.target as HTMLSelectElement).value)}
 									class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								>
 									<option value="">Select mass time...</option>
 									{#each massTimeOptions as mt (mt.id)}
-										<option value={mt.name}>{mt.name} ({formatTime(mt.time)})</option>
+										<option value={mt.id}>{mt.name} ({formatTime(mt.time)})</option>
 									{/each}
 									<option value="__other__">Other (specify)</option>
 								</select>

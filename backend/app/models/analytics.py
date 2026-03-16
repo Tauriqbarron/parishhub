@@ -2,12 +2,23 @@ from datetime import date, datetime
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Date, DateTime, Enum, ForeignKey, Integer, JSON, String, Text, func
+from sqlalchemy import (
+    Date,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    JSON,
+    String,
+    Text,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
 if TYPE_CHECKING:
+    from app.models.mass_times import MassTime
     from app.models.person import Person
 
 
@@ -85,6 +96,9 @@ class MassAttendance(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    mass_time_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("mass_times.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     mass_time: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     attendance_count: Mapped[int] = mapped_column(Integer, nullable=False)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -94,6 +108,15 @@ class MassAttendance(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
     )
+
+    # Relationships
+    mass_time_rel: Mapped[Optional["MassTime"]] = relationship("MassTime")
+
+    @property
+    def mass_time_name(self) -> Optional[str]:
+        if self.mass_time_rel:
+            return self.mass_time_rel.name
+        return self.mass_time
 
     def __repr__(self) -> str:
         return f"<MassAttendance(id={self.id}, date={self.date}, count={self.attendance_count})>"

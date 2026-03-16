@@ -405,7 +405,9 @@ export interface BirthCreate {
 export interface MassAttendance {
 	id: number;
 	date: string;
+	mass_time_id: number | null;
 	mass_time: string | null;
+	mass_time_name: string | null;
 	attendance_count: number;
 	notes: string | null;
 	created_at: string;
@@ -414,6 +416,7 @@ export interface MassAttendance {
 
 export interface MassAttendanceCreate {
 	date: string;
+	mass_time_id?: number | null;
 	mass_time?: string | null;
 	attendance_count: number;
 	notes?: string | null;
@@ -457,6 +460,7 @@ export interface WeeklyDataPoint {
 
 export interface MassTimeBreakdown {
 	mass_time: string;
+	mass_time_id: number | null;
 	total_attendance: number;
 	weekly_average: number;
 	recent_weeks: WeeklyDataPoint[];

@@ -82,11 +82,12 @@ class MassAttendanceBase(BaseModel):
 
 
 class MassAttendanceCreate(MassAttendanceBase):
-    pass
+    mass_time_id: Optional[int] = None
 
 
 class MassAttendanceUpdate(BaseModel):
     date: Optional[date] = None
+    mass_time_id: Optional[int] = None
     mass_time: Annotated[Optional[str], Field(max_length=50)] = None
     attendance_count: Annotated[Optional[int], Field(ge=0)] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
@@ -96,6 +97,8 @@ class MassAttendanceResponse(MassAttendanceBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    mass_time_id: Optional[int] = None
+    mass_time_name: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
@@ -151,6 +154,7 @@ class WeeklyDataPoint(BaseModel):
 
 class MassTimeBreakdown(BaseModel):
     mass_time: str
+    mass_time_id: Optional[int] = None
     total_attendance: int
     weekly_average: float
     recent_weeks: list[WeeklyDataPoint]

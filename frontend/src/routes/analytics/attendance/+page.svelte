@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { attendanceApi, type MassAttendance } from '$lib/api';
+	import { attendanceApi, massTimesApi, type MassAttendance, type MassTime } from '$lib/api';
 	import { addToast } from '$lib/stores/toast';
 
 	let records: MassAttendance[] = $state([]);
@@ -16,15 +16,23 @@
 	let editingRecord: MassAttendance | null = $state(null);
 	let editForm = $state({
 		date: '',
+		mass_time_id: null as number | null,
 		mass_time: '',
 		attendance_count: 0,
-		notes: ''
+		notes: '',
+		customTime: false
 	});
 	let saving = $state(false);
 	let showDeleteConfirm = $state(false);
 	let deletingId: number | null = $state(null);
+	let massTimeOptions: MassTime[] = $state([]);
 
-	onMount(() => {
+	onMount(async () => {
+		try {
+			massTimeOptions = await massTimesApi.list(true);
+		} catch {
+			// Fallback if API fails
+		}
 		loadRecords();
 	});
 
@@ -75,13 +83,42 @@
 		});
 	}
 
+	function formatTime(timeStr: string): string {
+		const [hours, minutes] = timeStr.split(':');
+		const h = parseInt(hours, 10);
+		const suffix = h >= 12 ? 'PM' : 'AM';
+		const h12 = h % 12 || 12;
+		return `${h12}:${minutes} ${suffix}`;
+	}
+
+	function handleEditMassTimeChange(value: string) {
+		if (value === '__other__') {
+			editForm.customTime = true;
+			editForm.mass_time_id = null;
+			editForm.mass_time = '';
+		} else if (value) {
+			editForm.customTime = false;
+			editForm.mass_time_id = parseInt(value, 10);
+			const mt = massTimeOptions.find((m) => m.id === editForm.mass_time_id);
+			editForm.mass_time = mt?.name ?? '';
+		} else {
+			editForm.customTime = false;
+			editForm.mass_time_id = null;
+			editForm.mass_time = '';
+		}
+	}
+
 	function startEdit(record: MassAttendance) {
 		editingRecord = record;
+		const hasConfiguredTime =
+			record.mass_time_id != null || massTimeOptions.some((mt) => mt.name === record.mass_time);
 		editForm = {
 			date: record.date,
+			mass_time_id: record.mass_time_id,
 			mass_time: record.mass_time || '',
 			attendance_count: record.attendance_count,
-			notes: record.notes || ''
+			notes: record.notes || '',
+			customTime: !hasConfiguredTime && !!record.mass_time
 		};
 	}
 
@@ -96,7 +133,8 @@
 		try {
 			await attendanceApi.update(editingRecord.id, {
 				date: editForm.date,
-				mass_time: editForm.mass_time || null,
+				mass_time_id: editForm.mass_time_id || null,
+				mass_time: editForm.mass_time_id ? undefined : editForm.mass_time || null,
 				attendance_count: editForm.attendance_count,
 				notes: editForm.notes || null
 			});
@@ -229,7 +267,7 @@
 									{formatDate(record.date)}
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-									{record.mass_time || 'Total'}
+									{record.mass_time_name || 'Total'}
 								</td>
 								<td
 									class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-medium"
@@ -313,13 +351,44 @@
 					<label for="edit-mass-time" class="block text-sm font-medium text-gray-700 mb-1"
 						>Mass Time</label
 					>
-					<input
-						id="edit-mass-time"
-						type="text"
-						bind:value={editForm.mass_time}
-						placeholder="e.g., 08:00 AM or leave empty for total"
-						class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-					/>
+					{#if massTimeOptions.length > 0 && !editForm.customTime}
+						<select
+							id="edit-mass-time"
+							value={editForm.mass_time_id ?? ''}
+							onchange={(e) => handleEditMassTimeChange((e.target as HTMLSelectElement).value)}
+							class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						>
+							<option value="">None (Total)</option>
+							{#each massTimeOptions as mt (mt.id)}
+								<option value={mt.id}>{mt.name} ({formatTime(mt.time)})</option>
+							{/each}
+							<option value="__other__">Other (specify)</option>
+						</select>
+					{:else}
+						<div class="flex gap-2">
+							<input
+								id="edit-mass-time"
+								type="text"
+								bind:value={editForm.mass_time}
+								placeholder="e.g., 08:00 AM or leave empty for total"
+								class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+							/>
+							{#if massTimeOptions.length > 0 && editForm.customTime}
+								<button
+									type="button"
+									onclick={() => {
+										editForm.customTime = false;
+										editForm.mass_time = '';
+										editForm.mass_time_id = null;
+									}}
+									class="px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-md text-sm"
+									title="Back to dropdown"
+								>
+									&larr;
+								</button>
+							{/if}
+						</div>
+					{/if}
 				</div>
 
 				<div>
