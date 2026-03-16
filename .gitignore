@@ -19,6 +19,7 @@ Thumbs.db
 .memory/
 custom_skills/
 CLAUDE.md
+.claude/
 
 # Docs
 docs/

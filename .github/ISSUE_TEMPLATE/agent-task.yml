@@ -1,0 +1,78 @@
+name: Agent Task
+description: A structured task enriched for autonomous agent execution
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: task-summary
+    attributes:
+      label: Task Summary
+      description: One-line description of what needs to be done.
+      placeholder: "Add X to Y so that Z"
+    validations:
+      required: true
+
+  - type: textarea
+    id: files-to-create
+    attributes:
+      label: Files to Create
+      description: Full paths of new files with complete code specifications.
+      placeholder: |
+        ### `path/to/new/file.ts`
+        ```typescript
+        // Full code or detailed spec here
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: files-to-modify
+    attributes:
+      label: Files to Modify
+      description: Full paths, line ranges, and exact changes needed. Include surrounding context so the agent can locate the insertion point.
+      placeholder: |
+        ### `path/to/existing/file.ts`
+        **Change:** Add X after line N
+        **Current code (for context):**
+        ```typescript
+        // existing code around the change point
+        ```
+        **New code:**
+        ```typescript
+        // what to insert/replace
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: existing-patterns
+    attributes:
+      label: Existing Patterns to Follow
+      description: Reference files the agent should study for style, structure, and conventions. Include file paths and what specifically to copy from each.
+      placeholder: |
+        - `path/to/reference.ts` — component structure, export pattern
+        - `path/to/other.ts` — naming conventions, error handling style
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Other issues that must be completed before this one. Use issue numbers.
+      placeholder: |
+        - #123 (model must exist before schema can reference it)
+    validations:
+      required: false
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification Steps
+      description: Concrete steps to confirm the implementation works. Include commands to run, expected outputs, and manual checks.
+      placeholder: |
+        1. Run `npm run build` — no errors
+        2. Run `npm test` — all tests pass
+        3. Manual check: navigate to /page and verify X appears
+    validations:
+      required: true
