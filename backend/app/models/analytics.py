@@ -118,6 +118,12 @@ class MassAttendance(Base):
             return self.mass_time_rel.name
         return self.mass_time
 
+    @property
+    def mass_time_time(self) -> Optional[str]:
+        if self.mass_time_rel:
+            return self.mass_time_rel.time.strftime("%H:%M")
+        return None
+
     def __repr__(self) -> str:
         return f"<MassAttendance(id={self.id}, date={self.date}, count={self.attendance_count})>"
 

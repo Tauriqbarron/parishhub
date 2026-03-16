@@ -100,6 +100,7 @@ class MassAttendanceResponse(MassAttendanceBase):
     id: int
     mass_time_id: Optional[int] = None
     mass_time_name: Optional[str] = None
+    mass_time_time: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

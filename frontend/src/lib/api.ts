@@ -408,6 +408,7 @@ export interface MassAttendance {
 	mass_time_id: number | null;
 	mass_time: string | null;
 	mass_time_name: string | null;
+	mass_time_time: string | null;
 	attendance_count: number;
 	notes: string | null;
 	created_at: string;
