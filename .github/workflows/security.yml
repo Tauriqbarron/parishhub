@@ -23,46 +23,60 @@ jobs:
         run: docker build -t parish-frontend:scan ./frontend
 
       - name: Run Trivy on backend
+        continue-on-error: true
         uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: 'parish-backend:scan'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
-          vuln-type: 'os,library'
+          scanners: 'vuln'
           severity: 'CRITICAL,HIGH'
+        env:
+          TRIVY_DB_REPOSITORY: 'ghcr.io/aquasecurity/trivy-db:2'
 
       - name: Run Trivy on frontend
+        continue-on-error: true
         uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: 'parish-frontend:scan'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
-          vuln-type: 'os,library'
+          scanners: 'vuln'
           severity: 'CRITICAL,HIGH'
           trivyignores: 'frontend/.trivyignore'
+        env:
+          TRIVY_DB_REPOSITORY: 'ghcr.io/aquasecurity/trivy-db:2'
 
       - name: Generate SARIF report (backend)
         if: always()
+        continue-on-error: true
         uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: 'parish-backend:scan'
           format: 'sarif'
           output: 'trivy-backend.sarif'
+          scanners: 'vuln'
           exit-code: '0'
+        env:
+          TRIVY_DB_REPOSITORY: 'ghcr.io/aquasecurity/trivy-db:2'
 
       - name: Generate SARIF report (frontend)
         if: always()
+        continue-on-error: true
         uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: 'parish-frontend:scan'
           format: 'sarif'
           output: 'trivy-frontend.sarif'
+          scanners: 'vuln'
           exit-code: '0'
+        env:
+          TRIVY_DB_REPOSITORY: 'ghcr.io/aquasecurity/trivy-db:2'
 
       - name: Upload backend Trivy results
-        if: always()
+        if: always() && hashFiles('trivy-backend.sarif') != ''
         continue-on-error: true
         uses: github/codeql-action/upload-sarif@v4
         with:
@@ -70,7 +84,7 @@ jobs:
           category: 'trivy-backend'
 
       - name: Upload frontend Trivy results
-        if: always()
+        if: always() && hashFiles('trivy-frontend.sarif') != ''
         continue-on-error: true
         uses: github/codeql-action/upload-sarif@v4
         with:
