@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.auth import User, require_auth
 from app.database import get_db
 from app.limiter import limiter
+from app.models.consent import HouseholdConsent
 from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.person import Gender, Person
 from app.models.relationship import FamilyRelationship, RelationshipType
@@ -103,6 +104,20 @@ async def submit_registration(
         )
         db.add(household)
         db.flush()  # Get household ID
+
+        # Step 1b: Store consent if provided
+        if data.consent:
+            consent_record = HouseholdConsent(
+                household_id=household.id,
+                data_privacy_consent=data.consent.data_privacy_consent,
+                photo_media_release=data.consent.photo_media_release,
+                comm_email=data.consent.comm_email,
+                comm_sms=data.consent.comm_sms,
+                comm_phone=data.consent.comm_phone,
+                terms_acknowledged=data.consent.terms_acknowledged,
+                ip_address=request.client.host if request.client else None,
+            )
+            db.add(consent_record)
 
         # Step 2: Create persons and build temp_id -> real_id mapping
         temp_id_to_person_id: dict[str, int] = {}

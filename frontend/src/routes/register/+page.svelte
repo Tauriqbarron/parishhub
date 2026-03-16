@@ -7,9 +7,17 @@
 	import FamilyMembersStep from '$lib/components/registration/FamilyMembersStep.svelte';
 	import RelationshipsStep from '$lib/components/registration/RelationshipsStep.svelte';
 	import SacramentsStep from '$lib/components/registration/SacramentsStep.svelte';
+	import ConsentStep from '$lib/components/registration/ConsentStep.svelte';
 	import ReviewStep from '$lib/components/registration/ReviewStep.svelte';
 
-	const steps = ['Household Info', 'Add Family Members', 'Relationships', 'Sacraments', 'Review'];
+	const steps = [
+		'Household Info',
+		'Add Family Members',
+		'Relationships',
+		'Sacraments',
+		'Consent',
+		'Review'
+	];
 
 	let currentStep = $state(0);
 	let isSubmitting = $state(false);
@@ -102,11 +110,13 @@
 				{:else if currentStep === 3}
 					<SacramentsStep bind:this={stepComponents[3]} />
 				{:else if currentStep === 4}
+					<ConsentStep bind:this={stepComponents[4]} />
+				{:else if currentStep === 5}
 					<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
 				{/if}
 			</div>
 
-			{#if currentStep < 4 && !registrationComplete}
+			{#if currentStep < 5 && !registrationComplete}
 				<StepNavigation
 					{currentStep}
 					totalSteps={steps.length}

@@ -705,6 +705,15 @@ export const registrationApi = {
 				relationshipType: string;
 			}>;
 		}>;
+		consent?: {
+			dataPrivacyConsent: boolean;
+			photoMediaRelease: boolean;
+			commEmail: boolean;
+			commSms: boolean;
+			commPhone: boolean;
+			termsAcknowledged: boolean;
+			consentedAt: string;
+		};
 	}) => {
 		// Flatten relationships and sacraments from nested member arrays
 		// into top-level arrays matching the backend schema
@@ -745,7 +754,17 @@ export const registrationApi = {
 				isHeadOfHousehold: m.isHeadOfHousehold
 			})),
 			relationships,
-			sacraments
+			sacraments,
+			consent: session.consent?.dataPrivacyConsent
+				? {
+						dataPrivacyConsent: session.consent.dataPrivacyConsent,
+						photoMediaRelease: session.consent.photoMediaRelease,
+						commEmail: session.consent.commEmail,
+						commSms: session.consent.commSms,
+						commPhone: session.consent.commPhone,
+						termsAcknowledged: session.consent.termsAcknowledged
+					}
+				: undefined
 		};
 
 		return api.post<RegistrationSubmitResponse>('/register', payload);

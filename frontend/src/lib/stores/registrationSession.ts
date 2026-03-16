@@ -38,12 +38,23 @@ export interface RegistrationHousehold {
 	email: string;
 }
 
+export interface RegistrationConsent {
+	dataPrivacyConsent: boolean;
+	photoMediaRelease: boolean;
+	commEmail: boolean;
+	commSms: boolean;
+	commPhone: boolean;
+	termsAcknowledged: boolean;
+	consentedAt: string;
+}
+
 export interface RegistrationSession {
 	id: string;
 	lastUpdated: string;
 	household: RegistrationHousehold;
 	members: RegistrationMember[];
 	currentStep: number;
+	consent: RegistrationConsent;
 }
 
 const emptyHousehold: RegistrationHousehold = {
@@ -56,12 +67,23 @@ const emptyHousehold: RegistrationHousehold = {
 	email: ''
 };
 
+const emptyConsent: RegistrationConsent = {
+	dataPrivacyConsent: false,
+	photoMediaRelease: false,
+	commEmail: false,
+	commSms: false,
+	commPhone: false,
+	termsAcknowledged: false,
+	consentedAt: ''
+};
+
 const emptySession: RegistrationSession = {
 	id: '',
 	lastUpdated: '',
 	household: { ...emptyHousehold },
 	members: [],
-	currentStep: 0
+	currentStep: 0,
+	consent: { ...emptyConsent }
 };
 
 function generateUUID(): string {
@@ -119,7 +141,8 @@ function createRegistrationSessionStore() {
 				lastUpdated: new Date().toISOString(),
 				household: { ...emptyHousehold },
 				members: [],
-				currentStep: 0
+				currentStep: 0,
+				consent: { ...emptyConsent }
 			};
 			set(newSession);
 			saveToStorage(newSession);
@@ -205,6 +228,18 @@ function createRegistrationSessionStore() {
 					...session,
 					lastUpdated: new Date().toISOString(),
 					currentStep: step
+				};
+				debouncedSave(updated);
+				return updated;
+			});
+		},
+
+		updateConsent(consent: Partial<RegistrationConsent>): void {
+			update((session) => {
+				const updated = {
+					...session,
+					lastUpdated: new Date().toISOString(),
+					consent: { ...session.consent, ...consent }
 				};
 				debouncedSave(updated);
 				return updated;

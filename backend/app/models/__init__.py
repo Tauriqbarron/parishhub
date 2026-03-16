@@ -1,4 +1,11 @@
-from app.models.analytics import Birth, MassAttendance, MetricType, ParishStatistic, PopulationSnapshot
+from app.models.analytics import (
+    Birth,
+    MassAttendance,
+    MetricType,
+    ParishStatistic,
+    PopulationSnapshot,
+)
+from app.models.consent import HouseholdConsent
 from app.models.death import Death
 from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.mass_times import MassTime
@@ -25,4 +32,5 @@ __all__ = [
     "ParishStatistic",
     "PopulationSnapshot",
     "Setting",
+    "HouseholdConsent",
 ]

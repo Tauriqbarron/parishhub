@@ -344,6 +344,70 @@
 			</div>
 		</div>
 
+		<!-- Consent & Preferences Summary -->
+		<div class="border rounded-lg overflow-hidden">
+			<div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-b">
+				<h3 class="font-medium text-gray-900">Consent & Preferences</h3>
+				<button
+					type="button"
+					onclick={() => goToStep(4)}
+					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+				>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+						/>
+					</svg>
+					Edit
+				</button>
+			</div>
+			<div class="p-4">
+				<dl class="space-y-2">
+					<div class="flex justify-between">
+						<dt class="text-sm text-gray-500">Data Privacy</dt>
+						<dd
+							class="text-sm font-medium {session.consent?.dataPrivacyConsent
+								? 'text-green-600'
+								: 'text-red-600'}"
+						>
+							{session.consent?.dataPrivacyConsent ? 'Granted' : 'Not granted'}
+						</dd>
+					</div>
+					<div class="flex justify-between">
+						<dt class="text-sm text-gray-500">Photo/Media Release</dt>
+						<dd class="text-sm font-medium text-gray-900">
+							{session.consent?.photoMediaRelease ? 'Yes' : 'No'}
+						</dd>
+					</div>
+					<div class="flex justify-between">
+						<dt class="text-sm text-gray-500">Communication</dt>
+						<dd class="text-sm font-medium text-gray-900">
+							{[
+								session.consent?.commEmail && 'Email',
+								session.consent?.commSms && 'SMS',
+								session.consent?.commPhone && 'Phone'
+							]
+								.filter(Boolean)
+								.join(', ') || 'None selected'}
+						</dd>
+					</div>
+					<div class="flex justify-between">
+						<dt class="text-sm text-gray-500">Terms Acknowledged</dt>
+						<dd
+							class="text-sm font-medium {session.consent?.termsAcknowledged
+								? 'text-green-600'
+								: 'text-red-600'}"
+						>
+							{session.consent?.termsAcknowledged ? 'Yes' : 'No'}
+						</dd>
+					</div>
+				</dl>
+			</div>
+		</div>
+
 		<!-- Submit Section -->
 		<div class="border-t pt-6">
 			{#if error}
@@ -352,10 +416,7 @@
 				</div>
 			{/if}
 
-			<div class="flex items-center justify-between">
-				<p class="text-sm text-gray-500">
-					By submitting, you confirm the information above is accurate.
-				</p>
+			<div class="flex items-center justify-end">
 				<button
 					type="button"
 					onclick={handleSubmit}

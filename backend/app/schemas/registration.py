@@ -48,6 +48,19 @@ class RegistrationSacrament(BaseModel):
     model_config = {"populate_by_name": True}  # Allow both alias and field names
 
 
+class RegistrationConsent(BaseModel):
+    """Consent data from registration form."""
+
+    data_privacy_consent: bool = Field(alias="dataPrivacyConsent")
+    photo_media_release: bool = Field(default=False, alias="photoMediaRelease")
+    comm_email: bool = Field(default=False, alias="commEmail")
+    comm_sms: bool = Field(default=False, alias="commSms")
+    comm_phone: bool = Field(default=False, alias="commPhone")
+    terms_acknowledged: bool = Field(alias="termsAcknowledged")
+
+    model_config = {"populate_by_name": True}
+
+
 class RegistrationSubmission(BaseModel):
     """Complete registration submission from public form."""
 
@@ -62,6 +75,7 @@ class RegistrationSubmission(BaseModel):
     members: list[RegistrationMember]
     relationships: list[RegistrationRelationship] = Field(default_factory=list)
     sacraments: list[RegistrationSacrament] = Field(default_factory=list)
+    consent: Optional[RegistrationConsent] = None
 
     model_config = {"populate_by_name": True}  # Allow both alias and field names
 
