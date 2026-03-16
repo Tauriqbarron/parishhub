@@ -189,17 +189,22 @@ class MassAttendanceService:
         return True
 
     def get_attendance_trends(
-        self, include_breakdown: bool = False
+        self,
+        include_breakdown: bool = False,
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None,
     ) -> AttendanceTrend | AttendanceTrendExtended:
         today = date.today()
-        four_weeks_ago = today - timedelta(weeks=4)
+        range_end = end_date or today
+        range_start = start_date or (today - timedelta(weeks=4))
         one_year_ago = today - timedelta(days=365)
         two_years_ago = today - timedelta(days=730)
 
         # Recent 4 weeks data
         recent_stmt = (
             select(MassAttendance)
-            .where(MassAttendance.date >= four_weeks_ago)
+            .where(MassAttendance.date >= range_start)
+            .where(MassAttendance.date <= range_end)
             .order_by(MassAttendance.date.desc())
         )
         recent_records = list(self.db.execute(recent_stmt).scalars().all())
@@ -215,9 +220,9 @@ class MassAttendanceService:
         monthly_average = self.db.execute(monthly_stmt).scalar() or 0.0
 
         # Calculate YoY change
-        current_year_avg_stmt = select(
-            func.avg(MassAttendance.attendance_count)
-        ).where(MassAttendance.date >= one_year_ago)
+        current_year_avg_stmt = select(func.avg(MassAttendance.attendance_count)).where(
+            MassAttendance.date >= one_year_ago
+        )
         current_year_avg = self.db.execute(current_year_avg_stmt).scalar() or 0
 
         prev_year_avg_stmt = select(func.avg(MassAttendance.attendance_count)).where(
@@ -247,7 +252,8 @@ class MassAttendanceService:
                     func.sum(MassAttendance.attendance_count).label("total"),
                     func.avg(MassAttendance.attendance_count).label("avg"),
                 )
-                .where(MassAttendance.date >= four_weeks_ago)
+                .where(MassAttendance.date >= range_start)
+                .where(MassAttendance.date <= range_end)
                 .group_by(MassAttendance.mass_time)
             )
             breakdown_results = self.db.execute(breakdown_stmt).all()
@@ -347,7 +353,9 @@ class PopulationService:
     def get_population_growth(self) -> PopulationGrowth:
         # Get current counts from actual tables
         current_members = self.db.execute(select(func.count(Person.id))).scalar() or 0
-        current_households = self.db.execute(select(func.count(Household.id))).scalar() or 0
+        current_households = (
+            self.db.execute(select(func.count(Household.id))).scalar() or 0
+        )
 
         # Get historical snapshots for the chart
         stmt = select(PopulationSnapshot).order_by(PopulationSnapshot.date.desc())

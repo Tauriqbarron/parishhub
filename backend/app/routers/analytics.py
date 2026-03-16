@@ -24,7 +24,11 @@ from app.schemas.analytics import (
     PopulationSnapshotUpdate,
 )
 from app.schemas.pagination import PaginatedResponse
-from app.services.analytics import BirthService, MassAttendanceService, PopulationService
+from app.services.analytics import (
+    BirthService,
+    MassAttendanceService,
+    PopulationService,
+)
 
 # Births router
 births_router = APIRouter(prefix="/api/births", tags=["births"])
@@ -187,8 +191,14 @@ async def get_attendance_statistics(
     service: Annotated[MassAttendanceService, Depends(get_attendance_service)],
     user: Annotated[User, Depends(require_auth)],
     include_breakdown: Annotated[bool, Query()] = False,
+    start_date: Annotated[Optional[date], Query()] = None,
+    end_date: Annotated[Optional[date], Query()] = None,
 ) -> AttendanceTrend | AttendanceTrendExtended:
-    return service.get_attendance_trends(include_breakdown=include_breakdown)
+    return service.get_attendance_trends(
+        include_breakdown=include_breakdown,
+        start_date=start_date,
+        end_date=end_date,
+    )
 
 
 @attendance_router.get(

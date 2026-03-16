@@ -570,9 +570,15 @@ export const attendanceApi = {
 
 	delete: (id: number) => api.delete<void>(`/mass-attendance/${id}`),
 
-	getStatistics: (includeBreakdown = false) => {
-		const qs = includeBreakdown ? '?include_breakdown=true' : '';
-		return api.get<AttendanceTrend | AttendanceTrendExtended>(`/mass-attendance/statistics${qs}`);
+	getStatistics: (includeBreakdown = false, startDate?: string, endDate?: string) => {
+		const params = new URLSearchParams();
+		if (includeBreakdown) params.set('include_breakdown', 'true');
+		if (startDate) params.set('start_date', startDate);
+		if (endDate) params.set('end_date', endDate);
+		const qs = params.toString();
+		return api.get<AttendanceTrend | AttendanceTrendExtended>(
+			`/mass-attendance/statistics${qs ? `?${qs}` : ''}`
+		);
 	}
 };
 
