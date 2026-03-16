@@ -1,3 +1,4 @@
+import datetime as _dt
 from datetime import date, datetime
 from enum import Enum as PyEnum
 from typing import Annotated, Optional
@@ -26,7 +27,7 @@ class ParishStatisticCreate(ParishStatisticBase):
 
 class ParishStatisticUpdate(BaseModel):
     metric_type: Optional[MetricType] = None
-    date: Optional[date] = None
+    date: Optional[_dt.date] = None
     value: Optional[int] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
     additional_data: Optional[dict] = None
@@ -86,7 +87,7 @@ class MassAttendanceCreate(MassAttendanceBase):
 
 
 class MassAttendanceUpdate(BaseModel):
-    date: Optional[date] = None
+    date: Optional[_dt.date] = None
     mass_time_id: Optional[int] = None
     mass_time: Annotated[Optional[str], Field(max_length=50)] = None
     attendance_count: Annotated[Optional[int], Field(ge=0)] = None
@@ -115,7 +116,7 @@ class PopulationSnapshotCreate(PopulationSnapshotBase):
 
 
 class PopulationSnapshotUpdate(BaseModel):
-    date: Optional[date] = None
+    date: Optional[_dt.date] = None
     registered_members: Annotated[Optional[int], Field(ge=0)] = None
     households: Annotated[Optional[int], Field(ge=0)] = None
 
