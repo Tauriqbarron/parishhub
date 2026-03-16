@@ -27,6 +27,68 @@
 	let populationStats: PopulationGrowth | null = $state(null);
 	let deathStats = $state<DeathStatistics | null>(null);
 
+	// Attendance time period state
+	type TimePeriod = '1M' | '3M' | '6M' | 'YTD' | '1Y' | '3Y' | 'custom';
+	let attendancePeriod: TimePeriod = $state('1M');
+	let customStartDate = $state('');
+	let customEndDate = $state('');
+	let attendanceLoading = $state(false);
+
+	function getDateRange(period: TimePeriod): { start: string; end: string } {
+		const today = new Date();
+		const end = today.toISOString().split('T')[0];
+		let start: Date;
+
+		switch (period) {
+			case '1M':
+				start = new Date(today);
+				start.setMonth(start.getMonth() - 1);
+				break;
+			case '3M':
+				start = new Date(today);
+				start.setMonth(start.getMonth() - 3);
+				break;
+			case '6M':
+				start = new Date(today);
+				start.setMonth(start.getMonth() - 6);
+				break;
+			case 'YTD':
+				start = new Date(today.getFullYear(), 0, 1);
+				break;
+			case '1Y':
+				start = new Date(today);
+				start.setFullYear(start.getFullYear() - 1);
+				break;
+			case '3Y':
+				start = new Date(today);
+				start.setFullYear(start.getFullYear() - 3);
+				break;
+			case 'custom':
+				return { start: customStartDate, end: customEndDate || end };
+			default:
+				start = new Date(today);
+				start.setMonth(start.getMonth() - 1);
+		}
+		return { start: start.toISOString().split('T')[0], end };
+	}
+
+	async function loadAttendanceStats() {
+		attendanceLoading = true;
+		try {
+			const { start, end } = getDateRange(attendancePeriod);
+			const includeBreakdown = attendanceView === 'breakdown';
+			attendanceStats = (await attendanceApi.getStatistics(
+				includeBreakdown,
+				start,
+				end
+			)) as AttendanceTrendExtended;
+		} catch (e) {
+			addToast('Failed to load attendance statistics', 'error');
+		} finally {
+			attendanceLoading = false;
+		}
+	}
+
 	onMount(async () => {
 		await loadAllStats();
 	});
@@ -35,9 +97,10 @@
 		loading = true;
 		error = null;
 		try {
+			const { start, end } = getDateRange(attendancePeriod);
 			const [births, attendance, population, deaths] = await Promise.all([
 				birthsApi.getStatistics(),
-				attendanceApi.getStatistics(true),
+				attendanceApi.getStatistics(attendanceView === 'breakdown', start, end),
 				populationApi.getStatistics(),
 				deathsApi.getStatistics()
 			]);
@@ -256,6 +319,57 @@
 							By Mass Time
 						</button>
 					</div>
+
+					<!-- Time Period Selector -->
+					<div class="flex flex-wrap items-center gap-2 mb-4">
+						{#each ['1M', '3M', '6M', 'YTD', '1Y', '3Y'] as period}
+							<button
+								class="px-3 py-1 text-xs font-medium rounded-full border transition-colors
+									{attendancePeriod === period
+									? 'bg-green-100 text-green-700 border-green-300'
+									: 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}"
+								onclick={() => {
+									attendancePeriod = period as TimePeriod;
+									loadAttendanceStats();
+								}}
+							>
+								{period}
+							</button>
+						{/each}
+						<button
+							class="px-3 py-1 text-xs font-medium rounded-full border transition-colors
+								{attendancePeriod === 'custom'
+								? 'bg-green-100 text-green-700 border-green-300'
+								: 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}"
+							onclick={() => {
+								attendancePeriod = 'custom';
+							}}
+						>
+							Custom
+						</button>
+					</div>
+
+					{#if attendancePeriod === 'custom'}
+						<div class="flex items-center gap-3 mb-4">
+							<input
+								type="date"
+								bind:value={customStartDate}
+								class="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+							/>
+							<span class="text-gray-500 text-sm">to</span>
+							<input
+								type="date"
+								bind:value={customEndDate}
+								class="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+							/>
+							<button
+								onclick={loadAttendanceStats}
+								class="px-4 py-1.5 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+							>
+								Apply
+							</button>
+						</div>
+					{/if}
 
 					{#if attendanceView === 'total'}
 						{#if attendanceChartLabels.length > 0}
