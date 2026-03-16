@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { attendanceApi, type MassAttendance, type PaginatedResponse } from '$lib/api';
+	import { attendanceApi, type MassAttendance } from '$lib/api';
 	import { addToast } from '$lib/stores/toast';
-	import Pagination from '$lib/components/Pagination.svelte';
 
 	let records: MassAttendance[] = $state([]);
 	let loading = $state(true);
@@ -12,8 +11,6 @@
 	let total = $state(0);
 	let startDate = $state('');
 	let endDate = $state('');
-	let sortBy = $state<'date' | 'attendance_count'>('date');
-	let sortOrder = $state<'asc' | 'desc'>('desc');
 
 	// Edit state
 	let editingRecord: MassAttendance | null = $state(null);
@@ -34,18 +31,19 @@
 	async function loadRecords() {
 		loading = true;
 		try {
-			const filters: Record<string, string | number> = {
-				page,
-				per_page: perPage
-			};
+			const filters: { page?: number; per_page?: number; start_date?: string; end_date?: string } =
+				{
+					page,
+					per_page: perPage
+				};
 			if (startDate) filters.start_date = startDate;
 			if (endDate) filters.end_date = endDate;
 
-			const response = await attendanceApi.list(filters as any);
+			const response = await attendanceApi.list(filters);
 			records = response.items;
 			total = response.total;
 			totalPages = response.pages;
-		} catch (e) {
+		} catch {
 			addToast('Failed to load attendance records', 'error');
 		} finally {
 			loading = false;
@@ -105,7 +103,7 @@
 			addToast('Attendance record updated', 'success');
 			editingRecord = null;
 			await loadRecords();
-		} catch (e) {
+		} catch {
 			addToast('Failed to update record', 'error');
 		} finally {
 			saving = false;
@@ -121,7 +119,7 @@
 			showDeleteConfirm = false;
 			editingRecord = null;
 			await loadRecords();
-		} catch (e) {
+		} catch {
 			addToast('Failed to delete record', 'error');
 		}
 	}

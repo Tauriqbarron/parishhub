@@ -32,8 +32,7 @@
 	let attendancePeriod: TimePeriod = $state('1M');
 	let customStartDate = $state('');
 	let customEndDate = $state('');
-	let attendanceLoading = $state(false);
-
+	/* eslint-disable svelte/prefer-svelte-reactivity -- local utility, not reactive state */
 	function getDateRange(period: TimePeriod): { start: string; end: string } {
 		const today = new Date();
 		const end = today.toISOString().split('T')[0];
@@ -71,9 +70,10 @@
 		}
 		return { start: start.toISOString().split('T')[0], end };
 	}
+	/* eslint-enable svelte/prefer-svelte-reactivity */
 
 	async function loadAttendanceStats() {
-		attendanceLoading = true;
+		loading = true;
 		try {
 			const { start, end } = getDateRange(attendancePeriod);
 			const includeBreakdown = attendanceView === 'breakdown';
@@ -82,10 +82,10 @@
 				start,
 				end
 			)) as AttendanceTrendExtended;
-		} catch (e) {
+		} catch {
 			addToast('Failed to load attendance statistics', 'error');
 		} finally {
-			attendanceLoading = false;
+			loading = false;
 		}
 	}
 
@@ -108,8 +108,8 @@
 			attendanceStats = attendance as AttendanceTrendExtended;
 			populationStats = population;
 			deathStats = deaths;
-		} catch (e) {
-			error = e instanceof Error ? e.message : 'Failed to load statistics';
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Failed to load statistics';
 			addToast('Failed to load statistics', 'error');
 		} finally {
 			loading = false;
