@@ -171,6 +171,14 @@
 							<dd class="text-sm font-medium text-gray-900">{session.household.email}</dd>
 						</div>
 					{/if}
+					{#if session.household.attendingSince}
+						<div>
+							<dt class="text-sm text-gray-500">Attending Since</dt>
+							<dd class="text-sm font-medium text-gray-900">
+								{formatDate(session.household.attendingSince)}
+							</dd>
+						</div>
+					{/if}
 				</dl>
 			</div>
 		</div>

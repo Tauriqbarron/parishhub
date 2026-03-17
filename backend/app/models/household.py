@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import date, datetime
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, String, func
+from sqlalchemy import Boolean, Date, DateTime, Enum, ForeignKey, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -29,6 +29,7 @@ class Household(Base):
     address_line2: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     postal_code: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    attending_since: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False
     )
@@ -66,9 +67,7 @@ class HouseholdMember(Base):
     )
 
     # Relationships
-    household: Mapped["Household"] = relationship(
-        "Household", back_populates="members"
-    )
+    household: Mapped["Household"] = relationship("Household", back_populates="members")
     person: Mapped["Person"] = relationship(
         "Person", back_populates="household_memberships"
     )

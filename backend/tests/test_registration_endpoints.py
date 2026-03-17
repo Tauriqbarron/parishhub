@@ -1,7 +1,6 @@
 """Integration tests for Registration API endpoints."""
 
 import time
-from datetime import date
 
 import pytest
 from fastapi.testclient import TestClient
@@ -237,6 +236,289 @@ class TestRegistrationEndpoint:
         response = client.post("/api/register", json=data)
 
         assert response.status_code == 422  # Validation error
+
+
+class TestRegistrationAttendingSince:
+    """Tests for attending_since field and auto-birth record creation."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        """Add small delay between tests to avoid rate limiting."""
+        time.sleep(0.2)
+
+    def test_registration_with_attending_since(self, client, db_session):
+        """Test that attending_since is stored on the Household record."""
+        payload = {
+            "household_name": "Attending Test Family",
+            "attendingSince": "2020-06-15",
+            "members": [
+                {
+                    "tempId": "parent-1",
+                    "firstName": "John",
+                    "lastName": "Tester",
+                    "isHeadOfHousehold": True,
+                }
+            ],
+            "relationships": [],
+            "sacraments": [],
+        }
+        response = client.post("/api/register", json=payload)
+        assert response.status_code == 201
+
+        from app.models.household import Household
+
+        household = (
+            db_session.query(Household)
+            .filter(Household.name == "Attending Test Family")
+            .first()
+        )
+        assert household is not None
+        assert str(household.attending_since) == "2020-06-15"
+
+    def test_registration_auto_creates_birth_record(self, client, db_session):
+        """Child born after household's attending_since should get a Birth record."""
+        payload = {
+            "household_name": "Birth Auto Family",
+            "attendingSince": "2020-01-01",
+            "members": [
+                {
+                    "tempId": "parent-1",
+                    "firstName": "Jane",
+                    "lastName": "Mother",
+                    "isHeadOfHousehold": True,
+                },
+                {
+                    "tempId": "child-1",
+                    "firstName": "Baby",
+                    "lastName": "Mother",
+                    "dateOfBirth": "2022-05-10",
+                    "isHeadOfHousehold": False,
+                },
+            ],
+            "relationships": [
+                {
+                    "fromTempId": "parent-1",
+                    "toTempId": "child-1",
+                    "relationshipType": "parent",
+                }
+            ],
+            "sacraments": [],
+        }
+        response = client.post("/api/register", json=payload)
+        assert response.status_code == 201
+
+        from app.models.person import Person
+
+        baby_persons = (
+            db_session.query(Person)
+            .filter(Person.first_name == "Baby", Person.last_name == "Mother")
+            .all()
+        )
+        assert len(baby_persons) == 1
+
+        from app.models.analytics import Birth
+
+        birth = (
+            db_session.query(Birth)
+            .filter(
+                Birth.baby_first_name == "Baby",
+                Birth.baby_last_name == "Mother",
+            )
+            .first()
+        )
+        assert birth is not None
+        assert str(birth.date_of_birth) == "2022-05-10"
+        assert birth.parent1_id is not None
+        assert "Auto-recorded" in birth.notes
+
+    def test_registration_no_birth_when_child_born_before_attending(
+        self, client, db_session
+    ):
+        """Child born before household's attending_since should NOT get a Birth record."""
+        payload = {
+            "household_name": "No Birth Family",
+            "attendingSince": "2023-01-01",
+            "members": [
+                {
+                    "tempId": "parent-1",
+                    "firstName": "Mark",
+                    "lastName": "Father",
+                    "isHeadOfHousehold": True,
+                },
+                {
+                    "tempId": "child-1",
+                    "firstName": "Older",
+                    "lastName": "Father",
+                    "dateOfBirth": "2020-03-15",
+                    "isHeadOfHousehold": False,
+                },
+            ],
+            "relationships": [
+                {
+                    "fromTempId": "parent-1",
+                    "toTempId": "child-1",
+                    "relationshipType": "parent",
+                }
+            ],
+            "sacraments": [],
+        }
+        response = client.post("/api/register", json=payload)
+        assert response.status_code == 201
+
+        from app.models.analytics import Birth
+
+        births = db_session.query(Birth).filter(Birth.baby_first_name == "Older").all()
+        assert len(births) == 0
+
+    def test_registration_no_birth_without_attending_since(self, client, db_session):
+        """No birth record when household has no attending_since."""
+        payload = {
+            "household_name": "No Attending Family",
+            "members": [
+                {
+                    "tempId": "parent-1",
+                    "firstName": "NoDate",
+                    "lastName": "Parent",
+                    "isHeadOfHousehold": True,
+                },
+                {
+                    "tempId": "child-1",
+                    "firstName": "Kiddo",
+                    "lastName": "Parent",
+                    "dateOfBirth": "2024-01-01",
+                    "isHeadOfHousehold": False,
+                },
+            ],
+            "relationships": [
+                {
+                    "fromTempId": "parent-1",
+                    "toTempId": "child-1",
+                    "relationshipType": "parent",
+                }
+            ],
+            "sacraments": [],
+        }
+        response = client.post("/api/register", json=payload)
+        assert response.status_code == 201
+
+        from app.models.analytics import Birth
+
+        births = db_session.query(Birth).filter(Birth.baby_first_name == "Kiddo").all()
+        assert len(births) == 0
+
+    def test_registration_two_parents_one_birth_record(self, client, db_session):
+        """Two parents linked to one child should produce exactly one Birth record with both parent IDs."""
+        payload = {
+            "household_name": "Two Parent Family",
+            "attendingSince": "2019-01-01",
+            "members": [
+                {
+                    "tempId": "parent-1",
+                    "firstName": "Dad",
+                    "lastName": "TwoP",
+                    "isHeadOfHousehold": True,
+                },
+                {
+                    "tempId": "parent-2",
+                    "firstName": "Mom",
+                    "lastName": "TwoP",
+                    "isHeadOfHousehold": False,
+                },
+                {
+                    "tempId": "child-1",
+                    "firstName": "Junior",
+                    "lastName": "TwoP",
+                    "dateOfBirth": "2023-07-01",
+                    "isHeadOfHousehold": False,
+                },
+            ],
+            "relationships": [
+                {
+                    "fromTempId": "parent-1",
+                    "toTempId": "child-1",
+                    "relationshipType": "parent",
+                },
+                {
+                    "fromTempId": "parent-2",
+                    "toTempId": "child-1",
+                    "relationshipType": "parent",
+                },
+            ],
+            "sacraments": [],
+        }
+        response = client.post("/api/register", json=payload)
+        assert response.status_code == 201
+
+        from app.models.analytics import Birth
+
+        births = (
+            db_session.query(Birth)
+            .filter(
+                Birth.baby_first_name == "Junior",
+                Birth.baby_last_name == "TwoP",
+            )
+            .all()
+        )
+        assert len(births) == 1
+        birth = births[0]
+        assert birth.parent1_id is not None
+        assert birth.parent2_id is not None
+        assert birth.parent1_id != birth.parent2_id
+
+    def test_registration_multiple_children_mixed_eligibility(self, client, db_session):
+        """Only children born on/after attending_since get birth records."""
+        payload = {
+            "household_name": "Mixed Kids Family",
+            "attendingSince": "2021-06-01",
+            "members": [
+                {
+                    "tempId": "parent-1",
+                    "firstName": "Parent",
+                    "lastName": "Mixed",
+                    "isHeadOfHousehold": True,
+                },
+                {
+                    "tempId": "child-old",
+                    "firstName": "OlderKid",
+                    "lastName": "Mixed",
+                    "dateOfBirth": "2019-01-01",
+                    "isHeadOfHousehold": False,
+                },
+                {
+                    "tempId": "child-new",
+                    "firstName": "NewerKid",
+                    "lastName": "Mixed",
+                    "dateOfBirth": "2022-03-15",
+                    "isHeadOfHousehold": False,
+                },
+            ],
+            "relationships": [
+                {
+                    "fromTempId": "parent-1",
+                    "toTempId": "child-old",
+                    "relationshipType": "parent",
+                },
+                {
+                    "fromTempId": "parent-1",
+                    "toTempId": "child-new",
+                    "relationshipType": "parent",
+                },
+            ],
+            "sacraments": [],
+        }
+        response = client.post("/api/register", json=payload)
+        assert response.status_code == 201
+
+        from app.models.analytics import Birth
+
+        assert (
+            db_session.query(Birth).filter(Birth.baby_first_name == "OlderKid").count()
+            == 0
+        )
+        assert (
+            db_session.query(Birth).filter(Birth.baby_first_name == "NewerKid").count()
+            == 1
+        )
 
 
 class TestRegistrationURLConfig:

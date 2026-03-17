@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Annotated, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -14,6 +14,7 @@ class HouseholdBase(BaseModel):
     address_line2: Annotated[Optional[str], Field(max_length=255)] = None
     city: Annotated[Optional[str], Field(max_length=100)] = None
     postal_code: Annotated[Optional[str], Field(max_length=20)] = None
+    attending_since: Optional[date] = None
 
 
 class HouseholdCreate(HouseholdBase):
@@ -30,6 +31,7 @@ class HouseholdUpdate(BaseModel):
     address_line2: Annotated[Optional[str], Field(max_length=255)] = None
     city: Annotated[Optional[str], Field(max_length=100)] = None
     postal_code: Annotated[Optional[str], Field(max_length=20)] = None
+    attending_since: Optional[date] = None
 
 
 class HouseholdResponse(HouseholdBase):

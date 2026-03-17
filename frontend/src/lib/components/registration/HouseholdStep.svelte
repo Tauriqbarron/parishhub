@@ -186,4 +186,22 @@
 			<p class="mt-1 text-sm text-red-600">{errors.email}</p>
 		{/if}
 	</div>
+
+	<div>
+		<div class="flex items-center">
+			<label for="attendingSince" class="block text-sm font-medium text-gray-700">
+				Attending Parish Since
+			</label>
+			<Tooltip
+				text="Approximate date your household started attending. Used to track parish tenure and auto-record births of children born while attending."
+			/>
+		</div>
+		<input
+			id="attendingSince"
+			type="date"
+			value={household.attendingSince}
+			oninput={(e) => handleInput('attendingSince', e.currentTarget.value)}
+			class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+		/>
+	</div>
 </div>

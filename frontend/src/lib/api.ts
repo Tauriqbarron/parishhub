@@ -695,6 +695,7 @@ export const registrationApi = {
 			zipCode: string;
 			phone: string;
 			email: string;
+			attendingSince: string;
 		};
 		members: Array<{
 			tempId: string;
@@ -753,6 +754,7 @@ export const registrationApi = {
 			zipCode: session.household.zipCode || null,
 			phone: session.household.phone || null,
 			email: session.household.email || null,
+			attendingSince: session.household.attendingSince || null,
 			members: session.members.map((m) => ({
 				tempId: m.tempId,
 				firstName: m.firstName,

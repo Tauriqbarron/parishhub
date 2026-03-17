@@ -72,6 +72,7 @@ class RegistrationSubmission(BaseModel):
     country: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=20)
     email: Optional[str] = None
+    attending_since: Optional[Date] = Field(default=None, alias="attendingSince")
     members: list[RegistrationMember]
     relationships: list[RegistrationRelationship] = Field(default_factory=list)
     sacraments: list[RegistrationSacrament] = Field(default_factory=list)

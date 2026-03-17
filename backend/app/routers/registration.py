@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.auth import User, require_auth
 from app.database import get_db
 from app.limiter import limiter
+from app.models.analytics import Birth
 from app.models.consent import HouseholdConsent
 from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.person import Gender, Person
@@ -100,6 +101,7 @@ async def submit_registration(
             address_line1=data.street_address,
             city=data.city,
             postal_code=data.postal_code,
+            attending_since=data.attending_since,
         )
         db.add(household)
         db.flush()  # Get household ID
@@ -277,6 +279,51 @@ async def submit_registration(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail=f"Failed to create {sac.sacrament_type} record. Please check the data and try again.",
                 )
+
+        # Step 6: Auto-create birth records for children born during parish tenure
+        if data.attending_since:
+            child_parents: dict[str, list[str]] = {}
+            for rel in data.relationships:
+                if rel.relationship_type.lower() == "parent":
+                    child_tid = rel.to_temp_id
+                    parent_tid = rel.from_temp_id
+                    if child_tid not in child_parents:
+                        child_parents[child_tid] = []
+                    child_parents[child_tid].append(parent_tid)
+
+            for child_temp_id, parent_temp_ids in child_parents.items():
+                child_member = next(
+                    (m for m in data.members if m.temp_id == child_temp_id), None
+                )
+                if not child_member or not child_member.date_of_birth:
+                    continue
+
+                if child_member.date_of_birth < data.attending_since:
+                    continue
+
+                child_person_id = temp_id_to_person_id.get(child_temp_id)
+                if not child_person_id:
+                    continue
+
+                resolved_parent_ids = []
+                for ptid in parent_temp_ids:
+                    pid = temp_id_to_person_id.get(ptid)
+                    if pid:
+                        resolved_parent_ids.append(pid)
+
+                birth_record = Birth(
+                    baby_first_name=child_member.first_name,
+                    baby_last_name=child_member.last_name,
+                    date_of_birth=child_member.date_of_birth,
+                    parent1_id=resolved_parent_ids[0]
+                    if len(resolved_parent_ids) > 0
+                    else None,
+                    parent2_id=resolved_parent_ids[1]
+                    if len(resolved_parent_ids) > 1
+                    else None,
+                    notes="Auto-recorded during family registration",
+                )
+                db.add(birth_record)
 
         # Commit all changes
         db.commit()

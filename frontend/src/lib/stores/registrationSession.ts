@@ -36,6 +36,7 @@ export interface RegistrationHousehold {
 	zipCode: string;
 	phone: string;
 	email: string;
+	attendingSince: string;
 }
 
 export interface RegistrationConsent {
@@ -64,7 +65,8 @@ const emptyHousehold: RegistrationHousehold = {
 	state: '',
 	zipCode: '',
 	phone: '',
-	email: ''
+	email: '',
+	attendingSince: ''
 };
 
 const emptyConsent: RegistrationConsent = {
