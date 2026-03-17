@@ -5,11 +5,9 @@
 	import { addToast } from '$lib/stores/toast';
 
 	let date = $state('');
-	let breakdownByMassTime = $state(false);
 	let massEntries = $state([
 		{ mass_time_id: null as number | null, mass_time: '', attendance_count: 0, customTime: false }
 	]);
-	let singleAttendanceCount = $state(0);
 	let notes = $state('');
 	let submitting = $state(false);
 	let massTimeOptions: MassTime[] = $state([]);
@@ -76,31 +74,19 @@
 			return;
 		}
 
+		const validEntries = massEntries.filter((e) => e.mass_time_id && e.attendance_count > 0);
+		if (validEntries.length === 0) {
+			addToast('Please select a mass time and enter a count', 'error');
+			return;
+		}
+
 		submitting = true;
 		try {
-			if (breakdownByMassTime) {
-				// Submit multiple entries, one per mass time
-				for (const entry of massEntries) {
-					if (entry.attendance_count > 0) {
-						const data: MassAttendanceCreate = {
-							date,
-							mass_time_id: entry.mass_time_id || undefined,
-							mass_time: entry.mass_time_id ? undefined : entry.mass_time || null,
-							attendance_count: entry.attendance_count,
-							notes: notes || null
-						};
-						await attendanceApi.create(data);
-					}
-				}
-			} else {
-				if (singleAttendanceCount <= 0) {
-					addToast('Please enter an attendance count', 'error');
-					submitting = false;
-					return;
-				}
+			for (const entry of validEntries) {
 				const data: MassAttendanceCreate = {
 					date,
-					attendance_count: singleAttendanceCount,
+					mass_time_id: entry.mass_time_id || undefined,
+					attendance_count: entry.attendance_count,
 					notes: notes || null
 				};
 				await attendanceApi.create(data);
@@ -148,126 +134,97 @@
 			/>
 		</div>
 
-		<div class="flex items-center gap-2">
-			<input
-				type="checkbox"
-				id="breakdown"
-				bind:checked={breakdownByMassTime}
-				class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-			/>
-			<label for="breakdown" class="text-sm font-medium text-gray-700">
-				Breakdown by Mass Time
-			</label>
-		</div>
-
-		{#if breakdownByMassTime}
-			<div class="space-y-4">
-				<p class="text-sm text-gray-500">Enter attendance for each Mass time:</p>
-				{#each massEntries as entry, index}
-					<div class="flex gap-4 items-end">
-						<div class="flex-1">
-							<label class="block text-sm font-medium text-gray-700 mb-1">Mass Time</label>
-							{#if massTimeOptions.length > 0 && !entry.customTime}
-								<select
-									value={entry.mass_time_id ?? ''}
-									onchange={(e) =>
-										handleMassTimeChange(index, (e.target as HTMLSelectElement).value)}
-									class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								>
-									<option value="">Select mass time...</option>
-									{#each massTimeOptions as mt (mt.id)}
-										<option value={mt.id}>{mt.name} ({formatTime(mt.time)})</option>
-									{/each}
-									<option value="__other__">Other (specify)</option>
-								</select>
-							{:else}
-								<div class="flex gap-2">
-									<input
-										type="text"
-										placeholder="e.g., 8:00 AM"
-										bind:value={entry.mass_time}
-										class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-									/>
-									{#if massTimeOptions.length > 0 && entry.customTime}
-										<button
-											type="button"
-											onclick={() => {
-												entry.customTime = false;
-												entry.mass_time = '';
-											}}
-											class="px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-lg text-sm"
-											title="Back to dropdown"
-										>
-											<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-												/>
-											</svg>
-										</button>
-									{/if}
-								</div>
-							{/if}
-						</div>
-						<div class="w-32">
-							<label class="block text-sm font-medium text-gray-700 mb-1">Count</label>
-							<input
-								type="number"
-								min="0"
-								bind:value={entry.attendance_count}
+		<div class="space-y-4">
+			<p class="text-sm text-gray-500">Enter attendance for each Mass time:</p>
+			{#each massEntries as entry, index}
+				<div class="flex gap-4 items-end">
+					<div class="flex-1">
+						<label class="block text-sm font-medium text-gray-700 mb-1">Mass Time</label>
+						{#if massTimeOptions.length > 0 && !entry.customTime}
+							<select
+								value={entry.mass_time_id ?? ''}
+								onchange={(e) => handleMassTimeChange(index, (e.target as HTMLSelectElement).value)}
 								class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-							/>
-						</div>
-						{#if massEntries.length > 1}
-							<button
-								type="button"
-								onclick={() => removeMassEntry(index)}
-								class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
 							>
-								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M6 18L18 6M6 6l12 12"
-									/>
-								</svg>
-							</button>
+								<option value="">Select mass time...</option>
+								{#each massTimeOptions as mt (mt.id)}
+									<option value={mt.id}>{mt.name} ({formatTime(mt.time)})</option>
+								{/each}
+								<option value="__other__">Other (specify)</option>
+							</select>
+						{:else}
+							<div class="flex gap-2">
+								<input
+									type="text"
+									placeholder="e.g., 8:00 AM"
+									bind:value={entry.mass_time}
+									class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								/>
+								{#if massTimeOptions.length > 0 && entry.customTime}
+									<button
+										type="button"
+										onclick={() => {
+											entry.customTime = false;
+											entry.mass_time = '';
+										}}
+										class="px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-lg text-sm"
+										title="Back to dropdown"
+									>
+										<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+											/>
+										</svg>
+									</button>
+								{/if}
+							</div>
 						{/if}
 					</div>
-				{/each}
-				<button
-					type="button"
-					onclick={addMassEntry}
-					class="text-blue-600 hover:text-blue-700 text-sm font-medium"
-				>
-					+ Add Another Mass Time
-				</button>
-				{#if massTimeOptions.length === 0}
-					<p class="text-xs text-gray-400">
-						<a href="/settings/mass-times" class="text-blue-600 hover:underline"
-							>Configure mass times</a
-						> to use a dropdown instead of free text.
-					</p>
-				{/if}
-			</div>
-		{:else}
-			<div>
-				<label for="count" class="block text-sm font-medium text-gray-700 mb-1"
-					>Attendance Count</label
-				>
-				<input
-					type="number"
-					id="count"
-					min="0"
-					bind:value={singleAttendanceCount}
-					required
-					class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-				/>
-			</div>
-		{/if}
+					<div class="w-32">
+						<label class="block text-sm font-medium text-gray-700 mb-1">Count</label>
+						<input
+							type="number"
+							min="0"
+							bind:value={entry.attendance_count}
+							class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						/>
+					</div>
+					{#if massEntries.length > 1}
+						<button
+							type="button"
+							onclick={() => removeMassEntry(index)}
+							class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+						>
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+					{/if}
+				</div>
+			{/each}
+			<button
+				type="button"
+				onclick={addMassEntry}
+				class="text-blue-600 hover:text-blue-700 text-sm font-medium"
+			>
+				+ Add Another Mass Time
+			</button>
+			{#if massTimeOptions.length === 0}
+				<p class="text-xs text-gray-400">
+					<a href="/settings/mass-times" class="text-blue-600 hover:underline"
+						>Configure mass times</a
+					> to use a dropdown instead of free text.
+				</p>
+			{/if}
+		</div>
 
 		<div>
 			<label for="notes" class="block text-sm font-medium text-gray-700 mb-1"
