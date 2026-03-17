@@ -7,9 +7,10 @@ from sqlalchemy import case, extract, func, select
 from sqlalchemy.orm import Session, joinedload
 
 from app.models.analytics import Birth, MassAttendance, PopulationSnapshot
+from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.mass_times import MassTime
 from app.models.person import Person
-from app.models.household import Household
+from app.models.relationship import FamilyRelationship, RelationshipType
 from app.schemas.analytics import (
     AttendanceTrend,
     AttendanceTrendExtended,
@@ -38,15 +39,62 @@ class BirthService:
         # Create the birth record
         birth = Birth(**data.model_dump())
         self.db.add(birth)
-        self.db.flush()  # Get birth ID before creating person
+        self.db.flush()
 
-        # Also create a Person record for the baby
+        # Create a Person record for the baby
         person = Person(
             first_name=data.baby_first_name,
             last_name=data.baby_last_name,
             date_of_birth=data.date_of_birth,
         )
         self.db.add(person)
+        self.db.flush()  # Get person ID for relationships
+
+        # Create parent-child relationships and add to household
+        parent_ids = [
+            pid for pid in [data.parent1_id, data.parent2_id] if pid is not None
+        ]
+        household_id = None
+
+        for parent_id in parent_ids:
+            # Parent -> Child relationship
+            self.db.add(
+                FamilyRelationship(
+                    person_id=parent_id,
+                    related_person_id=person.id,
+                    relationship_type=RelationshipType.PARENT,
+                )
+            )
+            # Child -> Parent relationship
+            self.db.add(
+                FamilyRelationship(
+                    person_id=person.id,
+                    related_person_id=parent_id,
+                    relationship_type=RelationshipType.CHILD,
+                )
+            )
+
+            # Find parent's primary household if we haven't found one yet
+            if household_id is None:
+                membership = self.db.execute(
+                    select(HouseholdMember).where(
+                        HouseholdMember.person_id == parent_id,
+                        HouseholdMember.is_primary_household.is_(True),
+                    )
+                ).scalar_one_or_none()
+                if membership:
+                    household_id = membership.household_id
+
+        # Add baby to parent's household as CHILD
+        if household_id is not None:
+            self.db.add(
+                HouseholdMember(
+                    household_id=household_id,
+                    person_id=person.id,
+                    role=HouseholdRole.CHILD,
+                    is_primary_household=True,
+                )
+            )
 
         self.db.commit()
         self.db.refresh(birth)
