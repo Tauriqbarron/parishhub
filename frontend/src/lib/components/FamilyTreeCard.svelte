@@ -194,7 +194,7 @@
 					<div>
 						<h3 class="text-sm font-medium text-gray-500 mb-2">Parents</h3>
 						<div class="space-y-2">
-							{#each familyTree.parents as parent (parent.id)}
+							{#each familyTree.parents as parent (parent.relationship_id)}
 								<div
 									class="flex items-center justify-between p-3 rounded-lg border border-blue-200 bg-blue-50"
 								>
@@ -244,7 +244,7 @@
 					<div>
 						<h3 class="text-sm font-medium text-gray-500 mb-2">Children</h3>
 						<div class="space-y-2">
-							{#each familyTree.children as child (child.id)}
+							{#each familyTree.children as child (child.relationship_id)}
 								<div
 									class="flex items-center justify-between p-3 rounded-lg border border-green-200 bg-green-50"
 								>
@@ -294,7 +294,7 @@
 					<div>
 						<h3 class="text-sm font-medium text-gray-500 mb-2">Siblings</h3>
 						<div class="space-y-2">
-							{#each familyTree.siblings as sibling (sibling.id)}
+							{#each familyTree.siblings as sibling (sibling.relationship_id)}
 								<div
 									class="flex items-center justify-between p-3 rounded-lg border border-purple-200 bg-purple-50"
 								>

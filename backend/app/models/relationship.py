@@ -1,7 +1,7 @@
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, ForeignKey
+from sqlalchemy import Enum, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -21,6 +21,14 @@ class FamilyRelationship(Base):
     """Biological/legal relationships between people."""
 
     __tablename__ = "family_relationships"
+    __table_args__ = (
+        UniqueConstraint(
+            "person_id",
+            "related_person_id",
+            "relationship_type",
+            name="uq_family_relationship",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     person_id: Mapped[int] = mapped_column(
