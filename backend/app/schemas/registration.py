@@ -88,6 +88,29 @@ class RegistrationResponse(BaseModel):
     message: str = "Registration submitted successfully"
 
 
+class IndividualRegistrationSubmission(BaseModel):
+    """Registration submission for an individual (no household)."""
+
+    first_name: str = Field(min_length=1, max_length=100, alias="firstName")
+    middle_name: Optional[str] = Field(default=None, max_length=100, alias="middleName")
+    last_name: str = Field(min_length=1, max_length=100, alias="lastName")
+    date_of_birth: Optional[Date] = Field(default=None, alias="dateOfBirth")
+    gender: Optional[str] = None
+    phone: Optional[str] = Field(default=None, max_length=20)
+    email: Optional[str] = None
+    sacraments: list[RegistrationSacrament] = Field(default_factory=list)
+    consent: Optional[RegistrationConsent] = None
+
+    model_config = {"populate_by_name": True}
+
+
+class IndividualRegistrationResponse(BaseModel):
+    """Response after successful individual registration."""
+
+    person_id: int
+    message: str = "Registration submitted successfully"
+
+
 class RegistrationURLConfig(BaseModel):
     """Configuration for registration URL base."""
 

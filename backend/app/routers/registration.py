@@ -17,6 +17,8 @@ from app.models.relationship import FamilyRelationship, RelationshipType
 from app.models.sacrament import Sacrament, SacramentType
 from app.models.settings import Setting
 from app.schemas.registration import (
+    IndividualRegistrationResponse,
+    IndividualRegistrationSubmission,
     RegistrationResponse,
     RegistrationSubmission,
     RegistrationURLConfig,
@@ -339,6 +341,130 @@ async def submit_registration(
     except Exception as e:
         db.rollback()
         logger.error(f"Registration failed: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Registration failed. Please try again or contact the parish office.",
+        )
+
+
+@router.post(
+    "/individual",
+    response_model=IndividualRegistrationResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Submit individual registration (no household)",
+)
+@limiter.limit("5/minute")
+async def submit_individual_registration(
+    request: Request,
+    data: IndividualRegistrationSubmission,
+    db: Session = Depends(get_db),
+) -> IndividualRegistrationResponse:
+    """
+    Process individual registration from public form (no household).
+
+    This endpoint is PUBLIC and does not require authentication.
+
+    Steps:
+    1. Create person
+    2. Create sacraments
+    3. Store consent (if provided)
+
+    All operations are wrapped in a transaction.
+    """
+    try:
+        # Step 1: Create person
+        gender = None
+        if data.gender:
+            gender = GENDER_MAP.get(data.gender.lower())
+
+        person = Person(
+            first_name=data.first_name,
+            middle_name=data.middle_name,
+            last_name=data.last_name,
+            date_of_birth=data.date_of_birth,
+            gender=gender,
+            phone=data.phone,
+            email=data.email if data.email else None,
+        )
+        db.add(person)
+        db.flush()
+
+        # Step 2: Create sacraments
+        validated_sacraments = []
+        for sac in data.sacraments:
+            if not sac.sacrament_type or not sac.sacrament_type.strip():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Sacrament type cannot be empty",
+                )
+
+            sac_type = SACRAMENT_TYPE_MAP.get(sac.sacrament_type.lower().strip())
+            if not sac_type:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Invalid sacrament type: '{sac.sacrament_type}'. Valid types: {list(SACRAMENT_TYPE_MAP.keys())}",
+                )
+
+            if not sac.date:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Sacrament date is required for {sac.sacrament_type}",
+                )
+
+            from datetime import date
+
+            if sac.date > date.today():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Sacrament date '{sac.date}' cannot be in the future for {sac.sacrament_type}",
+                )
+
+            validated_sacraments.append((sac, sac_type))
+
+        validated_sacraments.sort(key=lambda x: SACRAMENT_ORDER.get(x[1], 99))
+
+        for sac, sac_type in validated_sacraments:
+            additional_data = sac.additional_data.copy() if sac.additional_data else {}
+            if sac.church:
+                if not sac.church.strip():
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"Church name cannot be empty for {sac.sacrament_type}",
+                    )
+                additional_data["church"] = sac.church.strip()
+            if sac.minister:
+                if not sac.minister.strip():
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"Minister name cannot be empty for {sac.sacrament_type}",
+                    )
+                additional_data["minister"] = sac.minister.strip()
+
+            sacrament = Sacrament(
+                person_id=person.id,
+                sacrament_type=sac_type,
+                date_received=sac.date,
+                additional_data=additional_data if additional_data else None,
+            )
+            db.add(sacrament)
+
+        # Step 3: Store consent (if provided) — no household, so store as person-level
+        # Note: HouseholdConsent requires household_id; for individuals without a household,
+        # consent is acknowledged but not stored in the consent table.
+
+        db.commit()
+
+        return IndividualRegistrationResponse(
+            person_id=person.id,
+            message="Registration submitted successfully",
+        )
+
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Individual registration failed: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Registration failed. Please try again or contact the parish office.",

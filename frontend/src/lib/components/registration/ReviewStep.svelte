@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
-	import type { RegistrationSession, RegistrationMember } from '$lib/stores/registrationSession';
+	import type {
+		RegistrationSession,
+		RegistrationMember,
+		RegistrationType
+	} from '$lib/stores/registrationSession';
 	import { registrationApi } from '$lib/api';
 	import { createEventDispatcher } from 'svelte';
 	import { get } from 'svelte/store';
@@ -8,6 +12,7 @@
 	const dispatch = createEventDispatcher<{ complete: void; goToStep: number }>();
 
 	let session = $state<RegistrationSession>(get(registrationSessionStore));
+	let registrationType = $state<RegistrationType>(get(registrationSessionStore).registrationType);
 	let submitting = $state(false);
 	let error = $state('');
 	let submitted = $state(false);
@@ -15,6 +20,7 @@
 	$effect(() => {
 		const unsubscribe = registrationSessionStore.subscribe((s) => {
 			session = s;
+			registrationType = s.registrationType;
 		});
 		return unsubscribe;
 	});
@@ -80,7 +86,11 @@
 		submitting = true;
 		error = '';
 		try {
-			await registrationApi.submit(session);
+			if (registrationType === 'individual') {
+				await registrationApi.submitIndividual(session);
+			} else {
+				await registrationApi.submit(session);
+			}
 			registrationSessionStore.clearSession();
 			submitted = true;
 			dispatch('complete');
@@ -119,74 +129,80 @@
 			<p class="text-gray-600 mt-1">Please review all details before submitting.</p>
 		</div>
 
-		<!-- Household Summary -->
-		<div class="border rounded-lg overflow-hidden">
-			<div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-b">
-				<h3 class="font-medium text-gray-900">Household Information</h3>
-				<button
-					type="button"
-					onclick={() => goToStep(0)}
-					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
-				>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-						/>
-					</svg>
-					Edit
-				</button>
-			</div>
-			<div class="p-4">
-				<dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
-					<div>
-						<dt class="text-sm text-gray-500">Household Name</dt>
-						<dd class="text-sm font-medium text-gray-900">{session.household.name || '—'}</dd>
-					</div>
-					<div>
-						<dt class="text-sm text-gray-500">Address</dt>
-						<dd class="text-sm font-medium text-gray-900">
-							{#if session.household.address}
-								{session.household.address}
-								{#if session.household.city}, {session.household.city}{/if}
-								{#if session.household.state}, {session.household.state}{/if}
-								{#if session.household.zipCode}
-									{session.household.zipCode}{/if}
-							{:else}
-								—
-							{/if}
-						</dd>
-					</div>
-					{#if session.household.phone}
+		{#if registrationType === 'household'}
+			<!-- Household Summary -->
+			<div class="border rounded-lg overflow-hidden">
+				<div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-b">
+					<h3 class="font-medium text-gray-900">Household Information</h3>
+					<button
+						type="button"
+						onclick={() => goToStep(1)}
+						class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+					>
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+							/>
+						</svg>
+						Edit
+					</button>
+				</div>
+				<div class="p-4">
+					<dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
 						<div>
-							<dt class="text-sm text-gray-500">Phone</dt>
-							<dd class="text-sm font-medium text-gray-900">{session.household.phone}</dd>
+							<dt class="text-sm text-gray-500">Household Name</dt>
+							<dd class="text-sm font-medium text-gray-900">{session.household.name || '—'}</dd>
 						</div>
-					{/if}
-					{#if session.household.email}
 						<div>
-							<dt class="text-sm text-gray-500">Email</dt>
-							<dd class="text-sm font-medium text-gray-900">{session.household.email}</dd>
-						</div>
-					{/if}
-					{#if session.household.attendingSince}
-						<div>
-							<dt class="text-sm text-gray-500">Attending Since</dt>
+							<dt class="text-sm text-gray-500">Address</dt>
 							<dd class="text-sm font-medium text-gray-900">
-								{formatDate(session.household.attendingSince)}
+								{#if session.household.address}
+									{session.household.address}
+									{#if session.household.city}, {session.household.city}{/if}
+									{#if session.household.state}, {session.household.state}{/if}
+									{#if session.household.zipCode}
+										{session.household.zipCode}{/if}
+								{:else}
+									—
+								{/if}
 							</dd>
 						</div>
-					{/if}
-				</dl>
+						{#if session.household.phone}
+							<div>
+								<dt class="text-sm text-gray-500">Phone</dt>
+								<dd class="text-sm font-medium text-gray-900">{session.household.phone}</dd>
+							</div>
+						{/if}
+						{#if session.household.email}
+							<div>
+								<dt class="text-sm text-gray-500">Email</dt>
+								<dd class="text-sm font-medium text-gray-900">{session.household.email}</dd>
+							</div>
+						{/if}
+						{#if session.household.attendingSince}
+							<div>
+								<dt class="text-sm text-gray-500">Attending Since</dt>
+								<dd class="text-sm font-medium text-gray-900">
+									{formatDate(session.household.attendingSince)}
+								</dd>
+							</div>
+						{/if}
+					</dl>
+				</div>
 			</div>
-		</div>
+		{/if}
 
-		<!-- Family Members Summary -->
+		<!-- Family Members / Individual Info Summary -->
 		<div class="border rounded-lg overflow-hidden">
 			<div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-b">
-				<h3 class="font-medium text-gray-900">Family Members ({session.members.length})</h3>
+				<h3 class="font-medium text-gray-900">
+					{registrationType === 'individual'
+						? 'Your Information'
+						: `Family Members (${session.members.length})`}
+				</h3>
 				<button
 					type="button"
 					onclick={() => goToStep(1)}
@@ -220,7 +236,7 @@
 								<div class="flex-1 min-w-0">
 									<div class="flex items-center gap-2">
 										<p class="text-sm font-medium text-gray-900">{getMemberName(member)}</p>
-										{#if member.isHeadOfHousehold}
+										{#if member.isHeadOfHousehold && registrationType === 'household'}
 											<span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full"
 												>Head</span
 											>
@@ -248,48 +264,50 @@
 			</div>
 		</div>
 
-		<!-- Relationships Summary -->
-		<div class="border rounded-lg overflow-hidden">
-			<div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-b">
-				<h3 class="font-medium text-gray-900">Relationships</h3>
-				<button
-					type="button"
-					onclick={() => goToStep(2)}
-					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
-				>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-						/>
-					</svg>
-					Edit
-				</button>
+		{#if registrationType === 'household'}
+			<!-- Relationships Summary -->
+			<div class="border rounded-lg overflow-hidden">
+				<div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-b">
+					<h3 class="font-medium text-gray-900">Relationships</h3>
+					<button
+						type="button"
+						onclick={() => goToStep(3)}
+						class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+					>
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+							/>
+						</svg>
+						Edit
+					</button>
+				</div>
+				<div class="p-4">
+					{#if allRelationships.length === 0}
+						<p class="text-sm text-gray-500 italic">No relationships defined.</p>
+					{:else}
+						<ul class="space-y-2">
+							{#each allRelationships as rel}
+								{#if rel.to}
+									<li class="text-sm text-gray-700">
+										<span class="font-medium">{getMemberName(rel.from)}</span>
+										<span class="text-gray-500"> is </span>
+										<span class="font-medium text-blue-600"
+											>{relationshipLabels[rel.type] || rel.type}</span
+										>
+										<span class="text-gray-500"> of </span>
+										<span class="font-medium">{getMemberName(rel.to)}</span>
+									</li>
+								{/if}
+							{/each}
+						</ul>
+					{/if}
+				</div>
 			</div>
-			<div class="p-4">
-				{#if allRelationships.length === 0}
-					<p class="text-sm text-gray-500 italic">No relationships defined.</p>
-				{:else}
-					<ul class="space-y-2">
-						{#each allRelationships as rel}
-							{#if rel.to}
-								<li class="text-sm text-gray-700">
-									<span class="font-medium">{getMemberName(rel.from)}</span>
-									<span class="text-gray-500"> is </span>
-									<span class="font-medium text-blue-600"
-										>{relationshipLabels[rel.type] || rel.type}</span
-									>
-									<span class="text-gray-500"> of </span>
-									<span class="font-medium">{getMemberName(rel.to)}</span>
-								</li>
-							{/if}
-						{/each}
-					</ul>
-				{/if}
-			</div>
-		</div>
+		{/if}
 
 		<!-- Sacraments Summary -->
 		<div class="border rounded-lg overflow-hidden">
@@ -297,7 +315,7 @@
 				<h3 class="font-medium text-gray-900">Sacraments</h3>
 				<button
 					type="button"
-					onclick={() => goToStep(3)}
+					onclick={() => goToStep(registrationType === 'individual' ? 2 : 4)}
 					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,7 +375,7 @@
 				<h3 class="font-medium text-gray-900">Consent & Preferences</h3>
 				<button
 					type="button"
-					onclick={() => goToStep(4)}
+					onclick={() => goToStep(registrationType === 'individual' ? 3 : 5)}
 					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

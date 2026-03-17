@@ -1,16 +1,21 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
+	import type { RegistrationType } from '$lib/stores/registrationSession';
 	import ProgressIndicator from '$lib/components/registration/ProgressIndicator.svelte';
 	import StepNavigation from '$lib/components/registration/StepNavigation.svelte';
+	import RegistrationTypeStep from '$lib/components/registration/RegistrationTypeStep.svelte';
 	import HouseholdStep from '$lib/components/registration/HouseholdStep.svelte';
 	import FamilyMembersStep from '$lib/components/registration/FamilyMembersStep.svelte';
 	import RelationshipsStep from '$lib/components/registration/RelationshipsStep.svelte';
+	import IndividualInfoStep from '$lib/components/registration/IndividualInfoStep.svelte';
 	import SacramentsStep from '$lib/components/registration/SacramentsStep.svelte';
 	import ConsentStep from '$lib/components/registration/ConsentStep.svelte';
 	import ReviewStep from '$lib/components/registration/ReviewStep.svelte';
 
-	const steps = [
+	const householdSteps = [
+		'Registration Type',
 		'Household Info',
 		'Add Family Members',
 		'Relationships',
@@ -19,6 +24,15 @@
 		'Review'
 	];
 
+	const individualSteps = [
+		'Registration Type',
+		'Your Information',
+		'Sacraments',
+		'Consent',
+		'Review'
+	];
+
+	let registrationType = $state<RegistrationType>(null);
 	let currentStep = $state(0);
 	let isSubmitting = $state(false);
 	let registrationComplete = $state(false);
@@ -26,13 +40,36 @@
 	let stepComponents: Record<number, any> = {};
 	let showValidationError = $state(false);
 
+	let steps = $derived(
+		registrationType === 'individual'
+			? individualSteps
+			: registrationType === 'household'
+				? householdSteps
+				: ['Registration Type']
+	);
+
 	onMount(() => {
 		const session = registrationSessionStore.initSession();
+		registrationType = session.registrationType;
 		currentStep = session.currentStep;
+	});
+
+	// Keep registrationType in sync with store
+	$effect(() => {
+		const unsubscribe = registrationSessionStore.subscribe((s) => {
+			if (s.registrationType !== registrationType) {
+				registrationType = s.registrationType;
+			}
+		});
+		return unsubscribe;
 	});
 
 	function goToPrevious() {
 		if (currentStep > 0) {
+			// If going back to step 0 (registration type), reset the type
+			if (currentStep === 1) {
+				registrationSessionStore.setRegistrationType(null);
+			}
 			currentStep--;
 			registrationSessionStore.setCurrentStep(currentStep);
 		}
@@ -47,7 +84,6 @@
 		const isValid = currentStepComponent.isValid();
 		if (!isValid) {
 			showValidationError = true;
-			// Hide error message after user interaction
 			setTimeout(() => {
 				showValidationError = false;
 			}, 5000);
@@ -66,7 +102,7 @@
 		if (currentStep < steps.length - 1) {
 			currentStep++;
 			registrationSessionStore.setCurrentStep(currentStep);
-			showValidationError = false; // Reset error when changing steps
+			showValidationError = false;
 		}
 	}
 
@@ -81,9 +117,10 @@
 
 	async function handleSubmit() {
 		isSubmitting = true;
-		// Submission is handled by ReviewStep
 		isSubmitting = false;
 	}
+
+	let isLastStep = $derived(currentStep === steps.length - 1);
 </script>
 
 <svelte:head>
@@ -102,21 +139,35 @@
 
 			<div class="min-h-[300px] py-6">
 				{#if currentStep === 0}
-					<HouseholdStep bind:this={stepComponents[0]} />
-				{:else if currentStep === 1}
-					<FamilyMembersStep bind:this={stepComponents[1]} />
-				{:else if currentStep === 2}
-					<RelationshipsStep bind:this={stepComponents[2]} />
-				{:else if currentStep === 3}
-					<SacramentsStep bind:this={stepComponents[3]} />
-				{:else if currentStep === 4}
-					<ConsentStep bind:this={stepComponents[4]} />
-				{:else if currentStep === 5}
-					<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
+					<RegistrationTypeStep bind:this={stepComponents[0]} />
+				{:else if registrationType === 'household'}
+					{#if currentStep === 1}
+						<HouseholdStep bind:this={stepComponents[1]} />
+					{:else if currentStep === 2}
+						<FamilyMembersStep bind:this={stepComponents[2]} />
+					{:else if currentStep === 3}
+						<RelationshipsStep bind:this={stepComponents[3]} />
+					{:else if currentStep === 4}
+						<SacramentsStep bind:this={stepComponents[4]} />
+					{:else if currentStep === 5}
+						<ConsentStep bind:this={stepComponents[5]} />
+					{:else if currentStep === 6}
+						<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
+					{/if}
+				{:else if registrationType === 'individual'}
+					{#if currentStep === 1}
+						<IndividualInfoStep bind:this={stepComponents[1]} />
+					{:else if currentStep === 2}
+						<SacramentsStep bind:this={stepComponents[2]} />
+					{:else if currentStep === 3}
+						<ConsentStep bind:this={stepComponents[3]} />
+					{:else if currentStep === 4}
+						<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
+					{/if}
 				{/if}
 			</div>
 
-			{#if currentStep < 5 && !registrationComplete}
+			{#if !isLastStep && !registrationComplete}
 				<StepNavigation
 					{currentStep}
 					totalSteps={steps.length}

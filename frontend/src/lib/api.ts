@@ -673,6 +673,11 @@ export interface RegistrationSubmitResponse {
 	message: string;
 }
 
+export interface IndividualRegistrationResponse {
+	person_id: number;
+	message: string;
+}
+
 // Registration URL types
 export interface RegistrationURLConfig {
 	base_url: string;
@@ -781,6 +786,66 @@ export const registrationApi = {
 		};
 
 		return api.post<RegistrationSubmitResponse>('/register', payload);
+	},
+
+	submitIndividual: (session: {
+		members: Array<{
+			tempId: string;
+			firstName: string;
+			middleName: string;
+			lastName: string;
+			dateOfBirth: string;
+			gender: string;
+			phone: string;
+			email: string;
+			sacraments: Array<{
+				type: string;
+				date: string;
+				additionalData: Record<string, unknown>;
+			}>;
+		}>;
+		consent?: {
+			dataPrivacyConsent: boolean;
+			photoMediaRelease: boolean;
+			commEmail: boolean;
+			commSms: boolean;
+			commPhone: boolean;
+			termsAcknowledged: boolean;
+			consentedAt: string;
+		};
+	}) => {
+		const member = session.members[0];
+		if (!member) throw new Error('No member data found');
+
+		const sacraments = member.sacraments.map((s) => ({
+			memberTempId: member.tempId,
+			sacramentType: s.type,
+			date: s.date || null,
+			additionalData: s.additionalData || {}
+		}));
+
+		const payload = {
+			firstName: member.firstName,
+			middleName: member.middleName || null,
+			lastName: member.lastName,
+			dateOfBirth: member.dateOfBirth || null,
+			gender: member.gender || null,
+			phone: member.phone || null,
+			email: member.email || null,
+			sacraments,
+			consent: session.consent?.dataPrivacyConsent
+				? {
+						dataPrivacyConsent: session.consent.dataPrivacyConsent,
+						photoMediaRelease: session.consent.photoMediaRelease,
+						commEmail: session.consent.commEmail,
+						commSms: session.consent.commSms,
+						commPhone: session.consent.commPhone,
+						termsAcknowledged: session.consent.termsAcknowledged
+					}
+				: undefined
+		};
+
+		return api.post<IndividualRegistrationResponse>('/register/individual', payload);
 	},
 
 	getUrl: () => api.get<RegistrationURLResponse>('/v1/registration/url'),

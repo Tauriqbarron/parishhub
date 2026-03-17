@@ -49,9 +49,12 @@ export interface RegistrationConsent {
 	consentedAt: string;
 }
 
+export type RegistrationType = 'individual' | 'household' | null;
+
 export interface RegistrationSession {
 	id: string;
 	lastUpdated: string;
+	registrationType: RegistrationType;
 	household: RegistrationHousehold;
 	members: RegistrationMember[];
 	currentStep: number;
@@ -82,6 +85,7 @@ const emptyConsent: RegistrationConsent = {
 const emptySession: RegistrationSession = {
 	id: '',
 	lastUpdated: '',
+	registrationType: null,
 	household: { ...emptyHousehold },
 	members: [],
 	currentStep: 0,
@@ -141,6 +145,7 @@ function createRegistrationSessionStore() {
 			const newSession: RegistrationSession = {
 				id: generateUUID(),
 				lastUpdated: new Date().toISOString(),
+				registrationType: null,
 				household: { ...emptyHousehold },
 				members: [],
 				currentStep: 0,
@@ -230,6 +235,18 @@ function createRegistrationSessionStore() {
 					...session,
 					lastUpdated: new Date().toISOString(),
 					currentStep: step
+				};
+				debouncedSave(updated);
+				return updated;
+			});
+		},
+
+		setRegistrationType(type: RegistrationType): void {
+			update((session) => {
+				const updated = {
+					...session,
+					lastUpdated: new Date().toISOString(),
+					registrationType: type
 				};
 				debouncedSave(updated);
 				return updated;
