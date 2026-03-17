@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 class Gender(str, PyEnum):
     MALE = "male"
     FEMALE = "female"
-    OTHER = "other"
 
 
 class Person(Base):
@@ -29,7 +28,9 @@ class Person(Base):
     first_name: Mapped[str] = mapped_column(String(100), nullable=False)
     middle_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     last_name: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
-    date_of_birth: Mapped[Optional[date]] = mapped_column(Date, nullable=True, index=True)
+    date_of_birth: Mapped[Optional[date]] = mapped_column(
+        Date, nullable=True, index=True
+    )
     gender: Mapped[Optional[Gender]] = mapped_column(
         Enum(Gender, name="gender_enum", create_constraint=True),
         nullable=True,

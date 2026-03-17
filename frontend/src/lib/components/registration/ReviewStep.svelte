@@ -67,8 +67,7 @@
 	function formatGender(gender: string): string {
 		const labels: Record<string, string> = {
 			male: 'Male',
-			female: 'Female',
-			other: 'Other'
+			female: 'Female'
 		};
 		return labels[gender] || gender;
 	}

@@ -63,7 +63,6 @@ logger = logging.getLogger(__name__)
 GENDER_MAP = {
     "male": Gender.MALE,
     "female": Gender.FEMALE,
-    "other": Gender.OTHER,
 }
 
 
