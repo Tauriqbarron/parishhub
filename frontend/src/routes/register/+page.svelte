@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
 	import type { RegistrationType } from '$lib/stores/registrationSession';
 	import ProgressIndicator from '$lib/components/registration/ProgressIndicator.svelte';
