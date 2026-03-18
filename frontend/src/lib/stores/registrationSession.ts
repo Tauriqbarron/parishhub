@@ -14,6 +14,8 @@ export interface RegistrationMemberRelationship {
 	relationshipType: string;
 }
 
+export type FamilyRole = 'parent' | 'child';
+
 export interface RegistrationMember {
 	tempId: string;
 	firstName: string;
@@ -24,6 +26,7 @@ export interface RegistrationMember {
 	phone: string;
 	email: string;
 	isHeadOfHousehold: boolean;
+	familyRole: FamilyRole;
 	sacraments: RegistrationMemberSacrament[];
 	relationships: RegistrationMemberRelationship[];
 }
@@ -222,7 +225,12 @@ function createRegistrationSessionStore() {
 				const updated = {
 					...session,
 					lastUpdated: new Date().toISOString(),
-					members: session.members.filter((m) => m.tempId !== tempId)
+					members: session.members
+						.filter((m) => m.tempId !== tempId)
+						.map((m) => ({
+							...m,
+							relationships: m.relationships.filter((r) => r.targetTempId !== tempId)
+						}))
 				};
 				debouncedSave(updated);
 				return updated;

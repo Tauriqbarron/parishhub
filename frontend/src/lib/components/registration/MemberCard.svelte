@@ -225,16 +225,20 @@
 			{/if}
 
 			<div class="flex items-center justify-between pt-2">
-				<label class="flex items-center gap-2 cursor-pointer">
-					<input
-						type="checkbox"
-						checked={member.isHeadOfHousehold}
-						onchange={(e) => handleHeadOfHousehold(e.currentTarget.checked)}
-						class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-					/>
-					<span class="text-sm text-gray-700">Head of Household</span>
-					<Tooltip text="Only one person can be the head of household" />
-				</label>
+				{#if member.familyRole !== 'child'}
+					<label class="flex items-center gap-2 cursor-pointer">
+						<input
+							type="checkbox"
+							checked={member.isHeadOfHousehold}
+							onchange={(e) => handleHeadOfHousehold(e.currentTarget.checked)}
+							class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+						/>
+						<span class="text-sm text-gray-700">Head of Household</span>
+						<Tooltip text="Only one person can be the head of household" />
+					</label>
+				{:else}
+					<div></div>
+				{/if}
 
 				{#if showDeleteConfirm}
 					<div class="flex items-center gap-2">

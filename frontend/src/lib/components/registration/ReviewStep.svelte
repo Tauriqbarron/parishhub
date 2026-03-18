@@ -205,7 +205,7 @@
 				</h3>
 				<button
 					type="button"
-					onclick={() => goToStep(1)}
+					onclick={() => goToStep(registrationType === 'individual' ? 1 : 2)}
 					class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,43 +223,126 @@
 				{#if session.members.length === 0}
 					<p class="text-sm text-gray-500 italic">No family members added.</p>
 				{:else}
-					<div class="space-y-3">
-						{#each session.members as member}
-							<div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-								<div
-									class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
-								>
-									<span class="text-blue-600 font-medium">
-										{member.firstName.charAt(0)}{member.lastName.charAt(0)}
-									</span>
-								</div>
-								<div class="flex-1 min-w-0">
-									<div class="flex items-center gap-2">
-										<p class="text-sm font-medium text-gray-900">{getMemberName(member)}</p>
-										{#if member.isHeadOfHousehold && registrationType === 'household'}
-											<span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full"
-												>Head</span
+					{@const parents = session.members.filter((m) => m.familyRole === 'parent')}
+					{@const children = session.members.filter((m) => m.familyRole === 'child')}
+
+					{#if registrationType === 'household' && (parents.length > 0 || children.length > 0)}
+						{#if parents.length > 0}
+							<div class="mb-4">
+								<h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+									Parents / Guardians
+								</h4>
+								<div class="space-y-3">
+									{#each parents as member}
+										<div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+											<div
+												class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
 											>
-										{/if}
-									</div>
-									<p class="text-sm text-gray-500">
-										{#if member.dateOfBirth}{formatDate(member.dateOfBirth)}{/if}
-										{#if member.dateOfBirth && member.gender}
-											·
-										{/if}
-										{#if member.gender}{formatGender(member.gender)}{/if}
-									</p>
-									{#if member.email || member.phone}
-										<p class="text-sm text-gray-500">
-											{member.email || ''}{member.email && member.phone
-												? ' · '
-												: ''}{member.phone || ''}
-										</p>
-									{/if}
+												<span class="text-blue-600 font-medium">
+													{member.firstName.charAt(0)}{member.lastName.charAt(0)}
+												</span>
+											</div>
+											<div class="flex-1 min-w-0">
+												<div class="flex items-center gap-2">
+													<p class="text-sm font-medium text-gray-900">
+														{getMemberName(member)}
+													</p>
+													{#if member.isHeadOfHousehold}
+														<span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full"
+															>Head</span
+														>
+													{/if}
+												</div>
+												<p class="text-sm text-gray-500">
+													{#if member.dateOfBirth}{formatDate(member.dateOfBirth)}{/if}
+													{#if member.dateOfBirth && member.gender}·{/if}
+													{#if member.gender}{formatGender(member.gender)}{/if}
+												</p>
+												{#if member.email || member.phone}
+													<p class="text-sm text-gray-500">
+														{member.email || ''}{member.email && member.phone
+															? ' · '
+															: ''}{member.phone || ''}
+													</p>
+												{/if}
+											</div>
+										</div>
+									{/each}
 								</div>
 							</div>
-						{/each}
-					</div>
+						{/if}
+
+						{#if children.length > 0}
+							<div>
+								<h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+									Children
+								</h4>
+								<div class="space-y-3">
+									{#each children as member}
+										<div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+											<div
+												class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
+											>
+												<span class="text-blue-600 font-medium">
+													{member.firstName.charAt(0)}{member.lastName.charAt(0)}
+												</span>
+											</div>
+											<div class="flex-1 min-w-0">
+												<p class="text-sm font-medium text-gray-900">
+													{getMemberName(member)}
+												</p>
+												<p class="text-sm text-gray-500">
+													{#if member.dateOfBirth}{formatDate(member.dateOfBirth)}{/if}
+													{#if member.dateOfBirth && member.gender}·{/if}
+													{#if member.gender}{formatGender(member.gender)}{/if}
+												</p>
+												{#if member.email || member.phone}
+													<p class="text-sm text-gray-500">
+														{member.email || ''}{member.email && member.phone
+															? ' · '
+															: ''}{member.phone || ''}
+													</p>
+												{/if}
+											</div>
+										</div>
+									{/each}
+								</div>
+							</div>
+						{/if}
+					{:else}
+						<div class="space-y-3">
+							{#each session.members as member}
+								<div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+									<div
+										class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
+									>
+										<span class="text-blue-600 font-medium">
+											{member.firstName.charAt(0)}{member.lastName.charAt(0)}
+										</span>
+									</div>
+									<div class="flex-1 min-w-0">
+										<div class="flex items-center gap-2">
+											<p class="text-sm font-medium text-gray-900">
+												{getMemberName(member)}
+											</p>
+										</div>
+										<p class="text-sm text-gray-500">
+											{#if member.dateOfBirth}{formatDate(member.dateOfBirth)}{/if}
+											{#if member.dateOfBirth && member.gender}·{/if}
+											{#if member.gender}{formatGender(member.gender)}{/if}
+										</p>
+										{#if member.email || member.phone}
+											<p class="text-sm text-gray-500">
+												{member.email || ''}{member.email && member.phone
+													? ' · '
+													: ''}{member.phone || ''}
+											</p>
+										{/if}
+									</div>
+								</div>
+							{/each}
+						</div>
+					{/if}
 				{/if}
 			</div>
 		</div>
@@ -268,7 +351,7 @@
 			<!-- Relationships Summary -->
 			<div class="border rounded-lg overflow-hidden">
 				<div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-b">
-					<h3 class="font-medium text-gray-900">Relationships</h3>
+					<h3 class="font-medium text-gray-900">Family Relationships</h3>
 					<button
 						type="button"
 						onclick={() => goToStep(3)}
