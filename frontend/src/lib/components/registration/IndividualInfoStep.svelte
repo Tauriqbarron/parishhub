@@ -48,6 +48,7 @@
 				phone: updatedMember.phone || '',
 				email: updatedMember.email || '',
 				isHeadOfHousehold: false,
+				familyRole: 'parent',
 				sacraments: updatedMember.sacraments || [],
 				relationships: []
 			});
