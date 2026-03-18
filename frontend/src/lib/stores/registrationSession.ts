@@ -142,6 +142,11 @@ function createRegistrationSessionStore() {
 		initSession(): RegistrationSession {
 			const stored = loadFromStorage();
 			if (stored && stored.id) {
+				// Validate consistency: can't be past step 0 without a registration type
+				if (stored.currentStep > 0 && !stored.registrationType) {
+					stored.currentStep = 0;
+					stored.registrationType = null;
+				}
 				set(stored);
 				return stored;
 			}

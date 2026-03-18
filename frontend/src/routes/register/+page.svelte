@@ -56,11 +56,17 @@
 	// Keep registrationType in sync with store
 	$effect(() => {
 		const unsubscribe = registrationSessionStore.subscribe((s) => {
-			if (s.registrationType !== registrationType) {
-				registrationType = s.registrationType;
-			}
+			registrationType = s.registrationType;
 		});
 		return unsubscribe;
+	});
+
+	// Guard: reset to step 0 if registrationType is lost while past step 0
+	$effect(() => {
+		if (!registrationType && currentStep > 0) {
+			currentStep = 0;
+			registrationSessionStore.setCurrentStep(0);
+		}
 	});
 
 	function goToPrevious() {
