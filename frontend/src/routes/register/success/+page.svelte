@@ -25,11 +25,14 @@
 	{/if}
 
 	<p class="text-gray-600 mb-4">
-		Your information has been submitted to the chaplaincy office. We will review your information and be in touch shortly.
+		Your information has been submitted to the chaplaincy office. We will review your information
+		and be in touch shortly.
 	</p>
 
 	<p class="text-gray-500 text-sm">
 		If you need to make any changes or additions, please contact us at
-		<a href="mailto:dataadmin@fssp.nz" class="text-blue-600 hover:text-blue-800 underline">dataadmin@fssp.nz</a>.
+		<a href="mailto:dataadmin@fssp.nz" class="text-blue-600 hover:text-blue-800 underline"
+			>dataadmin@fssp.nz</a
+		>.
 	</p>
 </div>
