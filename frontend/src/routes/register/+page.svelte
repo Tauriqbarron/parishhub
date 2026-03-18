@@ -134,49 +134,67 @@
 		</div>
 
 		<div class="bg-white rounded-lg shadow-lg p-6">
-			<ProgressIndicator {steps} {currentStep} />
+			{#if registrationComplete}
+				<div class="text-center py-12">
+					<div class="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+						<svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+						</svg>
+					</div>
+					<h2 class="text-2xl font-bold text-gray-900 mb-2">Registration Submitted!</h2>
+					<p class="text-gray-600 mb-4">
+						Thank you for registering with our chaplaincy. We will review your information and be in touch shortly.
+					</p>
+					<p class="text-gray-500 text-sm">
+						If you need to make any changes or additions, please contact us at
+						<a href="mailto:dataadmin@fssp.nz" class="text-blue-600 hover:text-blue-800 underline">dataadmin@fssp.nz</a>.
+					</p>
+				</div>
+			{:else}
+				<ProgressIndicator {steps} {currentStep} />
 
-			<div class="min-h-[300px] py-6">
-				{#if currentStep === 0}
-					<RegistrationTypeStep bind:this={stepComponents[0]} />
-				{:else if registrationType === 'household'}
-					{#if currentStep === 1}
-						<HouseholdStep bind:this={stepComponents[1]} />
-					{:else if currentStep === 2}
-						<FamilyMembersStep bind:this={stepComponents[2]} />
-					{:else if currentStep === 3}
-						<RelationshipsStep bind:this={stepComponents[3]} />
-					{:else if currentStep === 4}
-						<SacramentsStep bind:this={stepComponents[4]} />
-					{:else if currentStep === 5}
-						<ConsentStep bind:this={stepComponents[5]} />
-					{:else if currentStep === 6}
-						<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
+				<div class="min-h-[300px] py-6">
+					{#if currentStep === 0}
+						<RegistrationTypeStep bind:this={stepComponents[0]} />
+					{:else if registrationType === 'household'}
+						{#if currentStep === 1}
+							<HouseholdStep bind:this={stepComponents[1]} />
+						{:else if currentStep === 2}
+							<FamilyMembersStep bind:this={stepComponents[2]} />
+						{:else if currentStep === 3}
+							<RelationshipsStep bind:this={stepComponents[3]} />
+						{:else if currentStep === 4}
+							<SacramentsStep bind:this={stepComponents[4]} />
+						{:else if currentStep === 5}
+							<ConsentStep bind:this={stepComponents[5]} />
+						{:else if currentStep === 6}
+							<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
+						{/if}
+					{:else if registrationType === 'individual'}
+						{#if currentStep === 1}
+							<IndividualInfoStep bind:this={stepComponents[1]} />
+						{:else if currentStep === 2}
+							<SacramentsStep bind:this={stepComponents[2]} />
+						{:else if currentStep === 3}
+							<ConsentStep bind:this={stepComponents[3]} />
+						{:else if currentStep === 4}
+							<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
+						{/if}
 					{/if}
-				{:else if registrationType === 'individual'}
-					{#if currentStep === 1}
-						<IndividualInfoStep bind:this={stepComponents[1]} />
-					{:else if currentStep === 2}
-						<SacramentsStep bind:this={stepComponents[2]} />
-					{:else if currentStep === 3}
-						<ConsentStep bind:this={stepComponents[3]} />
-					{:else if currentStep === 4}
-						<ReviewStep on:goToStep={(e) => goToStep(e.detail)} on:complete={handleComplete} />
-					{/if}
+				</div>
+
+				{#if !isLastStep}
+					<StepNavigation
+						{currentStep}
+						totalSteps={steps.length}
+						onPrevious={goToPrevious}
+						onNext={goToNext}
+						onSubmit={handleSubmit}
+						{isSubmitting}
+						{validateCurrentStep}
+						{showValidationError}
+					/>
 				{/if}
-			</div>
-
-			{#if !isLastStep && !registrationComplete}
-				<StepNavigation
-					{currentStep}
-					totalSteps={steps.length}
-					onPrevious={goToPrevious}
-					onNext={goToNext}
-					onSubmit={handleSubmit}
-					{isSubmitting}
-					{validateCurrentStep}
-					{showValidationError}
-				/>
 			{/if}
 		</div>
 	</div>
