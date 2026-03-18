@@ -119,6 +119,10 @@ fi
 log "Restarting services..."
 docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate backend frontend nginx
 
+# Ensure monitoring services are running
+log "Starting monitoring services..."
+docker compose -f "$COMPOSE_FILE" up -d prometheus grafana uptime-kuma
+
 # Health check loop
 log "Waiting for health check..."
 for i in $(seq 1 "$MAX_HEALTH_RETRIES"); do

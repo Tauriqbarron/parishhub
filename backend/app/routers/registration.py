@@ -159,7 +159,10 @@ async def submit_registration(
             )
             db.add(household_member)
 
-        # Step 4: Create relationships
+        # Step 4: Create relationships (deduplicate to avoid unique constraint violations
+        # when frontend sends both directions of a symmetric relationship)
+        seen_relationships: set[tuple[int, int, str]] = set()
+
         for rel in data.relationships:
             from_person_id = temp_id_to_person_id.get(rel.from_temp_id)
             to_person_id = temp_id_to_person_id.get(rel.to_temp_id)
@@ -177,6 +180,18 @@ async def submit_registration(
                     detail=f"Invalid relationship type: {rel.relationship_type}",
                 )
 
+            inverse_type = FamilyRelationshipService.INVERSE_RELATIONSHIPS[rel_type]
+
+            forward_key = (from_person_id, to_person_id, rel_type.value)
+            inverse_key = (to_person_id, from_person_id, inverse_type.value)
+
+            # Skip if we've already added this pair (forward or inverse)
+            if forward_key in seen_relationships:
+                continue
+
+            seen_relationships.add(forward_key)
+            seen_relationships.add(inverse_key)
+
             # Create forward relationship
             relationship = FamilyRelationship(
                 person_id=from_person_id,
@@ -185,8 +200,7 @@ async def submit_registration(
             )
             db.add(relationship)
 
-            # Create inverse relationship using the canonical mapping
-            inverse_type = FamilyRelationshipService.INVERSE_RELATIONSHIPS[rel_type]
+            # Create inverse relationship
             inverse_relationship = FamilyRelationship(
                 person_id=to_person_id,
                 related_person_id=from_person_id,
