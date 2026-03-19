@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { householdApi, type HouseholdCreate, type HouseholdWithMembers } from '$lib/api';
 	import { toasts } from '$lib/stores/toast';
+	import AddressAutocomplete from '$lib/components/AddressAutocomplete.svelte';
 
 	interface Props {
 		onSave: (household: HouseholdWithMembers) => void;
@@ -127,13 +128,17 @@
 							<label for="address_line1" class="block text-sm font-medium text-gray-700">
 								Address Line 1
 							</label>
-							<input
-								type="text"
+							<AddressAutocomplete
 								id="address_line1"
-								name="address_line1"
-								bind:value={form.address_line1}
-								placeholder="Street address"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								value={form.address_line1 ?? ''}
+								onSelect={(address) => {
+									form.address_line1 = address.address_line1;
+									form.address_line2 = address.address_line2 || null;
+									form.city = address.city || null;
+									form.postal_code = address.postal_code || null;
+								}}
+								onInput={(val) => (form.address_line1 = val || null)}
+								placeholder="Start typing an address..."
 							/>
 						</div>
 

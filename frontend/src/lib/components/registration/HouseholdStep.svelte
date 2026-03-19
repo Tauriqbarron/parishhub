@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
 	import Tooltip from '$lib/components/Tooltip.svelte';
+	import AddressAutocomplete from '$lib/components/AddressAutocomplete.svelte';
 	import { get } from 'svelte/store';
 
 	let household = $derived(get(registrationSessionStore).household);
@@ -50,6 +51,21 @@
 		}
 	}
 
+	function handleAddressSelect(address: {
+		address_line1: string;
+		address_line2: string;
+		city: string;
+		postal_code: string;
+	}): void {
+		registrationSessionStore.updateHousehold({
+			address: address.address_line1,
+			city: address.city,
+			state: address.address_line2,
+			zipCode: address.postal_code
+		});
+		errors = { ...errors, address: '', city: '' };
+	}
+
 	export function isValid(): boolean {
 		return validate();
 	}
@@ -84,14 +100,14 @@
 			</label>
 			<Tooltip text="Your primary residence street address" />
 		</div>
-		<input
+		<AddressAutocomplete
 			id="address"
-			type="text"
 			value={household.address}
-			oninput={(e) => handleInput('address', e.currentTarget.value)}
-			class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
-				{errors.address ? 'border-red-500' : ''}"
-			placeholder="123 Main Street"
+			onSelect={handleAddressSelect}
+			onInput={(val) => handleInput('address', val)}
+			error={errors.address}
+			required
+			placeholder="Start typing an address..."
 		/>
 		{#if errors.address}
 			<p class="mt-1 text-sm text-red-600">{errors.address}</p>
