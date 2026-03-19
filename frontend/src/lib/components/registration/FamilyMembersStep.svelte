@@ -29,6 +29,7 @@
 			phone: '',
 			email: '',
 			isHeadOfHousehold: isFirstParent,
+			livesInHousehold: true,
 			familyRole: role,
 			sacraments: [],
 			relationships: []

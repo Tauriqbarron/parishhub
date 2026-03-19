@@ -71,6 +71,13 @@
 					Head of Household
 				</span>
 			{/if}
+			{#if member.familyRole === 'child' && !member.livesInHousehold}
+				<span
+					class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800"
+				>
+					Not in household
+				</span>
+			{/if}
 		</div>
 		<svg
 			class="w-5 h-5 text-gray-500 transition-transform {expanded ? 'rotate-180' : ''}"
@@ -237,7 +244,16 @@
 						<Tooltip text="Only one person can be the head of household" />
 					</label>
 				{:else}
-					<div></div>
+					<label class="flex items-center gap-2 cursor-pointer">
+						<input
+							type="checkbox"
+							checked={member.livesInHousehold}
+							onchange={(e) => handleInput('livesInHousehold', e.currentTarget.checked)}
+							class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+						/>
+						<span class="text-sm text-gray-700">Lives in household</span>
+						<Tooltip text="Uncheck if this child has moved out or lives elsewhere" />
+					</label>
 				{/if}
 
 				{#if showDeleteConfirm}

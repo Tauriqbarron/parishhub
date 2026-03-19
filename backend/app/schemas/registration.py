@@ -21,6 +21,7 @@ class RegistrationMember(BaseModel):
     phone: Optional[str] = Field(default=None, max_length=20)
     email: Optional[str] = None
     is_head_of_household: bool = Field(default=False, alias="isHeadOfHousehold")
+    lives_in_household: bool = Field(default=True, alias="livesInHousehold")
 
     model_config = {"populate_by_name": True}  # Allow both alias and field names
 

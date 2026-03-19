@@ -26,6 +26,7 @@ export interface RegistrationMember {
 	phone: string;
 	email: string;
 	isHeadOfHousehold: boolean;
+	livesInHousehold: boolean;
 	familyRole: FamilyRole;
 	sacraments: RegistrationMemberSacrament[];
 	relationships: RegistrationMemberRelationship[];

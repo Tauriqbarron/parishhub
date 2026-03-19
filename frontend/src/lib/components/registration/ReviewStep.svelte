@@ -288,9 +288,17 @@
 												</span>
 											</div>
 											<div class="flex-1 min-w-0">
-												<p class="text-sm font-medium text-gray-900">
-													{getMemberName(member)}
-												</p>
+												<div class="flex items-center gap-2">
+													<p class="text-sm font-medium text-gray-900">
+														{getMemberName(member)}
+													</p>
+													{#if !member.livesInHousehold}
+														<span
+															class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full"
+															>Not in household</span
+														>
+													{/if}
+												</div>
 												<p class="text-sm text-gray-500">
 													{#if member.dateOfBirth}{formatDate(member.dateOfBirth)}{/if}
 													{#if member.dateOfBirth && member.gender}·{/if}

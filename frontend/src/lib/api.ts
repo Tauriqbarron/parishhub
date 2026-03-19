@@ -712,6 +712,7 @@ export const registrationApi = {
 			phone: string;
 			email: string;
 			isHeadOfHousehold: boolean;
+			livesInHousehold: boolean;
 			sacraments: Array<{
 				type: string;
 				date: string;
@@ -769,7 +770,8 @@ export const registrationApi = {
 				gender: m.gender || null,
 				phone: m.phone || null,
 				email: m.email || null,
-				isHeadOfHousehold: m.isHeadOfHousehold
+				isHeadOfHousehold: m.isHeadOfHousehold,
+				livesInHousehold: m.livesInHousehold ?? true
 			})),
 			relationships,
 			sacraments,
