@@ -24,7 +24,7 @@ jobs:
 
       - name: Run Trivy on backend
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: 'parish-backend:scan'
           format: 'table'
@@ -37,7 +37,7 @@ jobs:
 
       - name: Run Trivy on frontend
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: 'parish-frontend:scan'
           format: 'table'
@@ -52,7 +52,7 @@ jobs:
       - name: Generate SARIF report (backend)
         if: always()
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: 'parish-backend:scan'
           format: 'sarif'
@@ -65,7 +65,7 @@ jobs:
       - name: Generate SARIF report (frontend)
         if: always()
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: 'parish-frontend:scan'
           format: 'sarif'
