@@ -48,10 +48,14 @@
 	let highlightedIndex = $state(-1);
 	let searchTimeout: ReturnType<typeof setTimeout>;
 	let inputEl: HTMLInputElement;
+	let lastPropValue = value; // non-reactive — tracks last seen prop to detect external changes
 
-	// Sync local state when parent changes the value prop externally
+	// Sync local state only when parent changes value externally (e.g. form reset)
 	$effect(() => {
-		inputValue = value;
+		if (value !== lastPropValue) {
+			inputValue = value;
+			lastPropValue = value;
+		}
 	});
 
 	function buildAddressLine1(result: AddressResult): string {
@@ -97,6 +101,7 @@
 	function selectAddress(result: AddressResult) {
 		const line1 = buildAddressLine1(result);
 		inputValue = line1;
+		lastPropValue = line1;
 		onSelect(mapToStructured(result));
 		onInput(line1);
 		searchResults = [];
