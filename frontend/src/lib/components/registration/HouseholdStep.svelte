@@ -4,7 +4,7 @@
 	import AddressAutocomplete from '$lib/components/AddressAutocomplete.svelte';
 	import { get } from 'svelte/store';
 
-	let household = $derived(get(registrationSessionStore).household);
+	let household = $state(get(registrationSessionStore).household);
 
 	$effect(() => {
 		const unsubscribe = registrationSessionStore.subscribe((session) => {

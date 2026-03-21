@@ -2,7 +2,7 @@
 	import { registrationSessionStore } from '$lib/stores/registrationSession';
 	import { get } from 'svelte/store';
 
-	let consent = $derived(get(registrationSessionStore).consent);
+	let consent = $state(get(registrationSessionStore).consent);
 
 	$effect(() => {
 		const unsubscribe = registrationSessionStore.subscribe((session) => {

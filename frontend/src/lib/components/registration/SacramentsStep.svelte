@@ -3,7 +3,7 @@
 	import MemberSacraments from './MemberSacraments.svelte';
 	import { get } from 'svelte/store';
 
-	let members = $derived(get(registrationSessionStore).members);
+	let members = $state(get(registrationSessionStore).members);
 
 	$effect(() => {
 		const unsubscribe = registrationSessionStore.subscribe((session) => {

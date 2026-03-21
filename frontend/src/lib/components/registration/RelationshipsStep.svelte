@@ -13,7 +13,7 @@
 		{ value: 'sibling', label: 'Sibling of', inverse: 'sibling' }
 	] as const;
 
-	let members = $derived(get(registrationSessionStore).members);
+	let members = $state(get(registrationSessionStore).members);
 
 	$effect(() => {
 		const unsubscribe = registrationSessionStore.subscribe((session) => {
