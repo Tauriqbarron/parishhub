@@ -48,6 +48,8 @@
 				phone: updatedMember.phone || '',
 				email: updatedMember.email || '',
 				isHeadOfHousehold: false,
+				livesInHousehold: true,
+				familyRole: 'parent',
 				sacraments: updatedMember.sacraments || [],
 				relationships: []
 			});

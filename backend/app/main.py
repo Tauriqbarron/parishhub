@@ -13,16 +13,31 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from app.auth import User, require_auth
 from app.config import settings
 from app.limiter import limiter
-from app.routers import analytics, deaths, households, mass_times, persons, registration, relationships, sacraments, statistics
+from app.routers import (
+    addresses,
+    analytics,
+    deaths,
+    households,
+    mass_times,
+    persons,
+    registration,
+    relationships,
+    sacraments,
+    statistics,
+)
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
         response = await call_next(request)
-        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
+        )
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=31536000; includeSubDomains"
+        )
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         return response
@@ -65,6 +80,7 @@ app.include_router(analytics.population_router)
 app.include_router(mass_times.router)
 app.include_router(registration.router)
 app.include_router(registration.url_router)
+app.include_router(addresses.router)
 
 
 # Prometheus metrics instrumentation

@@ -145,19 +145,20 @@ async def submit_registration(
 
             temp_id_to_person_id[member.temp_id] = person.id
 
-            # Step 3: Add person as household member
-            role = (
-                HouseholdRole.HEAD
-                if member.is_head_of_household
-                else HouseholdRole.OTHER
-            )
-            household_member = HouseholdMember(
-                household_id=household.id,
-                person_id=person.id,
-                role=role,
-                is_primary_household=True,
-            )
-            db.add(household_member)
+            # Step 3: Add person as household member (skip if not living in household)
+            if member.lives_in_household:
+                role = (
+                    HouseholdRole.HEAD
+                    if member.is_head_of_household
+                    else HouseholdRole.OTHER
+                )
+                household_member = HouseholdMember(
+                    household_id=household.id,
+                    person_id=person.id,
+                    role=role,
+                    is_primary_household=True,
+                )
+                db.add(household_member)
 
         # Step 4: Create relationships (deduplicate to avoid unique constraint violations
         # when frontend sends both directions of a symmetric relationship)
