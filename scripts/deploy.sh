@@ -121,7 +121,7 @@ docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate backend front
 
 # Ensure monitoring services are running
 log "Starting monitoring services..."
-docker compose -f "$COMPOSE_FILE" up -d prometheus grafana
+docker compose -f "$COMPOSE_FILE" up -d prometheus grafana node-exporter
 
 # Health check loop
 log "Waiting for health check..."
