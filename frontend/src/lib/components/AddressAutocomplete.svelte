@@ -41,11 +41,18 @@
 		disabled = false
 	}: Props = $props();
 
+	let inputValue = $state(value);
 	let searchResults = $state<AddressResult[]>([]);
 	let isSearching = $state(false);
 	let showDropdown = $state(false);
 	let highlightedIndex = $state(-1);
 	let searchTimeout: ReturnType<typeof setTimeout>;
+	let inputEl: HTMLInputElement;
+
+	// Sync local state when parent changes the value prop externally
+	$effect(() => {
+		inputValue = value;
+	});
 
 	function buildAddressLine1(result: AddressResult): string {
 		const parts = [result.address_number, result.road_name, result.road_type_name].filter(Boolean);
@@ -61,8 +68,7 @@
 		};
 	}
 
-	function handleSearchInput(e: Event) {
-		const inputValue = (e.target as HTMLInputElement).value;
+	function handleSearchInput() {
 		onInput(inputValue);
 		showDropdown = true;
 		highlightedIndex = -1;
@@ -89,8 +95,10 @@
 	}
 
 	function selectAddress(result: AddressResult) {
+		const line1 = buildAddressLine1(result);
+		inputValue = line1;
 		onSelect(mapToStructured(result));
-		onInput(buildAddressLine1(result));
+		onInput(line1);
 		searchResults = [];
 		showDropdown = false;
 		highlightedIndex = -1;
@@ -125,7 +133,8 @@
 	<input
 		type="text"
 		{id}
-		{value}
+		bind:value={inputValue}
+		bind:this={inputEl}
 		{required}
 		{disabled}
 		oninput={handleSearchInput}
@@ -162,7 +171,7 @@
 			{#each searchResults as result, i (result.id)}
 				<button
 					type="button"
-					onclick={() => selectAddress(result)}
+					onmousedown={(e) => { e.preventDefault(); selectAddress(result); }}
 					class="w-full px-4 py-2.5 text-left hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors
 						{i === highlightedIndex ? 'bg-blue-50' : ''}"
 					role="option"
