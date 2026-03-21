@@ -171,7 +171,10 @@
 			{#each searchResults as result, i (result.id)}
 				<button
 					type="button"
-					onmousedown={(e) => { e.preventDefault(); selectAddress(result); }}
+					onmousedown={(e) => {
+						e.preventDefault();
+						selectAddress(result);
+					}}
 					class="w-full px-4 py-2.5 text-left hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors
 						{i === highlightedIndex ? 'bg-blue-50' : ''}"
 					role="option"
