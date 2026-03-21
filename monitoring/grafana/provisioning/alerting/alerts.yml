@@ -45,3 +45,48 @@ groups:
           description: "The Prometheus scrape target backend:8000 has been down for more than 2 minutes."
         labels:
           severity: critical
+
+  - orgId: 1
+    name: Server
+    folder: Parish API
+    interval: 5m
+    rules:
+      - uid: disk-space-low
+        title: Disk Space Low
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: 1 - (node_filesystem_avail_bytes{mountpoint="/",fstype!="tmpfs"} / node_filesystem_size_bytes{mountpoint="/",fstype!="tmpfs"})
+              instant: true
+              refId: A
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0.85
+                  operator:
+                    type: and
+                  reducer:
+                    type: last
+              refId: C
+        noDataState: Alerting
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "Disk space is running low"
+          description: "Root filesystem usage has exceeded 85% for more than 5 minutes."
+        labels:
+          severity: warning

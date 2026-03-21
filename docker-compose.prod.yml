@@ -70,6 +70,17 @@ services:
     networks:
       - parish-network
 
+  node-exporter:
+    image: prom/node-exporter:v1.8.1
+    restart: unless-stopped
+    command:
+      - "--path.rootfs=/host"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+    volumes:
+      - /:/host:ro,rslave
+    networks:
+      - parish-network
+
   prometheus:
     image: prom/prometheus:v2.51.0
     restart: unless-stopped
