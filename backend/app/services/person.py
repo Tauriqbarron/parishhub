@@ -58,6 +58,7 @@ class PersonService:
         has_sacrament: Optional[SacramentType] = None,
         missing_sacrament: Optional[SacramentType] = None,
         is_deceased: Optional[bool] = None,
+        has_household: Optional[bool] = None,
         sort_by: str = "last_name",
         sort_order: str = "asc",
     ) -> tuple[list[Person], int]:
@@ -120,6 +121,14 @@ class PersonService:
                     )
                 )
             )
+
+        # Household filter
+        if has_household is not None:
+            household_person_ids = select(HouseholdMember.person_id)
+            if has_household:
+                stmt = stmt.where(Person.id.in_(household_person_ids))
+            else:
+                stmt = stmt.where(Person.id.notin_(household_person_ids))
 
         # Get total count before pagination
         count_stmt = select(func.count()).select_from(stmt.subquery())

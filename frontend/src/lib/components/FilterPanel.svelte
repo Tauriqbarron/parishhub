@@ -8,6 +8,7 @@
 		has_sacrament?: SacramentType;
 		missing_sacrament?: SacramentType;
 		is_deceased?: boolean;
+		has_household?: boolean;
 	}
 
 	interface Props {
@@ -31,6 +32,12 @@
 		{ value: 'deceased', label: 'Deceased' }
 	];
 
+	const householdOptions: { value: 'all' | 'yes' | 'no'; label: string }[] = [
+		{ value: 'all', label: 'All' },
+		{ value: 'yes', label: 'In Household' },
+		{ value: 'no', label: 'Individual' }
+	];
+
 	const sacramentOptions: { value: SacramentType | ''; label: string }[] = [
 		{ value: '', label: 'Any' },
 		{ value: 'baptism', label: 'Baptism' },
@@ -46,6 +53,7 @@
 	let hasSacrament = $state<SacramentType | ''>('');
 	let missingSacrament = $state<SacramentType | ''>('');
 	let statusFilter = $state<'all' | 'living' | 'deceased'>('all');
+	let householdFilter = $state<'all' | 'yes' | 'no'>('all');
 
 	$effect(() => {
 		gender = filters.gender || '';
@@ -55,6 +63,8 @@
 		missingSacrament = filters.missing_sacrament || '';
 		statusFilter =
 			filters.is_deceased === true ? 'deceased' : filters.is_deceased === false ? 'living' : 'all';
+		householdFilter =
+			filters.has_household === true ? 'yes' : filters.has_household === false ? 'no' : 'all';
 	});
 
 	function applyFilters() {
@@ -65,7 +75,8 @@
 			has_sacrament: hasSacrament || undefined,
 			missing_sacrament: missingSacrament || undefined,
 			is_deceased:
-				statusFilter === 'deceased' ? true : statusFilter === 'living' ? false : undefined
+				statusFilter === 'deceased' ? true : statusFilter === 'living' ? false : undefined,
+			has_household: householdFilter === 'yes' ? true : householdFilter === 'no' ? false : undefined
 		});
 	}
 
@@ -76,6 +87,7 @@
 		hasSacrament = '';
 		missingSacrament = '';
 		statusFilter = 'all';
+		householdFilter = 'all';
 		onFilterChange({});
 	}
 
@@ -85,7 +97,8 @@
 			maxAge !== undefined ||
 			hasSacrament ||
 			missingSacrament ||
-			statusFilter !== 'all'
+			statusFilter !== 'all' ||
+			householdFilter !== 'all'
 	);
 </script>
 
@@ -183,6 +196,23 @@
 						/>
 					</div>
 				</fieldset>
+
+				<!-- Household Filter -->
+				<div>
+					<label for="household" class="block text-sm font-medium text-gray-700 mb-1"
+						>Household</label
+					>
+					<select
+						id="household"
+						bind:value={householdFilter}
+						onchange={applyFilters}
+						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+					>
+						{#each householdOptions as option (option.value)}
+							<option value={option.value}>{option.label}</option>
+						{/each}
+					</select>
+				</div>
 
 				<!-- Has Sacrament -->
 				<div>

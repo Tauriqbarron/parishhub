@@ -197,6 +197,7 @@ export interface PersonFilters {
 	has_sacrament?: SacramentType;
 	missing_sacrament?: SacramentType;
 	is_deceased?: boolean;
+	has_household?: boolean;
 	sort_by?: 'first_name' | 'last_name' | 'email' | 'created_at' | 'updated_at' | 'date_of_birth';
 	sort_order?: 'asc' | 'desc';
 	page?: number;

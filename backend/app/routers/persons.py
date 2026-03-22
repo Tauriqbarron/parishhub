@@ -68,9 +68,7 @@ async def list_persons(
     service: Annotated[PersonService, Depends(get_person_service)],
     user: Annotated[User, Depends(require_auth)],
     page: Annotated[int, Query(ge=1, description="Page number")] = 1,
-    per_page: Annotated[
-        int, Query(ge=1, le=100, description="Items per page")
-    ] = 20,
+    per_page: Annotated[int, Query(ge=1, le=100, description="Items per page")] = 20,
     search: Annotated[
         Optional[str], Query(description="Search in first_name, last_name, email")
     ] = None,
@@ -89,6 +87,12 @@ async def list_persons(
     ] = None,
     is_deceased: Annotated[
         Optional[bool], Query(description="Filter by deceased status")
+    ] = None,
+    has_household: Annotated[
+        Optional[bool],
+        Query(
+            description="Filter by household membership (true=in household, false=individual)"
+        ),
     ] = None,
     sort_by: Annotated[
         str,
@@ -112,6 +116,7 @@ async def list_persons(
     - Filter by sacrament received (has_sacrament)
     - Filter by sacrament NOT received (missing_sacrament)
     - Filter by deceased status (is_deceased)
+    - Filter by household membership (has_household)
     - Sorting by various fields
     """
     items, total = service.get_list(
@@ -124,6 +129,7 @@ async def list_persons(
         has_sacrament=has_sacrament,
         missing_sacrament=missing_sacrament,
         is_deceased=is_deceased,
+        has_household=has_household,
         sort_by=sort_by,
         sort_order=sort_order,
     )
