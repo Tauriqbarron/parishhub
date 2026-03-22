@@ -59,8 +59,27 @@
 	});
 
 	function buildAddressLine1(result: AddressResult): string {
-		const parts = [result.address_number, result.road_name, result.road_type_name].filter(Boolean);
-		return parts.join(' ') || result.full_address;
+		// When all three parts are available, construct directly
+		if (result.address_number && result.road_name && result.road_type_name) {
+			return `${result.address_number} ${result.road_name} ${result.road_type_name}`;
+		}
+		// Parts incomplete (e.g. road_type_name null) — extract street from full_address
+		// LINZ format: "street, suburb, city [postcode]"
+		let street = result.full_address;
+		const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		if (result.postcode) {
+			street = street.replace(new RegExp('\\s+' + escape(result.postcode) + '\\s*$'), '');
+		}
+		if (result.town_city) {
+			street = street.replace(new RegExp(',?\\s*' + escape(result.town_city) + '\\s*$', 'i'), '');
+		}
+		if (result.suburb_locality) {
+			street = street.replace(
+				new RegExp(',?\\s*' + escape(result.suburb_locality) + '\\s*$', 'i'),
+				''
+			);
+		}
+		return street.trim() || result.full_address;
 	}
 
 	function mapToStructured(result: AddressResult): StructuredAddress {
@@ -99,6 +118,7 @@
 	}
 
 	function selectAddress(result: AddressResult) {
+		clearTimeout(searchTimeout);
 		const line1 = buildAddressLine1(result);
 		inputValue = line1;
 		lastPropValue = line1;
