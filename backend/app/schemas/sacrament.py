@@ -72,3 +72,20 @@ class MarriageData(BaseModel):
     witness1: Annotated[Optional[str], Field(max_length=200)] = None
     witness2_id: Optional[int] = None
     witness2: Annotated[Optional[str], Field(max_length=200)] = None
+
+
+class MarriageSideEffects(BaseModel):
+    """Side effects from recording a marriage sacrament."""
+
+    household_created: bool = False
+    household_id: Optional[int] = None
+    household_name: Optional[str] = None
+    spouse_relationship_created: bool = False
+
+
+class SacramentResponseWithEffects(SacramentResponse):
+    """Sacrament response that includes marriage side-effect metadata."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    marriage_side_effects: Optional[MarriageSideEffects] = None
