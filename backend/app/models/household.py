@@ -9,6 +9,7 @@ from app.database import Base
 
 if TYPE_CHECKING:
     from app.models.person import Person
+    from app.models.sacrament import Sacrament
 
 
 class HouseholdRole(str, PyEnum):
@@ -30,6 +31,9 @@ class Household(Base):
     city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     postal_code: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     attending_since: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    origin_sacrament_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("sacraments.id", ondelete="SET NULL"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False
     )
@@ -38,6 +42,9 @@ class Household(Base):
     )
 
     # Relationships
+    origin_sacrament: Mapped[Optional["Sacrament"]] = relationship(
+        "Sacrament", uselist=False
+    )
     members: Mapped[list["HouseholdMember"]] = relationship(
         "HouseholdMember", back_populates="household", cascade="all, delete-orphan"
     )
