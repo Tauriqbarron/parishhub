@@ -4,15 +4,18 @@ from datetime import date
 from typing import Annotated, Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.auth import User, require_auth
 from app.database import get_db
+from app.models.household import Household
 from app.models.sacrament import SacramentType
 from app.schemas.pagination import PaginatedResponse
 from app.schemas.sacrament import (
     SacramentCreate,
     SacramentResponse,
+    SacramentResponseWithEffects,
     SacramentUpdate,
 )
 from app.services.person import PersonService
@@ -60,7 +63,7 @@ def get_sacrament_service(db: Session = Depends(get_db)) -> SacramentService:
 
 @router.post(
     "",
-    response_model=SacramentResponse,
+    response_model=SacramentResponseWithEffects,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new sacrament record",
 )
@@ -69,7 +72,7 @@ async def create_sacrament(
     service: Annotated[SacramentService, Depends(get_sacrament_service)],
     user: Annotated[User, Depends(require_auth)],
     db: Session = Depends(get_db),
-) -> SacramentResponse:
+) -> SacramentResponseWithEffects:
     """
     Create a new sacrament record.
 
@@ -89,8 +92,10 @@ async def create_sacrament(
     """
     validate_person_ids(db, sacrament_data.additional_data)
     try:
-        sacrament, _ = service.create(sacrament_data)
-        return SacramentResponse.model_validate(sacrament)
+        sacrament, side_effects = service.create(sacrament_data)
+        response = SacramentResponseWithEffects.model_validate(sacrament)
+        response.marriage_side_effects = side_effects
+        return response
     except SacramentValidationError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -245,6 +250,29 @@ async def delete_sacrament(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Sacrament record not found",
         )
+
+
+@router.delete(
+    "/{sacrament_id}/auto-household",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Undo auto-created household from marriage",
+)
+async def undo_marriage_household(
+    sacrament_id: int,
+    user: Annotated[User, Depends(require_auth)],
+    db: Session = Depends(get_db),
+) -> None:
+    """Delete the household that was auto-created when this marriage was recorded."""
+    household = db.execute(
+        select(Household).where(Household.origin_sacrament_id == sacrament_id)
+    ).scalar_one_or_none()
+    if not household:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No auto-created household found for this sacrament",
+        )
+    db.delete(household)  # Cascades to HouseholdMember via ondelete="CASCADE"
+    db.commit()
 
 
 # Person-nested endpoints
