@@ -2,11 +2,17 @@ import { writable } from 'svelte/store';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
+export interface ToastAction {
+	label: string;
+	onClick: () => void;
+}
+
 export interface Toast {
 	id: string;
 	message: string;
 	type: ToastType;
 	duration?: number;
+	actions?: ToastAction[];
 }
 
 function createToastStore() {
@@ -41,7 +47,13 @@ function createToastStore() {
 		success: (message: string, duration?: number) => add(message, 'success', duration),
 		error: (message: string, duration?: number) => add(message, 'error', duration),
 		warning: (message: string, duration?: number) => add(message, 'warning', duration),
-		info: (message: string, duration?: number) => add(message, 'info', duration)
+		info: (message: string, duration?: number) => add(message, 'info', duration),
+		successWithActions: (message: string, actions: ToastAction[], duration = 10000) => {
+			const id = crypto.randomUUID();
+			update((t) => [...t, { id, message, type: 'success' as ToastType, duration, actions }]);
+			if (duration > 0) setTimeout(() => remove(id), duration);
+			return id;
+		}
 	};
 }
 

@@ -55,6 +55,21 @@
 				/>
 			</svg>
 			<p class="flex-1 text-sm {textColors[toast.type]}">{toast.message}</p>
+			{#if toast.actions?.length}
+				<div class="flex gap-2 mt-1">
+					{#each toast.actions as action}
+						<button
+							class="text-sm font-medium underline hover:no-underline"
+							onclick={() => {
+								action.onClick();
+								toasts.remove(toast.id);
+							}}
+						>
+							{action.label}
+						</button>
+					{/each}
+				</div>
+			{/if}
 			<button
 				onclick={() => toasts.remove(toast.id)}
 				class="flex-shrink-0 p-1 -m-1 rounded hover:bg-black/5 transition-colors"
