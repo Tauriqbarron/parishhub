@@ -6,9 +6,15 @@ from typing import Any, Optional
 from sqlalchemy import extract, func, select
 from sqlalchemy.orm import Session, selectinload
 
+from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.person import Person
+from app.models.relationship import FamilyRelationship, RelationshipType
 from app.models.sacrament import Sacrament, SacramentType
-from app.schemas.sacrament import SacramentCreate, SacramentUpdate
+from app.schemas.sacrament import (
+    MarriageSideEffects,
+    SacramentCreate,
+    SacramentUpdate,
+)
 
 
 class SacramentValidationError(Exception):
@@ -53,7 +59,10 @@ class SacramentService:
             if sacrament_type in existing:
                 existing_sacrament = existing[sacrament_type]
                 # If we're updating the same sacrament, it's okay
-                if exclude_sacrament_id and existing_sacrament.id == exclude_sacrament_id:
+                if (
+                    exclude_sacrament_id
+                    and existing_sacrament.id == exclude_sacrament_id
+                ):
                     pass
                 else:
                     raise SacramentValidationError(
@@ -100,8 +109,10 @@ class SacramentService:
                         "Baptism date must be before Confirmation date"
                     )
 
-    def create(self, sacrament_data: SacramentCreate) -> Sacrament:
-        """Create a new sacrament record."""
+    def create(
+        self, sacrament_data: SacramentCreate
+    ) -> tuple[Sacrament, Optional[MarriageSideEffects]]:
+        """Create a new sacrament record. Returns (sacrament, side_effects)."""
         # Validate person exists
         person = self.db.get(Person, sacrament_data.person_id)
         if not person:
@@ -118,9 +129,109 @@ class SacramentService:
 
         sacrament = Sacrament(**sacrament_data.model_dump())
         self.db.add(sacrament)
+        self.db.flush()
+
+        side_effects = None
+        if sacrament_data.sacrament_type == SacramentType.MARRIAGE:
+            side_effects = self._handle_marriage_side_effects(person, sacrament)
+
         self.db.commit()
         self.db.refresh(sacrament)
-        return sacrament
+        return sacrament, side_effects
+
+    def _handle_marriage_side_effects(
+        self, person: Person, sacrament: Sacrament
+    ) -> MarriageSideEffects:
+        """Handle automatic side effects when a marriage is recorded."""
+        additional_data = sacrament.additional_data or {}
+        spouse_id = additional_data.get("spouse_id")
+        effects = MarriageSideEffects()
+
+        if spouse_id:
+            spouse = self.db.get(Person, spouse_id)
+            if spouse:
+                # Check if spouse relationship already exists
+                existing = self.db.execute(
+                    select(FamilyRelationship).where(
+                        FamilyRelationship.person_id == person.id,
+                        FamilyRelationship.related_person_id == spouse_id,
+                        FamilyRelationship.relationship_type == RelationshipType.SPOUSE,
+                    )
+                ).scalar_one_or_none()
+
+                if not existing:
+                    # Create bidirectional spouse relationship
+                    rel = FamilyRelationship(
+                        person_id=person.id,
+                        related_person_id=spouse_id,
+                        relationship_type=RelationshipType.SPOUSE,
+                    )
+                    inverse = FamilyRelationship(
+                        person_id=spouse_id,
+                        related_person_id=person.id,
+                        relationship_type=RelationshipType.SPOUSE,
+                    )
+                    self.db.add(rel)
+                    self.db.add(inverse)
+                    effects.spouse_relationship_created = True
+
+                # Generate household name
+                if person.last_name == spouse.last_name:
+                    household_name = f"The {person.last_name} Family"
+                else:
+                    household_name = f"{person.last_name} & {spouse.last_name} Family"
+
+                # Create new household
+                household = Household(
+                    name=household_name,
+                    origin_sacrament_id=sacrament.id,
+                )
+                self.db.add(household)
+                self.db.flush()
+
+                # Add both as members
+                head_member = HouseholdMember(
+                    household_id=household.id,
+                    person_id=person.id,
+                    role=HouseholdRole.HEAD,
+                    is_primary_household=True,
+                )
+                spouse_member = HouseholdMember(
+                    household_id=household.id,
+                    person_id=spouse_id,
+                    role=HouseholdRole.SPOUSE,
+                    is_primary_household=True,
+                )
+                self.db.add(head_member)
+                self.db.add(spouse_member)
+
+                # Remove both from parent households (where role=CHILD)
+                self.db.execute(
+                    HouseholdMember.__table__.delete().where(
+                        HouseholdMember.person_id == person.id,
+                        HouseholdMember.role == HouseholdRole.CHILD,
+                    )
+                )
+                self.db.execute(
+                    HouseholdMember.__table__.delete().where(
+                        HouseholdMember.person_id == spouse_id,
+                        HouseholdMember.role == HouseholdRole.CHILD,
+                    )
+                )
+
+                # Store auto-created household ID in sacrament additional_data
+                additional_data["auto_created_household_id"] = household.id
+                sacrament.additional_data = additional_data
+
+                effects.household_created = True
+                effects.household_id = household.id
+                effects.household_name = household_name
+        else:
+            # Spouse not in system — mark as deferred
+            additional_data["household_deferred"] = True
+            sacrament.additional_data = additional_data
+
+        return effects
 
     def get_by_id(self, sacrament_id: int) -> Optional[Sacrament]:
         """Get a sacrament by ID."""

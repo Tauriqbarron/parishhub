@@ -33,9 +33,7 @@ PERSON_ID_FIELDS = [
 ]
 
 
-def validate_person_ids(
-    db: Session, additional_data: Optional[dict[str, Any]]
-) -> None:
+def validate_person_ids(db: Session, additional_data: Optional[dict[str, Any]]) -> None:
     """Validate that all person ID references in additional_data exist."""
     if not additional_data:
         return
@@ -49,6 +47,7 @@ def validate_person_ids(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Person with ID {person_id} not found for field '{field}'",
                 )
+
 
 # Secondary router for person-nested endpoints
 persons_router = APIRouter(prefix="/api/persons", tags=["persons"])
@@ -90,7 +89,7 @@ async def create_sacrament(
     """
     validate_person_ids(db, sacrament_data.additional_data)
     try:
-        sacrament = service.create(sacrament_data)
+        sacrament, _ = service.create(sacrament_data)
         return SacramentResponse.model_validate(sacrament)
     except SacramentValidationError as e:
         raise HTTPException(
@@ -108,9 +107,7 @@ async def list_sacraments(
     service: Annotated[SacramentService, Depends(get_sacrament_service)],
     user: Annotated[User, Depends(require_auth)],
     page: Annotated[int, Query(ge=1, description="Page number")] = 1,
-    per_page: Annotated[
-        int, Query(ge=1, le=100, description="Items per page")
-    ] = 20,
+    per_page: Annotated[int, Query(ge=1, le=100, description="Items per page")] = 20,
     sacrament_type: Annotated[
         Optional[SacramentType], Query(description="Filter by sacrament type")
     ] = None,
@@ -280,7 +277,7 @@ async def create_person_sacrament(
     updated_data = SacramentCreate(**sacrament_data_dict)
 
     try:
-        sacrament = service.create(updated_data)
+        sacrament, _ = service.create(updated_data)
         return SacramentResponse.model_validate(sacrament)
     except SacramentValidationError as e:
         raise HTTPException(
