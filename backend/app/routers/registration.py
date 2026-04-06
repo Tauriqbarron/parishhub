@@ -9,18 +9,6 @@ from sqlalchemy.orm import Session
 from app.auth import User, require_auth
 from app.database import get_db
 from app.limiter import limiter
-from app.mappings import (
-    GENDER_MAP,
-    RELATIONSHIP_TYPE_MAP,
-    SACRAMENT_TYPE_MAP,
-)
-from app.models.analytics import Birth
-from app.models.consent import HouseholdConsent
-from app.models.household import Household, HouseholdMember, HouseholdRole
-from app.models.person import Person
-from app.models.relationship import FamilyRelationship
-from app.models.sacrament import Sacrament, SacramentType
-from app.models.settings import Setting
 from app.schemas.registration import (
     IndividualRegistrationResponse,
     IndividualRegistrationSubmission,
@@ -29,23 +17,10 @@ from app.schemas.registration import (
     RegistrationURLConfig,
     RegistrationURLResponse,
 )
-from app.services.relationship import FamilyRelationshipService
+from app.services.registration import RegistrationService, get_registration_service
 
 router = APIRouter(prefix="/api/register", tags=["registration"])
 url_router = APIRouter(prefix="/api/v1/registration", tags=["registration-config"])
-
-REGISTRATION_URL_KEY = "registration_base_url"
-REGISTRATION_PATH = "/register"
-
-# Sacrament order for validation (earlier sacraments must be created first)
-SACRAMENT_ORDER = {
-    SacramentType.BAPTISM: 0,
-    SacramentType.FIRST_COMMUNION: 1,
-    SacramentType.CONFIRMATION: 2,
-    SacramentType.MARRIAGE: 3,
-    SacramentType.HOLY_ORDERS: 4,
-    SacramentType.ANOINTING: 5,
-}
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +35,7 @@ logger = logging.getLogger(__name__)
 async def submit_registration(
     request: Request,
     data: RegistrationSubmission,
-    db: Session = Depends(get_db),
+    service: Annotated[RegistrationService, Depends(get_registration_service)],
 ) -> RegistrationResponse:
     """
     Process bulk household registration from public form.
@@ -78,264 +53,14 @@ async def submit_registration(
     the entire registration is rolled back.
     """
     try:
-        # Step 1: Create household
-        household = Household(
-            name=data.household_name,
-            address_line1=data.street_address,
-            city=data.city,
-            postal_code=data.postal_code,
-            attending_since=data.attending_since,
-        )
-        db.add(household)
-        db.flush()  # Get household ID
-
-        # Step 1b: Store consent if provided
-        if data.consent:
-            consent_record = HouseholdConsent(
-                household_id=household.id,
-                data_privacy_consent=data.consent.data_privacy_consent,
-                photo_media_release=data.consent.photo_media_release,
-                comm_email=data.consent.comm_email,
-                comm_sms=data.consent.comm_sms,
-                comm_phone=data.consent.comm_phone,
-                terms_acknowledged=data.consent.terms_acknowledged,
-                ip_address=request.client.host if request.client else None,
-            )
-            db.add(consent_record)
-
-        # Step 2: Create persons and build temp_id -> real_id mapping
-        temp_id_to_person_id: dict[str, int] = {}
-
-        for member in data.members:
-            # Convert gender string to enum
-            gender = None
-            if member.gender:
-                gender = GENDER_MAP.get(member.gender.lower())
-
-            person = Person(
-                first_name=member.first_name,
-                middle_name=member.middle_name,
-                last_name=member.last_name,
-                date_of_birth=member.date_of_birth,
-                gender=gender,
-                phone=member.phone,
-                email=member.email if member.email else None,
-            )
-            db.add(person)
-            db.flush()  # Get person ID
-
-            temp_id_to_person_id[member.temp_id] = person.id
-
-            # Step 3: Add person as household member (skip if not living in household)
-            if member.lives_in_household:
-                role = (
-                    HouseholdRole.HEAD
-                    if member.is_head_of_household
-                    else HouseholdRole.OTHER
-                )
-                household_member = HouseholdMember(
-                    household_id=household.id,
-                    person_id=person.id,
-                    role=role,
-                    is_primary_household=True,
-                )
-                db.add(household_member)
-
-        # Step 4: Create relationships (deduplicate to avoid unique constraint violations
-        # when frontend sends both directions of a symmetric relationship)
-        seen_relationships: set[tuple[int, int, str]] = set()
-
-        for rel in data.relationships:
-            from_person_id = temp_id_to_person_id.get(rel.from_temp_id)
-            to_person_id = temp_id_to_person_id.get(rel.to_temp_id)
-
-            if not from_person_id or not to_person_id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Invalid relationship: member temp_id not found",
-                )
-
-            rel_type = RELATIONSHIP_TYPE_MAP.get(rel.relationship_type.lower())
-            if not rel_type:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid relationship type: {rel.relationship_type}",
-                )
-
-            inverse_type = FamilyRelationshipService.INVERSE_RELATIONSHIPS[rel_type]
-
-            forward_key = (from_person_id, to_person_id, rel_type.value)
-            inverse_key = (to_person_id, from_person_id, inverse_type.value)
-
-            # Skip if we've already added this pair (forward or inverse)
-            if forward_key in seen_relationships:
-                continue
-
-            seen_relationships.add(forward_key)
-            seen_relationships.add(inverse_key)
-
-            # Create forward relationship
-            relationship = FamilyRelationship(
-                person_id=from_person_id,
-                related_person_id=to_person_id,
-                relationship_type=rel_type,
-            )
-            db.add(relationship)
-
-            # Create inverse relationship
-            inverse_relationship = FamilyRelationship(
-                person_id=to_person_id,
-                related_person_id=from_person_id,
-                relationship_type=inverse_type,
-            )
-            db.add(inverse_relationship)
-
-        # Step 5: Create sacraments (pre-sorted by sacrament order to ensure
-        # prerequisite sacraments like baptism are created before dependent ones)
-        validated_sacraments = []
-        for sac in data.sacraments:
-            person_id = temp_id_to_person_id.get(sac.member_temp_id)
-
-            if not person_id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid sacrament: member temp_id '{sac.member_temp_id}' not found. Available temp_ids: {list(temp_id_to_person_id.keys())}",
-                )
-
-            if not sac.sacrament_type or not sac.sacrament_type.strip():
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Sacrament type cannot be empty",
-                )
-
-            sac_type = SACRAMENT_TYPE_MAP.get(sac.sacrament_type.lower().strip())
-            if not sac_type:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid sacrament type: '{sac.sacrament_type}'. Valid types: {list(SACRAMENT_TYPE_MAP.keys())}",
-                )
-
-            if not sac.date:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Sacrament date is required for {sac.sacrament_type}",
-                )
-
-            # Validate date is not in the future for most sacraments (except some special cases)
-            from datetime import date
-
-            if sac.date > date.today():
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Sacrament date '{sac.date}' cannot be in the future for {sac.sacrament_type}",
-                )
-
-            validated_sacraments.append((sac, person_id, sac_type))
-
-        # Sort sacraments by type order (baptism first, then first_communion, etc.)
-        validated_sacraments.sort(key=lambda x: SACRAMENT_ORDER.get(x[2], 99))
-
-        for sac, person_id, sac_type in validated_sacraments:
-            try:
-                # Build additional_data with church and minister if provided
-                additional_data = (
-                    sac.additional_data.copy() if sac.additional_data else {}
-                )
-                if sac.church:
-                    if not sac.church.strip():
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Church name cannot be empty for {sac.sacrament_type}",
-                        )
-                    additional_data["church"] = sac.church.strip()
-                if sac.minister:
-                    if not sac.minister.strip():
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Minister name cannot be empty for {sac.sacrament_type}",
-                        )
-                    additional_data["minister"] = sac.minister.strip()
-
-                sacrament = Sacrament(
-                    person_id=person_id,
-                    sacrament_type=sac_type,
-                    date_received=sac.date,
-                    additional_data=additional_data if additional_data else None,
-                )
-                db.add(sacrament)
-            except ValueError as e:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid sacrament data for {sac.sacrament_type}: {str(e)}",
-                )
-            except Exception as e:
-                logger.error(
-                    f"Error creating sacrament {sac.sacrament_type} for person {person_id}: {str(e)}",
-                    exc_info=True,
-                )
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Failed to create {sac.sacrament_type} record. Please check the data and try again.",
-                )
-
-        # Step 6: Auto-create birth records for children born during parish tenure
-        if data.attending_since:
-            child_parents: dict[str, list[str]] = {}
-            for rel in data.relationships:
-                if rel.relationship_type.lower() == "parent":
-                    child_tid = rel.to_temp_id
-                    parent_tid = rel.from_temp_id
-                    if child_tid not in child_parents:
-                        child_parents[child_tid] = []
-                    child_parents[child_tid].append(parent_tid)
-
-            for child_temp_id, parent_temp_ids in child_parents.items():
-                child_member = next(
-                    (m for m in data.members if m.temp_id == child_temp_id), None
-                )
-                if not child_member or not child_member.date_of_birth:
-                    continue
-
-                if child_member.date_of_birth < data.attending_since:
-                    continue
-
-                child_person_id = temp_id_to_person_id.get(child_temp_id)
-                if not child_person_id:
-                    continue
-
-                resolved_parent_ids = []
-                for ptid in parent_temp_ids:
-                    pid = temp_id_to_person_id.get(ptid)
-                    if pid:
-                        resolved_parent_ids.append(pid)
-
-                birth_record = Birth(
-                    baby_first_name=child_member.first_name,
-                    baby_last_name=child_member.last_name,
-                    date_of_birth=child_member.date_of_birth,
-                    parent1_id=resolved_parent_ids[0]
-                    if len(resolved_parent_ids) > 0
-                    else None,
-                    parent2_id=resolved_parent_ids[1]
-                    if len(resolved_parent_ids) > 1
-                    else None,
-                    notes="Auto-recorded during family registration",
-                )
-                db.add(birth_record)
-
-        # Commit all changes
-        db.commit()
-
-        return RegistrationResponse(
-            household_id=household.id,
-            message="Registration submitted successfully",
-        )
-
+        result = service.register(data, request=request)
+        service.db.commit()
+        return result
     except HTTPException:
-        db.rollback()
+        service.db.rollback()
         raise
     except Exception as e:
-        db.rollback()
+        service.db.rollback()
         logger.error(f"Registration failed: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -353,7 +78,7 @@ async def submit_registration(
 async def submit_individual_registration(
     request: Request,
     data: IndividualRegistrationSubmission,
-    db: Session = Depends(get_db),
+    service: Annotated[RegistrationService, Depends(get_registration_service)],
 ) -> IndividualRegistrationResponse:
     """
     Process individual registration from public form (no household).
@@ -368,98 +93,14 @@ async def submit_individual_registration(
     All operations are wrapped in a transaction.
     """
     try:
-        # Step 1: Create person
-        gender = None
-        if data.gender:
-            gender = GENDER_MAP.get(data.gender.lower())
-
-        person = Person(
-            first_name=data.first_name,
-            middle_name=data.middle_name,
-            last_name=data.last_name,
-            date_of_birth=data.date_of_birth,
-            gender=gender,
-            phone=data.phone,
-            email=data.email if data.email else None,
-        )
-        db.add(person)
-        db.flush()
-
-        # Step 2: Create sacraments
-        validated_sacraments = []
-        for sac in data.sacraments:
-            if not sac.sacrament_type or not sac.sacrament_type.strip():
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Sacrament type cannot be empty",
-                )
-
-            sac_type = SACRAMENT_TYPE_MAP.get(sac.sacrament_type.lower().strip())
-            if not sac_type:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid sacrament type: '{sac.sacrament_type}'. Valid types: {list(SACRAMENT_TYPE_MAP.keys())}",
-                )
-
-            if not sac.date:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Sacrament date is required for {sac.sacrament_type}",
-                )
-
-            from datetime import date
-
-            if sac.date > date.today():
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Sacrament date '{sac.date}' cannot be in the future for {sac.sacrament_type}",
-                )
-
-            validated_sacraments.append((sac, sac_type))
-
-        validated_sacraments.sort(key=lambda x: SACRAMENT_ORDER.get(x[1], 99))
-
-        for sac, sac_type in validated_sacraments:
-            additional_data = sac.additional_data.copy() if sac.additional_data else {}
-            if sac.church:
-                if not sac.church.strip():
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Church name cannot be empty for {sac.sacrament_type}",
-                    )
-                additional_data["church"] = sac.church.strip()
-            if sac.minister:
-                if not sac.minister.strip():
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Minister name cannot be empty for {sac.sacrament_type}",
-                    )
-                additional_data["minister"] = sac.minister.strip()
-
-            sacrament = Sacrament(
-                person_id=person.id,
-                sacrament_type=sac_type,
-                date_received=sac.date,
-                additional_data=additional_data if additional_data else None,
-            )
-            db.add(sacrament)
-
-        # Step 3: Store consent (if provided) — no household, so store as person-level
-        # Note: HouseholdConsent requires household_id; for individuals without a household,
-        # consent is acknowledged but not stored in the consent table.
-
-        db.commit()
-
-        return IndividualRegistrationResponse(
-            person_id=person.id,
-            message="Registration submitted successfully",
-        )
-
+        result = service.register_individual(data)
+        service.db.commit()
+        return result
     except HTTPException:
-        db.rollback()
+        service.db.rollback()
         raise
     except Exception as e:
-        db.rollback()
+        service.db.rollback()
         logger.error(f"Individual registration failed: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -482,19 +123,11 @@ async def get_registration_url(
     Returns the base URL and full registration URL for QR code generation.
     Requires authentication.
     """
-    setting = db.query(Setting).filter(Setting.key == REGISTRATION_URL_KEY).first()
-
-    if not setting:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Registration URL not configured. Please set a base URL first.",
-        )
-
-    base_url = setting.value.rstrip("/")
-    registration_url = f"{base_url}{REGISTRATION_PATH}"
+    service = RegistrationService(db)
+    registration_url = service.get_registration_url()
 
     return RegistrationURLResponse(
-        base_url=base_url,
+        base_url=registration_url.rsplit("/register", 1)[0],
         registration_url=registration_url,
     )
 
@@ -515,19 +148,21 @@ async def update_registration_url(
     This URL is used for QR code generation (e.g., Cloudflare tunnel URL).
     Requires authentication.
     """
+    from app.models.settings import Setting
+
     base_url = config.base_url.rstrip("/")
 
-    setting = db.query(Setting).filter(Setting.key == REGISTRATION_URL_KEY).first()
+    setting = db.query(Setting).filter(Setting.key == "registration_base_url").first()
 
     if setting:
         setting.value = base_url
     else:
-        setting = Setting(key=REGISTRATION_URL_KEY, value=base_url)
+        setting = Setting(key="registration_base_url", value=base_url)
         db.add(setting)
 
     db.commit()
 
-    registration_url = f"{base_url}{REGISTRATION_PATH}"
+    registration_url = f"{base_url}/register"
 
     return RegistrationURLResponse(
         base_url=base_url,
