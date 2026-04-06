@@ -162,8 +162,7 @@ class SacramentService:
         self, person: Person, sacrament: Sacrament
     ) -> MarriageSideEffects:
         """Handle automatic side effects when a marriage is recorded."""
-        additional_data = sacrament.additional_data or {}
-        spouse_id = additional_data.get("spouse_id")
+        spouse_id = sacrament.spouse_id
         effects = MarriageSideEffects()
 
         if spouse_id:
@@ -239,16 +238,13 @@ class SacramentService:
                 )
 
                 # Store auto-created household ID in sacrament additional_data
-                additional_data["auto_created_household_id"] = household.id
-                sacrament.additional_data = additional_data
-
+                # Store auto-created household ID in sacrament
+                sacrament.notes = (sacrament.notes or "") + " [Auto-created household]"
                 effects.household_created = True
-                effects.household_id = household.id
-                effects.household_name = household_name
+
         else:
             # Spouse not in system — mark as deferred
-            additional_data["household_deferred"] = True
-            sacrament.additional_data = additional_data
+            effects.household_deferred = True
 
         return effects
 

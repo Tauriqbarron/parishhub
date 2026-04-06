@@ -23,6 +23,7 @@ class SacramentBase(BaseModel):
     witness1: Annotated[Optional[str], Field(max_length=200)] = None
     witness2: Annotated[Optional[str], Field(max_length=200)] = None
     officiant: Annotated[Optional[str], Field(max_length=200)] = None
+    spouse_id: Optional[int] = None
 
 
 class SacramentCreate(SacramentBase):
@@ -47,6 +48,7 @@ class SacramentUpdate(BaseModel):
     witness1: Annotated[Optional[str], Field(max_length=200)] = None
     witness2: Annotated[Optional[str], Field(max_length=200)] = None
     officiant: Annotated[Optional[str], Field(max_length=200)] = None
+    spouse_id: Optional[int] = None
 
 
 class SacramentResponse(SacramentBase):

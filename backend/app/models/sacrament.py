@@ -48,6 +48,9 @@ class Sacrament(Base):
     witness1: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     witness2: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     officiant: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    spouse_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("persons.id", ondelete="SET NULL"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False
     )

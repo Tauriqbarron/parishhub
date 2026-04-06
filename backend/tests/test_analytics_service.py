@@ -256,7 +256,9 @@ class TestBirthServiceStatistics:
 
 @pytest.fixture
 def mass_time(db_session):
-    mt = MassTime(name="Sunday 9am", day_of_week="Sunday", start_time="09:00")
+    from datetime import time as dt_time
+
+    mt = MassTime(name="Sunday 9am", day_of_week=0, time=dt_time(9, 0))
     db_session.add(mt)
     db_session.flush()
     return mt
