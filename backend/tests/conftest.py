@@ -1,11 +1,16 @@
-"""Pytest fixtures for testing."""
+"""Pytest fixtures for testing.
+
+Supports both SQLite (local dev) and PostgreSQL (CI/CD).
+Set POSTGRES_TEST_URL env var to switch to PostgreSQL.
+"""
 
 from datetime import date
+import os
 from typing import Generator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import JSON, create_engine, event
+from sqlalchemy import JSON, create_engine
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -16,20 +21,35 @@ from app.main import app
 from app.models.person import Gender, Person
 
 
-@pytest.fixture(scope="function")
-def db_engine():
-    """Create an in-memory SQLite database engine for testing."""
-    # Replace JSONB with JSON for SQLite compatibility
-    for table in Base.metadata.tables.values():
-        for column in table.columns:
-            if isinstance(column.type, JSONB):
-                column.type = JSON()
-
-    engine = create_engine(
+def _get_test_engine():
+    """Create a test database engine — PostgreSQL or SQLite."""
+    postgres_url = os.environ.get("POSTGRES_TEST_URL")
+    if postgres_url:
+        # Use PostgreSQL for CI integration tests
+        engine = create_engine(postgres_url, pool_pre_ping=True)
+        return engine, False
+    # Default: in-memory SQLite for fast local unit tests
+    return create_engine(
         "sqlite:///:memory:",
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
-    )
+    ), True
+
+
+@pytest.fixture(scope="function")
+def db_engine():
+    """Create a test database engine for testing.
+
+    Uses PostgreSQL when POSTGRES_TEST_URL is set (CI),
+    otherwise falls back to in-memory SQLite (local dev).
+    """
+    engine, is_sqlite = _get_test_engine()
+    if is_sqlite:
+        # Replace JSONB with JSON for SQLite compatibility
+        for table in Base.metadata.tables.values():
+            for column in table.columns:
+                if isinstance(column.type, JSONB):
+                    column.type = JSON()
     Base.metadata.create_all(bind=engine)
     yield engine
     Base.metadata.drop_all(bind=engine)
@@ -38,7 +58,9 @@ def db_engine():
 @pytest.fixture(scope="function")
 def db_session(db_engine) -> Generator[Session, None, None]:
     """Create a database session for testing."""
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
+    TestingSessionLocal = sessionmaker(
+        autocommit=False, autoflush=False, bind=db_engine
+    )
     session = TestingSessionLocal()
     try:
         yield session
@@ -110,11 +132,36 @@ def sample_person(db_session: Session) -> Person:
 def multiple_persons(db_session: Session) -> list[Person]:
     """Create multiple persons in the database for pagination testing."""
     persons = [
-        Person(first_name="Alice", last_name="Anderson", email="alice@test.com", gender=Gender.FEMALE),
-        Person(first_name="Bob", last_name="Brown", email="bob@test.com", gender=Gender.MALE),
-        Person(first_name="Carol", last_name="Chen", email="carol@test.com", gender=Gender.FEMALE),
-        Person(first_name="David", last_name="Davis", email="david@test.com", gender=Gender.MALE),
-        Person(first_name="Eve", last_name="Evans", email="eve@test.com", gender=Gender.FEMALE),
+        Person(
+            first_name="Alice",
+            last_name="Anderson",
+            email="alice@test.com",
+            gender=Gender.FEMALE,
+        ),
+        Person(
+            first_name="Bob",
+            last_name="Brown",
+            email="bob@test.com",
+            gender=Gender.MALE,
+        ),
+        Person(
+            first_name="Carol",
+            last_name="Chen",
+            email="carol@test.com",
+            gender=Gender.FEMALE,
+        ),
+        Person(
+            first_name="David",
+            last_name="Davis",
+            email="david@test.com",
+            gender=Gender.MALE,
+        ),
+        Person(
+            first_name="Eve",
+            last_name="Evans",
+            email="eve@test.com",
+            gender=Gender.FEMALE,
+        ),
     ]
     for person in persons:
         db_session.add(person)

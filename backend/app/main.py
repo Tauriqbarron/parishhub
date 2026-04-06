@@ -1,4 +1,5 @@
 from typing import Annotated
+import uuid
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,7 +13,9 @@ from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.auth import User, require_auth
 from app.config import settings
+from app.lifespan import lifespan
 from app.limiter import limiter
+from app.logging_config import setup_logging, request_context
 from app.routers import (
     addresses,
     analytics,
@@ -25,6 +28,20 @@ from app.routers import (
     sacraments,
     statistics,
 )
+
+
+class RequestContextMiddleware(BaseHTTPMiddleware):
+    """Assign a unique request ID and populate logging context per request."""
+
+    async def dispatch(self, request: Request, call_next) -> Response:
+        request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+        user_agent = request.headers.get("user-agent", "")
+        user_email = request.headers.get("X-User-Email")
+
+        request_context.set_context(request_id, user_agent, user_email)
+        response = await call_next(request)
+        response.headers["X-Request-ID"] = request_id
+        return response
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -47,11 +64,18 @@ app = FastAPI(
     title="Parish Database API",
     description="API for managing parish records",
     version="0.1.0",
+    lifespan=lifespan,
 )
+
+# Setup structured JSON logging
+setup_logging()
 
 # Initialize rate limiter
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Add request ID middleware (runs first, before everything else)
+app.add_middleware(RequestContextMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
