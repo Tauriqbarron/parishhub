@@ -146,7 +146,7 @@
 									await sacramentApi.undoMarriageHousehold(result.id);
 									toasts.success('Household creation undone');
 									await loadPerson();
-								} catch (err) {
+								} catch {
 									toasts.error('Failed to undo household creation');
 								}
 							}
