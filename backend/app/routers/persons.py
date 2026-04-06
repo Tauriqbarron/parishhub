@@ -9,6 +9,7 @@ from app.auth import User, require_auth
 from app.database import get_db
 from app.models.person import Gender
 from app.models.sacrament import SacramentType
+from app.schemas.filters import PersonFilter
 from app.schemas.pagination import PaginatedResponse
 from app.schemas.person import (
     PersonCreate,
@@ -119,9 +120,7 @@ async def list_persons(
     - Filter by household membership (has_household)
     - Sorting by various fields
     """
-    items, total = service.get_list(
-        page=page,
-        per_page=per_page,
+    filters = PersonFilter(
         search=search,
         gender=gender,
         min_age=min_age,
@@ -130,6 +129,11 @@ async def list_persons(
         missing_sacrament=missing_sacrament,
         is_deceased=is_deceased,
         has_household=has_household,
+    )
+    items, total = service.get_list(
+        filters=filters,
+        page=page,
+        per_page=per_page,
         sort_by=sort_by,
         sort_order=sort_order,
     )

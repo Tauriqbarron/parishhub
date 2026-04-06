@@ -3,13 +3,15 @@
 from datetime import date
 from typing import Optional
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.household import HouseholdMember
-from app.models.person import Gender, Person
-from app.models.sacrament import Sacrament, SacramentType
+from app.models.person import Person
+from app.models.sacrament import Sacrament
+from app.schemas.filters import PersonFilter
 from app.schemas.person import PersonCreate, PersonUpdate
+from app.utils.pagination import paginate
 
 
 class PersonService:
@@ -49,16 +51,9 @@ class PersonService:
 
     def get_list(
         self,
+        filters: PersonFilter,
         page: int = 1,
         per_page: int = 20,
-        search: Optional[str] = None,
-        gender: Optional[Gender] = None,
-        min_age: Optional[int] = None,
-        max_age: Optional[int] = None,
-        has_sacrament: Optional[SacramentType] = None,
-        missing_sacrament: Optional[SacramentType] = None,
-        is_deceased: Optional[bool] = None,
-        has_household: Optional[bool] = None,
         sort_by: str = "last_name",
         sort_order: str = "asc",
     ) -> tuple[list[Person], int]:
@@ -70,8 +65,8 @@ class PersonService:
         stmt = select(Person).options(selectinload(Person.death))
 
         # Search filter
-        if search:
-            search_term = f"%{search}%"
+        if filters.search:
+            search_term = f"%{filters.search}%"
             stmt = stmt.where(
                 or_(
                     Person.first_name.ilike(search_term),
@@ -81,58 +76,56 @@ class PersonService:
             )
 
         # Gender filter
-        if gender:
-            stmt = stmt.where(Person.gender == gender)
+        if filters.gender:
+            stmt = stmt.where(Person.gender == filters.gender)
 
         # Deceased filter
-        if is_deceased is not None:
+        if filters.is_deceased is not None:
             from app.models.death import Death
 
-            if is_deceased:
+            if filters.is_deceased:
                 stmt = stmt.where(Person.id.in_(select(Death.person_id)))
             else:
                 stmt = stmt.where(Person.id.notin_(select(Death.person_id)))
 
         # Age filters
         today = date.today()
-        if min_age is not None:
-            max_birth_date = date(today.year - min_age, today.month, today.day)
+        if filters.min_age is not None:
+            max_birth_date = date(today.year - filters.min_age, today.month, today.day)
             stmt = stmt.where(Person.date_of_birth <= max_birth_date)
 
-        if max_age is not None:
-            min_birth_date = date(today.year - max_age - 1, today.month, today.day)
+        if filters.max_age is not None:
+            min_birth_date = date(
+                today.year - filters.max_age - 1, today.month, today.day
+            )
             stmt = stmt.where(Person.date_of_birth > min_birth_date)
 
         # Sacrament filters
-        if has_sacrament:
+        if filters.has_sacrament:
             stmt = stmt.where(
                 Person.id.in_(
                     select(Sacrament.person_id).where(
-                        Sacrament.sacrament_type == has_sacrament
+                        Sacrament.sacrament_type == filters.has_sacrament
                     )
                 )
             )
 
-        if missing_sacrament:
+        if filters.missing_sacrament:
             stmt = stmt.where(
                 Person.id.notin_(
                     select(Sacrament.person_id).where(
-                        Sacrament.sacrament_type == missing_sacrament
+                        Sacrament.sacrament_type == filters.missing_sacrament
                     )
                 )
             )
 
         # Household filter
-        if has_household is not None:
+        if filters.has_household is not None:
             household_person_ids = select(HouseholdMember.person_id)
-            if has_household:
+            if filters.has_household:
                 stmt = stmt.where(Person.id.in_(household_person_ids))
             else:
                 stmt = stmt.where(Person.id.notin_(household_person_ids))
-
-        # Get total count before pagination
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = self.db.execute(count_stmt).scalar() or 0
 
         # Sorting
         sort_column = getattr(Person, sort_by, Person.last_name)
@@ -140,11 +133,8 @@ class PersonService:
             sort_column = sort_column.desc()
         stmt = stmt.order_by(sort_column)
 
-        # Pagination
-        offset = (page - 1) * per_page
-        stmt = stmt.offset(offset).limit(per_page)
-
-        items = list(self.db.execute(stmt).scalars().all())
+        # Get total count and apply pagination
+        items, total = paginate(self.db, stmt, page, per_page)
         return items, total
 
     def update(self, person_id: int, person_data: PersonUpdate) -> Optional[Person]:

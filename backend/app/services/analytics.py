@@ -27,6 +27,7 @@ from app.schemas.analytics import (
     WeeklyDataPoint,
     YearlyCount,
 )
+from app.utils.pagination import paginate
 
 
 class BirthService:
@@ -114,14 +115,8 @@ class BirthService:
         if year:
             stmt = stmt.where(extract("year", Birth.date_of_birth) == year)
 
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = self.db.execute(count_stmt).scalar() or 0
-
         stmt = stmt.order_by(Birth.date_of_birth.desc())
-        offset = (page - 1) * per_page
-        stmt = stmt.offset(offset).limit(per_page)
-
-        items = list(self.db.execute(stmt).scalars().all())
+        items, total = paginate(self.db, stmt, page, per_page)
         return items, total
 
     def update(self, birth_id: int, data: BirthUpdate) -> Optional[Birth]:
@@ -214,21 +209,8 @@ class MassAttendanceService:
         if end_date:
             stmt = stmt.where(MassAttendance.date <= end_date)
 
-        count_stmt = select(func.count()).select_from(
-            select(MassAttendance.id)
-            .where(
-                *([MassAttendance.date >= start_date] if start_date else []),
-                *([MassAttendance.date <= end_date] if end_date else []),
-            )
-            .subquery()
-        )
-        total = self.db.execute(count_stmt).scalar() or 0
-
         stmt = stmt.order_by(MassAttendance.date.desc())
-        offset = (page - 1) * per_page
-        stmt = stmt.offset(offset).limit(per_page)
-
-        items = list(self.db.execute(stmt).scalars().unique().all())
+        items, total = paginate(self.db, stmt, page, per_page, unique=True)
         return items, total
 
     def update(
@@ -403,14 +385,8 @@ class PopulationService:
     ) -> tuple[list[PopulationSnapshot], int]:
         stmt = select(PopulationSnapshot)
 
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = self.db.execute(count_stmt).scalar() or 0
-
         stmt = stmt.order_by(PopulationSnapshot.date.desc())
-        offset = (page - 1) * per_page
-        stmt = stmt.offset(offset).limit(per_page)
-
-        items = list(self.db.execute(stmt).scalars().all())
+        items, total = paginate(self.db, stmt, page, per_page)
         return items, total
 
     def update(

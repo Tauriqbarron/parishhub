@@ -78,14 +78,15 @@ class TestCreateSacrament:
                 "sacrament_type": "baptism",
                 "date_received": "2020-01-15",
                 "notes": "Baptized with family",
-                "additional_data": {"godfather": "James Smith", "godmother": "Jane Doe"},
+                "godfather": "James Smith",
+                "godmother": "Jane Doe",
             },
         )
 
-        assert response.status_code == 201
         data = response.json()
         assert data["notes"] == "Baptized with family"
-        assert data["additional_data"]["godfather"] == "James Smith"
+        assert data["godfather"] == "James Smith"
+        assert data["godmother"] == "Jane Doe"
 
     def test_create_sacrament_person_not_found(self, authenticated_client):
         """Test creating sacrament for nonexistent person."""
@@ -101,7 +102,9 @@ class TestCreateSacrament:
         assert response.status_code == 400
         assert "not found" in response.json()["detail"].lower()
 
-    def test_create_sacrament_duplicate(self, authenticated_client, person_with_baptism):
+    def test_create_sacrament_duplicate(
+        self, authenticated_client, person_with_baptism
+    ):
         """Test that duplicate sacrament types are rejected (except marriage)."""
         person, _ = person_with_baptism
         response = authenticated_client.post(
@@ -116,7 +119,9 @@ class TestCreateSacrament:
         assert response.status_code == 400
         assert "already has" in response.json()["detail"].lower()
 
-    def test_create_sacrament_invalid_order(self, authenticated_client, person_with_baptism):
+    def test_create_sacrament_invalid_order(
+        self, authenticated_client, person_with_baptism
+    ):
         """Test that first communion before baptism is rejected."""
         person, baptism = person_with_baptism
         # Try to create first communion before baptism date
@@ -167,7 +172,9 @@ class TestListSacraments:
         assert len(data["items"]) == 1
         assert data["total"] == 1
 
-    def test_list_sacraments_filter_by_type(self, authenticated_client, person_with_baptism):
+    def test_list_sacraments_filter_by_type(
+        self, authenticated_client, person_with_baptism
+    ):
         """Test filtering by sacrament type."""
         response = authenticated_client.get("/api/sacraments?sacrament_type=baptism")
 
@@ -175,10 +182,14 @@ class TestListSacraments:
         data = response.json()
         assert len(data["items"]) == 1
 
-        response2 = authenticated_client.get("/api/sacraments?sacrament_type=confirmation")
+        response2 = authenticated_client.get(
+            "/api/sacraments?sacrament_type=confirmation"
+        )
         assert response2.json()["items"] == []
 
-    def test_list_sacraments_filter_by_date(self, authenticated_client, person_with_baptism):
+    def test_list_sacraments_filter_by_date(
+        self, authenticated_client, person_with_baptism
+    ):
         """Test filtering by date range."""
         response = authenticated_client.get(
             "/api/sacraments?date_from=2010-01-01&date_to=2010-12-31"

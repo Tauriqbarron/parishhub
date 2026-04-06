@@ -2,9 +2,8 @@
 
 from datetime import date
 
-import pytest
-
-from app.models.person import Gender, Person
+from app.models.person import Gender
+from app.schemas.filters import PersonFilter
 from app.schemas.person import PersonCreate, PersonUpdate
 from app.services.person import PersonService
 
@@ -110,7 +109,7 @@ class TestPersonServiceGetList:
         """Test getting list when no persons exist."""
         service = PersonService(db_session)
 
-        items, total = service.get_list()
+        items, total = service.get_list(filters=PersonFilter())
 
         assert items == []
         assert total == 0
@@ -119,7 +118,7 @@ class TestPersonServiceGetList:
         """Test getting list with persons."""
         service = PersonService(db_session)
 
-        items, total = service.get_list()
+        items, total = service.get_list(filters=PersonFilter())
 
         assert len(items) == 5
         assert total == 5
@@ -128,19 +127,19 @@ class TestPersonServiceGetList:
         """Test pagination works correctly."""
         service = PersonService(db_session)
 
-        items, total = service.get_list(page=1, per_page=2)
+        items, total = service.get_list(filters=PersonFilter(), page=1, per_page=2)
 
         assert len(items) == 2
         assert total == 5
 
-        items_page2, _ = service.get_list(page=2, per_page=2)
+        items_page2, _ = service.get_list(filters=PersonFilter(), page=2, per_page=2)
         assert len(items_page2) == 2
 
     def test_get_list_search(self, db_session, multiple_persons):
         """Test search functionality."""
         service = PersonService(db_session)
 
-        items, total = service.get_list(search="Alice")
+        items, total = service.get_list(filters=PersonFilter(search="Alice"))
 
         assert len(items) == 1
         assert items[0].first_name == "Alice"
@@ -149,7 +148,7 @@ class TestPersonServiceGetList:
         """Test search by email."""
         service = PersonService(db_session)
 
-        items, total = service.get_list(search="bob@test")
+        items, total = service.get_list(filters=PersonFilter(search="bob@test"))
 
         assert len(items) == 1
         assert items[0].first_name == "Bob"
@@ -158,7 +157,7 @@ class TestPersonServiceGetList:
         """Test filtering by gender."""
         service = PersonService(db_session)
 
-        items, total = service.get_list(gender=Gender.FEMALE)
+        items, total = service.get_list(filters=PersonFilter(gender=Gender.FEMALE))
 
         assert total == 3
         for person in items:
@@ -168,7 +167,9 @@ class TestPersonServiceGetList:
         """Test ascending sort."""
         service = PersonService(db_session)
 
-        items, _ = service.get_list(sort_by="last_name", sort_order="asc")
+        items, _ = service.get_list(
+            filters=PersonFilter(), sort_by="last_name", sort_order="asc"
+        )
 
         assert items[0].last_name == "Anderson"
         assert items[-1].last_name == "Evans"
@@ -177,7 +178,9 @@ class TestPersonServiceGetList:
         """Test descending sort."""
         service = PersonService(db_session)
 
-        items, _ = service.get_list(sort_by="last_name", sort_order="desc")
+        items, _ = service.get_list(
+            filters=PersonFilter(), sort_by="last_name", sort_order="desc"
+        )
 
         assert items[0].last_name == "Evans"
         assert items[-1].last_name == "Anderson"

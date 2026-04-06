@@ -15,6 +15,7 @@ from app.schemas.sacrament import (
     SacramentCreate,
     SacramentUpdate,
 )
+from app.utils.pagination import paginate
 
 
 class SacramentValidationError(Exception):
@@ -44,17 +45,23 @@ class SacramentService:
         date_received: date,
         exclude_sacrament_id: Optional[int] = None,
     ) -> None:
-        """
-        Validate that sacraments are received in the correct order.
+        """Enforce canonical Catholic sacrament ordering rules.
 
-        Rules:
-        - First Communion must be after Baptism
-        - Confirmation must be after First Communion
-        - Person cannot have duplicate sacrament types (except marriage)
+        The Church's canonical order of initiation sacraments is:
+          1. Baptism  (required before all others)
+          2. First Communion  (requires prior Baptism)
+          3. Confirmation  (requires prior Baptism; typically after First Communion)
+
+        Marriage is the only repeatable sacrament — a Catholic may remarry
+        after a spouse's death (or after an annulment, which is tracked
+        separately and outside the scope of this model).
         """
         existing = self._get_person_sacraments(person_id)
 
-        # Check for duplicates (except marriage - can remarry after spouse death)
+        # --- Duplicate guard ---------------------------------------------
+        # All sacraments are received once in a lifetime, except Marriage
+        # (CIC can. 1141 — a valid sacramental marriage is indissoluble, but
+        # a new marriage is permitted after the death of a spouse).
         if sacrament_type != SacramentType.MARRIAGE:
             if sacrament_type in existing:
                 existing_sacrament = existing[sacrament_type]
@@ -63,13 +70,17 @@ class SacramentService:
                     exclude_sacrament_id
                     and existing_sacrament.id == exclude_sacrament_id
                 ):
+                    # Editing the same record — not a true duplicate.
                     pass
                 else:
                     raise SacramentValidationError(
                         f"This person already has a {sacrament_type.value} record"
                     )
 
-        # Check sacrament order requirements
+        # --- First Communion ordering -----------------------------------
+        # CIC can. 913 §1: First Communion presupposes prior Baptism and at
+        # least some knowledge of the faith.  We enforce only the date ordering
+        # here; catechetical readiness is not tracked in this system.
         if sacrament_type == SacramentType.FIRST_COMMUNION:
             if SacramentType.BAPTISM in existing:
                 baptism = existing[SacramentType.BAPTISM]
@@ -77,13 +88,18 @@ class SacramentService:
                     raise SacramentValidationError(
                         "First Communion date must be after Baptism date"
                     )
-            # Note: Baptism is not required to record First Communion
-            # (person may have been baptized elsewhere)
 
+        # --- Confirmation ordering --------------------------------------
+        # CIC can. 842 §2: Baptism, Confirmation, and Eucharist form the
+        # sacraments of Christian initiation and are interrelated.  Confirmation
+        # may not precede Baptism or (by diocesan norm) First Communion.
         elif sacrament_type == SacramentType.CONFIRMATION:
             if SacramentType.FIRST_COMMUNION in existing:
                 first_communion = existing[SacramentType.FIRST_COMMUNION]
                 if date_received < first_communion.date_received:
+                    # Some rites confirm before First Communion (e.g. Eastern
+                    # Catholic churches).  If that becomes a requirement, remove
+                    # this check and add a rite field to the Sacrament model.
                     raise SacramentValidationError(
                         "Confirmation date must be after First Communion date"
                     )
@@ -94,8 +110,11 @@ class SacramentService:
                         "Confirmation date must be after Baptism date"
                     )
 
+        # --- Baptism back-date guard ------------------------------------
+        # If Baptism is added after First Communion or Confirmation records
+        # already exist (e.g. correcting a missing record), ensure the Baptism
+        # date does not post-date the dependent sacraments.
         elif sacrament_type == SacramentType.BAPTISM:
-            # If adding baptism, check that existing sacraments are after this date
             if SacramentType.FIRST_COMMUNION in existing:
                 first_communion = existing[SacramentType.FIRST_COMMUNION]
                 if date_received > first_communion.date_received:
@@ -288,21 +307,14 @@ class SacramentService:
         if date_to is not None:
             stmt = stmt.where(Sacrament.date_received <= date_to)
 
-        # Get total count before pagination
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = self.db.execute(count_stmt).scalar() or 0
-
         # Sorting
         sort_column = getattr(Sacrament, sort_by, Sacrament.date_received)
         if sort_order.lower() == "desc":
             sort_column = sort_column.desc()
         stmt = stmt.order_by(sort_column)
 
-        # Pagination
-        offset = (page - 1) * per_page
-        stmt = stmt.offset(offset).limit(per_page)
-
-        items = list(self.db.execute(stmt).scalars().all())
+        # Apply pagination
+        items, total = paginate(self.db, stmt, page, per_page)
         return items, total
 
     def update(
