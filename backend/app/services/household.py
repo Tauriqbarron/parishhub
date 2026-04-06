@@ -13,6 +13,7 @@ from app.schemas.household import (
     HouseholdMemberUpdate,
     HouseholdUpdate,
 )
+from app.utils.pagination import paginate
 
 
 class HouseholdService:
@@ -87,21 +88,14 @@ class HouseholdService:
             search_term = f"%{search}%"
             stmt = stmt.where(Household.name.ilike(search_term))
 
-        # Get total count before pagination
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = self.db.execute(count_stmt).scalar() or 0
-
         # Sorting
         sort_column = getattr(Household, sort_by, Household.name)
         if sort_order.lower() == "desc":
             sort_column = sort_column.desc()
         stmt = stmt.order_by(sort_column)
 
-        # Pagination
-        offset = (page - 1) * per_page
-        stmt = stmt.offset(offset).limit(per_page)
-
-        items = list(self.db.execute(stmt).scalars().all())
+        # Apply pagination
+        items, total = paginate(self.db, stmt, page, per_page)
         return items, total
 
     def update(
@@ -132,7 +126,9 @@ class HouseholdService:
 
     # Member operations
 
-    def add_member(self, member_data: HouseholdMemberCreate) -> Optional[HouseholdMember]:
+    def add_member(
+        self, member_data: HouseholdMemberCreate
+    ) -> Optional[HouseholdMember]:
         """Add a person to a household."""
         # Verify household exists
         household = self.get_by_id(member_data.household_id)

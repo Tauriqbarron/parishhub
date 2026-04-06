@@ -3,13 +3,14 @@
 from datetime import date
 from typing import Optional
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.household import HouseholdMember
 from app.models.person import Gender, Person
 from app.models.sacrament import Sacrament, SacramentType
 from app.schemas.person import PersonCreate, PersonUpdate
+from app.utils.pagination import paginate
 
 
 class PersonService:
@@ -130,21 +131,14 @@ class PersonService:
             else:
                 stmt = stmt.where(Person.id.notin_(household_person_ids))
 
-        # Get total count before pagination
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = self.db.execute(count_stmt).scalar() or 0
-
         # Sorting
         sort_column = getattr(Person, sort_by, Person.last_name)
         if sort_order.lower() == "desc":
             sort_column = sort_column.desc()
         stmt = stmt.order_by(sort_column)
 
-        # Pagination
-        offset = (page - 1) * per_page
-        stmt = stmt.offset(offset).limit(per_page)
-
-        items = list(self.db.execute(stmt).scalars().all())
+        # Get total count and apply pagination
+        items, total = paginate(self.db, stmt, page, per_page)
         return items, total
 
     def update(self, person_id: int, person_data: PersonUpdate) -> Optional[Person]:

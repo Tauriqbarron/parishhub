@@ -14,6 +14,7 @@ from app.schemas.death import (
     DeathUpdate,
     YearlyDeathCount,
 )
+from app.utils.pagination import paginate
 
 
 class DeathValidationError(Exception):
@@ -42,7 +43,9 @@ class DeathService:
             select(Death).where(Death.person_id == data.person_id)
         ).scalar_one_or_none()
         if existing_death:
-            raise DeathValidationError(f"Death record already exists for person ID {data.person_id}")
+            raise DeathValidationError(
+                f"Death record already exists for person ID {data.person_id}"
+            )
 
         # 3. Check if date_of_death is in the future
         if data.date_of_death > date.today():
@@ -100,14 +103,8 @@ class DeathService:
         if year:
             stmt = stmt.where(extract("year", Death.date_of_death) == year)
 
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = self.db.execute(count_stmt).scalar() or 0
-
         stmt = stmt.order_by(Death.date_of_death.desc())
-        offset = (page - 1) * per_page
-        stmt = stmt.offset(offset).limit(per_page)
-
-        items = list(self.db.execute(stmt).scalars().all())
+        items, total = paginate(self.db, stmt, page, per_page)
         return items, total
 
     def update(self, death_id: int, data: DeathUpdate) -> Optional[Death]:
