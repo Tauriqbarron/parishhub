@@ -128,11 +128,33 @@
 				await sacramentApi.update(editingSacrament.id, data);
 				toasts.success('Sacrament updated successfully');
 			} else {
-				await sacramentApi.create({
+				const result = await sacramentApi.create({
 					person_id: person.id,
 					...data
 				});
-				toasts.success('Sacrament added successfully');
+				if (result.marriage_side_effects?.household_created) {
+					const effects = result.marriage_side_effects;
+					toasts.successWithActions(`New household "${effects.household_name}" created`, [
+						{
+							label: 'Edit',
+							onClick: () => goto(`/households/${effects.household_id}`)
+						},
+						{
+							label: 'Undo',
+							onClick: async () => {
+								try {
+									await sacramentApi.undoMarriageHousehold(result.id);
+									toasts.success('Household creation undone');
+									await loadPerson();
+								} catch (err) {
+									toasts.error('Failed to undo household creation');
+								}
+							}
+						}
+					]);
+				} else {
+					toasts.success('Sacrament added successfully');
+				}
 			}
 			await loadPerson();
 			showSacramentForm = false;

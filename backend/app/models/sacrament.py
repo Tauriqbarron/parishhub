@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
 if TYPE_CHECKING:
+    from app.models.household import Household
     from app.models.person import Person
 
 
@@ -49,6 +50,9 @@ class Sacrament(Base):
 
     # Relationships
     person: Mapped["Person"] = relationship("Person", back_populates="sacraments")
+    created_household: Mapped[Optional["Household"]] = relationship(
+        "Household", back_populates="origin_sacrament"
+    )
 
     def __repr__(self) -> str:
         return f"<Sacrament(id={self.id}, person_id={self.person_id}, type='{self.sacrament_type.value}')>"

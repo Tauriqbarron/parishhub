@@ -247,15 +247,29 @@ export interface SacramentUpdate {
 	additional_data?: Record<string, unknown> | null;
 }
 
+export interface MarriageSideEffects {
+	household_created: boolean;
+	household_id: number | null;
+	household_name: string | null;
+	spouse_relationship_created: boolean;
+}
+
+export interface SacramentResponseWithEffects extends Sacrament {
+	marriage_side_effects?: MarriageSideEffects | null;
+}
+
 // Sacrament API functions
 export const sacramentApi = {
 	getForPerson: (personId: number) => api.get<Sacrament[]>(`/persons/${personId}/sacraments`),
 
-	create: (data: SacramentCreate) => api.post<Sacrament>('/sacraments', data),
+	create: (data: SacramentCreate) => api.post<SacramentResponseWithEffects>('/sacraments', data),
 
 	update: (id: number, data: SacramentUpdate) => api.put<Sacrament>(`/sacraments/${id}`, data),
 
-	delete: (id: number) => api.delete<void>(`/sacraments/${id}`)
+	delete: (id: number) => api.delete<void>(`/sacraments/${id}`),
+
+	undoMarriageHousehold: (sacramentId: number) =>
+		api.delete<void>(`/sacraments/${sacramentId}/auto-household`)
 };
 
 // Household filter and create types
