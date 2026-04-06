@@ -9,11 +9,16 @@ from sqlalchemy.orm import Session
 from app.auth import User, require_auth
 from app.database import get_db
 from app.limiter import limiter
+from app.mappings import (
+    GENDER_MAP,
+    RELATIONSHIP_TYPE_MAP,
+    SACRAMENT_TYPE_MAP,
+)
 from app.models.analytics import Birth
 from app.models.consent import HouseholdConsent
 from app.models.household import Household, HouseholdMember, HouseholdRole
-from app.models.person import Gender, Person
-from app.models.relationship import FamilyRelationship, RelationshipType
+from app.models.person import Person
+from app.models.relationship import FamilyRelationship
 from app.models.sacrament import Sacrament, SacramentType
 from app.models.settings import Setting
 from app.schemas.registration import (
@@ -32,24 +37,6 @@ url_router = APIRouter(prefix="/api/v1/registration", tags=["registration-config
 REGISTRATION_URL_KEY = "registration_base_url"
 REGISTRATION_PATH = "/register"
 
-# Mapping from frontend relationship types to model enum
-RELATIONSHIP_TYPE_MAP = {
-    "parent": RelationshipType.PARENT,
-    "child": RelationshipType.CHILD,
-    "spouse": RelationshipType.SPOUSE,
-    "sibling": RelationshipType.SIBLING,
-}
-
-# Mapping from frontend sacrament types to model enum
-SACRAMENT_TYPE_MAP = {
-    "baptism": SacramentType.BAPTISM,
-    "first_communion": SacramentType.FIRST_COMMUNION,
-    "confirmation": SacramentType.CONFIRMATION,
-    "marriage": SacramentType.MARRIAGE,
-    "holy_orders": SacramentType.HOLY_ORDERS,
-    "anointing": SacramentType.ANOINTING,
-}
-
 # Sacrament order for validation (earlier sacraments must be created first)
 SACRAMENT_ORDER = {
     SacramentType.BAPTISM: 0,
@@ -61,12 +48,6 @@ SACRAMENT_ORDER = {
 }
 
 logger = logging.getLogger(__name__)
-
-# Mapping from frontend gender to model enum
-GENDER_MAP = {
-    "male": Gender.MALE,
-    "female": Gender.FEMALE,
-}
 
 
 @router.post(
