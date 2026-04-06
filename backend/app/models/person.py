@@ -56,7 +56,10 @@ class Person(Base):
         "HouseholdMember", back_populates="person", cascade="all, delete-orphan"
     )
     sacraments: Mapped[list["Sacrament"]] = relationship(
-        "Sacrament", back_populates="person", cascade="all, delete-orphan"
+        "Sacrament",
+        foreign_keys="Sacrament.person_id",
+        back_populates="person",
+        cascade="all, delete-orphan",
     )
     relationships_as_person: Mapped[list["FamilyRelationship"]] = relationship(
         "FamilyRelationship",
