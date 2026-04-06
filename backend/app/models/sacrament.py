@@ -59,7 +59,15 @@ class Sacrament(Base):
     )
 
     # Relationships
-    person: Mapped["Person"] = relationship("Person", back_populates="sacraments")
+    person: Mapped["Person"] = relationship(
+        "Person",
+        foreign_keys=[person_id],
+        back_populates="sacraments",
+    )
+    spouse: Mapped[Optional["Person"]] = relationship(
+        "Person",
+        foreign_keys=[spouse_id],
+    )
     created_household: Mapped[Optional["Household"]] = relationship(
         "Household", back_populates="origin_sacrament"
     )
