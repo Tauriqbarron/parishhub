@@ -1,9 +1,8 @@
 from datetime import date, datetime
 from enum import Enum as PyEnum
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import Date, DateTime, Enum, ForeignKey, Text, func
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -37,9 +36,17 @@ class Sacrament(Base):
     )
     date_received: Mapped[date] = mapped_column(Date, nullable=False)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    additional_data: Mapped[Optional[dict[str, Any]]] = mapped_column(
-        JSONB, nullable=True
-    )
+    # Typed columns replacing the former JSONB additional_data column
+    # (YAGNI: only store fields we actually use)
+    godfather: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    godmother: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    sponsor: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    minister: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    church: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    parish: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    witness1: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    witness2: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    officiant: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False
     )

@@ -44,7 +44,14 @@ class RegistrationSacrament(BaseModel):
     date: Optional[Date] = None
     church: Optional[str] = None
     minister: Optional[str] = None
-    additional_data: dict = Field(default_factory=dict, alias="additionalData")
+    # Typed sacrament-specific fields (replaced JSONB additionalData)
+    godfather: Optional[str] = None
+    godmother: Optional[str] = None
+    sponsor: Optional[str] = None
+    parish: Optional[str] = None
+    witness1: Optional[str] = None
+    witness2: Optional[str] = None
+    officiant: Optional[str] = None
 
     model_config = {"populate_by_name": True}  # Allow both alias and field names
 

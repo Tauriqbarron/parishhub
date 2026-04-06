@@ -168,27 +168,35 @@ class RegistrationService:
     def _create_sacrament_records(self, validated_sacraments: list[tuple]):
         """Create Sacrament records from validated data."""
         for sac, person_id, sac_type in validated_sacraments:
-            additional_data = sac.additional_data.copy() if sac.additional_data else {}
-            if sac.church:
-                if not sac.church.strip():
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Church name cannot be empty for {sac.sacrament_type}",
-                    )
-                additional_data["church"] = sac.church.strip()
-            if sac.minister:
-                if not sac.minister.strip():
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Minister name cannot be empty for {sac.sacrament_type}",
-                    )
-                additional_data["minister"] = sac.minister.strip()
+            church = sac.church.strip() if sac.church and sac.church.strip() else None
+            if church is None and sac.church:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Church name cannot be empty for {sac.sacrament_type}",
+                )
+            minister = (
+                sac.minister.strip() if sac.minister and sac.minister.strip() else None
+            )
+            if minister is None and sac.minister:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Minister name cannot be empty for {sac.sacrament_type}",
+                )
 
             sacrament = Sacrament(
                 person_id=person_id,
                 sacrament_type=sac_type,
                 date_received=sac.date,
-                additional_data=additional_data if additional_data else None,
+                godfather=sac.godfather,
+                godmother=sac.godmother,
+                sponsor=sac.sponsor,
+                minister=minister,
+                church=church,
+                parish=sac.parish,
+                witness1=sac.witness1,
+                witness2=sac.witness2,
+                officiant=sac.officiant,
+                notes=sac.notes,
             )
             self.db.add(sacrament)
 

@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Annotated, Any, Optional
+from typing import Annotated, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -13,7 +13,16 @@ class SacramentBase(BaseModel):
     sacrament_type: SacramentType
     date_received: date
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
-    additional_data: Optional[dict[str, Any]] = None
+    # Typed sacrament-specific fields (replaced JSONB additional_data)
+    godfather: Annotated[Optional[str], Field(max_length=200)] = None
+    godmother: Annotated[Optional[str], Field(max_length=200)] = None
+    sponsor: Annotated[Optional[str], Field(max_length=200)] = None
+    minister: Annotated[Optional[str], Field(max_length=200)] = None
+    church: Annotated[Optional[str], Field(max_length=200)] = None
+    parish: Annotated[Optional[str], Field(max_length=200)] = None
+    witness1: Annotated[Optional[str], Field(max_length=200)] = None
+    witness2: Annotated[Optional[str], Field(max_length=200)] = None
+    officiant: Annotated[Optional[str], Field(max_length=200)] = None
 
 
 class SacramentCreate(SacramentBase):
@@ -28,7 +37,16 @@ class SacramentUpdate(BaseModel):
     sacrament_type: Optional[SacramentType] = None
     date_received: Optional[date] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
-    additional_data: Optional[dict[str, Any]] = None
+    # Typed sacrament-specific fields (replaced JSONB additional_data)
+    godfather: Annotated[Optional[str], Field(max_length=200)] = None
+    godmother: Annotated[Optional[str], Field(max_length=200)] = None
+    sponsor: Annotated[Optional[str], Field(max_length=200)] = None
+    minister: Annotated[Optional[str], Field(max_length=200)] = None
+    church: Annotated[Optional[str], Field(max_length=200)] = None
+    parish: Annotated[Optional[str], Field(max_length=200)] = None
+    witness1: Annotated[Optional[str], Field(max_length=200)] = None
+    witness2: Annotated[Optional[str], Field(max_length=200)] = None
+    officiant: Annotated[Optional[str], Field(max_length=200)] = None
 
 
 class SacramentResponse(SacramentBase):
