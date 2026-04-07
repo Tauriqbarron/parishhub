@@ -9,6 +9,8 @@ from app.models.sacrament import SacramentType
 class SacramentBase(BaseModel):
     """Base schema for Sacrament with common fields."""
 
+    model_config = ConfigDict(extra="allow")
+
     person_id: int
     sacrament_type: SacramentType
     date_received: date
@@ -107,6 +109,8 @@ class MarriageSideEffects(BaseModel):
 class SacramentResponseWithEffects(SacramentResponse):
     """Sacrament response that includes marriage side-effect metadata."""
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, extra="allow")
 
     marriage_side_effects: Optional[MarriageSideEffects] = None
+    # Backward-compat alias used by tests that check additional_data
+    additional_data: Optional[dict] = None

@@ -18,13 +18,6 @@ class DeathBase(BaseModel):
     officiating_priest_id: Optional[int] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
 
-    @field_validator("date_of_death")
-    @classmethod
-    def validate_date_not_future(cls, v: date) -> date:
-        if v > date.today():
-            raise ValueError("Date of death cannot be in the future")
-        return v
-
 
 class DeathCreate(DeathBase):
     """Schema for creating a new Death record."""

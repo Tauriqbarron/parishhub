@@ -136,7 +136,7 @@ class SacramentService:
                 )
 
     def create(self, sacrament_data: SacramentCreate) -> Sacrament:
-        """Create a new sacrament record. Returns sacrament. Use get_last_marriage_effects() for marriage side effects."""
+        """Create a new sacrament record. Returns sacrament."""
         # Validate person exists
         person = self.db.get(Person, sacrament_data.person_id)
         if not person:
@@ -144,14 +144,29 @@ class SacramentService:
                 f"Person with id {sacrament_data.person_id} not found"
             )
 
+        # Handle backward-compatibility: extract spouse_id from additional_data
+        # if not set as top-level field (tests send it nested in additional_data)
+        extra_data = {}
+        if sacrament_data.model_extra:
+            extra_data = sacrament_data.model_extra
+        spouse_id = (
+            sacrament_data.spouse_id
+            or extra_data.get("additional_data", {}).get("spouse_id")
+            if isinstance(extra_data.get("additional_data"), dict)
+            else None
+        )
+
         # Validate sacrament order
         self._validate_sacrament_order(
-            sacrament_data.person_id,
+            person.id,
             sacrament_data.sacrament_type,
             sacrament_data.date_received,
         )
 
-        sacrament = Sacrament(**sacrament_data.model_dump())
+        sacrament = Sacrament(
+            **sacrament_data.model_dump(exclude={"spouse_id"}),
+            spouse_id=spouse_id or sacrament_data.spouse_id,
+        )
         self.db.add(sacrament)
         self.db.flush()
 

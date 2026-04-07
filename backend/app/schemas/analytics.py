@@ -111,7 +111,8 @@ class MassAttendanceResponse(MassAttendanceBase):
 class PopulationSnapshotBase(BaseModel):
     date: date
     registered_members: Annotated[int, Field(ge=0)]
-    households: Annotated[int, Field(ge=0)]
+    active_households: Annotated[int, Field(ge=0)]
+    weekly_attendance: Annotated[int, Field(ge=0)] = 0
 
 
 class PopulationSnapshotCreate(PopulationSnapshotBase):
@@ -121,7 +122,8 @@ class PopulationSnapshotCreate(PopulationSnapshotBase):
 class PopulationSnapshotUpdate(BaseModel):
     date: Optional[_dt.date] = None
     registered_members: Annotated[Optional[int], Field(ge=0)] = None
-    households: Annotated[Optional[int], Field(ge=0)] = None
+    active_households: Annotated[Optional[int], Field(ge=0)] = None
+    weekly_attendance: Annotated[Optional[int], Field(ge=0)] = None
 
 
 class PopulationSnapshotResponse(PopulationSnapshotBase):

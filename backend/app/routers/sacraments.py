@@ -64,6 +64,8 @@ async def create_sacrament(
         sacrament = service.create(sacrament_data)
         response = SacramentResponseWithEffects.model_validate(sacrament)
         response.marriage_side_effects = service.last_marriage_effects
+        if service.last_marriage_effects:
+            response.additional_data = service.last_marriage_effects.model_dump()
         return response
     except SacramentValidationError as e:
         raise HTTPException(
