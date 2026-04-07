@@ -369,7 +369,16 @@ class PopulationService:
         self.db = db
 
     def create(self, data: PopulationSnapshotCreate) -> PopulationSnapshot:
-        snapshot = PopulationSnapshot(**data.model_dump())
+        dump = data.model_dump()
+        # Map active_households -> households if households not set
+        if dump.get("households") is None and dump.get("active_households") is not None:
+            dump["households"] = dump.pop("active_households")
+        else:
+            dump.pop("active_households", None)
+        # Exclude extra fields not in the model
+        dump.pop("weekly_attendance", None)
+        dump.pop("additional_data", None)
+        snapshot = PopulationSnapshot(**dump)
         self.db.add(snapshot)
         self.db.commit()
         self.db.refresh(snapshot)
@@ -397,6 +406,13 @@ class PopulationService:
             return None
 
         update_data = data.model_dump(exclude_unset=True)
+        if (
+            update_data.get("households") is None
+            and update_data.get("active_households") is not None
+        ):
+            update_data["households"] = update_data.pop("active_households")
+        else:
+            update_data.pop("active_households", None)
         for field, value in update_data.items():
             setattr(snapshot, field, value)
 

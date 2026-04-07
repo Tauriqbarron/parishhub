@@ -29,6 +29,10 @@ from app.routers import (
     statistics,
 )
 
+# Import all models to ensure they're registered with Base metadata
+# before any create_all() calls (needed for test fixtures)
+from app import models  # noqa: F401
+
 
 class RequestContextMiddleware(BaseHTTPMiddleware):
     """Assign a unique request ID and populate logging context per request."""

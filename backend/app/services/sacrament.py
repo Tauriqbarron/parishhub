@@ -164,7 +164,7 @@ class SacramentService:
         )
 
         sacrament = Sacrament(
-            **sacrament_data.model_dump(exclude={"spouse_id"}),
+            **sacrament_data.model_dump(exclude={"spouse_id", "additional_data"}),
             spouse_id=spouse_id or sacrament_data.spouse_id,
         )
         self.db.add(sacrament)
@@ -262,6 +262,8 @@ class SacramentService:
                 # Store auto-created household ID in sacrament additional_data
                 # Store auto-created household ID in sacrament
                 sacrament.notes = (sacrament.notes or "") + " [Auto-created household]"
+                effects.household_id = household.id
+                effects.household_name = household_name
                 effects.household_created = True
 
         else:

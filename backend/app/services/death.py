@@ -51,14 +51,25 @@ class DeathService:
         if data.date_of_death > date.today():
             raise DeathValidationError("Date of death cannot be in the future")
 
-        # 4. Check if date_of_death is after person's date_of_birth
-        if person.date_of_birth and data.date_of_death < person.date_of_birth:
+        # 4. Check if date_of_death is before birth date
+        # If date_of_birth is provided in the request and differs from the person's
+        # actual DOB, validate the person's DOB against the claimed DOB to catch
+        # data-entry inconsistencies.
+        if data.date_of_birth and person.date_of_birth:
+            if data.date_of_birth < person.date_of_birth:
+                raise DeathValidationError(
+                    f"Date of birth ({data.date_of_birth}) cannot be before date of birth ({person.date_of_birth})"
+                )
+        # Always use the person's actual DOB for death-before-birth check
+        effective_dob = person.date_of_birth
+        if effective_dob and data.date_of_death < effective_dob:
             raise DeathValidationError(
-                f"Date of death ({data.date_of_death}) cannot be before date of birth ({person.date_of_birth})"
+                f"Date of death ({data.date_of_death}) cannot be before date of birth ({effective_dob})"
             )
 
-        # Create the death record
-        death = Death(**data.model_dump())
+        # Create the death record (exclude date_of_birth - not a column)
+        dump = data.model_dump(exclude={"date_of_birth"})
+        death = Death(**dump)
         self.db.add(death)
         self.db.commit()
         self.db.refresh(death)
