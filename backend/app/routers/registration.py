@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
     status_code=status.HTTP_201_CREATED,
     summary="Submit public registration",
 )
-@limiter.limit("5/minute")
+@limiter.limit("60/minute")
 async def submit_registration(
     request: Request,
     data: RegistrationSubmission,
@@ -74,7 +74,7 @@ async def submit_registration(
     status_code=status.HTTP_201_CREATED,
     summary="Submit individual registration (no household)",
 )
-@limiter.limit("5/minute")
+@limiter.limit("60/minute")
 async def submit_individual_registration(
     request: Request,
     data: IndividualRegistrationSubmission,
