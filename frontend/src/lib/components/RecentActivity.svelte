@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { RecentActivity } from '$lib/api';
-	import { goto } from 'sveltejs/kit';
+	import { goto } from '$app/navigation';
 
 	interface Props {
 		activities: RecentActivity[];
@@ -65,7 +65,10 @@
 				{#if href}
 					<a
 						{href}
-						on:click|preventDefault={() => goto(href)}
+						onclick={(e) => {
+							e.preventDefault();
+							goto(href);
+						}}
 						class="flex items-start gap-3 hover:bg-gray-50 rounded-lg p-2 -m-2 cursor-pointer transition-colors group"
 					>
 						<div
