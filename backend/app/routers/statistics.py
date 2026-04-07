@@ -43,6 +43,8 @@ async def get_dashboard_statistics(
                 type="person_added",
                 description=f"{person.first_name} {person.last_name} added",
                 timestamp=person.created_at,
+                record_id=person.id,
+                record_type="person",
             )
         )
 
@@ -55,6 +57,8 @@ async def get_dashboard_statistics(
                     type="sacrament_recorded",
                     description=f"{sacrament.person.first_name} {sacrament.person.last_name} {sacrament_name} recorded",
                     timestamp=sacrament.created_at,
+                    record_id=sacrament.person.id,
+                    record_type="sacrament",
                 )
             )
 
@@ -65,6 +69,8 @@ async def get_dashboard_statistics(
                 type="household_created",
                 description=f"Household '{household.name}' created",
                 timestamp=household.created_at,
+                record_id=household.id,
+                record_type="household",
             )
         )
 
@@ -87,6 +93,8 @@ async def get_dashboard_statistics(
                 type="death_recorded",
                 description=f"{death.person.first_name} {death.person.last_name} death recorded",
                 timestamp=death.created_at,
+                record_id=death.person_id,
+                record_type="death",
             )
         )
 

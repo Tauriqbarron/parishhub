@@ -373,6 +373,8 @@ export interface RecentActivity {
 	type: string;
 	description: string;
 	timestamp: string;
+	record_id: number | null;
+	record_type: string;
 }
 
 export interface SacramentTrend {

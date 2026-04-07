@@ -21,6 +21,8 @@ class RecentActivity(BaseModel):
     type: str
     description: str
     timestamp: datetime
+    record_id: int | None = None
+    record_type: str = "default"
 
 
 class SacramentTrend(BaseModel):
