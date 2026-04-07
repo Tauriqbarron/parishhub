@@ -69,6 +69,7 @@ class Birth(Base):
     parent2_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("persons.id", ondelete="SET NULL"), nullable=True
     )
+    place_of_birth: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False

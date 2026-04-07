@@ -101,6 +101,7 @@ class MarriageSideEffects(BaseModel):
     household_id: Optional[int] = None
     household_name: Optional[str] = None
     spouse_relationship_created: bool = False
+    household_deferred: bool = False
 
 
 class SacramentResponseWithEffects(SacramentResponse):

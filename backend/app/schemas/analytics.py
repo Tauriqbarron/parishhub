@@ -48,6 +48,7 @@ class BirthBase(BaseModel):
     date_of_birth: date
     parent1_id: Optional[int] = None
     parent2_id: Optional[int] = None
+    place_of_birth: Annotated[Optional[str], Field(max_length=200)] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
 
 
@@ -63,6 +64,7 @@ class BirthUpdate(BaseModel):
     date_of_birth: Optional[date] = None
     parent1_id: Optional[int] = None
     parent2_id: Optional[int] = None
+    place_of_birth: Annotated[Optional[str], Field(max_length=200)] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
 
 

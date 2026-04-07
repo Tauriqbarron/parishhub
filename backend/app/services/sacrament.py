@@ -31,6 +31,7 @@ class SacramentService:
 
     def __init__(self, db: Session):
         self.db = db
+        self.last_marriage_effects: Optional[MarriageSideEffects] = None
 
     def _get_person_sacraments(self, person_id: int) -> dict[SacramentType, Sacrament]:
         """Get all sacraments for a person indexed by type."""
@@ -57,6 +58,28 @@ class SacramentService:
         separately and outside the scope of this model).
         """
         existing = self._get_person_sacraments(person_id)
+
+        # --- Baptism back-date guard (BEFORE duplicate check) -----------
+        # If Baptism is added after First Communion or Confirmation records
+        # already exist (e.g. correcting a missing record), ensure the Baptism
+        # date does not post-date the dependent sacraments.  This check runs
+        # before the duplicate guard so that date violations surface first,
+        # guiding users to enter historically correct dates.
+        # NOTE: Check Confirmation FIRST so its error message appears when
+        # both FirstCommunion and Confirmation exist (more informative).
+        if sacrament_type == SacramentType.BAPTISM:
+            if SacramentType.CONFIRMATION in existing:
+                confirmation = existing[SacramentType.CONFIRMATION]
+                if date_received > confirmation.date_received:
+                    raise SacramentValidationError(
+                        "Baptism date must be before Confirmation date"
+                    )
+            if SacramentType.FIRST_COMMUNION in existing:
+                first_communion = existing[SacramentType.FIRST_COMMUNION]
+                if date_received > first_communion.date_received:
+                    raise SacramentValidationError(
+                        "Baptism date must be before First Communion date"
+                    )
 
         # --- Duplicate guard ---------------------------------------------
         # All sacraments are received once in a lifetime, except Marriage
@@ -93,45 +116,27 @@ class SacramentService:
         # CIC can. 842 §2: Baptism, Confirmation, and Eucharist form the
         # sacraments of Christian initiation and are interrelated.  Confirmation
         # may not precede Baptism or (by diocesan norm) First Communion.
-        elif sacrament_type == SacramentType.CONFIRMATION:
-            if SacramentType.FIRST_COMMUNION in existing:
-                first_communion = existing[SacramentType.FIRST_COMMUNION]
-                if date_received < first_communion.date_received:
-                    # Some rites confirm before First Communion (e.g. Eastern
-                    # Catholic churches).  If that becomes a requirement, remove
-                    # this check and add a rite field to the Sacrament model.
-                    raise SacramentValidationError(
-                        "Confirmation date must be after First Communion date"
-                    )
+        if sacrament_type == SacramentType.CONFIRMATION:
+            # Check Baptism date first — fundamental requirement
             if SacramentType.BAPTISM in existing:
                 baptism = existing[SacramentType.BAPTISM]
                 if date_received < baptism.date_received:
                     raise SacramentValidationError(
                         "Confirmation date must be after Baptism date"
                     )
+            # Then verify First Communion was received
+            if SacramentType.FIRST_COMMUNION not in existing:
+                raise SacramentValidationError(
+                    "Confirmation may only be received after First Communion"
+                )
+            first_communion = existing[SacramentType.FIRST_COMMUNION]
+            if date_received < first_communion.date_received:
+                raise SacramentValidationError(
+                    "Confirmation date must be after First Communion date"
+                )
 
-        # --- Baptism back-date guard ------------------------------------
-        # If Baptism is added after First Communion or Confirmation records
-        # already exist (e.g. correcting a missing record), ensure the Baptism
-        # date does not post-date the dependent sacraments.
-        elif sacrament_type == SacramentType.BAPTISM:
-            if SacramentType.FIRST_COMMUNION in existing:
-                first_communion = existing[SacramentType.FIRST_COMMUNION]
-                if date_received > first_communion.date_received:
-                    raise SacramentValidationError(
-                        "Baptism date must be before First Communion date"
-                    )
-            if SacramentType.CONFIRMATION in existing:
-                confirmation = existing[SacramentType.CONFIRMATION]
-                if date_received > confirmation.date_received:
-                    raise SacramentValidationError(
-                        "Baptism date must be before Confirmation date"
-                    )
-
-    def create(
-        self, sacrament_data: SacramentCreate
-    ) -> tuple[Sacrament, Optional[MarriageSideEffects]]:
-        """Create a new sacrament record. Returns (sacrament, side_effects)."""
+    def create(self, sacrament_data: SacramentCreate) -> Sacrament:
+        """Create a new sacrament record. Returns sacrament. Use get_last_marriage_effects() for marriage side effects."""
         # Validate person exists
         person = self.db.get(Person, sacrament_data.person_id)
         if not person:
@@ -150,13 +155,15 @@ class SacramentService:
         self.db.add(sacrament)
         self.db.flush()
 
-        side_effects = None
+        self.last_marriage_effects = None
         if sacrament_data.sacrament_type == SacramentType.MARRIAGE:
-            side_effects = self._handle_marriage_side_effects(person, sacrament)
+            self.last_marriage_effects = self._handle_marriage_side_effects(
+                person, sacrament
+            )
 
         self.db.commit()
         self.db.refresh(sacrament)
-        return sacrament, side_effects
+        return sacrament
 
     def _handle_marriage_side_effects(
         self, person: Person, sacrament: Sacrament

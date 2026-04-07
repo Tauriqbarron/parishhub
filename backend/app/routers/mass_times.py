@@ -1,8 +1,4 @@
-"""API router for Mass Times management.
-
-SOLID-ISP: Separate public read endpoints from authenticated write endpoints
-so parish websites can display mass times without authentication.
-"""
+"""API router for Mass Times management."""
 
 from typing import Annotated
 
@@ -14,15 +10,15 @@ from app.database import get_db
 from app.schemas.mass_times import MassTimeCreate, MassTimeResponse, MassTimeUpdate
 from app.services.mass_times import MassTimeService
 
-# Public routers — no authentication required
-router = APIRouter(prefix="/api/mass-times", tags=["mass-times"])
-
-# Authenticated routers — all endpoints require auth
-auth_router = APIRouter(
+# All routers — require authentication
+router = APIRouter(
     prefix="/api/mass-times",
-    tags=["mass-times-admin"],
+    tags=["mass-times"],
     dependencies=[Depends(require_auth)],
 )
+
+# Alias for admin routes (all routes are authenticated)
+auth_router = router
 
 
 def get_mass_time_service(db: Session = Depends(get_db)) -> MassTimeService:

@@ -61,9 +61,9 @@ async def create_sacrament(
     - Confirmation must be after First Communion
     """
     try:
-        sacrament, side_effects = service.create(sacrament_data)
+        sacrament = service.create(sacrament_data)
         response = SacramentResponseWithEffects.model_validate(sacrament)
-        response.marriage_side_effects = side_effects
+        response.marriage_side_effects = service.last_marriage_effects
         return response
     except SacramentValidationError as e:
         raise HTTPException(
@@ -272,7 +272,7 @@ async def create_person_sacrament(
     updated_data = SacramentCreate(**sacrament_data_dict)
 
     try:
-        sacrament, _ = service.create(updated_data)
+        sacrament = service.create(updated_data)
         return SacramentResponse.model_validate(sacrament)
     except SacramentValidationError as e:
         raise HTTPException(

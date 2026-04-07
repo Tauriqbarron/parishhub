@@ -20,6 +20,7 @@ def parse_time(v: Any) -> Optional[time]:
 class MassTimeBase(BaseModel):
     name: Annotated[str, Field(min_length=1, max_length=100)]
     time: time
+    location: Annotated[Optional[str], Field(max_length=200)] = None
     day_of_week: Annotated[Optional[int], Field(ge=0, le=6)] = None
     is_active: bool = True
 
@@ -39,6 +40,7 @@ class MassTimeCreate(MassTimeBase):
 class MassTimeUpdate(BaseModel):
     name: Annotated[Optional[str], Field(min_length=1, max_length=100)] = None
     time: Any = None
+    location: Annotated[Optional[str], Field(max_length=200)] = None
     day_of_week: Annotated[Optional[int], Field(ge=0, le=6)] = None
     is_active: Optional[bool] = None
 
