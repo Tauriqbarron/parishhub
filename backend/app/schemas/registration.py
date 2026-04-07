@@ -52,6 +52,8 @@ class RegistrationSacrament(BaseModel):
     witness1: Optional[str] = None
     witness2: Optional[str] = None
     officiant: Optional[str] = None
+    notes: Optional[str] = None
+    spouse_id: Optional[int] = Field(default=None, alias="spouseId")
 
     model_config = {"populate_by_name": True}  # Allow both alias and field names
 

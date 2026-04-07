@@ -99,7 +99,7 @@ class AuditService:
                 AuditLog.resource_type == resource_type,
                 AuditLog.resource_id == resource_id,
             )
-            .order_by(AuditLog.timestamp.desc())
+            .order_by(AuditLog.timestamp.desc(), AuditLog.id.desc())
             .all()
         )
 
@@ -116,7 +116,7 @@ class AuditService:
         """Most recent audit entries across all resources."""
         return (
             self.db.query(AuditLog)
-            .order_by(AuditLog.timestamp.desc())
+            .order_by(AuditLog.timestamp.desc(), AuditLog.id.desc())
             .limit(limit)
             .all()
         )

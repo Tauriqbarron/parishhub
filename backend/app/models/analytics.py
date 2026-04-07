@@ -137,10 +137,7 @@ class PopulationSnapshot(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     date: Mapped[date] = mapped_column(Date, nullable=False, unique=True, index=True)
     registered_members: Mapped[int] = mapped_column(Integer, nullable=False)
-    active_households: Mapped[int] = mapped_column(
-        "households", Integer, nullable=False
-    )
-    weekly_attendance: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    households: Mapped[int] = mapped_column(Integer, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False
     )

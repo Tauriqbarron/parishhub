@@ -12,7 +12,12 @@ from contextlib import asynccontextmanager
 import logging
 import time
 
-from app.database import engine
+from app.database import engine, Base
+from app.limiter import limiter
+
+# Import all models to ensure they're registered with Base metadata
+# before any create_all() calls
+from app import models  # noqa: F401
 
 logger = logging.getLogger("parish.lifespan")
 
@@ -30,10 +35,17 @@ async def lifespan(app) -> AsyncGenerator[None, None]:
     startup_start = time.monotonic()
     logger.info("Application starting up...")
 
+    # For SQLite dev/test setups, auto-create tables
+    if engine.url.drivername == "sqlite":
+        Base.metadata.create_all(bind=engine)
+
     if hasattr(engine, "connect"):
         # Verify DB connectivity at startup
         with engine.connect() as conn:
             _ = conn.exec_driver_sql("SELECT 1")
+
+    # Reset rate limiter to clear any residual state (important for tests)
+    limiter.reset()
 
     startup_elapsed = time.monotonic() - startup_start
     logger.info(

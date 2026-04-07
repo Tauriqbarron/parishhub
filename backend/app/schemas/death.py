@@ -1,14 +1,15 @@
 from datetime import date, datetime
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DeathBase(BaseModel):
     """Base schema for Death with common fields."""
 
     person_id: int
-    date_of_death: date
+    date_of_death: date = date.today()  # defaults to today if not specified
+    date_of_birth: Optional[date] = None
     place_of_death: Annotated[Optional[str], Field(max_length=255)] = None
     cause_of_death: Annotated[Optional[str], Field(max_length=255)] = None
     burial_date: Optional[date] = None
@@ -29,6 +30,7 @@ class DeathUpdate(BaseModel):
     """Schema for updating an existing Death record."""
 
     date_of_death: Optional[date] = None
+    date_of_birth: Optional[date] = None
     place_of_death: Annotated[Optional[str], Field(max_length=255)] = None
     cause_of_death: Annotated[Optional[str], Field(max_length=255)] = None
     burial_date: Optional[date] = None
@@ -37,13 +39,6 @@ class DeathUpdate(BaseModel):
     funeral_location: Annotated[Optional[str], Field(max_length=255)] = None
     officiating_priest_id: Optional[int] = None
     notes: Annotated[Optional[str], Field(max_length=2000)] = None
-
-    @field_validator("date_of_death")
-    @classmethod
-    def validate_date_not_future(cls, v: Optional[date]) -> Optional[date]:
-        if v is not None and v > date.today():
-            raise ValueError("Date of death cannot be in the future")
-        return v
 
 
 class DeathResponse(DeathBase):
