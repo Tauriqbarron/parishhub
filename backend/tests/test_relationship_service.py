@@ -249,3 +249,91 @@ class TestFamilyRelationshipServiceExists:
         alice, bob = two_people
         svc = FamilyRelationshipService(db_session)
         assert svc.relationship_exists(alice.id, bob.id) is False
+
+
+class TestFamilyTreeQueryCount:
+    """Test that get_family_tree uses efficient queries (no N+1)."""
+
+    def test_family_tree_query_count(self, db_session):
+        """Verify get_family_tree executes exactly 2 queries (constant time).
+
+        This test ensures the N+1 query problem is fixed. The get_family_tree
+        method should:
+        - Query all relationships for the person (1 query)
+        - Eager load related Person objects via selectinload (1 query)
+
+        Total should be exactly 2, regardless of number of family members.
+        """
+        from sqlalchemy import event
+        from sqlalchemy.engine import Engine
+
+        # Create a family with many relationships to test N+1 resistance
+        alice = Person(first_name="Alice", last_name="Smith", email="alice@test.com")
+        bob = Person(first_name="Bob", last_name="Smith", email="bob@test.com")
+        carol = Person(first_name="Carol", last_name="Smith", email="carol@test.com")
+        david = Person(first_name="David", last_name="Smith", email="david@test.com")
+        db_session.add_all([alice, bob, carol, david])
+        db_session.flush()  # assign IDs without committing
+
+        # Create relationships: parent -> child, spouse, etc.
+        relationships = [
+            FamilyRelationship(
+                person_id=alice.id,
+                related_person_id=bob.id,
+                relationship_type=RelationshipType.PARENT,
+            ),
+            FamilyRelationship(
+                person_id=bob.id,
+                related_person_id=alice.id,
+                relationship_type=RelationshipType.CHILD,
+            ),
+            FamilyRelationship(
+                person_id=alice.id,
+                related_person_id=carol.id,
+                relationship_type=RelationshipType.PARENT,
+            ),
+            FamilyRelationship(
+                person_id=carol.id,
+                related_person_id=alice.id,
+                relationship_type=RelationshipType.CHILD,
+            ),
+            FamilyRelationship(
+                person_id=alice.id,
+                related_person_id=david.id,
+                relationship_type=RelationshipType.SPOUSE,
+            ),
+            FamilyRelationship(
+                person_id=david.id,
+                related_person_id=alice.id,
+                relationship_type=RelationshipType.SPOUSE,
+            ),
+        ]
+        db_session.add_all(relationships)
+        db_session.flush()  # Ensure relationship rows exist
+
+        # Capture queries
+        queries = []
+
+        @event.listens_for(Engine, "before_cursor_execute")
+        def capture_queries(conn, cursor, statement, parameters, context, executemany):
+            queries.append(" ".join(statement.strip().split()))
+
+        svc = FamilyRelationshipService(db_session)
+        tree = svc.get_family_tree(alice.id)
+
+        print(f"\nQuery count: {len(queries)}")
+        for i, q in enumerate(queries, 1):
+            print(f"  {i}. {q[:120]}")
+
+        # Verify result correctness
+        assert len(tree["parents"]) == 0
+        assert len(tree["children"]) == 2
+        assert tree["spouse"] is not None and tree["spouse"]["id"] == david.id
+        assert len(tree["siblings"]) == 0
+
+        # Expect exactly 2 SQL queries (no N+1)
+        assert len(queries) == 2, (
+            f"Expected 2 queries (N+1 fixed), got {len(queries)}: {queries}"
+        )
+        # First query should select FamilyRelationship rows for alice
+        # Second query should be SELECT persons WHERE id IN (...)
