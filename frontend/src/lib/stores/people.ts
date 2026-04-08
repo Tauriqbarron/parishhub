@@ -1,8 +1,8 @@
-import { writable } from 'svelte/store';
-import { personApi, type PersonWithRelations, type PersonFilters } from '$lib/api';
+import { writable, get } from 'svelte/store';
+import { personApi, type Person, type PersonWithRelations, type PersonFilters } from '$lib/api';
 
 interface PeopleState {
-	persons: PersonWithRelations[];
+	persons: Person[];
 	total: number;
 	page: number;
 	pages: number;
@@ -32,20 +32,14 @@ function createPeopleStore() {
 	return {
 		subscribe,
 
-		async load(filters: PersonFilters = {}) {
+		async fetchList(filters: PersonFilters = {}) {
 			update((state) => ({ ...state, loading: true, error: null }));
-
 			try {
 				const mergedFilters = { ...initialState.filters, ...filters };
 				const response = await personApi.list(mergedFilters);
-
-				const personsWithRelations = await Promise.all(
-					response.items.map((person) => personApi.get(person.id))
-				);
-
 				update((state) => ({
 					...state,
-					persons: personsWithRelations,
+					persons: response.items,
 					total: response.total,
 					page: response.page,
 					pages: response.pages,
@@ -62,9 +56,31 @@ function createPeopleStore() {
 			}
 		},
 
+		async fetchDetail(personId: number) {
+			try {
+				const person = await personApi.get(personId);
+				update((state) => ({
+					...state,
+					persons: state.persons.map((p) => (p.id === personId ? person : p))
+				}));
+			} catch (err) {
+				update((state) => ({
+					...state,
+					persons: state.persons.filter((p) => p.id !== personId),
+					error: err instanceof Error ? err.message : `Failed to load person ${personId}`
+				}));
+			}
+		},
+
+		async load(filters: PersonFilters = {}) {
+			await this.fetchList(filters);
+			const { persons } = get(this);
+			await Promise.all(persons.map((p) => this.fetchDetail(p.id)));
+		},
+
 		async setPage(page: number) {
 			update((state) => {
-				this.load({ ...state.filters, page });
+				this.fetchList({ ...state.filters, page });
 				return state;
 			});
 		},
@@ -72,7 +88,7 @@ function createPeopleStore() {
 		async setFilters(filters: Partial<PersonFilters>) {
 			update((state) => {
 				const newFilters = { ...state.filters, ...filters, page: 1 };
-				this.load(newFilters);
+				this.fetchList(newFilters);
 				return state;
 			});
 		},
@@ -80,7 +96,7 @@ function createPeopleStore() {
 		async setSort(sortBy: PersonFilters['sort_by'], sortOrder: PersonFilters['sort_order']) {
 			update((state) => {
 				const newFilters = { ...state.filters, sort_by: sortBy, sort_order: sortOrder };
-				this.load(newFilters);
+				this.fetchList(newFilters);
 				return state;
 			});
 		},
