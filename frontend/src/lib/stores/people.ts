@@ -1,5 +1,5 @@
 import { writable, get } from 'svelte/store';
-import { personApi, type Person, type PersonWithRelations, type PersonFilters } from '$lib/api';
+import { personApi, type PersonWithRelations, type PersonFilters } from '$lib/api';
 
 interface PeopleState {
 	persons: PersonWithRelations[];

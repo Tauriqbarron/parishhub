@@ -1,11 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { get } from 'svelte/store';
 import { registrationSessionStore } from '$lib/stores/registrationSession';
-import type {
-	RegistrationMember,
-	RegistrationHousehold,
-	RegistrationConsent
-} from '$lib/stores/registrationSession';
+// Types imported via store — not directly referenced in test assertions
 
 // Mock crypto.randomUUID
 vi.stubGlobal('crypto', {

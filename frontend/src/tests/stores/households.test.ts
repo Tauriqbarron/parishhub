@@ -114,7 +114,9 @@ describe('Households Store', () => {
 		});
 
 		it('should set loading state while fetching', async () => {
-			let resolvePromise!: (value: any) => void;
+			let resolvePromise!: (
+				value: import('$lib/api').PaginatedResponse<import('$lib/api').Household>
+			) => void;
 			const promise = new Promise<
 				import('$lib/api').PaginatedResponse<import('$lib/api').Household>
 			>((resolve) => {
