@@ -2,7 +2,7 @@ import { writable, get } from 'svelte/store';
 import { personApi, type Person, type PersonWithRelations, type PersonFilters } from '$lib/api';
 
 interface PeopleState {
-	persons: Person[];
+	persons: PersonWithRelations[];
 	total: number;
 	page: number;
 	pages: number;
@@ -39,7 +39,7 @@ function createPeopleStore() {
 				const response = await personApi.list(mergedFilters);
 				update((state) => ({
 					...state,
-					persons: response.items,
+					persons: response.items as unknown as PersonWithRelations[],
 					total: response.total,
 					page: response.page,
 					pages: response.pages,

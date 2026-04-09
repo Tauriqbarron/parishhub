@@ -41,8 +41,40 @@ describe('People Store', () => {
 		it('should load persons with full details', async () => {
 			const mockListResponse = {
 				items: [
-					{ id: 1, first_name: 'John', last_name: 'Doe' },
-					{ id: 2, first_name: 'Jane', last_name: 'Smith' }
+					{
+						id: 1,
+						first_name: 'John',
+						middle_name: null,
+						last_name: 'Doe',
+						date_of_birth: null,
+						gender: null,
+						email: null,
+						phone: null,
+						address_line1: null,
+						address_line2: null,
+						city: null,
+						postal_code: null,
+						notes: null,
+						created_at: '2024-01-01',
+						updated_at: '2024-01-01'
+					},
+					{
+						id: 2,
+						first_name: 'Jane',
+						middle_name: null,
+						last_name: 'Smith',
+						date_of_birth: null,
+						gender: null,
+						email: null,
+						phone: null,
+						address_line1: null,
+						address_line2: null,
+						city: null,
+						postal_code: null,
+						notes: null,
+						created_at: '2024-01-01',
+						updated_at: '2024-01-01'
+					}
 				],
 				total: 2,
 				page: 1,
@@ -53,7 +85,19 @@ describe('People Store', () => {
 			const mockPerson1 = {
 				id: 1,
 				first_name: 'John',
+				middle_name: null,
 				last_name: 'Doe',
+				date_of_birth: null,
+				gender: null,
+				email: null,
+				phone: null,
+				address_line1: null,
+				address_line2: null,
+				city: null,
+				postal_code: null,
+				notes: null,
+				created_at: '2024-01-01',
+				updated_at: '2024-01-01',
 				household_memberships: [],
 				sacraments: [],
 				death: null
@@ -61,7 +105,19 @@ describe('People Store', () => {
 			const mockPerson2 = {
 				id: 2,
 				first_name: 'Jane',
+				middle_name: null,
 				last_name: 'Smith',
+				date_of_birth: null,
+				gender: null,
+				email: null,
+				phone: null,
+				address_line1: null,
+				address_line2: null,
+				city: null,
+				postal_code: null,
+				notes: null,
+				created_at: '2024-01-01',
+				updated_at: '2024-01-01',
 				household_memberships: [],
 				sacraments: [],
 				death: null
@@ -105,7 +161,25 @@ describe('People Store', () => {
 
 		it('should handle get() errors for individual persons', async () => {
 			const mockListResponse = {
-				items: [{ id: 1, first_name: 'John', last_name: 'Doe' }],
+				items: [
+					{
+						id: 1,
+						first_name: 'John',
+						middle_name: null,
+						last_name: 'Doe',
+						date_of_birth: null,
+						gender: null,
+						email: null,
+						phone: null,
+						address_line1: null,
+						address_line2: null,
+						city: null,
+						postal_code: null,
+						notes: null,
+						created_at: '2024-01-01',
+						updated_at: '2024-01-01'
+					}
+				],
 				total: 1,
 				page: 1,
 				per_page: 20,
@@ -166,7 +240,7 @@ describe('People Store', () => {
 
 	describe('reset', () => {
 		it('should clear all state', async () => {
-			const mockResponse = { items: [], total: 0, page: 1, per_per_page: 20, pages: 0 };
+			const mockResponse = { items: [], total: 0, page: 1, per_page: 20, pages: 0 };
 			vi.mocked(personApi.list).mockResolvedValue(mockResponse);
 
 			await peopleStore.load();

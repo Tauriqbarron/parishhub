@@ -40,8 +40,28 @@ describe('Households Store', () => {
 		it('should load households and update state', async () => {
 			const mockResponse = {
 				items: [
-					{ id: 1, name: 'Household 1', member_count: 3 },
-					{ id: 2, name: 'Household 2', member_count: 4 }
+					{
+						id: 1,
+						name: 'Household 1',
+						address_line1: null,
+						address_line2: null,
+						city: null,
+						postal_code: null,
+						member_count: 3,
+						created_at: '2024-01-01',
+						updated_at: '2024-01-01'
+					},
+					{
+						id: 2,
+						name: 'Household 2',
+						address_line1: null,
+						address_line2: null,
+						city: null,
+						postal_code: null,
+						member_count: 4,
+						created_at: '2024-01-01',
+						updated_at: '2024-01-01'
+					}
 				],
 				total: 2,
 				page: 1,
@@ -94,8 +114,10 @@ describe('Households Store', () => {
 		});
 
 		it('should set loading state while fetching', async () => {
-			let resolvePromise!: (value: unknown) => void;
-			const promise = new Promise((resolve) => {
+			let resolvePromise!: (value: any) => void;
+			const promise = new Promise<
+				import('$lib/api').PaginatedResponse<import('$lib/api').Household>
+			>((resolve) => {
 				resolvePromise = resolve;
 			});
 			vi.mocked(householdApi.list).mockReturnValue(promise);
