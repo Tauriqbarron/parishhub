@@ -7,6 +7,7 @@ import pytest
 from app.models.person import Person
 from app.models.sacrament import Sacrament, SacramentType
 from app.schemas.sacrament import SacramentCreate
+from app.repositories.sacrament import SqlAlchemySacramentRepository
 from app.services.sacrament import SacramentService, SacramentValidationError
 
 
@@ -58,7 +59,7 @@ class TestSacramentOrdering:
     def test_baptism_allows_first_communion_after(
         self, db_session, person_with_baptism
     ):
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         data = SacramentCreate(
             person_id=person_with_baptism.id,
             sacrament_type=SacramentType.FIRST_COMMUNION,
@@ -70,7 +71,7 @@ class TestSacramentOrdering:
     def test_first_communion_before_baptism_raises(
         self, db_session, person_with_baptism
     ):
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         data = SacramentCreate(
             person_id=person_with_baptism.id,
             sacrament_type=SacramentType.FIRST_COMMUNION,
@@ -80,7 +81,7 @@ class TestSacramentOrdering:
             svc.create(data)
 
     def test_confirmation_requires_after_baptism(self, db_session, person_with_baptism):
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         data = SacramentCreate(
             person_id=person_with_baptism.id,
             sacrament_type=SacramentType.CONFIRMATION,
@@ -92,7 +93,7 @@ class TestSacramentOrdering:
     def test_confirmation_requires_after_first_communion(
         self, db_session, person_with_baptism
     ):
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         data = SacramentCreate(
             person_id=person_with_baptism.id,
             sacrament_type=SacramentType.CONFIRMATION,
@@ -102,7 +103,7 @@ class TestSacramentOrdering:
             svc.create(data)
 
     def test_duplicate_baptism_raises(self, db_session, person_with_baptism):
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         data = SacramentCreate(
             person_id=person_with_baptism.id,
             sacrament_type=SacramentType.BAPTISM,
@@ -115,7 +116,7 @@ class TestSacramentOrdering:
         person = Person(first_name="A", last_name="B")
         db_session.add(person)
         db_session.flush()
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         svc.create(
             SacramentCreate(
                 person_id=person.id,
@@ -133,7 +134,7 @@ class TestSacramentOrdering:
         assert result is not None
 
     def test_person_not_found_raises(self, db_session):
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         with pytest.raises(SacramentValidationError, match="not found"):
             svc.create(
                 SacramentCreate(
@@ -147,7 +148,7 @@ class TestSacramentOrdering:
         self, db_session, person_with_communion
     ):
         """If Baptism is added retroactively after Communion exists, it must be earlier."""
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         data = SacramentCreate(
             person_id=person_with_communion.id,
             sacrament_type=SacramentType.BAPTISM,
@@ -160,7 +161,7 @@ class TestSacramentOrdering:
         self, db_session, person_with_confirmation
     ):
         """If Baptism is added retroactively after Confirmation exists, it must be earlier."""
-        svc = SacramentService(db_session)
+        svc = SacramentService(SqlAlchemySacramentRepository(db_session), db_session)
         data = SacramentCreate(
             person_id=person_with_confirmation.id,
             sacrament_type=SacramentType.BAPTISM,

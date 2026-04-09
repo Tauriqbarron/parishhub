@@ -67,7 +67,9 @@ def spouse_person(db_session) -> Person:
 
 
 @pytest.fixture
-def existing_relationship(db_session, parent_person, child_person) -> FamilyRelationship:
+def existing_relationship(
+    db_session, parent_person, child_person
+) -> FamilyRelationship:
     """Create an existing parent-child relationship."""
     # Parent -> child relationship
     relationship = FamilyRelationship(
@@ -143,7 +145,9 @@ class TestCreateRelationship:
         data = response.json()
         assert data["relationship_type"] == "sibling"
 
-    def test_create_relationship_person_not_found(self, authenticated_client, child_person):
+    def test_create_relationship_person_not_found(
+        self, authenticated_client, child_person
+    ):
         """Test creating relationship with nonexistent person."""
         response = authenticated_client.post(
             "/api/persons/9999/relationships",
@@ -195,7 +199,9 @@ class TestCreateRelationship:
 
         assert response.status_code == 409
 
-    def test_create_relationship_unauthenticated(self, client, parent_person, child_person):
+    def test_create_relationship_unauthenticated(
+        self, client, parent_person, child_person
+    ):
         """Test that unauthenticated requests return 401."""
         response = client.post(
             f"/api/persons/{parent_person.id}/relationships",

@@ -3,10 +3,8 @@
 from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
 
 from app.auth import User, require_auth
-from app.database import get_db
 from app.schemas.death import (
     DeathCreate,
     DeathResponse,
@@ -15,14 +13,10 @@ from app.schemas.death import (
     DeathWithPerson,
 )
 from app.schemas.pagination import PaginatedResponse
-from app.services.death import DeathService, DeathValidationError
+from app.services.death import DeathService, DeathValidationError, get_death_service
 
 router = APIRouter(prefix="/api/deaths", tags=["deaths"])
 persons_router = APIRouter(prefix="/api/persons", tags=["deaths"])
-
-
-def get_death_service(db: Session = Depends(get_db)) -> DeathService:
-    return DeathService(db)
 
 
 @router.post(

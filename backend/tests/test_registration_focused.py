@@ -1,8 +1,5 @@
 """Focused test for sacrament validation in registration."""
 
-import pytest
-from fastapi.testclient import TestClient
-
 
 def test_registration_anointing_sacrament_validation(client):
     """Test that anointing sacrament type is properly validated and handled."""

@@ -6,7 +6,6 @@ from fastapi.testclient import TestClient
 from app.auth import User, require_auth
 from app.main import app
 from app.models.household import Household, HouseholdMember, HouseholdRole
-from app.models.person import Person
 
 
 @pytest.fixture

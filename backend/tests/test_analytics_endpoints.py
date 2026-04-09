@@ -344,7 +344,9 @@ class TestListAttendance:
         assert len(data["items"]) == 1
         assert data["total"] == 1
 
-    def test_list_attendance_filter_by_date(self, authenticated_client, sample_attendance):
+    def test_list_attendance_filter_by_date(
+        self, authenticated_client, sample_attendance
+    ):
         """Test filtering by date range."""
         today = date.today()
         start = (today - timedelta(days=14)).isoformat()
@@ -370,7 +372,9 @@ class TestGetAttendance:
 
     def test_get_attendance_exists(self, authenticated_client, sample_attendance):
         """Test getting an existing attendance record."""
-        response = authenticated_client.get(f"/api/mass-attendance/{sample_attendance.id}")
+        response = authenticated_client.get(
+            f"/api/mass-attendance/{sample_attendance.id}"
+        )
 
         assert response.status_code == 200
         data = response.json()

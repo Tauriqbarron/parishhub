@@ -3,12 +3,10 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
 
 from app.auth import require_auth
-from app.database import get_db
 from app.schemas.mass_times import MassTimeCreate, MassTimeResponse, MassTimeUpdate
-from app.services.mass_times import MassTimeService
+from app.services.mass_times import MassTimeService, get_mass_time_service
 
 # All routers — require authentication
 router = APIRouter(
@@ -19,10 +17,6 @@ router = APIRouter(
 
 # Alias for admin routes (all routes are authenticated)
 auth_router = router
-
-
-def get_mass_time_service(db: Session = Depends(get_db)) -> MassTimeService:
-    return MassTimeService(db)
 
 
 # --- Public endpoints (parish website display) ---

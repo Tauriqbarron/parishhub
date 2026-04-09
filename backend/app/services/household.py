@@ -2,33 +2,35 @@
 
 from typing import Optional
 
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session, selectinload
+from fastapi import Depends
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
+from app.database import get_db
 from app.models.household import Household, HouseholdMember
-from app.models.person import Person
+from app.repositories.household import (
+    HouseholdRepository,
+    SqlAlchemyHouseholdRepository,
+)
 from app.schemas.household import (
     HouseholdCreate,
     HouseholdMemberCreate,
     HouseholdMemberUpdate,
     HouseholdUpdate,
 )
-from app.utils.pagination import paginate
 
 
 class HouseholdService:
     """Service class for Household CRUD operations."""
 
-    def __init__(self, db: Session):
+    def __init__(self, repo: HouseholdRepository, db: Session) -> None:
+        self.repo = repo
         self.db = db
 
     def create(self, household_data: HouseholdCreate) -> Household:
         """Create a new household."""
         household = Household(**household_data.model_dump())
-        self.db.add(household)
-        self.db.commit()
-        self.db.refresh(household)
-        return household
+        return self.repo.create(household)
 
     def create_with_members(
         self,
@@ -37,8 +39,8 @@ class HouseholdService:
     ) -> Household:
         """Create a new household with initial members."""
         household = Household(**household_data.model_dump())
-        self.db.add(household)
-        self.db.flush()  # Get the household ID
+        self.repo.add(household)
+        self.repo.flush()  # Get the household ID
 
         for member_data in members:
             member = HouseholdMember(
@@ -47,26 +49,19 @@ class HouseholdService:
                 role=member_data["role"],
                 is_primary_household=member_data.get("is_primary_household", True),
             )
-            self.db.add(member)
+            self.repo.add(member)
 
-        self.db.commit()
-        self.db.refresh(household)
+        self.repo.commit()
+        self.repo.refresh(household)
         return household
 
     def get_by_id(self, household_id: int) -> Optional[Household]:
         """Get a household by ID."""
-        return self.db.get(Household, household_id)
+        return self.repo.get_by_id(household_id)
 
     def get_by_id_with_members(self, household_id: int) -> Optional[Household]:
         """Get a household by ID with all members."""
-        stmt = (
-            select(Household)
-            .options(
-                selectinload(Household.members).selectinload(HouseholdMember.person)
-            )
-            .where(Household.id == household_id)
-        )
-        return self.db.execute(stmt).scalar_one_or_none()
+        return self.repo.get_by_id_with_members(household_id)
 
     def get_list(
         self,
@@ -94,15 +89,13 @@ class HouseholdService:
             sort_column = sort_column.desc()
         stmt = stmt.order_by(sort_column)
 
-        # Apply pagination
-        items, total = paginate(self.db, stmt, page, per_page)
-        return items, total
+        return self.repo.get_list(stmt, page, per_page)
 
     def update(
         self, household_id: int, household_data: HouseholdUpdate
     ) -> Optional[Household]:
         """Update a household (partial update supported)."""
-        household = self.get_by_id(household_id)
+        household = self.repo.get_by_id(household_id)
         if not household:
             return None
 
@@ -110,18 +103,15 @@ class HouseholdService:
         for field, value in update_data.items():
             setattr(household, field, value)
 
-        self.db.commit()
-        self.db.refresh(household)
-        return household
+        return self.repo.update(household)
 
     def delete(self, household_id: int) -> bool:
         """Delete a household."""
-        household = self.get_by_id(household_id)
+        household = self.repo.get_by_id(household_id)
         if not household:
             return False
 
-        self.db.delete(household)
-        self.db.commit()
+        self.repo.delete(household)
         return True
 
     # Member operations
@@ -131,35 +121,30 @@ class HouseholdService:
     ) -> Optional[HouseholdMember]:
         """Add a person to a household."""
         # Verify household exists
-        household = self.get_by_id(member_data.household_id)
+        household = self.repo.get_by_id(member_data.household_id)
         if not household:
             return None
 
         # Verify person exists
-        person = self.db.get(Person, member_data.person_id)
-        if not person:
+        if not self.repo.person_exists(member_data.person_id):
             return None
 
         # Check if person is already a member
-        existing = self.get_member(member_data.household_id, member_data.person_id)
+        existing = self.repo.get_member(member_data.household_id, member_data.person_id)
         if existing:
             return None
 
         member = HouseholdMember(**member_data.model_dump())
-        self.db.add(member)
-        self.db.commit()
-        self.db.refresh(member)
+        self.repo.add(member)
+        self.repo.commit()
+        self.repo.refresh(member)
         return member
 
     def get_member(
         self, household_id: int, person_id: int
     ) -> Optional[HouseholdMember]:
         """Get a household member by household and person ID."""
-        stmt = select(HouseholdMember).where(
-            HouseholdMember.household_id == household_id,
-            HouseholdMember.person_id == person_id,
-        )
-        return self.db.execute(stmt).scalar_one_or_none()
+        return self.repo.get_member(household_id, person_id)
 
     def update_member(
         self,
@@ -168,7 +153,7 @@ class HouseholdService:
         member_data: HouseholdMemberUpdate,
     ) -> Optional[HouseholdMember]:
         """Update a household member's role or primary status."""
-        member = self.get_member(household_id, person_id)
+        member = self.repo.get_member(household_id, person_id)
         if not member:
             return None
 
@@ -176,25 +161,22 @@ class HouseholdService:
         for field, value in update_data.items():
             setattr(member, field, value)
 
-        self.db.commit()
-        self.db.refresh(member)
-        return member
+        return self.repo.update_member(member)
 
     def remove_member(self, household_id: int, person_id: int) -> bool:
         """Remove a person from a household."""
-        member = self.get_member(household_id, person_id)
+        member = self.repo.get_member(household_id, person_id)
         if not member:
             return False
 
-        self.db.delete(member)
-        self.db.commit()
+        self.repo.delete(member)
         return True
 
     def get_member_count(self, household_id: int) -> int:
         """Get the number of members in a household."""
-        stmt = (
-            select(func.count())
-            .select_from(HouseholdMember)
-            .where(HouseholdMember.household_id == household_id)
-        )
-        return self.db.execute(stmt).scalar() or 0
+        return self.repo.get_member_count(household_id)
+
+
+def get_household_service(db: Session = Depends(get_db)) -> HouseholdService:
+    """Dependency to get HouseholdService instance."""
+    return HouseholdService(SqlAlchemyHouseholdRepository(db), db)

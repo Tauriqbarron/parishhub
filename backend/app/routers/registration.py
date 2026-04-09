@@ -4,10 +4,8 @@ import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy.orm import Session
 
 from app.auth import User, require_auth
-from app.database import get_db
 from app.limiter import limiter
 from app.schemas.registration import (
     IndividualRegistrationResponse,
@@ -115,7 +113,7 @@ async def submit_individual_registration(
 )
 async def get_registration_url(
     user: Annotated[User, Depends(require_auth)],
-    db: Session = Depends(get_db),
+    service: Annotated[RegistrationService, Depends(get_registration_service)],
 ) -> RegistrationURLResponse:
     """
     Get the current registration URL configuration.
@@ -123,9 +121,7 @@ async def get_registration_url(
     Returns the base URL and full registration URL for QR code generation.
     Requires authentication.
     """
-    service = RegistrationService(db)
     registration_url = service.get_registration_url()
-
     return RegistrationURLResponse(
         base_url=registration_url.rsplit("/register", 1)[0],
         registration_url=registration_url,
@@ -140,7 +136,7 @@ async def get_registration_url(
 async def update_registration_url(
     config: RegistrationURLConfig,
     user: Annotated[User, Depends(require_auth)],
-    db: Session = Depends(get_db),
+    service: Annotated[RegistrationService, Depends(get_registration_service)],
 ) -> RegistrationURLResponse:
     """
     Update the base URL for public registration.
@@ -148,23 +144,4 @@ async def update_registration_url(
     This URL is used for QR code generation (e.g., Cloudflare tunnel URL).
     Requires authentication.
     """
-    from app.models.settings import Setting
-
-    base_url = config.base_url.rstrip("/")
-
-    setting = db.query(Setting).filter(Setting.key == "registration_base_url").first()
-
-    if setting:
-        setting.value = base_url
-    else:
-        setting = Setting(key="registration_base_url", value=base_url)
-        db.add(setting)
-
-    db.commit()
-
-    registration_url = f"{base_url}/register"
-
-    return RegistrationURLResponse(
-        base_url=base_url,
-        registration_url=registration_url,
-    )
+    return service.update_registration_url(config.base_url)

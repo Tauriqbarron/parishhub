@@ -25,6 +25,7 @@ from app.schemas.registration import (
     IndividualRegistrationSubmission,
     RegistrationResponse,
     RegistrationSubmission,
+    RegistrationURLResponse,
 )
 from app.services.relationship import FamilyRelationshipService
 
@@ -357,6 +358,28 @@ class RegistrationService:
             )
         base_url = setting.value.rstrip("/")
         return f"{base_url}{REGISTRATION_PATH}"
+
+    def update_registration_url(self, base_url: str) -> RegistrationURLResponse:
+        """Update the base URL for public registration."""
+        base_url = base_url.rstrip("/")
+
+        setting = (
+            self.db.query(Setting).filter(Setting.key == REGISTRATION_URL_KEY).first()
+        )
+
+        if setting:
+            setting.value = base_url
+        else:
+            setting = Setting(key=REGISTRATION_URL_KEY, value=base_url)
+            self.db.add(setting)
+
+        self.db.commit()
+
+        registration_url = f"{base_url}{REGISTRATION_PATH}"
+        return RegistrationURLResponse(
+            base_url=base_url,
+            registration_url=registration_url,
+        )
 
 
 def get_registration_service(db: Session = Depends(get_db)) -> RegistrationService:

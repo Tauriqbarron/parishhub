@@ -231,7 +231,9 @@ class TestUpdatePerson:
 
         assert response.status_code == 404
 
-    def test_update_person_duplicate_email(self, authenticated_client, multiple_persons):
+    def test_update_person_duplicate_email(
+        self, authenticated_client, multiple_persons
+    ):
         """Test that updating to a duplicate email is rejected."""
         # Try to update first person's email to second person's email
         response = authenticated_client.put(

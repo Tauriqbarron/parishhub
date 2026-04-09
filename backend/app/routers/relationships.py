@@ -3,24 +3,20 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
 from app.auth import User, require_auth
-from app.database import get_db
 from app.schemas.relationship import (
     CreateRelationshipRequest,
     FamilyRelationshipCreate,
     FamilyRelationshipResponse,
     FamilyTreeResponse,
 )
-from app.services.relationship import FamilyRelationshipService
+from app.services.relationship import (
+    FamilyRelationshipService,
+    get_relationship_service,
+)
 
 router = APIRouter(tags=["relationships"])
-
-
-def get_relationship_service(db: Session = Depends(get_db)) -> FamilyRelationshipService:
-    """Dependency to get FamilyRelationshipService instance."""
-    return FamilyRelationshipService(db)
 
 
 # Endpoints under /api/persons/{id}

@@ -5,6 +5,7 @@ from datetime import date
 from app.models.person import Gender
 from app.schemas.filters import PersonFilter
 from app.schemas.person import PersonCreate, PersonUpdate
+from app.repositories.person import SqlAlchemyPersonRepository
 from app.services.person import PersonService
 
 
@@ -13,7 +14,7 @@ class TestPersonServiceCreate:
 
     def test_create_person_with_minimal_data(self, db_session):
         """Test creating a person with only required fields."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
         person_data = PersonCreate(first_name="John", last_name="Smith")
 
         person = service.create(person_data)
@@ -26,7 +27,7 @@ class TestPersonServiceCreate:
 
     def test_create_person_with_full_data(self, db_session):
         """Test creating a person with all fields."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
         person_data = PersonCreate(
             first_name="John",
             middle_name="Michael",
@@ -62,7 +63,7 @@ class TestPersonServiceGetById:
 
     def test_get_existing_person(self, db_session, sample_person):
         """Test getting an existing person by ID."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         person = service.get_by_id(sample_person.id)
 
@@ -72,7 +73,7 @@ class TestPersonServiceGetById:
 
     def test_get_nonexistent_person(self, db_session):
         """Test getting a person that doesn't exist."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         person = service.get_by_id(9999)
 
@@ -84,7 +85,7 @@ class TestPersonServiceGetByIdWithRelations:
 
     def test_get_person_with_relations(self, db_session, sample_person):
         """Test getting a person with related data."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         person = service.get_by_id_with_relations(sample_person.id)
 
@@ -95,7 +96,7 @@ class TestPersonServiceGetByIdWithRelations:
 
     def test_get_nonexistent_person_with_relations(self, db_session):
         """Test getting a nonexistent person with relations."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         person = service.get_by_id_with_relations(9999)
 
@@ -107,7 +108,7 @@ class TestPersonServiceGetList:
 
     def test_get_list_empty(self, db_session):
         """Test getting list when no persons exist."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         items, total = service.get_list(filters=PersonFilter())
 
@@ -116,7 +117,7 @@ class TestPersonServiceGetList:
 
     def test_get_list_with_persons(self, db_session, multiple_persons):
         """Test getting list with persons."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         items, total = service.get_list(filters=PersonFilter())
 
@@ -125,7 +126,7 @@ class TestPersonServiceGetList:
 
     def test_get_list_pagination(self, db_session, multiple_persons):
         """Test pagination works correctly."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         items, total = service.get_list(filters=PersonFilter(), page=1, per_page=2)
 
@@ -137,7 +138,7 @@ class TestPersonServiceGetList:
 
     def test_get_list_search(self, db_session, multiple_persons):
         """Test search functionality."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         items, total = service.get_list(filters=PersonFilter(search="Alice"))
 
@@ -146,7 +147,7 @@ class TestPersonServiceGetList:
 
     def test_get_list_search_by_email(self, db_session, multiple_persons):
         """Test search by email."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         items, total = service.get_list(filters=PersonFilter(search="bob@test"))
 
@@ -155,7 +156,7 @@ class TestPersonServiceGetList:
 
     def test_get_list_filter_by_gender(self, db_session, multiple_persons):
         """Test filtering by gender."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         items, total = service.get_list(filters=PersonFilter(gender=Gender.FEMALE))
 
@@ -165,7 +166,7 @@ class TestPersonServiceGetList:
 
     def test_get_list_sorting_asc(self, db_session, multiple_persons):
         """Test ascending sort."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         items, _ = service.get_list(
             filters=PersonFilter(), sort_by="last_name", sort_order="asc"
@@ -176,7 +177,7 @@ class TestPersonServiceGetList:
 
     def test_get_list_sorting_desc(self, db_session, multiple_persons):
         """Test descending sort."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         items, _ = service.get_list(
             filters=PersonFilter(), sort_by="last_name", sort_order="desc"
@@ -191,7 +192,7 @@ class TestPersonServiceUpdate:
 
     def test_update_person_partial(self, db_session, sample_person):
         """Test partial update of a person."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
         update_data = PersonUpdate(first_name="Jane")
 
         updated = service.update(sample_person.id, update_data)
@@ -202,7 +203,7 @@ class TestPersonServiceUpdate:
 
     def test_update_person_full(self, db_session, sample_person):
         """Test full update of a person."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
         update_data = PersonUpdate(
             first_name="Jane",
             last_name="Doe",
@@ -218,7 +219,7 @@ class TestPersonServiceUpdate:
 
     def test_update_nonexistent_person(self, db_session):
         """Test updating a person that doesn't exist."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
         update_data = PersonUpdate(first_name="Jane")
 
         updated = service.update(9999, update_data)
@@ -231,7 +232,7 @@ class TestPersonServiceDelete:
 
     def test_delete_person(self, db_session, sample_person):
         """Test deleting a person."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
         person_id = sample_person.id
 
         deleted = service.delete(person_id)
@@ -241,7 +242,7 @@ class TestPersonServiceDelete:
 
     def test_delete_nonexistent_person(self, db_session):
         """Test deleting a person that doesn't exist."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         deleted = service.delete(9999)
 
@@ -253,7 +254,7 @@ class TestPersonServiceGetByEmail:
 
     def test_get_by_email_existing(self, db_session, sample_person):
         """Test getting a person by existing email."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         person = service.get_by_email(sample_person.email)
 
@@ -262,7 +263,7 @@ class TestPersonServiceGetByEmail:
 
     def test_get_by_email_nonexistent(self, db_session):
         """Test getting a person by nonexistent email."""
-        service = PersonService(db_session)
+        service = PersonService(SqlAlchemyPersonRepository(db_session))
 
         person = service.get_by_email("nonexistent@test.com")
 

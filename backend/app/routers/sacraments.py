@@ -11,6 +11,9 @@ from app.auth import User, require_auth
 from app.database import get_db
 from app.models.household import Household
 from app.models.sacrament import SacramentType
+from app.repositories.sacrament import (
+    SqlAlchemySacramentRepository,
+)
 from app.schemas.pagination import PaginatedResponse
 from app.schemas.sacrament import (
     SacramentCreate,
@@ -27,8 +30,9 @@ persons_router = APIRouter(prefix="/api/persons", tags=["persons"])
 
 
 def get_sacrament_service(db: Session = Depends(get_db)) -> SacramentService:
-    """Dependency to get SacramentService instance."""
-    return SacramentService(db)
+    """Dependency to get SacramentService instance with repository injection."""
+    repo = SqlAlchemySacramentRepository(db)
+    return SacramentService(repo, db)
 
 
 @router.post(

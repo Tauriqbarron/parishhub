@@ -40,7 +40,9 @@ def sample_mass_time(db_session) -> MassTime:
 def multiple_mass_times(db_session) -> list[MassTime]:
     """Create multiple mass time records."""
     mass_times = [
-        MassTime(name="Early Morning Mass", time=time(7, 0), day_of_week=0, is_active=True),
+        MassTime(
+            name="Early Morning Mass", time=time(7, 0), day_of_week=0, is_active=True
+        ),
         MassTime(name="Morning Mass", time=time(9, 0), day_of_week=0, is_active=True),
         MassTime(name="Noon Mass", time=time(12, 0), day_of_week=0, is_active=True),
         MassTime(name="Evening Mass", time=time(18, 0), day_of_week=0, is_active=False),
@@ -123,7 +125,9 @@ class TestListMassTimes:
         assert len(data) == 1
         assert data[0]["name"] == "Sunday Morning Mass"
 
-    def test_list_mass_times_active_only(self, authenticated_client, multiple_mass_times):
+    def test_list_mass_times_active_only(
+        self, authenticated_client, multiple_mass_times
+    ):
         """Test listing only active mass times (default)."""
         response = authenticated_client.get("/api/mass-times")
 
@@ -131,7 +135,9 @@ class TestListMassTimes:
         data = response.json()
         assert len(data) == 3  # 3 active, 1 inactive
 
-    def test_list_mass_times_include_inactive(self, authenticated_client, multiple_mass_times):
+    def test_list_mass_times_include_inactive(
+        self, authenticated_client, multiple_mass_times
+    ):
         """Test listing all mass times including inactive."""
         response = authenticated_client.get("/api/mass-times?active_only=false")
 

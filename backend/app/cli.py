@@ -5,6 +5,7 @@ from random import choice
 
 from app.database import SessionLocal
 from app.models.person import Person
+from app.repositories.person import SqlAlchemyPersonRepository
 from app.schemas.person import PersonCreate
 from app.services.person import PersonService
 
@@ -27,7 +28,7 @@ def seed(n: int = 10) -> None:
     """Seed the database with sample persons for development."""
     db = SessionLocal()
     try:
-        svc = PersonService(db)
+        svc = PersonService(SqlAlchemyPersonRepository(db))
         first_names = [
             "Alice",
             "Bob",

@@ -3,10 +3,8 @@
 from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
 
 from app.auth import User, require_auth
-from app.database import get_db
 from app.models.household import HouseholdRole
 from app.schemas.household import (
     HouseholdCreate,
@@ -19,14 +17,9 @@ from app.schemas.household import (
     HouseholdWithMembers,
 )
 from app.schemas.pagination import PaginatedResponse
-from app.services.household import HouseholdService
+from app.services.household import HouseholdService, get_household_service
 
 router = APIRouter(prefix="/api/households", tags=["households"])
-
-
-def get_household_service(db: Session = Depends(get_db)) -> HouseholdService:
-    """Dependency to get HouseholdService instance."""
-    return HouseholdService(db)
 
 
 @router.post(
@@ -98,9 +91,7 @@ async def list_households(
     service: Annotated[HouseholdService, Depends(get_household_service)],
     user: Annotated[User, Depends(require_auth)],
     page: Annotated[int, Query(ge=1, description="Page number")] = 1,
-    per_page: Annotated[
-        int, Query(ge=1, le=100, description="Items per page")
-    ] = 20,
+    per_page: Annotated[int, Query(ge=1, le=100, description="Items per page")] = 20,
     search: Annotated[
         Optional[str], Query(description="Search in household name")
     ] = None,

@@ -3,10 +3,8 @@
 from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
 
 from app.auth import User, require_auth
-from app.database import get_db
 from app.models.person import Gender
 from app.models.sacrament import SacramentType
 from app.schemas.filters import PersonFilter
@@ -17,14 +15,9 @@ from app.schemas.person import (
     PersonUpdate,
     PersonWithRelations,
 )
-from app.services.person import PersonService
+from app.services.person import PersonService, get_person_service
 
 router = APIRouter(prefix="/api/persons", tags=["persons"])
-
-
-def get_person_service(db: Session = Depends(get_db)) -> PersonService:
-    """Dependency to get PersonService instance."""
-    return PersonService(db)
 
 
 @router.post(

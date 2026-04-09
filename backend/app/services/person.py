@@ -1,53 +1,48 @@
-"""Service layer for Person operations."""
+"""Service layer for Person operations.
+
+Uses PersonRepository for data access, enabling unit testing without a database
+(Dependency Inversion Principle — DIP).
+"""
 
 from datetime import date
 from typing import Optional
 
+from fastapi import Depends
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, selectinload
 
+from app.database import get_db
 from app.models.household import HouseholdMember
 from app.models.person import Person
 from app.models.sacrament import Sacrament
+from app.repositories.person import PersonRepository, SqlAlchemyPersonRepository
 from app.schemas.filters import PersonFilter
 from app.schemas.person import PersonCreate, PersonUpdate
-from app.utils.pagination import paginate
 
 
 class PersonService:
-    """Service class for Person CRUD operations."""
+    """Service class for Person CRUD operations.
 
-    def __init__(self, db: Session):
-        self.db = db
+    Args:
+        repo: A PersonRepository implementation (SqlAlchemyPersonRepository in production,
+              FakePersonRepository in tests).
+    """
+
+    def __init__(self, repo: PersonRepository):
+        self.repo = repo
 
     def create(self, person_data: PersonCreate) -> Person:
         """Create a new person."""
         person = Person(**person_data.model_dump())
-        self.db.add(person)
-        self.db.commit()
-        self.db.refresh(person)
-        return person
+        return self.repo.save(person)
 
     def get_by_id(self, person_id: int) -> Optional[Person]:
         """Get a person by ID."""
-        return self.db.get(Person, person_id)
+        return self.repo.get_by_id(person_id)
 
     def get_by_id_with_relations(self, person_id: int) -> Optional[Person]:
         """Get a person by ID with all related data."""
-        stmt = (
-            select(Person)
-            .options(
-                selectinload(Person.household_memberships).selectinload(
-                    HouseholdMember.household
-                ),
-                selectinload(Person.sacraments),
-                selectinload(Person.relationships_as_person),
-                selectinload(Person.relationships_as_related),
-                selectinload(Person.death),
-            )
-            .where(Person.id == person_id)
-        )
-        return self.db.execute(stmt).scalar_one_or_none()
+        return self.repo.get_by_id_with_relations(person_id)
 
     def get_list(
         self,
@@ -133,8 +128,14 @@ class PersonService:
             sort_column = sort_column.desc()
         stmt = stmt.order_by(sort_column)
 
-        # Get total count and apply pagination
-        items, total = paginate(self.db, stmt, page, per_page)
+        # Count total before pagination
+        total = self.repo.count(stmt)
+
+        # Apply pagination
+        offset = (page - 1) * per_page
+        stmt = stmt.offset(offset).limit(per_page)
+
+        items = self.repo.list(stmt)
         return items, total
 
     def update(self, person_id: int, person_data: PersonUpdate) -> Optional[Person]:
@@ -147,9 +148,7 @@ class PersonService:
         for field, value in update_data.items():
             setattr(person, field, value)
 
-        self.db.commit()
-        self.db.refresh(person)
-        return person
+        return self.repo.save(person)
 
     def delete(self, person_id: int, hard_delete: bool = False) -> bool:
         """
@@ -167,11 +166,14 @@ class PersonService:
         if not person:
             return False
 
-        self.db.delete(person)
-        self.db.commit()
+        self.repo.delete(person)
         return True
 
     def get_by_email(self, email: str) -> Optional[Person]:
         """Get a person by email address."""
-        stmt = select(Person).where(Person.email == email)
-        return self.db.execute(stmt).scalar_one_or_none()
+        return self.repo.get_by_email(email)
+
+
+def get_person_service(db: Session = Depends(get_db)) -> PersonService:
+    """FastAPI dependency that returns a PersonService with SQLAlchemy repo."""
+    return PersonService(SqlAlchemyPersonRepository(db))

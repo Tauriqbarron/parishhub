@@ -3,18 +3,17 @@
 from datetime import date
 from typing import Optional
 
-from sqlalchemy import extract, func, select
-from sqlalchemy.orm import Session, selectinload
+from fastapi import Depends
+from sqlalchemy.orm import Session
 
+from app.database import get_db
 from app.models.death import Death
-from app.models.person import Person
+from app.repositories.death import DeathRepository, SqlAlchemyDeathRepository
 from app.schemas.death import (
     DeathCreate,
     DeathStatistics,
     DeathUpdate,
-    YearlyDeathCount,
 )
-from app.utils.pagination import paginate
 
 
 class DeathValidationError(Exception):
@@ -28,20 +27,19 @@ class DeathValidationError(Exception):
 class DeathService:
     """Service class for Death CRUD and statistics operations."""
 
-    def __init__(self, db: Session):
+    def __init__(self, repo: DeathRepository, db: Session) -> None:
+        self.repo = repo
         self.db = db
 
     def create(self, data: DeathCreate) -> Death:
         """Create a new death record with validation."""
         # 1. Check if person exists
-        person = self.db.get(Person, data.person_id)
+        person = self.repo.get_person(data.person_id)
         if not person:
             raise DeathValidationError(f"Person with ID {data.person_id} not found")
 
         # 2. Check if person already has a death record
-        existing_death = self.db.execute(
-            select(Death).where(Death.person_id == data.person_id)
-        ).scalar_one_or_none()
+        existing_death = self.repo.get_by_person_id(data.person_id)
         if existing_death:
             raise DeathValidationError(
                 f"Death record already exists for person ID {data.person_id}"
@@ -52,9 +50,6 @@ class DeathService:
             raise DeathValidationError("Date of death cannot be in the future")
 
         # 4. Check if date_of_death is before birth date
-        # If date_of_birth is provided in the request and differs from the person's
-        # actual DOB, validate the person's DOB against the claimed DOB to catch
-        # data-entry inconsistencies.
         if data.date_of_birth and person.date_of_birth:
             if data.date_of_birth < person.date_of_birth:
                 raise DeathValidationError(
@@ -70,34 +65,18 @@ class DeathService:
         # Create the death record (exclude date_of_birth - not a column)
         dump = data.model_dump(exclude={"date_of_birth"})
         death = Death(**dump)
-        self.db.add(death)
-        self.db.commit()
-        self.db.refresh(death)
+        self.repo.add(death)
+        self.repo.commit()
+        self.repo.refresh(death)
         return death
 
     def get_by_id(self, death_id: int) -> Optional[Death]:
         """Get a single death record by its ID with person data."""
-        stmt = (
-            select(Death)
-            .options(
-                selectinload(Death.person),
-                selectinload(Death.officiating_priest),
-            )
-            .where(Death.id == death_id)
-        )
-        return self.db.execute(stmt).scalar_one_or_none()
+        return self.repo.get_by_id(death_id)
 
     def get_by_person_id(self, person_id: int) -> Optional[Death]:
         """Get death record for a specific person."""
-        stmt = (
-            select(Death)
-            .options(
-                selectinload(Death.person),
-                selectinload(Death.officiating_priest),
-            )
-            .where(Death.person_id == person_id)
-        )
-        return self.db.execute(stmt).scalar_one_or_none()
+        return self.repo.get_by_person_id(person_id)
 
     def get_list(
         self,
@@ -106,21 +85,11 @@ class DeathService:
         year: Optional[int] = None,
     ) -> tuple[list[Death], int]:
         """Get a paginated list of death records."""
-        stmt = select(Death).options(
-            selectinload(Death.person),
-            selectinload(Death.officiating_priest),
-        )
-
-        if year:
-            stmt = stmt.where(extract("year", Death.date_of_death) == year)
-
-        stmt = stmt.order_by(Death.date_of_death.desc())
-        items, total = paginate(self.db, stmt, page, per_page)
-        return items, total
+        return self.repo.get_list(page, per_page, year)
 
     def update(self, death_id: int, data: DeathUpdate) -> Optional[Death]:
         """Update an existing death record."""
-        death = self.db.get(Death, death_id)
+        death = self.repo.get_by_id(death_id)
         if not death:
             return None
 
@@ -133,7 +102,7 @@ class DeathService:
                 raise DeathValidationError("Date of death cannot be in the future")
 
             # Need to check against person's birth date
-            person = self.db.get(Person, death.person_id)
+            person = self.repo.get_person(death.person_id)
             if person and person.date_of_birth and new_date < person.date_of_birth:
                 raise DeathValidationError(
                     f"Date of death ({new_date}) cannot be before date of birth ({person.date_of_birth})"
@@ -142,51 +111,22 @@ class DeathService:
         for field, value in update_data.items():
             setattr(death, field, value)
 
-        self.db.commit()
-        self.db.refresh(death)
-        return death
+        return self.repo.update(death)
 
     def delete(self, death_id: int) -> bool:
         """Delete a death record."""
-        death = self.db.get(Death, death_id)
+        death = self.repo.get_by_id(death_id)
         if not death:
             return False
 
-        self.db.delete(death)
-        self.db.commit()
+        self.repo.delete(death)
         return True
 
     def get_statistics(self, year: Optional[int] = None) -> DeathStatistics:
         """Get death statistics."""
-        current_year = date.today().year
+        return self.repo.get_statistics(year)
 
-        # Get yearly counts
-        stmt = (
-            select(
-                extract("year", Death.date_of_death).label("year"),
-                func.count(Death.id).label("count"),
-            )
-            .group_by(extract("year", Death.date_of_death))
-            .order_by(extract("year", Death.date_of_death).desc())
-        )
 
-        if year:
-            stmt = stmt.where(extract("year", Death.date_of_death) == year)
-
-        results = self.db.execute(stmt).all()
-        by_year = [YearlyDeathCount(year=int(r.year), count=r.count) for r in results]
-
-        total_stmt = select(func.count(Death.id))
-        if year:
-            total_stmt = total_stmt.where(extract("year", Death.date_of_death) == year)
-        total = self.db.execute(total_stmt).scalar() or 0
-
-        # Current year count
-        current_year_stmt = select(func.count(Death.id)).where(
-            extract("year", Death.date_of_death) == current_year
-        )
-        current_year_count = self.db.execute(current_year_stmt).scalar() or 0
-
-        return DeathStatistics(
-            by_year=by_year, total=total, current_year_count=current_year_count
-        )
+def get_death_service(db: Session = Depends(get_db)) -> DeathService:
+    """Dependency to get DeathService instance."""
+    return DeathService(SqlAlchemyDeathRepository(db), db)

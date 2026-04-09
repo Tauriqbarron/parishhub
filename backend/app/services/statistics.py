@@ -47,11 +47,7 @@ class StatisticsService:
 
     def get_recent_people(self, limit: int = 5) -> list[Person]:
         """Get recently added people."""
-        stmt = (
-            select(Person)
-            .order_by(Person.created_at.desc())
-            .limit(limit)
-        )
+        stmt = select(Person).order_by(Person.created_at.desc()).limit(limit)
         return list(self.db.execute(stmt).scalars().all())
 
     def get_recent_sacraments_with_person(self, limit: int = 5) -> list[Sacrament]:
@@ -66,11 +62,7 @@ class StatisticsService:
 
     def get_recent_households(self, limit: int = 5) -> list[Household]:
         """Get recently created households."""
-        stmt = (
-            select(Household)
-            .order_by(Household.created_at.desc())
-            .limit(limit)
-        )
+        stmt = select(Household).order_by(Household.created_at.desc()).limit(limit)
         return list(self.db.execute(stmt).scalars().all())
 
     def get_sacrament_trends(self, years: int = 5) -> list[dict[str, Any]]:

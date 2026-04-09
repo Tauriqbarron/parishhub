@@ -1,21 +1,31 @@
-"""Service layer for Sacrament operations."""
+"""Service layer for Sacrament operations (DIP compliant).
+
+SacramentService implements the domain logic and validation rules for
+sacraments while delegating all persistence concerns to SacramentRepository.
+This satisfies the Dependency Inversion Principle — the service depends on
+an abstraction (protocol), not on SQLAlchemy or any specific ORM.
+"""
 
 from datetime import date
 from typing import Any, Optional
 
-from sqlalchemy import extract, func, select
-from sqlalchemy.orm import Session, selectinload
+from fastapi import Depends
+from sqlalchemy.orm import Session
 
 from app.models.household import Household, HouseholdMember, HouseholdRole
 from app.models.person import Person
 from app.models.relationship import FamilyRelationship, RelationshipType
 from app.models.sacrament import Sacrament, SacramentType
+from app.database import get_db
+from app.repositories.sacrament import (
+    SacramentRepository,
+    SqlAlchemySacramentRepository,
+)
 from app.schemas.sacrament import (
     MarriageSideEffects,
     SacramentCreate,
     SacramentUpdate,
 )
-from app.utils.pagination import paginate
 
 
 class SacramentValidationError(Exception):
@@ -27,17 +37,26 @@ class SacramentValidationError(Exception):
 
 
 class SacramentService:
-    """Service class for Sacrament CRUD operations."""
+    """Service class for Sacrament CRUD operations with domain validation.
 
-    def __init__(self, db: Session):
+    The service enforces canonical Catholic sacrament ordering rules
+    and handles marriage side effects (spouse relationship + household creation).
+    All sacrament persistence is delegated to a SacramentRepository implementation.
+    Direct DB access is retained ONLY for household/family-relationship side effects
+    (which have not yet been moved to their own repositories).
+    """
+
+    def __init__(self, repo: SacramentRepository, db: Session):
+        self.repo = repo
         self.db = db
         self.last_marriage_effects: Optional[MarriageSideEffects] = None
 
+    # -----------------------------------------------------------------
+    # Private helpers — domain logic only, no DB access
+    # -----------------------------------------------------------------
     def _get_person_sacraments(self, person_id: int) -> dict[SacramentType, Sacrament]:
-        """Get all sacraments for a person indexed by type."""
-        stmt = select(Sacrament).where(Sacrament.person_id == person_id)
-        sacraments = self.db.execute(stmt).scalars().all()
-        return {s.sacrament_type: s for s in sacraments}
+        """Index sacraments by type for a person (reads from repository)."""
+        return self.repo.get_sacraments_by_person(person_id)
 
     def _validate_sacrament_order(
         self,
@@ -135,11 +154,20 @@ class SacramentService:
                     "Confirmation date must be after First Communion date"
                 )
 
+    # -----------------------------------------------------------------
+    # Public API — domain operations (no raw DB touches)
+    # -----------------------------------------------------------------
     def create(self, sacrament_data: SacramentCreate) -> Sacrament:
-        """Create a new sacrament record. Returns sacrament."""
+        """Create a new sacrament record with validation and marriage side effects.
+
+        Business rules enforced:
+        - Person must exist
+        - Sacrament order rules (via _validate_sacrament_order)
+        - Marriage creates spouse relationship + household automatically
+        """
         # Validate person exists
         person = self.db.get(Person, sacrament_data.person_id)
-        if not person:
+        if person is None:
             raise SacramentValidationError(
                 f"Person with id {sacrament_data.person_id} not found"
             )
@@ -156,143 +184,136 @@ class SacramentService:
             else None
         )
 
-        # Validate sacrament order
+        # Validate sacrament order before persisting
         self._validate_sacrament_order(
             person.id,
             sacrament_data.sacrament_type,
             sacrament_data.date_received,
         )
 
-        sacrament = Sacrament(
-            **sacrament_data.model_dump(exclude={"spouse_id", "additional_data"}),
-            spouse_id=spouse_id or sacrament_data.spouse_id,
-        )
-        self.db.add(sacrament)
-        self.db.flush()
-
+        # Persist via repository
+        sacrament = self.repo.create(sacrament_data)
         self.last_marriage_effects = None
+
+        # Marriage side effects: spouse relationship + household
         if sacrament_data.sacrament_type == SacramentType.MARRIAGE:
             self.last_marriage_effects = self._handle_marriage_side_effects(
-                person, sacrament
+                person, sacrament, spouse_id
             )
 
-        self.db.commit()
-        self.db.refresh(sacrament)
         return sacrament
 
     def _handle_marriage_side_effects(
-        self, person: Person, sacrament: Sacrament
+        self, person: Person, sacrament: Sacrament, spouse_id: Optional[int]
     ) -> MarriageSideEffects:
         """Handle automatic side effects when a marriage is recorded."""
-        spouse_id = sacrament.spouse_id
         effects = MarriageSideEffects()
 
-        if spouse_id:
-            spouse = self.db.get(Person, spouse_id)
-            if spouse:
-                # Check if spouse relationship already exists
-                existing = self.db.execute(
-                    select(FamilyRelationship).where(
-                        FamilyRelationship.person_id == person.id,
-                        FamilyRelationship.related_person_id == spouse_id,
-                        FamilyRelationship.relationship_type == RelationshipType.SPOUSE,
-                    )
-                ).scalar_one_or_none()
-
-                if not existing:
-                    # Create bidirectional spouse relationship
-                    rel = FamilyRelationship(
-                        person_id=person.id,
-                        related_person_id=spouse_id,
-                        relationship_type=RelationshipType.SPOUSE,
-                    )
-                    inverse = FamilyRelationship(
-                        person_id=spouse_id,
-                        related_person_id=person.id,
-                        relationship_type=RelationshipType.SPOUSE,
-                    )
-                    self.db.add(rel)
-                    self.db.add(inverse)
-                    effects.spouse_relationship_created = True
-
-                # Generate household name
-                if person.last_name == spouse.last_name:
-                    household_name = f"The {person.last_name} Family"
-                else:
-                    household_name = f"{person.last_name} & {spouse.last_name} Family"
-
-                # Create new household
-                household = Household(
-                    name=household_name,
-                    origin_sacrament_id=sacrament.id,
-                )
-                self.db.add(household)
-                self.db.flush()
-
-                # Add both as members
-                head_member = HouseholdMember(
-                    household_id=household.id,
-                    person_id=person.id,
-                    role=HouseholdRole.HEAD,
-                    is_primary_household=True,
-                )
-                spouse_member = HouseholdMember(
-                    household_id=household.id,
-                    person_id=spouse_id,
-                    role=HouseholdRole.SPOUSE,
-                    is_primary_household=True,
-                )
-                self.db.add(head_member)
-                self.db.add(spouse_member)
-
-                # Remove both from parent households (where role=CHILD)
-                self.db.execute(
-                    HouseholdMember.__table__.delete().where(
-                        HouseholdMember.person_id == person.id,
-                        HouseholdMember.role == HouseholdRole.CHILD,
-                    )
-                )
-                self.db.execute(
-                    HouseholdMember.__table__.delete().where(
-                        HouseholdMember.person_id == spouse_id,
-                        HouseholdMember.role == HouseholdRole.CHILD,
-                    )
-                )
-
-                # Store auto-created household ID in sacrament additional_data
-                # Store auto-created household ID in sacrament
-                sacrament.notes = (sacrament.notes or "") + " [Auto-created household]"
-                effects.household_id = household.id
-                effects.household_name = household_name
-                effects.household_created = True
-
-        else:
-            # Spouse not in system — mark as deferred
+        if spouse_id is None:
             effects.household_deferred = True
+            return effects
+
+        spouse = self.repo.get_by_id(spouse_id)
+        if spouse is None:
+            effects.household_deferred = True
+            return effects
+
+        # -----------------------------------------------------------------
+        # 1) Spouse relationship (bidirectional)
+        # -----------------------------------------------------------------
+        from sqlalchemy import select
+
+        existing = self.db.execute(
+            select(FamilyRelationship).where(
+                FamilyRelationship.person_id == person.id,
+                FamilyRelationship.related_person_id == spouse_id,
+                FamilyRelationship.relationship_type == RelationshipType.SPOUSE,
+            )
+        ).scalar_one_or_none()
+
+        if existing is None:
+            # Create bidirectional spouse relationship — direct DB session access
+            # needed because FamilyRelationship is not a sacrament and has no repo yet.
+            # This is a pragmatic compromise until RelationshipService gets its own repository.
+            rel = FamilyRelationship(
+                person_id=person.id,
+                related_person_id=spouse_id,
+                relationship_type=RelationshipType.SPOUSE,
+            )
+            inverse = FamilyRelationship(
+                person_id=spouse_id,
+                related_person_id=person.id,
+                relationship_type=RelationshipType.SPOUSE,
+            )
+            self.db.add(rel)
+            self.db.add(inverse)
+            self.db.flush()
+            effects.spouse_relationship_created = True
+
+        # -----------------------------------------------------------------
+        # 2) Household creation
+        # -----------------------------------------------------------------
+        if person.last_name == spouse.last_name:
+            household_name = f"The {person.last_name} Family"
+        else:
+            household_name = f"{person.last_name} & {spouse.last_name} Family"
+
+        household = Household(
+            name=household_name,
+            origin_sacrament_id=sacrament.id,
+        )
+        self.db.add(household)
+        self.db.flush()
+
+        head_member = HouseholdMember(
+            household_id=household.id,
+            person_id=person.id,
+            role=HouseholdRole.HEAD,
+            is_primary_household=True,
+        )
+        spouse_member = HouseholdMember(
+            household_id=household.id,
+            person_id=spouse_id,
+            role=HouseholdRole.SPOUSE,
+            is_primary_household=True,
+        )
+        self.db.add(head_member)
+        self.db.add(spouse_member)
+
+        # Remove both from parent households (where role=CHILD)
+        self.db.execute(
+            HouseholdMember.__table__.delete().where(
+                HouseholdMember.person_id == person.id,
+                HouseholdMember.role == HouseholdRole.CHILD,
+            )
+        )
+        self.db.execute(
+            HouseholdMember.__table__.delete().where(
+                HouseholdMember.person_id == spouse_id,
+                HouseholdMember.role == HouseholdRole.CHILD,
+            )
+        )
+
+        sacrament.notes = (sacrament.notes or "") + " [Auto-created household]"
+        self.db.commit()
+
+        effects.household_id = household.id
+        effects.household_name = household_name
+        effects.household_created = True
 
         return effects
 
+    # -----------------------------------------------------------------
+    # Query methods — thin wrappers over repository
+    # -----------------------------------------------------------------
     def get_by_id(self, sacrament_id: int) -> Optional[Sacrament]:
-        """Get a sacrament by ID."""
-        return self.db.get(Sacrament, sacrament_id)
+        return self.repo.get_by_id(sacrament_id)
 
     def get_by_id_with_person(self, sacrament_id: int) -> Optional[Sacrament]:
-        """Get a sacrament by ID with person data."""
-        stmt = (
-            select(Sacrament)
-            .options(selectinload(Sacrament.person))
-            .where(Sacrament.id == sacrament_id)
-        )
-        return self.db.execute(stmt).scalar_one_or_none()
+        return self.repo.get_by_id_with_person(sacrament_id)
 
     def get_by_person(self, person_id: int) -> list[Sacrament]:
-        """Get all sacraments for a person."""
-        stmt = (
-            select(Sacrament)
-            .where(Sacrament.person_id == person_id)
-            .order_by(Sacrament.date_received)
-        )
-        return list(self.db.execute(stmt).scalars().all())
+        return self.repo.get_by_person(person_id)
 
     def get_list(
         self,
@@ -305,109 +326,46 @@ class SacramentService:
         sort_by: str = "date_received",
         sort_order: str = "desc",
     ) -> tuple[list[Sacrament], int]:
-        """
-        Get paginated list of sacraments with filtering.
-
-        Returns tuple of (items, total_count).
-        """
-        stmt = select(Sacrament)
-
-        # Person filter
-        if person_id is not None:
-            stmt = stmt.where(Sacrament.person_id == person_id)
-
-        # Sacrament type filter
-        if sacrament_type is not None:
-            stmt = stmt.where(Sacrament.sacrament_type == sacrament_type)
-
-        # Date range filters
-        if date_from is not None:
-            stmt = stmt.where(Sacrament.date_received >= date_from)
-
-        if date_to is not None:
-            stmt = stmt.where(Sacrament.date_received <= date_to)
-
-        # Sorting
-        sort_column = getattr(Sacrament, sort_by, Sacrament.date_received)
-        if sort_order.lower() == "desc":
-            sort_column = sort_column.desc()
-        stmt = stmt.order_by(sort_column)
-
-        # Apply pagination
-        items, total = paginate(self.db, stmt, page, per_page)
-        return items, total
+        return self.repo.get_list(
+            page=page,
+            per_page=per_page,
+            person_id=person_id,
+            sacrament_type=sacrament_type,
+            date_from=date_from,
+            date_to=date_to,
+            sort_by=sort_by,
+            sort_order=sort_order,
+        )
 
     def update(
         self, sacrament_id: int, sacrament_data: SacramentUpdate
     ) -> Optional[Sacrament]:
-        """Update a sacrament (partial update supported)."""
-        sacrament = self.get_by_id(sacrament_id)
-        if not sacrament:
+        """Update a sacrament with order validation on type/date changes."""
+        existing = self.repo.get_by_id(sacrament_id)
+        if existing is None:
             return None
 
         update_data = sacrament_data.model_dump(exclude_unset=True)
-
-        # If updating type or date, validate order
-        new_type = update_data.get("sacrament_type", sacrament.sacrament_type)
-        new_date = update_data.get("date_received", sacrament.date_received)
+        new_type = update_data.get("sacrament_type", existing.sacrament_type)
+        new_date = update_data.get("date_received", existing.date_received)
 
         if "sacrament_type" in update_data or "date_received" in update_data:
             self._validate_sacrament_order(
-                sacrament.person_id,
+                existing.person_id,
                 new_type,
                 new_date,
                 exclude_sacrament_id=sacrament_id,
             )
 
-        for field, value in update_data.items():
-            setattr(sacrament, field, value)
-
-        self.db.commit()
-        self.db.refresh(sacrament)
-        return sacrament
+        return self.repo.update(sacrament_id, sacrament_data)
 
     def delete(self, sacrament_id: int) -> bool:
-        """Delete a sacrament."""
-        sacrament = self.get_by_id(sacrament_id)
-        if not sacrament:
-            return False
-
-        self.db.delete(sacrament)
-        self.db.commit()
-        return True
+        return self.repo.delete(sacrament_id)
 
     def get_statistics(self) -> dict[str, Any]:
-        """
-        Get sacrament statistics for dashboard.
+        return self.repo.get_statistics()
 
-        Returns counts by type and by year.
-        """
-        # Get counts by type
-        type_counts = {}
-        for sacrament_type in SacramentType:
-            count_stmt = select(func.count()).where(
-                Sacrament.sacrament_type == sacrament_type
-            )
-            count = self.db.execute(count_stmt).scalar() or 0
-            type_counts[f"total_{sacrament_type.value}s"] = count
 
-        # Get counts by year (last 5 years)
-        by_year: dict[str, dict[str, int]] = {}
-        current_year = date.today().year
-
-        for year in range(current_year, current_year - 5, -1):
-            year_counts: dict[str, int] = {}
-            for sacrament_type in SacramentType:
-                count_stmt = (
-                    select(func.count())
-                    .where(Sacrament.sacrament_type == sacrament_type)
-                    .where(extract("year", Sacrament.date_received) == year)
-                )
-                count = self.db.execute(count_stmt).scalar() or 0
-                year_counts[f"{sacrament_type.value}s"] = count
-            by_year[str(year)] = year_counts
-
-        return {
-            **type_counts,
-            "by_year": by_year,
-        }
+def get_sacrament_service(db: Session = Depends(get_db)) -> SacramentService:
+    """FastAPI dependency that returns a SacramentService with SQLAlchemy repo."""
+    return SacramentService(SqlAlchemySacramentRepository(db), db)
