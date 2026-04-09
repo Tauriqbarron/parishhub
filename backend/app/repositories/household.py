@@ -43,8 +43,15 @@ class HouseholdRepository(Protocol):
     def get_member_count(self, household_id: int) -> int: ...
 
     def person_exists(self, person_id: int) -> bool: ...
-
     def get_person(self, person_id: int) -> Optional[Person]: ...
+
+    def update(self, obj) -> Household:
+        """Commit and refresh a modified household object."""
+        ...
+
+    def update_member(self, obj) -> HouseholdMember:
+        """Commit and refresh a modified household member object."""
+        ...
 
 
 class SqlAlchemyHouseholdRepository:
@@ -117,3 +124,13 @@ class SqlAlchemyHouseholdRepository:
 
     def get_person(self, person_id: int) -> Optional[Person]:
         return self.db.get(Person, person_id)
+
+    def update(self, obj) -> Household:
+        self.db.commit()
+        self.db.refresh(obj)
+        return obj
+
+    def update_member(self, obj) -> HouseholdMember:
+        self.db.commit()
+        self.db.refresh(obj)
+        return obj

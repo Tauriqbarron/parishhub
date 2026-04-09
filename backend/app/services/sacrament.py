@@ -213,7 +213,7 @@ class SacramentService:
             effects.household_deferred = True
             return effects
 
-        spouse = self.repo.get_by_id(spouse_id)
+        spouse = self.db.get(Person, spouse_id)
         if spouse is None:
             effects.household_deferred = True
             return effects

@@ -104,9 +104,12 @@ class TestBirthServiceCreate:
             )
         )
         baby = db_session.query(Person).filter_by(first_name="Charlie").first()
+        from app.repositories.relationship import SqlAlchemyRelationshipRepository
         from app.services.relationship import FamilyRelationshipService
 
-        rel_svc = FamilyRelationshipService(db_session)
+        rel_svc = FamilyRelationshipService(
+            SqlAlchemyRelationshipRepository(db_session)
+        )
         rel = rel_svc.get_relationship_between(p1.id, baby.id)
         assert rel is not None
         assert rel.relationship_type == RelationshipType.PARENT

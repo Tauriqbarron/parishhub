@@ -112,6 +112,7 @@ class HouseholdService:
             return False
 
         self.repo.delete(household)
+        self.repo.commit()
         return True
 
     # Member operations

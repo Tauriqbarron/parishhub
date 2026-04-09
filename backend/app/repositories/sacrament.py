@@ -129,7 +129,8 @@ class SqlAlchemySacramentRepository(SacramentRepository):
     # Public protocol methods
     # -----------------------------------------------------------------
     def create(self, data: SacramentCreate) -> Sacrament:
-        sacrament = Sacrament(**data.model_dump())
+        dump = data.model_dump(exclude={"additional_data"})
+        sacrament = Sacrament(**dump)
         self.db.add(sacrament)
         self.db.flush()
         self.db.commit()
@@ -260,7 +261,8 @@ class FakeSacramentRepository(SacramentRepository):
         self.statistics_override: Optional[dict[str, Any]] = None
 
     def create(self, data: SacramentCreate) -> Sacrament:
-        sacrament = Sacrament(id=self._next_id, **data.model_dump())
+        dump = data.model_dump(exclude={"additional_data"})
+        sacrament = Sacrament(id=self._next_id, **dump)
         self._store[self._next_id] = sacrament
         self._next_id += 1
         return sacrament
