@@ -78,74 +78,78 @@
 
 <div class="space-y-6">
 	<div class="text-center mb-6">
-		<h2 class="text-xl font-semibold text-gray-900">Your Information</h2>
-		<p class="text-gray-600 mt-1">Please provide your personal details.</p>
+		<h2 class="text-xl font-semibold text-brand-primary">Your Information</h2>
+		<p class="text-brand-text-secondary mt-1">Please provide your personal details.</p>
 	</div>
 
 	<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 		<div>
-			<label for="firstName" class="block text-sm font-medium text-gray-700">
-				First Name <span class="text-red-500">*</span>
+			<label for="firstName" class="block text-sm font-medium text-brand-text-secondary">
+				First Name <span class="text-brand-error">*</span>
 			</label>
 			<input
 				id="firstName"
 				type="text"
 				value={member.firstName || ''}
 				oninput={(e) => handleInput('firstName', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
-					{errors.firstName ? 'border-red-300' : 'border-gray-300'}"
+				class="mt-1 block w-full rounded-md shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				{errors.firstName ? 'border-brand-error' : 'border-brand-border'}"
 			/>
 			{#if errors.firstName}
-				<p class="mt-1 text-sm text-red-600">{errors.firstName}</p>
+				<p class="mt-1 text-sm text-brand-error">{errors.firstName}</p>
 			{/if}
 		</div>
 
 		<div>
-			<label for="middleName" class="block text-sm font-medium text-gray-700">Middle Name</label>
+			<label for="middleName" class="block text-sm font-medium text-brand-text-secondary"
+				>Middle Name</label
+			>
 			<input
 				id="middleName"
 				type="text"
 				value={member.middleName || ''}
 				oninput={(e) => handleInput('middleName', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 			/>
 		</div>
 
 		<div>
-			<label for="lastName" class="block text-sm font-medium text-gray-700">
-				Last Name <span class="text-red-500">*</span>
+			<label for="lastName" class="block text-sm font-medium text-brand-text-secondary">
+				Last Name <span class="text-brand-error">*</span>
 			</label>
 			<input
 				id="lastName"
 				type="text"
 				value={member.lastName || ''}
 				oninput={(e) => handleInput('lastName', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
-					{errors.lastName ? 'border-red-300' : 'border-gray-300'}"
+				class="mt-1 block w-full rounded-md shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				{errors.lastName ? 'border-brand-error' : 'border-brand-border'}"
 			/>
 			{#if errors.lastName}
-				<p class="mt-1 text-sm text-red-600">{errors.lastName}</p>
+				<p class="mt-1 text-sm text-brand-error">{errors.lastName}</p>
 			{/if}
 		</div>
 
 		<div>
-			<label for="dateOfBirth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+			<label for="dateOfBirth" class="block text-sm font-medium text-brand-text-secondary"
+				>Date of Birth</label
+			>
 			<input
 				id="dateOfBirth"
 				type="date"
 				value={member.dateOfBirth || ''}
 				oninput={(e) => handleInput('dateOfBirth', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 			/>
 		</div>
 
 		<div>
-			<label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+			<label for="gender" class="block text-sm font-medium text-brand-text-secondary">Gender</label>
 			<select
 				id="gender"
 				value={member.gender || ''}
 				onchange={(e) => handleInput('gender', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 			>
 				<option value="">Select...</option>
 				<option value="male">Male</option>
@@ -154,28 +158,28 @@
 		</div>
 
 		<div>
-			<label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+			<label for="phone" class="block text-sm font-medium text-brand-text-secondary">Phone</label>
 			<input
 				id="phone"
 				type="tel"
 				value={member.phone || ''}
 				oninput={(e) => handleInput('phone', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 			/>
 		</div>
 
 		<div class="sm:col-span-2">
-			<label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+			<label for="email" class="block text-sm font-medium text-brand-text-secondary">Email</label>
 			<input
 				id="email"
 				type="email"
 				value={member.email || ''}
 				oninput={(e) => handleInput('email', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
-					{errors.email ? 'border-red-300' : 'border-gray-300'}"
+				class="mt-1 block w-full rounded-md shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				{errors.email ? 'border-brand-error' : 'border-brand-border'}"
 			/>
 			{#if errors.email}
-				<p class="mt-1 text-sm text-red-600">{errors.email}</p>
+				<p class="mt-1 text-sm text-brand-error">{errors.email}</p>
 			{/if}
 		</div>
 	</div>

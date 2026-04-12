@@ -18,15 +18,15 @@
 </script>
 
 <div class="space-y-4">
-	<p class="text-gray-600">
+	<p class="text-brand-text-secondary">
 		Add any sacraments each family member has received. This step is optional and can be completed
 		later.
 	</p>
 
 	{#if members.length === 0}
-		<div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+		<div class="text-center py-8 border-2 border-dashed border-brand-border rounded-lg">
 			<svg
-				class="mx-auto h-12 w-12 text-gray-400"
+				class="mx-auto h-12 w-12 text-brand-text-muted"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -38,8 +38,10 @@
 					d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 				/>
 			</svg>
-			<p class="mt-2 text-sm text-gray-500">No family members added yet</p>
-			<p class="text-xs text-gray-400">Go back to the Family Members step to add members first</p>
+			<p class="mt-2 text-sm text-brand-text-muted">No family members added yet</p>
+			<p class="text-xs text-brand-text-muted">
+				Go back to the Family Members step to add members first
+			</p>
 		</div>
 	{:else}
 		<div class="space-y-3">

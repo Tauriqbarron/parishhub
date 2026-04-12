@@ -14,11 +14,11 @@
 				<div class="flex flex-col items-center">
 					<div
 						class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium
-						{index < currentStep
-							? 'bg-green-600 text-white'
+					{index < currentStep
+							? 'bg-brand-success text-white'
 							: index === currentStep
-								? 'bg-blue-600 text-white'
-								: 'bg-gray-200 text-gray-600'}"
+								? 'bg-brand-accent text-white'
+								: 'bg-brand-bg-muted text-brand-text-secondary'}"
 					>
 						{#if index < currentStep}
 							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -34,7 +34,7 @@
 					</div>
 					<span
 						class="mt-2 text-xs font-medium text-center hidden sm:block
-						{index <= currentStep ? 'text-gray-900' : 'text-gray-500'}"
+						{index <= currentStep ? 'text-brand-primary' : 'text-brand-text-muted'}"
 					>
 						{step}
 					</span>
@@ -42,13 +42,13 @@
 				{#if index < steps.length - 1}
 					<div
 						class="flex-1 h-0.5 mx-2 sm:mx-4
-						{index < currentStep ? 'bg-green-600' : 'bg-gray-200'}"
+						{index < currentStep ? 'bg-brand-success' : 'bg-brand-border'}"
 					></div>
 				{/if}
 			</li>
 		{/each}
 	</ol>
-	<p class="mt-4 text-sm text-center text-gray-600 sm:hidden">
+	<p class="mt-4 text-sm text-center text-brand-text-secondary sm:hidden">
 		Step {currentStep + 1} of {steps.length}: {steps[currentStep]}
 	</p>
 </nav>

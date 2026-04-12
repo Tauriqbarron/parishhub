@@ -24,8 +24,10 @@
 
 <div class="space-y-6">
 	<div class="text-center mb-6">
-		<h2 class="text-xl font-semibold text-gray-900">How would you like to register?</h2>
-		<p class="text-gray-600 mt-1">Choose the option that best describes your situation.</p>
+		<h2 class="text-xl font-semibold text-brand-primary">How would you like to register?</h2>
+		<p class="text-brand-text-secondary mt-1">
+			Choose the option that best describes your situation.
+		</p>
 	</div>
 
 	<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -35,15 +37,17 @@
 			onclick={() => select('individual')}
 			class="relative flex flex-col items-center p-6 border-2 rounded-lg transition-all
 				{selected === 'individual'
-				? 'border-blue-600 bg-blue-50 ring-2 ring-blue-600'
-				: 'border-gray-200 hover:border-gray-300 bg-white'}"
+				? 'border-brand-accent bg-brand-accent/5 ring-2 ring-brand-accent'
+				: 'border-brand-border hover:border-brand-border/70 bg-white'}"
 		>
 			<div
 				class="w-16 h-16 rounded-full flex items-center justify-center mb-4
-				{selected === 'individual' ? 'bg-blue-100' : 'bg-gray-100'}"
+				{selected === 'individual' ? 'bg-brand-bg-muted' : 'bg-brand-bg-subtle'}"
 			>
 				<svg
-					class="w-8 h-8 {selected === 'individual' ? 'text-blue-600' : 'text-gray-400'}"
+					class="w-8 h-8 {selected === 'individual'
+						? 'text-brand-accent'
+						: 'text-brand-text-muted'}"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -56,13 +60,13 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="text-lg font-medium text-gray-900">Individual</h3>
-			<p class="mt-2 text-sm text-gray-500 text-center">
+			<h3 class="text-lg font-medium text-brand-primary">Individual</h3>
+			<p class="mt-2 text-sm text-brand-text-muted text-center">
 				Register yourself as an individual parishioner without creating a household.
 			</p>
 			{#if selected === 'individual'}
 				<div class="absolute top-3 right-3">
-					<svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+					<svg class="w-6 h-6 text-brand-accent" fill="currentColor" viewBox="0 0 20 20">
 						<path
 							fill-rule="evenodd"
 							d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -79,15 +83,15 @@
 			onclick={() => select('household')}
 			class="relative flex flex-col items-center p-6 border-2 rounded-lg transition-all
 				{selected === 'household'
-				? 'border-blue-600 bg-blue-50 ring-2 ring-blue-600'
-				: 'border-gray-200 hover:border-gray-300 bg-white'}"
+				? 'border-brand-accent bg-brand-accent/5 ring-2 ring-brand-accent'
+				: 'border-brand-border hover:border-brand-border/70 bg-white'}"
 		>
 			<div
 				class="w-16 h-16 rounded-full flex items-center justify-center mb-4
-				{selected === 'household' ? 'bg-blue-100' : 'bg-gray-100'}"
+				{selected === 'household' ? 'bg-brand-bg-muted' : 'bg-brand-bg-subtle'}"
 			>
 				<svg
-					class="w-8 h-8 {selected === 'household' ? 'text-blue-600' : 'text-gray-400'}"
+					class="w-8 h-8 {selected === 'household' ? 'text-brand-accent' : 'text-brand-text-muted'}"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -100,13 +104,13 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="text-lg font-medium text-gray-900">Household</h3>
-			<p class="mt-2 text-sm text-gray-500 text-center">
+			<h3 class="text-lg font-medium text-brand-primary">Household</h3>
+			<p class="mt-2 text-sm text-brand-text-muted text-center">
 				Register your household with multiple family members and relationships.
 			</p>
 			{#if selected === 'household'}
 				<div class="absolute top-3 right-3">
-					<svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+					<svg class="w-6 h-6 text-brand-accent" fill="currentColor" viewBox="0 0 20 20">
 						<path
 							fill-rule="evenodd"
 							d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"

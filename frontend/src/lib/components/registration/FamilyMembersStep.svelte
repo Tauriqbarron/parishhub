@@ -82,21 +82,21 @@
 </script>
 
 <div class="space-y-6">
-	<p class="text-gray-600">
+	<p class="text-brand-text-secondary">
 		Add the parents or guardians first, then add any children. Relationships between family members
 		will be set up automatically in the next step.
 	</p>
 
 	<!-- Parents Section -->
 	<div>
-		<h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+		<h3 class="text-sm font-semibold text-brand-text-secondary uppercase tracking-wide mb-3">
 			Parents / Guardians
 		</h3>
 
 		{#if parents.length === 0}
-			<div class="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg mb-3">
+			<div class="text-center py-6 border-2 border-dashed border-brand-border rounded-lg mb-3">
 				<svg
-					class="mx-auto h-10 w-10 text-gray-400"
+					class="mx-auto h-10 w-10 text-brand-text-muted"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -108,7 +108,7 @@
 						d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
 					/>
 				</svg>
-				<p class="mt-2 text-sm text-gray-500">No parents added yet</p>
+				<p class="mt-2 text-sm text-brand-text-muted">No parents added yet</p>
 			</div>
 		{/if}
 
@@ -126,7 +126,7 @@
 			type="button"
 			onclick={() => addMember('parent')}
 			disabled={parents.length >= 2}
-			class="w-full py-3 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:text-gray-600"
+			class="w-full py-3 px-4 border-2 border-dashed border-brand-border rounded-lg text-brand-text-secondary hover:border-brand-accent hover:text-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-brand-border disabled:hover:text-brand-text-secondary"
 		>
 			<span class="flex items-center justify-center gap-2">
 				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,12 +145,14 @@
 	<!-- Children Section -->
 	{#if parents.length > 0}
 		<div>
-			<h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">Children</h3>
+			<h3 class="text-sm font-semibold text-brand-text-secondary uppercase tracking-wide mb-3">
+				Children
+			</h3>
 
 			{#if children.length === 0}
-				<div class="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg mb-3">
+				<div class="text-center py-6 border-2 border-dashed border-brand-border rounded-lg mb-3">
 					<svg
-						class="mx-auto h-10 w-10 text-gray-400"
+						class="mx-auto h-10 w-10 text-brand-text-muted"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
@@ -162,8 +164,10 @@
 							d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
 						/>
 					</svg>
-					<p class="mt-2 text-sm text-gray-500">No children added yet</p>
-					<p class="text-xs text-gray-400">Relationships to parents will be set up automatically</p>
+					<p class="mt-2 text-sm text-brand-text-muted">No children added yet</p>
+					<p class="text-xs text-brand-text-muted">
+						Relationships to parents will be set up automatically
+					</p>
 				</div>
 			{/if}
 
@@ -180,7 +184,7 @@
 			<button
 				type="button"
 				onclick={() => addMember('child')}
-				class="w-full py-3 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+				class="w-full py-3 px-4 border-2 border-dashed border-brand-border rounded-lg text-brand-text-secondary hover:border-brand-accent hover:text-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent transition-colors"
 			>
 				<span class="flex items-center justify-center gap-2">
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

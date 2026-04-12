@@ -5,13 +5,13 @@
 	let { children } = $props();
 </script>
 
-<div class="min-h-screen bg-gradient-to-b from-blue-50 to-gray-100">
-	<header class="bg-white shadow-sm border-b border-gray-200">
+<div class="min-h-screen bg-brand-bg-subtle">
+	<header class="bg-white shadow-sm border-b border-brand-border">
 		<div class="max-w-3xl mx-auto px-4 py-4">
 			<div class="flex items-center justify-center">
 				<div class="text-center">
-					<h1 class="text-xl font-semibold text-blue-900">Auckland Latin Mass chaplaincy</h1>
-					<p class="text-sm text-gray-500">Member Registration</p>
+					<h1 class="text-xl font-semibold text-brand-primary">Auckland Latin Mass chaplaincy</h1>
+					<p class="text-sm text-brand-text-muted">Member Registration</p>
 				</div>
 			</div>
 		</div>
@@ -21,7 +21,7 @@
 		{@render children()}
 	</main>
 
-	<footer class="py-6 text-center text-sm text-gray-500">
+	<footer class="py-6 text-center text-sm text-brand-text-muted">
 		<p>Need help? Contact the chaplaincy office</p>
 	</footer>
 </div>

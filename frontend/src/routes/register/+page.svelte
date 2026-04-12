@@ -132,21 +132,23 @@
 	<title>Chaplaincy Registration</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-brand-bg-subtle">
 	<div class="max-w-3xl mx-auto px-4 py-8">
 		<div class="text-center mb-8">
-			<h1 class="text-3xl font-bold text-gray-900">Chaplaincy Registration</h1>
-			<p class="mt-2 text-gray-600">Welcome! Please complete the registration form below.</p>
+			<h1 class="text-3xl font-bold text-brand-primary">Chaplaincy Registration</h1>
+			<p class="mt-2 text-brand-text-secondary">
+				Welcome! Please complete the registration form below.
+			</p>
 		</div>
 
 		<div class="bg-white rounded-lg shadow-lg p-6">
 			{#if registrationComplete}
 				<div class="text-center py-12">
 					<div
-						class="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4"
+						class="mx-auto w-16 h-16 bg-brand-success/10 rounded-full flex items-center justify-center mb-4"
 					>
 						<svg
-							class="w-8 h-8 text-green-600"
+							class="w-8 h-8 text-brand-success"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -159,15 +161,16 @@
 							/>
 						</svg>
 					</div>
-					<h2 class="text-2xl font-bold text-gray-900 mb-2">Registration Submitted!</h2>
-					<p class="text-gray-600 mb-4">
+					<h2 class="text-2xl font-bold text-brand-primary mb-2">Registration Submitted!</h2>
+					<p class="text-brand-text-secondary mb-4">
 						Thank you for registering with our chaplaincy. We will review your information and be in
 						touch shortly.
 					</p>
-					<p class="text-gray-500 text-sm">
+					<p class="text-brand-text-muted text-sm">
 						If you need to make any changes or additions, please contact us at
-						<a href="mailto:dataadmin@fssp.nz" class="text-blue-600 hover:text-blue-800 underline"
-							>dataadmin@fssp.nz</a
+						<a
+							href="mailto:dataadmin@fssp.nz"
+							class="text-brand-accent hover:text-brand-accent/80 underline">dataadmin@fssp.nz</a
 						>.
 					</p>
 				</div>

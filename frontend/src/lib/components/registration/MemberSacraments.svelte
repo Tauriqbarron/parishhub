@@ -243,18 +243,18 @@
 	<button
 		type="button"
 		onclick={() => (expanded = !expanded)}
-		class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+		class="w-full px-4 py-3 flex items-center justify-between text-left bg-brand-bg-subtle transition-colors"
 	>
 		<div class="flex items-center gap-3">
-			<span class="font-medium text-gray-900">{getMemberName(member)}</span>
+			<span class="font-medium text-brand-primary">{getMemberName(member)}</span>
 			{#if member.sacraments.length > 0}
-				<span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+				<span class="text-xs bg-brand-accent/10 text-brand-primary px-2 py-0.5 rounded-full">
 					{member.sacraments.length} sacrament{member.sacraments.length !== 1 ? 's' : ''}
 				</span>
 			{/if}
 		</div>
 		<svg
-			class="w-5 h-5 text-gray-400 transition-transform {expanded ? 'rotate-180' : ''}"
+			class="w-5 h-5 text-brand-text-muted transition-transform {expanded ? 'rotate-180' : ''}"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"
@@ -398,7 +398,7 @@
 								type="date"
 								id="date-{member.tempId}"
 								bind:value={formDate}
-								class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+								class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 							/>
 						</div>
 
@@ -411,7 +411,7 @@
 								id="church-{member.tempId}"
 								bind:value={formChurch}
 								placeholder="e.g., St. Mary's Cathedral"
-								class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+								class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 							/>
 						</div>
 
@@ -424,7 +424,7 @@
 								id="minister-{member.tempId}"
 								bind:value={formMinister}
 								placeholder="e.g., Fr. John Smith"
-								class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+								class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 							/>
 						</div>
 
@@ -440,7 +440,7 @@
 										onchange={() => {
 											if (formGodfatherTempId) formGodfather = '';
 										}}
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-1"
 									>
 										<option value="">Select household member...</option>
 										{#each getOtherMembers() as m}
@@ -455,7 +455,7 @@
 											if (formGodfather) formGodfatherTempId = '';
 										}}
 										placeholder="Or enter name..."
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 									/>
 								</div>
 								<div>
@@ -468,7 +468,7 @@
 										onchange={() => {
 											if (formGodfatherTempId2) formGodmother = '';
 										}}
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-1"
 									>
 										<option value="">Select household member...</option>
 										{#each getOtherMembers() as m}
@@ -483,7 +483,7 @@
 											if (formGodmother) formGodfatherTempId2 = '';
 										}}
 										placeholder="Or enter name..."
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 									/>
 								</div>
 							</div>
@@ -499,7 +499,7 @@
 										onchange={() => {
 											if (formSponsorTempId) formSponsor = '';
 										}}
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-1"
 									>
 										<option value="">Select household member...</option>
 										{#each getOtherMembers() as m}
@@ -514,7 +514,7 @@
 											if (formSponsor) formSponsorTempId = '';
 										}}
 										placeholder="Or enter name..."
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 									/>
 								</div>
 								<div>
@@ -529,7 +529,7 @@
 										id="confirmation-name-{member.tempId}"
 										bind:value={formConfirmationName}
 										placeholder="e.g., Joseph"
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 									/>
 								</div>
 							</div>
@@ -544,7 +544,7 @@
 									onchange={() => {
 										if (formSpouseTempId) formSpouse = '';
 									}}
-									class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
+									class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-1"
 								>
 									<option value="">Select household member...</option>
 									{#each getOtherMembers() as m}
@@ -559,7 +559,7 @@
 										if (formSpouse) formSpouseTempId = '';
 									}}
 									placeholder="Or enter spouse name..."
-									class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+									class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 								/>
 							</div>
 							<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -573,7 +573,7 @@
 										onchange={() => {
 											if (formWitness1TempId) formWitness1 = '';
 										}}
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-1"
 									>
 										<option value="">Select household member...</option>
 										{#each getOtherMembers() as m}
@@ -588,7 +588,7 @@
 											if (formWitness1) formWitness1TempId = '';
 										}}
 										placeholder="Or enter name..."
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 									/>
 								</div>
 								<div>
@@ -601,7 +601,7 @@
 										onchange={() => {
 											if (formWitness2TempId) formWitness2 = '';
 										}}
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-1"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-1"
 									>
 										<option value="">Select household member...</option>
 										{#each getOtherMembers() as m}
@@ -616,7 +616,7 @@
 											if (formWitness2) formWitness2TempId = '';
 										}}
 										placeholder="Or enter name..."
-										class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 									/>
 								</div>
 							</div>
@@ -628,14 +628,14 @@
 							type="button"
 							onclick={saveSacrament}
 							disabled={!formDate}
-							class="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500"
+							class="px-4 py-2 bg-brand-accent text-white rounded text-sm hover:bg-brand-accent/90 disabled:bg-brand-bg-muted disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-brand-accent"
 						>
 							{editingIndex !== null ? 'Update' : 'Add'} Sacrament
 						</button>
 						<button
 							type="button"
 							onclick={resetForm}
-							class="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+							class="px-4 py-2 border border-brand-border rounded text-sm bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-gray-500"
 						>
 							Cancel
 						</button>

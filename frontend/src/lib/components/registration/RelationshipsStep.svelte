@@ -183,7 +183,7 @@
 </script>
 
 <div class="space-y-4">
-	<p class="text-gray-600">
+	<p class="text-brand-text-secondary">
 		Family relationships have been set up automatically based on the parents and children you added.
 		You can remove any relationships that don't apply.
 	</p>
@@ -193,7 +193,7 @@
 			<button
 				type="button"
 				onclick={autoGenerateRelationships}
-				class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+				class="text-sm text-brand-accent hover:text-brand-accent/80 flex items-center gap-1"
 			>
 				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
@@ -209,9 +209,9 @@
 	{/if}
 
 	{#if members.length <= 1}
-		<div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+		<div class="text-center py-8 border-2 border-dashed border-brand-border rounded-lg">
 			<svg
-				class="mx-auto h-12 w-12 text-gray-400"
+				class="mx-auto h-12 w-12 text-brand-text-muted"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -223,29 +223,31 @@
 					d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 				/>
 			</svg>
-			<p class="mt-2 text-sm text-gray-500">
+			<p class="mt-2 text-sm text-brand-text-muted">
 				{#if members.length === 0}
 					No family members added yet
 				{:else}
 					Only one member in household - no relationships needed
 				{/if}
 			</p>
-			<p class="text-xs text-gray-400">You can skip this step</p>
+			<p class="text-xs text-brand-text-muted">You can skip this step</p>
 		</div>
 	{:else}
 		{#each members as member (member.tempId)}
 			<div class="border rounded-lg p-4 bg-white shadow-sm">
 				<div class="flex items-center justify-between mb-3">
-					<h3 class="font-medium text-gray-900">
+					<h3 class="font-medium text-brand-primary">
 						{getMemberName(member)}
 						{#if member.isHeadOfHousehold}
-							<span class="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+							<span
+								class="ml-2 text-xs bg-brand-accent/10 text-brand-primary px-2 py-0.5 rounded-full"
+							>
 								Head of Household
 							</span>
 						{/if}
 						{#if member.familyRole}
 							<span
-								class="ml-1 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full capitalize"
+								class="ml-1 text-xs bg-gray-100 text-brand-text-secondary px-2 py-0.5 rounded-full capitalize"
 							>
 								{member.familyRole}
 							</span>
@@ -260,7 +262,9 @@
 							{#if targetMember}
 								<div class="flex items-center justify-between bg-gray-50 rounded px-3 py-2 text-sm">
 									<span>
-										<span class="text-gray-600">{getRelationshipLabel(rel.relationshipType)}</span>
+										<span class="text-brand-text-secondary"
+											>{getRelationshipLabel(rel.relationshipType)}</span
+										>
 										<span class="font-medium ml-1">{getMemberName(targetMember)}</span>
 									</span>
 									<button
@@ -283,25 +287,28 @@
 						{/each}
 					</div>
 				{:else}
-					<p class="text-sm text-gray-500 italic mb-3">No relationships defined</p>
+					<p class="text-sm text-brand-text-muted italic mb-3">No relationships defined</p>
 				{/if}
 
 				{#if addingFor === member.tempId}
 					{@const availableTargets = getAvailableTargets(member.tempId)}
 					{#if availableTargets.length === 0}
-						<p class="text-sm text-gray-500 italic">
+						<p class="text-sm text-brand-text-muted italic">
 							All relationships have been defined for this member.
 						</p>
 					{:else}
 						<div class="flex flex-wrap gap-2 items-end">
 							<div class="flex-1 min-w-[140px]">
-								<label for="rel-type-{member.tempId}" class="block text-xs text-gray-500 mb-1">
+								<label
+									for="rel-type-{member.tempId}"
+									class="block text-xs text-brand-text-muted mb-1"
+								>
 									Relationship
 								</label>
 								<select
 									id="rel-type-{member.tempId}"
 									bind:value={selectedType}
-									class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+									class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 								>
 									<option value="">Select type...</option>
 									{#each relationshipTypes as relType}
@@ -310,13 +317,16 @@
 								</select>
 							</div>
 							<div class="flex-1 min-w-[140px]">
-								<label for="rel-target-{member.tempId}" class="block text-xs text-gray-500 mb-1">
+								<label
+									for="rel-target-{member.tempId}"
+									class="block text-xs text-brand-text-muted mb-1"
+								>
 									Family Member
 								</label>
 								<select
 									id="rel-target-{member.tempId}"
 									bind:value={selectedTarget}
-									class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+									class="w-full border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
 								>
 									<option value="">Select member...</option>
 									{#each availableTargets as target}
@@ -329,14 +339,14 @@
 									type="button"
 									onclick={() => handleSubmit(member.tempId)}
 									disabled={!selectedTarget || !selectedType}
-									class="px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500"
+									class="px-3 py-2 bg-brand-accent text-white rounded text-sm hover:bg-brand-accent/90 disabled:bg-brand-bg-muted disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-brand-accent"
 								>
 									Add
 								</button>
 								<button
 									type="button"
 									onclick={resetForm}
-									class="px-3 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+									class="px-3 py-2 border border-brand-border rounded text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
 								>
 									Cancel
 								</button>
@@ -349,7 +359,7 @@
 						<button
 							type="button"
 							onclick={() => handleAddClick(member.tempId)}
-							class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+							class="text-sm text-brand-accent hover:text-brand-accent/80 flex items-center gap-1"
 						>
 							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path

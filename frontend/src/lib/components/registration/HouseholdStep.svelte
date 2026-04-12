@@ -74,8 +74,8 @@
 <div class="space-y-6">
 	<div>
 		<div class="flex items-center">
-			<label for="household-name" class="block text-sm font-medium text-gray-700">
-				Household Name <span class="text-red-500">*</span>
+			<label for="household-name" class="block text-sm font-medium text-brand-text-secondary">
+				Household Name <span class="text-brand-error">*</span>
 			</label>
 			<Tooltip text="Usually your family surname, e.g., 'The Smith Family'" />
 		</div>
@@ -84,19 +84,19 @@
 			type="text"
 			value={household.name}
 			oninput={(e) => handleInput('name', e.currentTarget.value)}
-			class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
-				{errors.name ? 'border-red-500' : ''}"
+			class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				{errors.name ? 'border-brand-error' : ''}"
 			placeholder="e.g., The Smith Family"
 		/>
 		{#if errors.name}
-			<p class="mt-1 text-sm text-red-600">{errors.name}</p>
+			<p class="mt-1 text-sm text-brand-error">{errors.name}</p>
 		{/if}
 	</div>
 
 	<div>
 		<div class="flex items-center">
-			<label for="address" class="block text-sm font-medium text-gray-700">
-				Street Address <span class="text-red-500">*</span>
+			<label for="address" class="block text-sm font-medium text-brand-text-secondary">
+				Street Address <span class="text-brand-error">*</span>
 			</label>
 			<Tooltip text="Your primary residence street address" />
 		</div>
@@ -110,15 +110,15 @@
 			placeholder="Start typing an address..."
 		/>
 		{#if errors.address}
-			<p class="mt-1 text-sm text-red-600">{errors.address}</p>
+			<p class="mt-1 text-sm text-brand-error">{errors.address}</p>
 		{/if}
 	</div>
 
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 		<div>
 			<div class="flex items-center">
-				<label for="city" class="block text-sm font-medium text-gray-700">
-					City <span class="text-red-500">*</span>
+				<label for="city" class="block text-sm font-medium text-brand-text-secondary">
+					City <span class="text-brand-error">*</span>
 				</label>
 				<Tooltip text="City or town name" />
 			</div>
@@ -127,18 +127,20 @@
 				type="text"
 				value={household.city}
 				oninput={(e) => handleInput('city', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
-					{errors.city ? 'border-red-500' : ''}"
+				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+					{errors.city ? 'border-brand-error' : ''}"
 				placeholder="City"
 			/>
 			{#if errors.city}
-				<p class="mt-1 text-sm text-red-600">{errors.city}</p>
+				<p class="mt-1 text-sm text-brand-error">{errors.city}</p>
 			{/if}
 		</div>
 
 		<div>
 			<div class="flex items-center">
-				<label for="state" class="block text-sm font-medium text-gray-700"> State/Province </label>
+				<label for="state" class="block text-sm font-medium text-brand-text-secondary">
+					State/Province
+				</label>
 				<Tooltip text="State, province, or region" />
 			</div>
 			<input
@@ -146,7 +148,7 @@
 				type="text"
 				value={household.state}
 				oninput={(e) => handleInput('state', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 				placeholder="State/Province"
 			/>
 		</div>
@@ -155,7 +157,9 @@
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 		<div>
 			<div class="flex items-center">
-				<label for="zipCode" class="block text-sm font-medium text-gray-700"> Postal Code </label>
+				<label for="zipCode" class="block text-sm font-medium text-brand-text-secondary">
+					Postal Code
+				</label>
 				<Tooltip text="ZIP code or postal code" />
 			</div>
 			<input
@@ -163,14 +167,16 @@
 				type="text"
 				value={household.zipCode}
 				oninput={(e) => handleInput('zipCode', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 				placeholder="12345"
 			/>
 		</div>
 
 		<div>
 			<div class="flex items-center">
-				<label for="phone" class="block text-sm font-medium text-gray-700"> Phone Number </label>
+				<label for="phone" class="block text-sm font-medium text-brand-text-secondary">
+					Phone Number
+				</label>
 				<Tooltip text="Primary contact number for the household (optional)" />
 			</div>
 			<input
@@ -178,7 +184,7 @@
 				type="tel"
 				value={household.phone}
 				oninput={(e) => handleInput('phone', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 				placeholder="(555) 123-4567"
 			/>
 		</div>
@@ -186,7 +192,9 @@
 
 	<div>
 		<div class="flex items-center">
-			<label for="email" class="block text-sm font-medium text-gray-700"> Email Address </label>
+			<label for="email" class="block text-sm font-medium text-brand-text-secondary">
+				Email Address
+			</label>
 			<Tooltip text="Primary email for household communications (optional)" />
 		</div>
 		<input
@@ -194,18 +202,18 @@
 			type="email"
 			value={household.email}
 			oninput={(e) => handleInput('email', e.currentTarget.value)}
-			class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
-				{errors.email ? 'border-red-500' : ''}"
+			class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				{errors.email ? 'border-brand-error' : ''}"
 			placeholder="family@example.com"
 		/>
 		{#if errors.email}
-			<p class="mt-1 text-sm text-red-600">{errors.email}</p>
+			<p class="mt-1 text-sm text-brand-error">{errors.email}</p>
 		{/if}
 	</div>
 
 	<div>
 		<div class="flex items-center">
-			<label for="attendingSince" class="block text-sm font-medium text-gray-700">
+			<label for="attendingSince" class="block text-sm font-medium text-brand-text-secondary">
 				Attending Parish Since
 			</label>
 			<Tooltip
@@ -217,7 +225,7 @@
 			type="date"
 			value={household.attendingSince}
 			oninput={(e) => handleInput('attendingSince', e.currentTarget.value)}
-			class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+			class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 		/>
 	</div>
 </div>

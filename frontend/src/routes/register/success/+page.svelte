@@ -5,7 +5,7 @@
 </script>
 
 <div class="max-w-lg mx-auto text-center py-12">
-	<div class="text-green-500 mb-4">
+	<div class="text-brand-success mb-4">
 		<svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<path
 				stroke-linecap="round"
@@ -16,23 +16,24 @@
 		</svg>
 	</div>
 
-	<h1 class="text-2xl font-bold mb-4">Registration Complete!</h1>
+	<h1 class="text-2xl font-bold text-brand-primary mb-4">Registration Complete!</h1>
 
 	{#if householdName}
-		<p class="text-gray-600 mb-6">
+		<p class="text-brand-text-secondary mb-6">
 			Thank you for registering the {householdName} household.
 		</p>
 	{/if}
 
-	<p class="text-gray-600 mb-4">
+	<p class="text-brand-text-secondary mb-4">
 		Your information has been submitted to the chaplaincy office. We will review your information
 		and be in touch shortly.
 	</p>
 
-	<p class="text-gray-500 text-sm">
+	<p class="text-brand-text-muted text-sm">
 		If you need to make any changes or additions, please contact us at
-		<a href="mailto:dataadmin@fssp.nz" class="text-blue-600 hover:text-blue-800 underline"
-			>dataadmin@fssp.nz</a
+		<a
+			href="mailto:dataadmin@fssp.nz"
+			class="text-brand-accent hover:text-brand-accent/80 underline">dataadmin@fssp.nz</a
 		>.
 	</p>
 </div>
