@@ -65,7 +65,7 @@
 				<p class="text-3xl font-bold text-gray-900">{value}</p>
 				<p class="text-sm font-medium text-gray-500">{label}</p>
 				{#if sublabel}
-					<p class="text-xs text-gray-400">{sublabel}</p>
+					<p class="text-xs text-brand-text-secondary">{sublabel}</p>
 				{/if}
 			</div>
 		</div>
@@ -122,7 +122,7 @@
 				<p class="text-3xl font-bold text-gray-900">{value}</p>
 				<p class="text-sm font-medium text-gray-500">{label}</p>
 				{#if sublabel}
-					<p class="text-xs text-gray-400">{sublabel}</p>
+					<p class="text-xs text-brand-text-secondary">{sublabel}</p>
 				{/if}
 			</div>
 		</div>
