@@ -29,6 +29,12 @@
 	--color-success: #059669;
 	--color-error: #dc2626;
 	--color-info: #2563eb;
+	/* Chart Colors */
+	--chart-1: #3b82f6;
+	--chart-2: #10b981;
+	--chart-3: #8b5cf6;
+	--chart-4: #ec4899;
+	--chart-5: #f59e0b;
 	/* Shadows */
 	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -62,6 +68,12 @@
 	--color-success: #34d399;
 	--color-error: #f87171;
 	--color-info: #60a5fa;
+	/* Chart Colors (brighter for dark mode) */
+	--chart-1: #60a5fa;
+	--chart-2: #34d399;
+	--chart-3: #a78bfa;
+	--chart-4: #f472b6;
+	--chart-5: #fcd34d;
 	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
 	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
 	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);

@@ -8,11 +8,11 @@
 	let { trends }: Props = $props();
 
 	const sacramentTypes = [
-		{ key: 'baptism', label: 'Baptism', color: '#3B82F6' },
-		{ key: 'first_communion', label: 'First Communion', color: '#10B981' },
-		{ key: 'confirmation', label: 'Confirmation', color: '#8B5CF6' },
-		{ key: 'marriage', label: 'Marriage', color: '#EC4899' },
-		{ key: 'holy_orders', label: 'Holy Orders', color: '#F59E0B' }
+		{ key: 'baptism', label: 'Baptism', color: 'var(--chart-1)' },
+		{ key: 'first_communion', label: 'First Communion', color: 'var(--chart-2)' },
+		{ key: 'confirmation', label: 'Confirmation', color: 'var(--chart-3)' },
+		{ key: 'marriage', label: 'Marriage', color: 'var(--chart-4)' },
+		{ key: 'holy_orders', label: 'Holy Orders', color: 'var(--chart-5)' }
 	] as const;
 
 	let maxValue = $derived(
