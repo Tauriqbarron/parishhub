@@ -84,15 +84,15 @@
 
 <div class="max-w-4xl mx-auto">
 	<div class="mb-6">
-		<h1 class="text-2xl font-bold text-gray-900">Settings</h1>
-		<p class="text-gray-600 mt-1">Manage parish configuration and settings</p>
+		<h1 class="text-2xl font-bold text-brand-primary">Settings</h1>
+		<p class="text-brand-text-secondary mt-1">Manage parish configuration and settings</p>
 	</div>
 
 	<!-- QR Code Registration Section -->
 	<div class="bg-white shadow rounded-lg overflow-hidden mb-6">
-		<div class="px-6 py-4 border-b border-gray-200">
-			<h2 class="text-lg font-medium text-gray-900">QR Code Registration</h2>
-			<p class="text-sm text-gray-500 mt-1">
+		<div class="px-6 py-4 border-b border-brand-border">
+			<h2 class="text-lg font-medium text-brand-primary">QR Code Registration</h2>
+			<p class="text-sm text-brand-text-muted mt-1">
 				Configure the public registration URL and generate a QR code for parishioners to register
 			</p>
 		</div>
@@ -100,16 +100,18 @@
 		{#if loading}
 			<div class="p-6">
 				<div class="animate-pulse space-y-4">
-					<div class="h-10 bg-gray-200 rounded w-full"></div>
-					<div class="h-10 bg-gray-200 rounded w-32"></div>
+					<div class="h-10 bg-brand-bg-subtle rounded w-full"></div>
+					<div class="h-10 bg-brand-bg-subtle rounded w-32"></div>
 				</div>
 			</div>
 		{:else}
 			<div class="p-6 space-y-6">
 				<!-- Base URL Input -->
 				<div>
-					<label for="baseUrl" class="block text-sm font-medium text-gray-700"> Base URL </label>
-					<p class="text-xs text-gray-500 mt-1 mb-2">
+					<label for="baseUrl" class="block text-sm font-medium text-brand-text-secondary">
+						Base URL
+					</label>
+					<p class="text-xs text-brand-text-muted mt-1 mb-2">
 						Enter the publicly accessible URL for your parish database (e.g., Cloudflare tunnel URL)
 					</p>
 					<div class="flex gap-3">
@@ -118,13 +120,13 @@
 							id="baseUrl"
 							bind:value={baseUrl}
 							placeholder="https://your-parish.example.com"
-							class="flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="flex-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						/>
 						<button
 							type="button"
 							onclick={saveBaseUrl}
 							disabled={saving}
-							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-brand-accent text-white hover:bg-brand-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{#if saving}
 								<svg
@@ -157,17 +159,19 @@
 				{#if registrationUrl && !urlNotConfigured}
 					<!-- Registration URL Display -->
 					<div>
-						<label class="block text-sm font-medium text-gray-700 mb-2"> Registration URL </label>
+						<label class="block text-sm font-medium text-brand-text-secondary mb-2">
+							Registration URL
+						</label>
 						<div class="flex items-center gap-3">
 							<div
-								class="flex-1 bg-gray-50 rounded-md px-3 py-2 text-sm text-gray-700 border border-gray-200 truncate"
+								class="flex-1 bg-brand-bg-subtle rounded-md px-3 py-2 text-sm text-brand-text-secondary border border-brand-border truncate"
 							>
 								{registrationUrl}
 							</div>
 							<button
 								type="button"
 								onclick={copyRegistrationUrl}
-								class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+								class="inline-flex items-center px-3 py-2 border border-brand-border text-sm font-medium rounded-md text-brand-text-secondary bg-white hover:bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 							>
 								<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path
@@ -184,20 +188,22 @@
 
 					<!-- QR Code Display -->
 					<div>
-						<label class="block text-sm font-medium text-gray-700 mb-3"> QR Code </label>
+						<label class="block text-sm font-medium text-brand-text-secondary mb-3">
+							QR Code
+						</label>
 						<div class="flex flex-col sm:flex-row items-start gap-6">
-							<div class="bg-white p-4 border border-gray-200 rounded-lg shadow-sm">
+							<div class="bg-white p-4 border border-brand-border rounded-lg shadow-sm">
 								<img src={getQrCodeUrl()} alt="Registration QR Code" class="w-[200px] h-[200px]" />
 							</div>
 							<div class="space-y-3">
-								<p class="text-sm text-gray-600">
+								<p class="text-sm text-brand-text-secondary">
 									Scan this QR code to access the public registration form. Print and display at
 									your parish for easy access.
 								</p>
 								<button
 									type="button"
 									onclick={downloadQrCode}
-									class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+									class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-success text-white hover:bg-brand-success/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-success"
 								>
 									<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path
@@ -243,14 +249,14 @@
 
 	<!-- Mass Times Link -->
 	<div class="bg-white shadow rounded-lg overflow-hidden">
-		<div class="px-6 py-4 border-b border-gray-200">
-			<h2 class="text-lg font-medium text-gray-900">Mass Times</h2>
-			<p class="text-sm text-gray-500 mt-1">Configure mass times for attendance tracking</p>
+		<div class="px-6 py-4 border-b border-brand-border">
+			<h2 class="text-lg font-medium text-brand-primary">Mass Times</h2>
+			<p class="text-sm text-brand-text-muted mt-1">Configure mass times for attendance tracking</p>
 		</div>
 		<div class="p-6">
 			<a
 				href="/settings/mass-times"
-				class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+				class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-md text-brand-text-secondary bg-white hover:bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 			>
 				<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path

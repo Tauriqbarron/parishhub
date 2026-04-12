@@ -108,12 +108,12 @@
 
 <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="flex items-center gap-4 mb-8">
-		<a href="/analytics" class="text-gray-500 hover:text-gray-700">
+		<a href="/analytics" class="text-brand-text-muted hover:text-brand-text-secondary">
 			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 			</svg>
 		</a>
-		<h1 class="text-2xl font-bold text-gray-900">Record Mass Attendance</h1>
+		<h1 class="text-2xl font-bold text-brand-primary">Record Mass Attendance</h1>
 	</div>
 
 	<form
@@ -124,27 +124,29 @@
 		class="bg-white rounded-lg shadow p-6 space-y-6"
 	>
 		<div>
-			<label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+			<label for="date" class="block text-sm font-medium text-brand-text-secondary mb-1">Date</label
+			>
 			<input
 				type="date"
 				id="date"
 				bind:value={date}
 				required
-				class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+				class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 			/>
 		</div>
 
 		<div class="space-y-4">
-			<p class="text-sm text-gray-500">Enter attendance for each Mass time:</p>
+			<p class="text-sm text-brand-text-muted">Enter attendance for each Mass time:</p>
 			{#each massEntries as entry, index}
 				<div class="flex gap-4 items-end">
 					<div class="flex-1">
-						<label class="block text-sm font-medium text-gray-700 mb-1">Mass Time</label>
+						<label class="block text-sm font-medium text-brand-text-secondary mb-1">Mass Time</label
+						>
 						{#if massTimeOptions.length > 0 && !entry.customTime}
 							<select
 								value={entry.mass_time_id ?? ''}
 								onchange={(e) => handleMassTimeChange(index, (e.target as HTMLSelectElement).value)}
-								class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 							>
 								<option value="">Select mass time...</option>
 								{#each massTimeOptions as mt (mt.id)}
@@ -158,7 +160,7 @@
 									type="text"
 									placeholder="e.g., 8:00 AM"
 									bind:value={entry.mass_time}
-									class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									class="flex-1 px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 								/>
 								{#if massTimeOptions.length > 0 && entry.customTime}
 									<button
@@ -167,7 +169,7 @@
 											entry.customTime = false;
 											entry.mass_time = '';
 										}}
-										class="px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-lg text-sm"
+										class="px-3 py-2 text-brand-text-muted hover:bg-brand-bg-muted rounded-lg text-sm"
 										title="Back to dropdown"
 									>
 										<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,19 +186,19 @@
 						{/if}
 					</div>
 					<div class="w-32">
-						<label class="block text-sm font-medium text-gray-700 mb-1">Count</label>
+						<label class="block text-sm font-medium text-brand-text-secondary mb-1">Count</label>
 						<input
 							type="number"
 							min="0"
 							bind:value={entry.attendance_count}
-							class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 						/>
 					</div>
 					{#if massEntries.length > 1}
 						<button
 							type="button"
 							onclick={() => removeMassEntry(index)}
-							class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+							class="px-3 py-2 text-brand-error hover:bg-brand-error/10 rounded-lg"
 						>
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -213,13 +215,13 @@
 			<button
 				type="button"
 				onclick={addMassEntry}
-				class="text-blue-600 hover:text-blue-700 text-sm font-medium"
+				class="text-brand-accent hover:text-brand-accent/90 text-sm font-medium"
 			>
 				+ Add Another Mass Time
 			</button>
 			{#if massTimeOptions.length === 0}
-				<p class="text-xs text-gray-400">
-					<a href="/settings/mass-times" class="text-blue-600 hover:underline"
+				<p class="text-xs text-brand-text-muted">
+					<a href="/settings/mass-times" class="text-brand-accent hover:underline"
 						>Configure mass times</a
 					> to use a dropdown instead of free text.
 				</p>
@@ -227,14 +229,14 @@
 		</div>
 
 		<div>
-			<label for="notes" class="block text-sm font-medium text-gray-700 mb-1"
+			<label for="notes" class="block text-sm font-medium text-brand-text-secondary mb-1"
 				>Notes (optional)</label
 			>
 			<textarea
 				id="notes"
 				bind:value={notes}
 				rows="3"
-				class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+				class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 				placeholder="Any additional notes..."
 			></textarea>
 		</div>
@@ -243,13 +245,13 @@
 			<button
 				type="submit"
 				disabled={submitting}
-				class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+				class="flex-1 px-6 py-3 bg-brand-accent text-white rounded-lg hover:bg-brand-accent/90 transition-colors disabled:opacity-50"
 			>
 				{submitting ? 'Saving...' : 'Record Attendance'}
 			</button>
 			<a
 				href="/analytics"
-				class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-center"
+				class="px-6 py-3 border border-gray-300 text-brand-text-secondary rounded-lg hover:bg-gray-50 transition-colors text-center"
 			>
 				Cancel
 			</a>

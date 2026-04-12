@@ -112,12 +112,12 @@
 
 <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="flex items-center gap-4 mb-8">
-		<a href="/analytics" class="text-gray-500 hover:text-gray-700">
+		<a href="/analytics" class="text-brand-text-muted hover:text-brand-text-secondary">
 			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 			</svg>
 		</a>
-		<h1 class="text-2xl font-bold text-gray-900">Record Birth</h1>
+		<h1 class="text-2xl font-bold text-brand-primary">Record Birth</h1>
 	</div>
 
 	<form
@@ -130,54 +130,60 @@
 		<!-- Baby Name -->
 		<div class="grid grid-cols-2 gap-4">
 			<div>
-				<label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">
-					Baby First Name <span class="text-red-500">*</span>
+				<label for="firstName" class="block text-sm font-medium text-brand-text-secondary mb-1">
+					Baby First Name <span class="text-brand-error">*</span>
 				</label>
 				<input
 					type="text"
 					id="firstName"
 					bind:value={babyFirstName}
 					required
-					class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+					class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 				/>
 			</div>
 			<div>
-				<label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">
-					Baby Last Name <span class="text-red-500">*</span>
+				<label for="lastName" class="block text-sm font-medium text-brand-text-secondary mb-1">
+					Baby Last Name <span class="text-brand-error">*</span>
 				</label>
 				<input
 					type="text"
 					id="lastName"
 					bind:value={babyLastName}
 					required
-					class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+					class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 				/>
 			</div>
 		</div>
 
 		<!-- Date of Birth -->
 		<div>
-			<label for="dob" class="block text-sm font-medium text-gray-700 mb-1">
-				Date of Birth <span class="text-red-500">*</span>
+			<label for="dob" class="block text-sm font-medium text-brand-text-secondary mb-1">
+				Date of Birth <span class="text-brand-error">*</span>
 			</label>
 			<input
 				type="date"
 				id="dob"
 				bind:value={dateOfBirth}
 				required
-				class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+				class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 			/>
 		</div>
 
 		<!-- Parent 1 Search -->
 		<div class="relative">
-			<label for="parent1" class="block text-sm font-medium text-gray-700 mb-1">
+			<label for="parent1" class="block text-sm font-medium text-brand-text-secondary mb-1">
 				Parent 1 (optional)
 			</label>
 			{#if parent1Id}
-				<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg">
+				<div
+					class="flex items-center gap-2 px-3 py-2 bg-brand-bg-subtle border-brand-border rounded-lg"
+				>
 					<span class="flex-1">{parent1Name}</span>
-					<button type="button" onclick={clearParent1} class="text-gray-400 hover:text-gray-600">
+					<button
+						type="button"
+						onclick={clearParent1}
+						class="text-brand-text-muted hover:text-brand-text-secondary"
+					>
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
@@ -197,17 +203,17 @@
 					onfocus={() => parent1Results.length > 0 && (showParent1Dropdown = true)}
 					onblur={() => setTimeout(() => (showParent1Dropdown = false), 200)}
 					placeholder="Search by name..."
-					class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+					class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 				/>
 				{#if showParent1Dropdown && parent1Results.length > 0}
 					<div
-						class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-auto"
+						class="absolute z-10 w-full mt-1 bg-white border border-brand-border rounded-lg shadow-lg max-h-48 overflow-auto"
 					>
 						{#each parent1Results as person}
 							<button
 								type="button"
 								onclick={() => selectParent1(person)}
-								class="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100"
+								class="w-full px-4 py-2 text-left hover:bg-brand-bg-muted focus:bg-brand-bg-muted"
 							>
 								{person.first_name}
 								{person.last_name}
@@ -220,13 +226,19 @@
 
 		<!-- Parent 2 Search -->
 		<div class="relative">
-			<label for="parent2" class="block text-sm font-medium text-gray-700 mb-1">
+			<label for="parent2" class="block text-sm font-medium text-brand-text-secondary mb-1">
 				Parent 2 (optional)
 			</label>
 			{#if parent2Id}
-				<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg">
+				<div
+					class="flex items-center gap-2 px-3 py-2 bg-brand-bg-subtle border-brand-border rounded-lg"
+				>
 					<span class="flex-1">{parent2Name}</span>
-					<button type="button" onclick={clearParent2} class="text-gray-400 hover:text-gray-600">
+					<button
+						type="button"
+						onclick={clearParent2}
+						class="text-brand-text-muted hover:text-brand-text-secondary"
+					>
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
@@ -246,17 +258,17 @@
 					onfocus={() => parent2Results.length > 0 && (showParent2Dropdown = true)}
 					onblur={() => setTimeout(() => (showParent2Dropdown = false), 200)}
 					placeholder="Search by name..."
-					class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+					class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 				/>
 				{#if showParent2Dropdown && parent2Results.length > 0}
 					<div
-						class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-auto"
+						class="absolute z-10 w-full mt-1 bg-white border border-brand-border rounded-lg shadow-lg max-h-48 overflow-auto"
 					>
 						{#each parent2Results as person}
 							<button
 								type="button"
 								onclick={() => selectParent2(person)}
-								class="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100"
+								class="w-full px-4 py-2 text-left hover:bg-brand-bg-muted focus:bg-brand-bg-muted"
 							>
 								{person.first_name}
 								{person.last_name}
@@ -269,14 +281,14 @@
 
 		<!-- Notes -->
 		<div>
-			<label for="notes" class="block text-sm font-medium text-gray-700 mb-1"
+			<label for="notes" class="block text-sm font-medium text-brand-text-secondary mb-1"
 				>Notes (optional)</label
 			>
 			<textarea
 				id="notes"
 				bind:value={notes}
 				rows="3"
-				class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+				class="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 				placeholder="Any additional notes..."
 			></textarea>
 		</div>
@@ -286,13 +298,13 @@
 			<button
 				type="submit"
 				disabled={submitting}
-				class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+				class="flex-1 px-6 py-3 bg-brand-accent text-white rounded-lg hover:bg-brand-accent/90 transition-colors disabled:opacity-50"
 			>
 				{submitting ? 'Saving...' : 'Record Birth'}
 			</button>
 			<a
 				href="/analytics"
-				class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-center"
+				class="px-6 py-3 border border-brand-border text-brand-text-secondary rounded-lg hover:bg-brand-bg-subtle transition-colors text-center"
 			>
 				Cancel
 			</a>

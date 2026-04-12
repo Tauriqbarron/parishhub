@@ -15,7 +15,7 @@
 	import TrendCard from '$lib/components/charts/TrendCard.svelte';
 	import { addToast } from '$lib/stores/toast';
 
-	const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+	const COLORS = ['#D97706', '#059669', '#F59E0B', '#DC2626', '#8B5CF6', '#EC4899'];
 
 	let activeTab: 'births' | 'attendance' | 'population' | 'deaths' = $state('births');
 	let attendanceView: 'total' | 'breakdown' = $state('total');
@@ -164,18 +164,22 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="flex justify-between items-center mb-8">
-		<h1 class="text-2xl font-bold text-gray-900">Parish Analytics</h1>
+		<h1 class="text-2xl font-bold text-brand-primary">Parish Analytics</h1>
 	</div>
 
 	{#if loading}
 		<div class="flex items-center justify-center h-64">
-			<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+			<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-accent"></div>
 		</div>
 	{:else if error}
-		<div class="bg-red-50 border border-red-200 rounded-lg p-6" role="alert" aria-live="assertive">
+		<div
+			class="bg-brand-error/10 border border-brand-error/20 rounded-lg p-6"
+			role="alert"
+			aria-live="assertive"
+		>
 			<div class="flex items-center gap-3">
 				<svg
-					class="w-6 h-6 text-red-600 flex-shrink-0"
+					class="w-6 h-6 text-brand-error flex-shrink-0"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -190,13 +194,13 @@
 					/>
 				</svg>
 				<div>
-					<h3 class="text-red-800 font-medium">Failed to load analytics</h3>
-					<p class="text-red-600 text-sm">{error}</p>
+					<h3 class="text-brand-error font-medium">Failed to load analytics</h3>
+					<p class="text-brand-error text-sm">{error}</p>
 				</div>
 			</div>
 			<button
 				onclick={loadAllStats}
-				class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+				class="mt-4 px-4 py-2 bg-brand-error text-white rounded-lg hover:bg-brand-error/90 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-error focus:ring-offset-2"
 				aria-label="Retry loading analytics"
 			>
 				Retry
@@ -233,13 +237,13 @@
 
 		<!-- Tabbed Charts -->
 		<div class="bg-white rounded-lg shadow mb-8">
-			<div class="border-b border-gray-200">
+			<div class="border-b border-brand-border">
 				<nav class="flex -mb-px">
 					<button
 						class="px-6 py-4 text-sm font-medium border-b-2 transition-colors {activeTab ===
 						'births'
-							? 'border-blue-500 text-blue-600'
-							: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
+							? 'border-brand-accent text-brand-accent'
+							: 'border-transparent text-brand-text-muted hover:text-brand-text-secondary hover:border-brand-border'}"
 						onclick={() => (activeTab = 'births')}
 					>
 						Births
@@ -247,8 +251,8 @@
 					<button
 						class="px-6 py-4 text-sm font-medium border-b-2 transition-colors {activeTab ===
 						'deaths'
-							? 'border-red-500 text-red-600'
-							: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
+							? 'border-brand-error text-brand-error'
+							: 'border-transparent text-brand-text-muted hover:text-brand-text-secondary hover:border-brand-border'}"
 						onclick={() => (activeTab = 'deaths')}
 					>
 						Deaths
@@ -256,8 +260,8 @@
 					<button
 						class="px-6 py-4 text-sm font-medium border-b-2 transition-colors {activeTab ===
 						'attendance'
-							? 'border-blue-500 text-blue-600'
-							: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
+							? 'border-brand-accent text-brand-accent'
+							: 'border-transparent text-brand-text-muted hover:text-brand-text-secondary hover:border-brand-border'}"
 						onclick={() => (activeTab = 'attendance')}
 					>
 						Attendance
@@ -265,8 +269,8 @@
 					<button
 						class="px-6 py-4 text-sm font-medium border-b-2 transition-colors {activeTab ===
 						'population'
-							? 'border-blue-500 text-blue-600'
-							: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
+							? 'border-brand-accent text-brand-accent'
+							: 'border-transparent text-brand-text-muted hover:text-brand-text-secondary hover:border-brand-border'}"
 						onclick={() => (activeTab = 'population')}
 					>
 						Population
@@ -279,37 +283,37 @@
 					{#if birthChartLabels.length > 0}
 						<BarChart
 							labels={birthChartLabels}
-							datasets={[{ label: 'Births', data: birthChartData, backgroundColor: '#3B82F6' }]}
+							datasets={[{ label: 'Births', data: birthChartData, backgroundColor: '#D97706' }]}
 							title="Births by Year"
 						/>
 					{:else}
-						<p class="text-gray-500 text-center py-8">No birth data available</p>
+						<p class="text-brand-text-muted text-center py-8">No birth data available</p>
 					{/if}
 				{:else if activeTab === 'deaths'}
 					{#if deathChartLabels.length > 0}
 						<BarChart
 							labels={deathChartLabels}
-							datasets={[{ label: 'Deaths', data: deathChartData, backgroundColor: '#EF4444' }]}
+							datasets={[{ label: 'Deaths', data: deathChartData, backgroundColor: '#DC2626' }]}
 							title="Deaths by Year"
 						/>
 					{:else}
-						<p class="text-gray-500 text-center py-8">No death data available</p>
+						<p class="text-brand-text-muted text-center py-8">No death data available</p>
 					{/if}
 				{:else if activeTab === 'attendance'}
 					<!-- Sub-tabs for Total vs Breakdown -->
 					<div class="flex gap-2 mb-4">
 						<button
 							class="px-3 py-1 text-sm rounded {attendanceView === 'total'
-								? 'bg-blue-100 text-blue-700'
-								: 'text-gray-600 hover:bg-gray-100'}"
+								? 'bg-brand-accent/10 text-brand-accent'
+								: 'text-brand-text-secondary hover:bg-brand-bg-muted'}"
 							onclick={() => (attendanceView = 'total')}
 						>
 							Total
 						</button>
 						<button
 							class="px-3 py-1 text-sm rounded {attendanceView === 'breakdown'
-								? 'bg-blue-100 text-blue-700'
-								: 'text-gray-600 hover:bg-gray-100'}"
+								? 'bg-brand-accent/10 text-brand-accent'
+								: 'text-brand-text-secondary hover:bg-brand-bg-muted'}"
 							onclick={() => (attendanceView = 'breakdown')}
 						>
 							By Mass Time
@@ -322,8 +326,8 @@
 							<button
 								class="px-3 py-1 text-xs font-medium rounded-full border transition-colors
 									{attendancePeriod === period
-									? 'bg-green-100 text-green-700 border-green-300'
-									: 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}"
+									? 'bg-brand-success/10 text-brand-success border-brand-success/30'
+									: 'bg-white text-brand-text-secondary border-brand-border hover:bg-brand-bg-subtle'}"
 								onclick={() => {
 									attendancePeriod = period as TimePeriod;
 									loadAttendanceStats();
@@ -335,8 +339,8 @@
 						<button
 							class="px-3 py-1 text-xs font-medium rounded-full border transition-colors
 								{attendancePeriod === 'custom'
-								? 'bg-green-100 text-green-700 border-green-300'
-								: 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}"
+								? 'bg-brand-success/10 text-brand-success border-brand-success/30'
+								: 'bg-white text-brand-text-secondary border-brand-border hover:bg-brand-bg-subtle'}"
 							onclick={() => {
 								attendancePeriod = 'custom';
 							}}
@@ -350,17 +354,17 @@
 							<input
 								type="date"
 								bind:value={customStartDate}
-								class="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+								class="px-3 py-1.5 text-sm border border-brand-border rounded-md focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 							/>
-							<span class="text-gray-500 text-sm">to</span>
+							<span class="text-brand-text-muted text-sm">to</span>
 							<input
 								type="date"
 								bind:value={customEndDate}
-								class="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+								class="px-3 py-1.5 text-sm border border-brand-border rounded-md focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 							/>
 							<button
 								onclick={loadAttendanceStats}
-								class="px-4 py-1.5 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+								class="px-4 py-1.5 text-sm bg-brand-accent text-white rounded-md hover:bg-brand-accent/90 transition-colors"
 							>
 								Apply
 							</button>
@@ -375,14 +379,14 @@
 									{
 										label: 'Attendance',
 										data: attendanceChartData,
-										borderColor: '#10B981',
+										borderColor: '#059669',
 										fill: true
 									}
 								]}
 								title="Recent Mass Attendance"
 							/>
 						{:else}
-							<p class="text-gray-500 text-center py-8">No attendance data available</p>
+							<p class="text-brand-text-muted text-center py-8">No attendance data available</p>
 						{/if}
 					{:else if attendanceStats?.by_mass_time?.length}
 						<LineChart
@@ -416,34 +420,34 @@
 							</tbody>
 						</table>
 					{:else}
-						<p class="text-gray-500 text-center py-8">No breakdown data available</p>
+						<p class="text-brand-text-muted text-center py-8">No breakdown data available</p>
 					{/if}
 				{:else if activeTab === 'population'}
 					{#if populationChartLabels.length > 0}
 						<LineChart
 							labels={populationChartLabels}
 							datasets={[
-								{ label: 'Members', data: populationChartData, borderColor: '#8B5CF6', fill: true }
+								{ label: 'Members', data: populationChartData, borderColor: '#D97706', fill: true }
 							]}
 							title="Population Over Time"
 						/>
 					{:else}
 						<div class="text-center py-8">
 							<div class="grid grid-cols-2 gap-4 max-w-md mx-auto mb-4">
-								<div class="bg-purple-50 rounded-lg p-4">
-									<p class="text-3xl font-bold text-purple-600">
+								<div class="bg-brand-accent/10 rounded-lg p-4">
+									<p class="text-3xl font-bold text-brand-accent">
 										{populationStats?.current_members ?? 0}
 									</p>
-									<p class="text-sm text-gray-600">Registered Members</p>
+									<p class="text-sm text-brand-text-secondary">Registered Members</p>
 								</div>
-								<div class="bg-purple-50 rounded-lg p-4">
-									<p class="text-3xl font-bold text-purple-600">
+								<div class="bg-brand-accent/10 rounded-lg p-4">
+									<p class="text-3xl font-bold text-brand-accent">
 										{populationStats?.current_households ?? 0}
 									</p>
-									<p class="text-sm text-gray-600">Households</p>
+									<p class="text-sm text-brand-text-secondary">Households</p>
 								</div>
 							</div>
-							<p class="text-gray-500 text-sm">
+							<p class="text-brand-text-muted text-sm">
 								No historical data yet. Population snapshots will appear here over time.
 							</p>
 						</div>

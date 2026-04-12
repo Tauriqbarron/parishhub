@@ -111,12 +111,12 @@
 <div>
 	<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 		<div>
-			<h1 class="text-2xl font-bold text-gray-900">Mass Times</h1>
+			<h1 class="text-2xl font-bold text-brand-primary">Mass Times</h1>
 			<p class="text-gray-600 mt-1">Configure mass times for attendance tracking</p>
 		</div>
 		<button
 			onclick={openCreateModal}
-			class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+			class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent text-white hover:bg-brand-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent"
 		>
 			<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -147,31 +147,33 @@
 						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 					/>
 				</svg>
-				<h3 class="mt-2 text-sm font-medium text-gray-900">No mass times configured</h3>
-				<p class="mt-1 text-sm text-gray-500">Add mass times to use in attendance tracking.</p>
+				<h3 class="mt-2 text-sm font-medium text-brand-primary">No mass times configured</h3>
+				<p class="mt-1 text-sm text-brand-text-muted">
+					Add mass times to use in attendance tracking.
+				</p>
 			</div>
 		{:else}
 			<table class="min-w-full divide-y divide-gray-200">
 				<thead class="bg-gray-50">
 					<tr>
 						<th
-							class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							class="px-6 py-3 text-left text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>Name</th
 						>
 						<th
-							class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							class="px-6 py-3 text-left text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>Time</th
 						>
 						<th
-							class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							class="px-6 py-3 text-left text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>Day</th
 						>
 						<th
-							class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							class="px-6 py-3 text-left text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>Status</th
 						>
 						<th
-							class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+							class="px-6 py-3 text-right text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>Actions</th
 						>
 					</tr>
@@ -179,13 +181,13 @@
 				<tbody class="bg-white divide-y divide-gray-200">
 					{#each massTimes as mt (mt.id)}
 						<tr class={mt.is_active ? '' : 'bg-gray-50 opacity-60'}>
-							<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+							<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-brand-primary"
 								>{mt.name}</td
 							>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+							<td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text-muted"
 								>{formatTime(mt.time)}</td
 							>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+							<td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text-muted">
 								{mt.day_of_week !== null ? DAYS_OF_WEEK[mt.day_of_week] : 'Any'}
 							</td>
 							<td class="px-6 py-4 whitespace-nowrap">
@@ -223,13 +225,15 @@
 		<div class="flex min-h-full items-center justify-center p-4">
 			<div class="fixed inset-0 bg-gray-500 bg-opacity-75" onclick={closeModal}></div>
 			<div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-				<h3 class="text-lg font-medium text-gray-900 mb-4">
+				<h3 class="text-lg font-medium text-brand-primary mb-4">
 					{editingId ? 'Edit Mass Time' : 'Add Mass Time'}
 				</h3>
 				<form onsubmit={handleSubmit}>
 					<div class="space-y-4">
 						<div>
-							<label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+							<label for="name" class="block text-sm font-medium text-brand-text-secondary"
+								>Name</label
+							>
 							<input
 								type="text"
 								id="name"
@@ -241,7 +245,9 @@
 							/>
 						</div>
 						<div>
-							<label for="time" class="block text-sm font-medium text-gray-700">Time</label>
+							<label for="time" class="block text-sm font-medium text-brand-text-secondary"
+								>Time</label
+							>
 							<input
 								type="time"
 								id="time"
@@ -251,7 +257,9 @@
 							/>
 						</div>
 						<div>
-							<label for="day" class="block text-sm font-medium text-gray-700">Day of Week</label>
+							<label for="day" class="block text-sm font-medium text-brand-text-secondary"
+								>Day of Week</label
+							>
 							<select
 								id="day"
 								bind:value={formData.day_of_week}
@@ -271,7 +279,7 @@
 									bind:checked={formData.is_active}
 									class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
 								/>
-								<label for="is_active" class="ml-2 block text-sm text-gray-900">Active</label>
+								<label for="is_active" class="ml-2 block text-sm text-brand-primary">Active</label>
 							</div>
 						{/if}
 					</div>
@@ -279,7 +287,7 @@
 						<button
 							type="button"
 							onclick={closeModal}
-							class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+							class="px-4 py-2 text-sm font-medium text-brand-text-secondary bg-white border border-gray-300 rounded-md hover:bg-gray-50"
 						>
 							Cancel
 						</button>

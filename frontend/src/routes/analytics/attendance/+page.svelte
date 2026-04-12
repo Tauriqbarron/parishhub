@@ -174,10 +174,10 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="flex justify-between items-center mb-6">
-		<h1 class="text-2xl font-bold text-gray-900">Attendance Records</h1>
+		<h1 class="text-2xl font-bold text-brand-primary">Attendance Records</h1>
 		<a
 			href="/analytics/attendance/new"
-			class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+			class="px-4 py-2 bg-brand-accent text-white rounded-lg hover:bg-brand-accent/90 transition-colors text-sm font-medium"
 		>
 			Record Attendance
 		</a>
@@ -187,31 +187,38 @@
 	<div class="bg-white rounded-lg shadow p-4 mb-6">
 		<div class="flex flex-wrap items-end gap-4">
 			<div>
-				<label for="start-date" class="block text-sm font-medium text-gray-700 mb-1">From</label>
+				<label for="start-date" class="block text-sm font-medium text-brand-text-secondary mb-1"
+					>From</label
+				>
 				<input
 					id="start-date"
 					type="date"
 					bind:value={startDate}
-					class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+					class="px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 				/>
 			</div>
 			<div>
-				<label for="end-date" class="block text-sm font-medium text-gray-700 mb-1">To</label>
+				<label for="end-date" class="block text-sm font-medium text-brand-text-secondary mb-1"
+					>To</label
+				>
 				<input
 					id="end-date"
 					type="date"
 					bind:value={endDate}
-					class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+					class="px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 				/>
 			</div>
 			<button
 				onclick={handleFilter}
-				class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
+				class="px-4 py-2 bg-brand-accent text-white rounded-md hover:bg-brand-accent/90 transition-colors"
 			>
 				Filter
 			</button>
 			{#if startDate || endDate}
-				<button onclick={clearFilters} class="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm">
+				<button
+					onclick={clearFilters}
+					class="px-4 py-2 text-brand-text-secondary hover:text-brand-primary text-sm"
+				>
 					Clear
 				</button>
 			{/if}
@@ -222,73 +229,73 @@
 	<div class="bg-white rounded-lg shadow overflow-hidden">
 		{#if loading}
 			<div class="flex items-center justify-center h-64">
-				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-accent"></div>
 			</div>
 		{:else if records.length === 0}
 			<div class="text-center py-12">
-				<p class="text-gray-500">No attendance records found</p>
+				<p class="text-brand-text-muted">No attendance records found</p>
 			</div>
 		{:else}
 			<div class="overflow-x-auto">
-				<table class="min-w-full divide-y divide-gray-200">
-					<thead class="bg-gray-50">
+				<table class="min-w-full divide-y divide-brand-border">
+					<thead class="bg-brand-bg-subtle">
 						<tr>
 							<th
-								class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								class="px-6 py-3 text-left text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>
 								Date
 							</th>
 							<th
-								class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								class="px-6 py-3 text-left text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>
 								Mass Name
 							</th>
 							<th
-								class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								class="px-6 py-3 text-left text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>
 								Mass Time
 							</th>
 							<th
-								class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+								class="px-6 py-3 text-right text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>
 								Attendance
 							</th>
 							<th
-								class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								class="px-6 py-3 text-left text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>
 								Notes
 							</th>
 							<th
-								class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+								class="px-6 py-3 text-right text-xs font-medium text-brand-text-muted uppercase tracking-wider"
 							>
 								Actions
 							</th>
 						</tr>
 					</thead>
-					<tbody class="bg-white divide-y divide-gray-200">
+					<tbody class="bg-white divide-y divide-brand-border">
 						{#each records as record (record.id)}
-							<tr class="hover:bg-gray-50">
-								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+							<tr class="hover:bg-brand-bg-subtle">
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-brand-primary">
 									{formatDate(record.date)}
 								</td>
-								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text-secondary">
 									{record.mass_time_name || 'Total'}
 								</td>
-								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text-secondary">
 									{record.mass_time_time ? formatTime(record.mass_time_time) : '—'}
 								</td>
 								<td
-									class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-medium"
+									class="px-6 py-4 whitespace-nowrap text-sm text-brand-primary text-right font-medium"
 								>
 									{record.attendance_count}
 								</td>
-								<td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+								<td class="px-6 py-4 text-sm text-brand-text-muted max-w-xs truncate">
 									{record.notes || '—'}
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap text-right text-sm">
 									<button
 										onclick={() => startEdit(record)}
-										class="text-blue-600 hover:text-blue-800 font-medium"
+										class="text-brand-accent hover:text-brand-accent/80 font-medium"
 									>
 										Edit
 									</button>
@@ -301,9 +308,9 @@
 
 			<!-- Pagination -->
 			{#if totalPages > 1}
-				<div class="px-6 py-4 border-t border-gray-200">
+				<div class="px-6 py-4 border-t border-brand-border">
 					<div class="flex items-center justify-between">
-						<p class="text-sm text-gray-700">
+						<p class="text-sm text-brand-text-secondary">
 							Showing {(page - 1) * perPage + 1} to {Math.min(page * perPage, total)} of {total} records
 						</p>
 						<div class="flex gap-2">
@@ -311,8 +318,8 @@
 								onclick={() => handlePageChange(page - 1)}
 								disabled={page <= 1}
 								class="px-3 py-1 text-sm border rounded-md {page <= 1
-									? 'text-gray-400 cursor-not-allowed'
-									: 'text-gray-700 hover:bg-gray-50'}"
+									? 'text-brand-text-muted cursor-not-allowed'
+									: 'text-brand-text-secondary hover:bg-brand-bg-subtle'}"
 							>
 								Previous
 							</button>
@@ -320,8 +327,8 @@
 								onclick={() => handlePageChange(page + 1)}
 								disabled={page >= totalPages}
 								class="px-3 py-1 text-sm border rounded-md {page >= totalPages
-									? 'text-gray-400 cursor-not-allowed'
-									: 'text-gray-700 hover:bg-gray-50'}"
+									? 'text-brand-text-muted cursor-not-allowed'
+									: 'text-brand-text-secondary hover:bg-brand-bg-subtle'}"
 							>
 								Next
 							</button>
@@ -334,7 +341,7 @@
 
 	<!-- Summary -->
 	{#if !loading && total > 0}
-		<p class="mt-4 text-sm text-gray-500">Total records: {total}</p>
+		<p class="mt-4 text-sm text-brand-text-muted">Total records: {total}</p>
 	{/if}
 </div>
 
@@ -342,29 +349,32 @@
 {#if editingRecord}
 	<div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
 		<div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-			<h2 class="text-lg font-semibold text-gray-900 mb-4">Edit Attendance Record</h2>
+			<h2 class="text-lg font-semibold text-brand-primary mb-4">Edit Attendance Record</h2>
 
 			<div class="space-y-4">
 				<div>
-					<label for="edit-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+					<label for="edit-date" class="block text-sm font-medium text-brand-text-secondary mb-1"
+						>Date</label
+					>
 					<input
 						id="edit-date"
 						type="date"
 						bind:value={editForm.date}
-						class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						class="w-full px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 					/>
 				</div>
 
 				<div>
-					<label for="edit-mass-time" class="block text-sm font-medium text-gray-700 mb-1"
-						>Mass Time</label
+					<label
+						for="edit-mass-time"
+						class="block text-sm font-medium text-brand-text-secondary mb-1">Mass Time</label
 					>
 					{#if massTimeOptions.length > 0 && !editForm.customTime}
 						<select
 							id="edit-mass-time"
 							value={editForm.mass_time_id ?? ''}
 							onchange={(e) => handleEditMassTimeChange((e.target as HTMLSelectElement).value)}
-							class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+							class="w-full px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 						>
 							<option value="">None (Total)</option>
 							{#each massTimeOptions as mt (mt.id)}
@@ -379,7 +389,7 @@
 								type="text"
 								bind:value={editForm.mass_time}
 								placeholder="e.g., 08:00 AM or leave empty for total"
-								class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+								class="flex-1 px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 							/>
 							{#if massTimeOptions.length > 0 && editForm.customTime}
 								<button
@@ -389,7 +399,7 @@
 										editForm.mass_time = '';
 										editForm.mass_time_id = null;
 									}}
-									class="px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-md text-sm"
+									class="px-3 py-2 text-brand-text-muted hover:bg-brand-bg-muted rounded-md text-sm"
 									title="Back to dropdown"
 								>
 									&larr;
@@ -400,7 +410,7 @@
 				</div>
 
 				<div>
-					<label for="edit-count" class="block text-sm font-medium text-gray-700 mb-1"
+					<label for="edit-count" class="block text-sm font-medium text-brand-text-secondary mb-1"
 						>Attendance Count</label
 					>
 					<input
@@ -408,18 +418,20 @@
 						type="number"
 						min="0"
 						bind:value={editForm.attendance_count}
-						class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						class="w-full px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 					/>
 				</div>
 
 				<div>
-					<label for="edit-notes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+					<label for="edit-notes" class="block text-sm font-medium text-brand-text-secondary mb-1"
+						>Notes</label
+					>
 					<textarea
 						id="edit-notes"
 						bind:value={editForm.notes}
 						rows="3"
 						maxlength="2000"
-						class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						class="w-full px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 					></textarea>
 				</div>
 			</div>
@@ -427,21 +439,21 @@
 			<div class="flex items-center justify-between mt-6">
 				<button
 					onclick={() => confirmDelete(editingRecord!.id)}
-					class="px-3 py-2 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors"
+					class="px-3 py-2 text-sm text-brand-error hover:text-brand-error/80 hover:bg-brand-error/10 rounded-md transition-colors"
 				>
 					Delete Record
 				</button>
 				<div class="flex gap-3">
 					<button
 						onclick={cancelEdit}
-						class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+						class="px-4 py-2 text-sm text-brand-text-secondary hover:bg-brand-bg-muted rounded-md transition-colors"
 					>
 						Cancel
 					</button>
 					<button
 						onclick={handleSave}
 						disabled={saving || editForm.attendance_count < 0}
-						class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+						class="px-4 py-2 bg-brand-accent text-white rounded-md hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						{saving ? 'Saving...' : 'Save Changes'}
 					</button>
@@ -455,8 +467,8 @@
 {#if showDeleteConfirm}
 	<div class="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
 		<div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
-			<h3 class="text-lg font-semibold text-gray-900 mb-2">Delete Record?</h3>
-			<p class="text-sm text-gray-600 mb-6">
+			<h3 class="text-lg font-semibold text-brand-primary mb-2">Delete Record?</h3>
+			<p class="text-sm text-brand-text-secondary mb-6">
 				This action cannot be undone. The attendance record will be permanently removed.
 			</p>
 			<div class="flex justify-end gap-3">
@@ -465,13 +477,13 @@
 						showDeleteConfirm = false;
 						deletingId = null;
 					}}
-					class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+					class="px-4 py-2 text-sm text-brand-text-secondary hover:bg-brand-bg-muted rounded-md transition-colors"
 				>
 					Cancel
 				</button>
 				<button
 					onclick={handleDelete}
-					class="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+					class="px-4 py-2 bg-brand-error text-white rounded-md hover:bg-brand-error/90 transition-colors"
 				>
 					Delete
 				</button>

@@ -36,7 +36,7 @@
 					label: ds.label,
 					data: ds.data,
 					backgroundColor:
-						ds.backgroundColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]
+						ds.backgroundColor || ['#D97706', '#059669', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]
 				}))
 			},
 			options: {
@@ -70,7 +70,7 @@
 				label: ds.label,
 				data: ds.data,
 				backgroundColor:
-					ds.backgroundColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]
+					ds.backgroundColor || ['#D97706', '#059669', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]
 			}));
 			chart.update();
 		}
@@ -79,7 +79,7 @@
 
 <div class="bg-white rounded-lg shadow p-6">
 	{#if title}
-		<h3 class="text-lg font-medium text-gray-900 mb-4">{title}</h3>
+		<h3 class="text-lg font-medium text-brand-primary mb-4">{title}</h3>
 	{/if}
 	<div class="h-64">
 		<canvas bind:this={canvas}></canvas>

@@ -48,9 +48,9 @@
 					label: ds.label,
 					data: ds.data,
 					borderColor:
-						ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5],
+						ds.borderColor || ['#D97706', '#059669', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5],
 					backgroundColor: ds.fill
-						? `${ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]}20`
+						? `${ds.borderColor || ['#D97706', '#059669', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]}20`
 						: undefined,
 					fill: ds.fill ?? false,
 					tension: 0.3
@@ -87,9 +87,9 @@
 				label: ds.label,
 				data: ds.data,
 				borderColor:
-					ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5],
+					ds.borderColor || ['#D97706', '#059669', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5],
 				backgroundColor: ds.fill
-					? `${ds.borderColor || ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]}20`
+					? `${ds.borderColor || ['#D97706', '#059669', '#8B5CF6', '#EC4899', '#F59E0B'][i % 5]}20`
 					: undefined,
 				fill: ds.fill ?? false,
 				tension: 0.3
@@ -101,7 +101,7 @@
 
 <div class="bg-white rounded-lg shadow p-6">
 	{#if title}
-		<h3 class="text-lg font-medium text-gray-900 mb-4">{title}</h3>
+		<h3 class="text-lg font-medium text-brand-primary mb-4">{title}</h3>
 	{/if}
 	<div class="h-64">
 		<canvas bind:this={canvas}></canvas>
