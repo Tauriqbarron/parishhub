@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { RecentActivity } from '$lib/api';
 	import { goto } from '$app/navigation';
+	import { UserPlus, Church, Home, Skull } from 'lucide-svelte';
+	import type { Component } from 'svelte';
 
 	interface Props {
 		activities: RecentActivity[];
@@ -23,18 +25,18 @@
 		return date.toLocaleDateString();
 	}
 
-	function getActivityIcon(type: string): string {
+	function getActivityIcon(type: string): { icon: Component; color: string; bg: string } {
 		switch (type) {
 			case 'person_added':
-				return 'person';
+				return { icon: UserPlus, color: 'text-blue-600', bg: 'bg-blue-100' };
 			case 'sacrament_recorded':
-				return 'sacrament';
+				return { icon: Church, color: 'text-purple-600', bg: 'bg-purple-100' };
 			case 'household_created':
-				return 'household';
+				return { icon: Home, color: 'text-green-600', bg: 'bg-green-100' };
 			case 'death_recorded':
-				return 'death';
+				return { icon: Skull, color: 'text-gray-600', bg: 'bg-gray-100' };
 			default:
-				return 'default';
+				return { icon: Home, color: 'text-green-600', bg: 'bg-green-100' };
 		}
 	}
 
@@ -62,6 +64,7 @@
 		<div class="space-y-4">
 			{#each activities as activity}
 				{@const href = getHref(activity)}
+				{@const iconInfo = getActivityIcon(activity.type)}
 				{#if href}
 					<a
 						{href}
@@ -71,73 +74,8 @@
 						}}
 						class="flex items-start gap-3 hover:bg-gray-50 rounded-lg p-2 -m-2 cursor-pointer transition-colors group"
 					>
-						<div
-							class="p-2 rounded-full flex-shrink-0 {getActivityIcon(activity.type) === 'person'
-								? 'bg-blue-100'
-								: getActivityIcon(activity.type) === 'death'
-									? 'bg-gray-100'
-									: getActivityIcon(activity.type) === 'sacrament'
-										? 'bg-purple-100'
-										: 'bg-green-100'}"
-						>
-							{#if getActivityIcon(activity.type) === 'person'}
-								<svg
-									class="w-4 h-4 text-blue-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-									/>
-								</svg>
-							{:else if getActivityIcon(activity.type) === 'death'}
-								<svg
-									class="w-4 h-4 text-gray-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-									/>
-									<circle cx="12" cy="12" r="3" />
-								</svg>
-							{:else if getActivityIcon(activity.type) === 'sacrament'}
-								<svg
-									class="w-4 h-4 text-purple-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-									/>
-								</svg>
-							{:else}
-								<svg
-									class="w-4 h-4 text-green-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-									/>
-								</svg>
-							{/if}
+						<div class="p-2 rounded-full flex-shrink-0 {iconInfo.bg}">
+							<svelte:component this={iconInfo.icon} class="w-4 h-4 {iconInfo.color}" />
 						</div>
 						<div class="flex-1 min-w-0">
 							<p class="text-sm text-gray-900 group-hover:text-blue-600 transition-colors">
@@ -148,73 +86,8 @@
 					</a>
 				{:else}
 					<div class="flex items-start gap-3">
-						<div
-							class="p-2 rounded-full flex-shrink-0 {getActivityIcon(activity.type) === 'person'
-								? 'bg-blue-100'
-								: getActivityIcon(activity.type) === 'death'
-									? 'bg-gray-100'
-									: getActivityIcon(activity.type) === 'sacrament'
-										? 'bg-purple-100'
-										: 'bg-green-100'}"
-						>
-							{#if getActivityIcon(activity.type) === 'person'}
-								<svg
-									class="w-4 h-4 text-blue-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-									/>
-								</svg>
-							{:else if getActivityIcon(activity.type) === 'death'}
-								<svg
-									class="w-4 h-4 text-gray-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-									/>
-									<circle cx="12" cy="12" r="3" />
-								</svg>
-							{:else if getActivityIcon(activity.type) === 'sacrament'}
-								<svg
-									class="w-4 h-4 text-purple-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-									/>
-								</svg>
-							{:else}
-								<svg
-									class="w-4 h-4 text-green-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-									/>
-								</svg>
-							{/if}
+						<div class="p-2 rounded-full flex-shrink-0 {iconInfo.bg}">
+							<svelte:component this={iconInfo.icon} class="w-4 h-4 {iconInfo.color}" />
 						</div>
 						<div class="flex-1 min-w-0">
 							<p class="text-sm text-gray-900">{activity.description}</p>
