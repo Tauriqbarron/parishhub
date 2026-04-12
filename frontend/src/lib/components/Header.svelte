@@ -2,6 +2,7 @@
 	import { signOut } from '@auth/sveltekit/client';
 	import type { Session } from '@auth/core/types';
 	import { Menu } from 'lucide-svelte';
+	import Logo from './Logo.svelte';
 
 	interface Props {
 		session: Session;
@@ -13,8 +14,8 @@
 </script>
 
 <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-brand-border">
-	<div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-		<div class="flex items-center gap-4">
+	<div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+		<div class="flex items-center gap-3">
 			{#if showMenuButton}
 				<button
 					onclick={onMenuToggle}
@@ -24,7 +25,10 @@
 					<Menu class="w-6 h-6" />
 				</button>
 			{/if}
-			<h1 class="text-xl font-semibold text-brand-primary">ParishHub</h1>
+			<div class="flex items-center gap-2">
+				<Logo size={28} />
+				<h1 class="text-lg font-bold text-brand-primary tracking-tight">ParishHub</h1>
+			</div>
 		</div>
 		<div class="flex items-center gap-4">
 			<div class="hidden sm:flex items-center gap-2">

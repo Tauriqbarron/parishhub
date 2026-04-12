@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { tick } from 'svelte';
 	import { Home, Users, Building2, BarChart3, ClipboardCheck, Settings, X } from 'lucide-svelte';
+	import Logo from './Logo.svelte';
 
 	type IconComponent = typeof Home;
 
@@ -83,16 +84,19 @@
 <nav
 	bind:this={navElement}
 	onkeydown={trapFocus}
-	class="fixed top-0 left-0 h-full w-64 bg-brand-primary shadow-lg transform transition-transform duration-300 ease-in-out z-50
-		lg:translate-x-0 lg:static lg:shadow-none lg:border-r lg:border-white/10
+	class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50
+		lg:translate-x-0 lg:static lg:shadow-none lg:border-r lg:border-brand-border
 		{isOpen ? 'translate-x-0' : '-translate-x-full'}"
 >
 	<!-- Mobile header -->
-	<div class="flex items-center justify-between p-4 border-b border-white/10 lg:hidden">
-		<span class="text-lg font-semibold text-white">Menu</span>
+	<div class="flex items-center justify-between p-4 border-b border-brand-border lg:hidden">
+		<div class="flex items-center gap-2">
+			<Logo size={24} />
+			<span class="text-lg font-semibold text-brand-primary">ParishHub</span>
+		</div>
 		<button
 			onclick={onClose}
-			class="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-md"
+			class="p-2 text-brand-text-muted hover:text-brand-primary hover:bg-brand-bg-muted rounded-md"
 			aria-label="Close menu"
 		>
 			<X class="w-5 h-5" />
@@ -108,10 +112,10 @@
 						href={item.href}
 						onclick={onClose}
 						class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-medium transition-colors
-							focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary
+							focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2
 							{isActive(item.href)
-							? 'bg-brand-primary-light text-brand-accent border-l-4 border-brand-accent'
-							: 'text-white/70 hover:bg-white/10 hover:text-white'}"
+							? 'bg-brand-accent/10 text-brand-accent border-l-4 border-brand-accent'
+							: 'text-brand-text-secondary hover:bg-brand-bg-muted hover:text-brand-primary'}"
 						aria-current={isActive(item.href) ? 'page' : undefined}
 					>
 						<svelte:component this={item.icon} class="w-5 h-5 flex-shrink-0" />

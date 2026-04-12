@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { signIn } from '@auth/sveltekit/client';
 	import { page } from '$app/stores';
+	import Logo from '$lib/components/Logo.svelte';
 
 	// Get error from URL if present
 	let errorMessage = $derived(getErrorMessage($page.url.searchParams.get('error')));
@@ -25,9 +26,16 @@
 		class="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden border border-brand-border"
 	>
 		<!-- Brand Header Section -->
-		<div class="bg-brand-primary px-8 py-10 text-center">
-			<h1 class="text-3xl font-bold text-white mb-2 tracking-tight">ParishHub</h1>
-			<p class="text-white/60 text-sm">Parish Management System</p>
+		<div class="bg-brand-primary px-8 py-12 text-center">
+			<div class="flex flex-col items-center gap-3">
+				<Logo size={64} variant="dark" />
+				<div>
+					<h1 class="text-3xl font-bold text-white tracking-tight">ParishHub</h1>
+					<p class="text-amber-400 text-xs font-medium tracking-[0.2em] uppercase mt-1">
+						Parish Records · Perfected
+					</p>
+				</div>
+			</div>
 		</div>
 
 		<!-- Sign-in Section -->
