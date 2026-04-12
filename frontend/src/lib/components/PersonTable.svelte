@@ -46,6 +46,49 @@
 	function formatName(person: PersonWithRelations): string {
 		return `${person.last_name}, ${person.first_name}`;
 	}
+
+	function hasPersonAddress(person: PersonWithRelations): boolean {
+		return !!(person.address_line1 || person.city || person.postal_code);
+	}
+
+	function getHouseholdAddress(person: PersonWithRelations): {
+		address: string;
+		householdName: string;
+	} | null {
+		const membership =
+			person.household_memberships?.find((m) => m.is_primary_household && m.household) ??
+			person.household_memberships?.[0];
+		if (!membership?.household) return null;
+		const h = membership.household;
+		const parts = [h.address_line1, h.address_line2, h.city, h.postal_code].filter(Boolean);
+		if (parts.length === 0) return null;
+		return { address: parts.join(', '), householdName: h.name };
+	}
+
+	function getDisplayAddress(person: PersonWithRelations): {
+		address: string;
+		fromHousehold: boolean;
+		householdName?: string;
+	} {
+		if (hasPersonAddress(person)) {
+			const parts = [
+				person.address_line1,
+				person.address_line2,
+				person.city,
+				person.postal_code
+			].filter(Boolean);
+			return { address: parts.join(', '), fromHousehold: false };
+		}
+		const householdAddr = getHouseholdAddress(person);
+		if (householdAddr) {
+			return {
+				address: householdAddr.address,
+				fromHousehold: true,
+				householdName: householdAddr.householdName
+			};
+		}
+		return { address: '-', fromHousehold: false };
+	}
 </script>
 
 <div class="overflow-x-auto" role="region" aria-label="People list">
@@ -203,6 +246,12 @@
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 				>
+					Address
+				</th>
+				<th
+					scope="col"
+					class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+				>
 					Sacraments
 				</th>
 				<th
@@ -252,6 +301,36 @@
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<div class="text-sm text-brand-primary">{person.email || '-'}</div>
+					</td>
+					<td class="px-6 py-4">
+						{#if getDisplayAddress(person).fromHousehold}
+							{@const addr = getDisplayAddress(person)}
+							<div class="text-sm text-brand-primary" title="From household: {addr.householdName}">
+								<span class="inline-flex items-center gap-1">
+									<svg
+										class="w-3.5 h-3.5 text-brand-text-muted flex-shrink-0"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+										/>
+									</svg>
+									<span class="truncate max-w-[200px]">{addr.address}</span>
+								</span>
+								<span class="text-xs text-brand-text-muted block mt-0.5"
+									>from {addr.householdName}</span
+								>
+							</div>
+						{:else}
+							<div class="text-sm text-brand-primary truncate max-w-[200px]">
+								{getDisplayAddress(person).address}
+							</div>
+						{/if}
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<SacramentBadges sacraments={person.sacraments} />

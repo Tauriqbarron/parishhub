@@ -41,6 +41,24 @@
 		return parts.length > 0 ? parts.join(', ') : '-';
 	}
 
+	function getHouseholdAddress(p: PersonWithRelations): {
+		address: string;
+		householdName: string;
+	} | null {
+		const membership =
+			p.household_memberships?.find((m) => m.is_primary_household && m.household) ??
+			p.household_memberships?.[0];
+		if (!membership?.household) return null;
+		const h = membership.household;
+		const parts = [h.address_line1, h.address_line2, h.city, h.postal_code].filter(Boolean);
+		if (parts.length === 0) return null;
+		return { address: parts.join(', '), householdName: h.name };
+	}
+
+	function hasPersonAddress(p: PersonWithRelations): boolean {
+		return !!(p.address_line1 || p.city || p.postal_code);
+	}
+
 	const age = $derived(calculateAge(person.date_of_birth));
 </script>
 
@@ -242,7 +260,34 @@
 				</div>
 				<div class="sm:col-span-2">
 					<dt class="text-sm font-medium text-gray-500">Address</dt>
-					<dd class="mt-1 text-sm text-gray-900">{formatAddress(person)}</dd>
+					<dd class="mt-1 text-sm text-gray-900">
+						{#if hasPersonAddress(person)}
+							{formatAddress(person)}
+						{:else if getHouseholdAddress(person)}
+							{@const hAddr = getHouseholdAddress(person)!}
+							<span class="inline-flex items-center gap-1">
+								<svg
+									class="w-3.5 h-3.5 text-gray-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+									/>
+								</svg>
+								{hAddr.address}
+							</span>
+							<span class="text-xs text-gray-500 block mt-0.5"
+								>from household: {hAddr.householdName}</span
+							>
+						{:else}
+							-
+						{/if}
+					</dd>
 				</div>
 				{#if person.notes}
 					<div class="sm:col-span-2">
