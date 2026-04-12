@@ -2,9 +2,10 @@
 	import { toasts, type Toast } from '$stores/toast';
 	import { fly, fade } from 'svelte/transition';
 	import { CheckCircle2, XCircle, AlertTriangle, Info, X } from 'lucide-svelte';
-	import type { Component } from 'svelte';
 
-	const icons: Record<Toast['type'], Component> = {
+	type IconComponent = typeof CheckCircle2;
+
+	const icons: Record<Toast['type'], IconComponent> = {
 		success: CheckCircle2,
 		error: XCircle,
 		warning: AlertTriangle,

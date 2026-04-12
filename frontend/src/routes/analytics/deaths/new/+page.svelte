@@ -242,16 +242,7 @@
 			</button>
 			<a
 				href="/analytics"
-				px-6
-				py-3
-				border
-				border-brand-border
-				text-brand-text-secondary
-				rounded-lg
-				hover:bg-brand-bg-subtle
-				transition-colors
-				text-center
-				font-medium
+				class="px-6 py-3 border border-brand-border text-brand-text-secondary rounded-lg hover:bg-brand-bg-subtle transition-colors text-center font-medium"
 			>
 				Cancel
 			</a>

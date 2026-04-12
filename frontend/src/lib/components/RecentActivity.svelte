@@ -2,7 +2,8 @@
 	import type { RecentActivity } from '$lib/api';
 	import { goto } from '$app/navigation';
 	import { UserPlus, Church, Home, Skull } from 'lucide-svelte';
-	import type { Component } from 'svelte';
+
+	type IconComponent = typeof UserPlus;
 
 	interface Props {
 		activities: RecentActivity[];
@@ -25,7 +26,7 @@
 		return date.toLocaleDateString();
 	}
 
-	function getActivityIcon(type: string): { icon: Component; color: string; bg: string } {
+	function getActivityIcon(type: string): { icon: IconComponent; color: string; bg: string } {
 		switch (type) {
 			case 'person_added':
 				return { icon: UserPlus, color: 'text-brand-accent', bg: 'bg-brand-accent/10' };

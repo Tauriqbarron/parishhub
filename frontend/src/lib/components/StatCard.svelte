@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Users, Home, Droplets, Heart, Cross } from 'lucide-svelte';
-	import type { Component } from 'svelte';
+
+	type IconComponent = typeof Users;
 
 	interface Props {
 		value: number | string;
@@ -12,7 +13,7 @@
 
 	let { value, label, sublabel, icon, href }: Props = $props();
 
-	const iconMap: Record<string, Component> = {
+	const iconMap: Record<string, IconComponent> = {
 		people: Users,
 		households: Home,
 		baptism: Droplets,

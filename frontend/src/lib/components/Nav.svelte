@@ -2,12 +2,13 @@
 	import { page } from '$app/stores';
 	import { tick } from 'svelte';
 	import { Home, Users, Building2, BarChart3, ClipboardCheck, Settings, X } from 'lucide-svelte';
-	import type { Component } from 'svelte';
+
+	type IconComponent = typeof Home;
 
 	interface NavItem {
 		href: string;
 		label: string;
-		icon: Component;
+		icon: IconComponent;
 	}
 
 	interface Props {
