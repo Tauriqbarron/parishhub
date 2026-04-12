@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ParishHub — Brand Guide & Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0F172A;
+      --primary-light: #1E293B;
+      --primary-muted: #475569;
+      --accent: #D97706;
+      --accent-light: #FBBF24;
+      --accent-muted: #FFFBEB;
+      --bg: #FFFFFF;
+      --bg-subtle: #F8FAFC;
+      --bg-muted: #F1F5F9;
+      --border: #E2E8F0;
+      --border-strong: #CBD5E1;
+      --text: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --success: #059669;
+      --success-bg: #ECFDF5;
+      --error: #DC2626;
+      --error-bg: #FEF2F2;
+      --info: #2563EB;
+      --info-bg: #EFF6FF;
+      --white: #FFFFFF;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0F172A;
+        --bg-subtle: #1E293B;
+        --bg-muted: #334155;
+        --border: #334155;
+        --border-strong: #475569;
+        --text: #F8FAFC;
+        --text-secondary: #CBD5E1;
+        --text-muted: #94A3B8;
+        --white: #1E293B;
+        --accent: #FBBF24;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+    section:last-child { border-bottom: none; }
+
+    /* Hero */
+    .hero {
+      background: var(--primary);
+      color: var(--white);
+      padding: 80px 0;
+      text-align: center;
+    }
+    .hero h1 { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .hero .subtitle { font-size: 20px; color: var(--border-strong); font-weight: 400; }
+    .hero .badge {
+      display: inline-block; margin-top: 24px; padding: 6px 16px;
+      background: var(--accent); color: var(--primary); font-size: 13px;
+      font-weight: 600; border-radius: 999px; letter-spacing: 0.03em;
+    }
+
+    /* Section headers */
+    h2 {
+      font-size: 30px; font-weight: 700; margin-bottom: 8px;
+      letter-spacing: -0.01em; color: var(--text);
+    }
+    h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+    .section-desc { color: var(--text-secondary); margin-bottom: 32px; font-size: 16px; }
+
+    /* Color swatches */
+    .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .color-swatch {
+      border-radius: 8px; overflow: hidden; border: 1px solid var(--border);
+    }
+    .color-swatch .preview { height: 80px; }
+    .color-swatch .info { padding: 12px; background: var(--bg-subtle); }
+    .color-swatch .name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .color-swatch .hex { font-size: 12px; color: var(--text-muted); font-family: 'SF Mono', 'Fira Code', monospace; }
+
+    /* Type scale */
+    .type-row {
+      display: flex; align-items: baseline; gap: 24px; padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-label { width: 100px; flex-shrink: 0; font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .type-sample { flex: 1; }
+
+    /* Component demos */
+    .demo-card {
+      background: var(--bg-subtle); border: 1px solid var(--border);
+      border-radius: 8px; padding: 32px; margin-bottom: 24px;
+    }
+    .demo-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px; }
+    .demo-row:last-child { margin-bottom: 0; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 20px; border-radius: 6px; font-size: 14px;
+      font-weight: 500; font-family: inherit; border: none;
+      cursor: pointer; transition: all 200ms ease-in-out;
+      min-height: 44px; min-width: 44px; text-decoration: none;
+    }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .btn-primary { background: var(--primary); color: var(--white); }
+    .btn-primary:hover { background: var(--primary-light); }
+    .btn-accent { background: var(--accent); color: var(--white); }
+    .btn-accent:hover { background: #B45309; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--bg-subtle); }
+    .btn-destructive { background: var(--error); color: var(--white); }
+    .btn-destructive:hover { background: #B91C1C; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+    .btn-lg { padding: 12px 24px; font-size: 16px; }
+
+    /* Form inputs */
+    .input {
+      width: 100%; max-width: 400px; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-size: 14px; font-family: inherit; color: var(--text);
+      background: var(--white); transition: border-color 150ms ease;
+    }
+    .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(217,119,6,0.2); }
+    .input-error { border-color: var(--error); background: var(--error-bg); }
+    .input-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+    .input-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .input-error-msg { font-size: 12px; color: var(--error); margin-top: 4px; }
+
+    /* Badges */
+    .badge-success { display: inline-flex; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--success-bg); color: var(--success); }
+    .badge-muted { display: inline-flex; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--bg-muted); color: var(--text-secondary); }
+    .badge-accent { display: inline-flex; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--accent-muted); color: var(--accent); }
+
+    /* Cards */
+    .card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px;
+      transition: box-shadow 200ms ease;
+    }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+    /* Alerts */
+    .alert { display: flex; gap: 12px; padding: 16px; border-radius: 8px; border: 1px solid; }
+    .alert-success { background: var(--success-bg); border-color: rgba(5,150,105,0.2); color: var(--success); }
+    .alert-error { background: var(--error-bg); border-color: rgba(220,38,38,0.2); color: var(--error); }
+    .alert-icon { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Table */
+    .demo-table { width: 100%; border-collapse: collapse; }
+    .demo-table th {
+      text-align: left; padding: 12px 16px; font-size: 11px;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border);
+    }
+    .demo-table td {
+      padding: 12px 16px; font-size: 14px; color: var(--text);
+      border-bottom: 1px solid var(--border);
+    }
+    .demo-table tr:hover td { background: var(--bg-subtle); }
+
+    /* Nav demo */
+    .nav-demo {
+      background: var(--primary); color: var(--white); padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; border-radius: 8px;
+    }
+    .nav-demo .brand { font-size: 18px; font-weight: 700; }
+    .nav-demo .links { display: flex; gap: 24px; }
+    .nav-demo .links a {
+      color: var(--border-strong); text-decoration: none; font-size: 14px;
+      font-weight: 400; transition: color 150ms ease; padding: 4px 8px; border-radius: 4px;
+    }
+    .nav-demo .links a:hover { color: var(--white); }
+    .nav-demo .links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Z-index demo */
+    .z-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .z-row:last-child { border-bottom: none; }
+    .z-token { width: 120px; font-size: 13px; font-weight: 500; font-family: 'SF Mono', monospace; color: var(--accent); }
+    .z-value { width: 60px; font-size: 13px; color: var(--text-muted); }
+    .z-usage { font-size: 13px; color: var(--text-secondary); }
+
+    /* Checklist */
+    .checklist { list-style: none; }
+    .checklist li {
+      padding: 8px 0; font-size: 14px; color: var(--text-secondary);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .checklist li::before {
+      content: ''; display: inline-block; width: 18px; height: 18px;
+      border: 2px solid var(--border-strong); border-radius: 4px; flex-shrink: 0;
+    }
+
+    /* Spacing demo */
+    .spacing-row { display: flex; align-items: center; gap: 16px; padding: 8px 0; }
+    .spacing-label { width: 80px; font-size: 12px; font-weight: 500; color: var(--text-muted); font-family: 'SF Mono', monospace; }
+    .spacing-bar { height: 24px; background: var(--accent); border-radius: 4px; opacity: 0.7; }
+
+    /* Contrast demo */
+    .contrast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .contrast-card { border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+    .contrast-card .label { font-size: 13px; font-weight: 600; }
+    .contrast-card .ratio { font-size: 12px; opacity: 0.8; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      .type-row { flex-direction: column; gap: 4px; }
+      .type-label { width: auto; }
+      .color-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-demo .links { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <h1>ParishHub</h1>
+      <p class="subtitle">Brand Guide & Design System v1.0</p>
+      <span class="badge">ACCESSIBLE & ETHICAL STYLE</span>
+    </div>
+  </header>
+
+  <!-- Colors -->
+  <section>
+    <div class="container">
+      <h2>Color System</h2>
+      <p class="section-desc">Navy + Amber palette — validated for professional, trustworthy parish software.</p>
+
+      <h3>Primary</h3>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="preview" style="background:#0F172A"></div>
+          <div class="info"><div class="name">Navy (Primary)</div><div class="hex">#0F172A</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#1E293B"></div>
+          <div class="info"><div class="name">Navy 600</div><div class="hex">#1E293B</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#475569"></div>
+          <div class="info"><div class="name">Navy 400</div><div class="hex">#475569</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#D97706"></div>
+          <div class="info"><div class="name">Amber (Accent)</div><div class="hex">#D97706</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#FBBF24"></div>
+          <div class="info"><div class="name">Amber 300</div><div class="hex">#FBBF24</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#FFFBEB"></div>
+          <div class="info"><div class="name">Amber 50</div><div class="hex">#FFFBEB</div></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:32px">Neutrals</h3>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="preview" style="background:#FFFFFF; border-bottom:1px solid #E2E8F0"></div>
+          <div class="info"><div class="name">White</div><div class="hex">#FFFFFF</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#F8FAFC"></div>
+          <div class="info"><div class="name">Subtle</div><div class="hex">#F8FAFC</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#F1F5F9"></div>
+          <div class="info"><div class="name">Muted</div><div class="hex">#F1F5F9</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#E2E8F0"></div>
+          <div class="info"><div class="name">Border</div><div class="hex">#E2E8F0</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#94A3B8"></div>
+          <div class="info"><div class="name">Text Muted</div><div class="hex">#94A3B8</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#475569"></div>
+          <div class="info"><div class="name">Text Secondary</div><div class="hex">#475569</div></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:32px">Semantic</h3>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="preview" style="background:#059669"></div>
+          <div class="info"><div class="name">Success</div><div class="hex">#059669</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#DC2626"></div>
+          <div class="info"><div class="name">Error</div><div class="hex">#DC2626</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#D97706"></div>
+          <div class="info"><div class="name">Warning</div><div class="hex">#D97706</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="preview" style="background:#2563EB"></div>
+          <div class="info"><div class="name">Info</div><div class="hex">#2563EB</div></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:32px">Contrast Ratios</h3>
+      <div class="contrast-grid">
+        <div class="contrast-card" style="background:#0F172A;color:#FFFFFF">
+          <span class="label">Navy on White</span>
+          <span class="ratio">16.75:1 — WCAG AAA</span>
+        </div>
+        <div class="contrast-card" style="background:#D97706;color:#0F172A">
+          <span class="label">Navy on Amber</span>
+          <span class="ratio">5.47:1 — WCAG AA</span>
+        </div>
+        <div class="contrast-card" style="background:#FFFFFF;color:#475569;border:1px solid #E2E8F0">
+          <span class="label">Navy 400 on White</span>
+          <span class="ratio">7.45:1 — WCAG AAA</span>
+        </div>
+        <div class="contrast-card" style="background:#0F172A;color:#FBBF24">
+          <span class="label">Amber 300 on Navy</span>
+          <span class="ratio">10.2:1 — WCAG AAA</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Typography -->
+  <section>
+    <div class="container">
+      <h2>Typography</h2>
+      <p class="section-desc">Inter — clean, modern, excellent readability for form-heavy data apps.</p>
+
+      <div class="type-row">
+        <span class="type-label">Display</span>
+        <span class="type-sample" style="font-size:48px;font-weight:700;letter-spacing:-0.02em;line-height:1.1">Parish Records</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">H1</span>
+        <span class="type-sample" style="font-size:36px;font-weight:700;letter-spacing:-0.01em;line-height:1.2">Dashboard Overview</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">H2</span>
+        <span class="type-sample" style="font-size:30px;font-weight:600;line-height:1.3">Family Members</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">H3</span>
+        <span class="type-sample" style="font-size:24px;font-weight:600;line-height:1.4">Sacrament Records</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">H4</span>
+        <span class="type-sample" style="font-size:20px;font-weight:600;line-height:1.4">Contact Details</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">Body</span>
+        <span class="type-sample" style="font-size:16px;font-weight:400;line-height:1.6;color:var(--text-secondary)">Manage parish member records, sacraments, household data, and community events in one unified platform.</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">Small</span>
+        <span class="type-sample" style="font-size:14px;font-weight:400;line-height:1.5;color:var(--text-muted)">Last updated 2 hours ago</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">Caption</span>
+        <span class="type-sample" style="font-size:12px;font-weight:500;line-height:1.4;color:var(--text-muted);letter-spacing:0.02em">REQUIRED FIELD</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Components -->
+  <section>
+    <div class="container">
+      <h2>Components</h2>
+      <p class="section-desc">Reusable UI patterns for ParishHub.</p>
+
+      <!-- Buttons -->
+      <h3>Buttons</h3>
+      <div class="demo-card">
+        <div class="demo-row">
+          <button class="btn btn-primary">Save Record</button>
+          <button class="btn btn-accent">Add Member</button>
+          <button class="btn btn-outline">Cancel</button>
+          <button class="btn btn-destructive">Delete</button>
+        </div>
+        <div class="demo-row">
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-primary">Default</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+      </div>
+
+      <!-- Form Inputs -->
+      <h3>Form Inputs</h3>
+      <div class="demo-card">
+        <div style="max-width:400px">
+          <label class="input-label" for="demo-name">Full Name</label>
+          <input class="input" type="text" id="demo-name" placeholder="Enter full name" />
+          <p class="input-hint">As it appears on official documents</p>
+        </div>
+        <div style="max-width:400px;margin-top:20px">
+          <label class="input-label" for="demo-email">Email Address</label>
+          <input class="input input-error" type="email" id="demo-email" value="invalid-email" />
+          <p class="input-error-msg">Please enter a valid email address</p>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <h3>Badges</h3>
+      <div class="demo-card">
+        <div class="demo-row">
+          <span class="badge-success">Active</span>
+          <span class="badge-muted">Inactive</span>
+          <span class="badge-accent">Pending Review</span>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <h3>Alerts</h3>
+      <div class="demo-card" style="display:flex;flex-direction:column;gap:12px">
+        <div class="alert alert-success">
+          <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span style="font-size:14px;font-weight:500">Record saved successfully.</span>
+        </div>
+        <div class="alert alert-error">
+          <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+          <span style="font-size:14px;font-weight:500">Something went wrong. Please try again.</span>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <h3>Cards</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+        <div class="card">
+          <h4 style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text)">John Doe</h4>
+          <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">Member since 2019. Last attended Sunday Mass.</p>
+          <span class="badge-success">Active</span>
+        </div>
+        <div class="card">
+          <h4 style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text)">Household #142</h4>
+          <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">4 members. Registered at St. Mary's Parish.</p>
+          <span class="badge-accent">Pending Update</span>
+        </div>
+        <div class="card">
+          <h4 style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text)">Baptism Certificate</h4>
+          <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">Sacrament recorded March 15, 2024.</p>
+          <span class="badge-muted">Archived</span>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <h3 style="margin-top:32px">Table</h3>
+      <div class="demo-card" style="padding:0;overflow:hidden">
+        <table class="demo-table">
+          <thead><tr><th>Name</th><th>Household</th><th>Status</th><th>Last Updated</th></tr></thead>
+          <tbody>
+            <tr><td>John Doe</td><td>#142</td><td><span class="badge-success">Active</span></td><td style="color:var(--text-muted)">2 hours ago</td></tr>
+            <tr><td>Maria Santos</td><td>#087</td><td><span class="badge-success">Active</span></td><td style="color:var(--text-muted)">1 day ago</td></tr>
+            <tr><td>James Wilson</td><td>#203</td><td><span class="badge-muted">Inactive</span></td><td style="color:var(--text-muted)">3 weeks ago</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Navigation -->
+      <h3 style="margin-top:32px">Navigation</h3>
+      <div class="nav-demo">
+        <span class="brand">ParishHub</span>
+        <div class="links">
+          <a href="#">Dashboard</a>
+          <a href="#">Members</a>
+          <a href="#">Sacraments</a>
+          <a href="#">Reports</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Spacing -->
+  <section>
+    <div class="container">
+      <h2>Spacing Scale</h2>
+      <p class="section-desc">4px base unit — consistent rhythm across all components.</p>
+
+      <div class="spacing-row"><span class="spacing-label">space-1 (4px)</span><div class="spacing-bar" style="width:4px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-2 (8px)</span><div class="spacing-bar" style="width:8px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-3 (12px)</span><div class="spacing-bar" style="width:12px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-4 (16px)</span><div class="spacing-bar" style="width:16px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-5 (20px)</span><div class="spacing-bar" style="width:20px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-6 (24px)</span><div class="spacing-bar" style="width:24px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-8 (32px)</span><div class="spacing-bar" style="width:32px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-10 (40px)</span><div class="spacing-bar" style="width:40px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-12 (48px)</span><div class="spacing-bar" style="width:48px"></div></div>
+      <div class="spacing-row"><span class="spacing-label">space-16 (64px)</span><div class="spacing-bar" style="width:64px"></div></div>
+    </div>
+  </section>
+
+  <!-- Z-Index -->
+  <section>
+    <div class="container">
+      <h2>Z-Index Scale</h2>
+      <p class="section-desc">No arbitrary values — use this fixed scale.</p>
+
+      <div class="z-row"><span class="z-token">z-dropdown</span><span class="z-value">10</span><span class="z-usage">Dropdowns, popovers</span></div>
+      <div class="z-row"><span class="z-token">z-sticky</span><span class="z-value">20</span><span class="z-usage">Sticky headers, navbars</span></div>
+      <div class="z-row"><span class="z-token">z-overlay</span><span class="z-value">30</span><span class="z-usage">Modal backdrops</span></div>
+      <div class="z-row"><span class="z-token">z-modal</span><span class="z-value">40</span><span class="z-usage">Modal dialogs</span></div>
+      <div class="z-row"><span class="z-token">z-toast</span><span class="z-value">50</span><span class="z-usage">Toast notifications</span></div>
+    </div>
+  </section>
+
+  <!-- Accessibility -->
+  <section>
+    <div class="container">
+      <h2>Accessibility Checklist</h2>
+      <p class="section-desc">WCAG AAA compliance target — every release must pass this list.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:32px">
+        <div>
+          <h3>Contrast & Color</h3>
+          <ul class="checklist">
+            <li>Text contrast 4.5:1 minimum (normal text)</li>
+            <li>Large text (18px+) contrast 3:1 minimum</li>
+            <li>Color never sole indicator of state</li>
+            <li>Focus ring visible on all interactive elements</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Interaction</h3>
+          <ul class="checklist">
+            <li>44x44px minimum touch targets</li>
+            <li>cursor-pointer on all clickable elements</li>
+            <li>Hover transitions 150-300ms</li>
+            <li>prefers-reduced-motion respected</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Semantic HTML</h3>
+          <ul class="checklist">
+            <li>All images have meaningful alt text</li>
+            <li>Form inputs have associated labels</li>
+            <li>ARIA labels on icon-only buttons</li>
+            <li>Skip navigation link present</li>
+            <li>Semantic elements (nav, main, section)</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Pre-Delivery</h3>
+          <ul class="checklist">
+            <li>No emojis — use SVG icons (Lucide)</li>
+            <li>Responsive: 375px, 768px, 1024px, 1440px</li>
+            <li>Loading states on form submissions</li>
+            <li>Lazy load heavy assets</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="padding:32px 0;text-align:center;color:var(--text-muted);font-size:13px">
+    <div class="container">
+      ParishHub Brand Guide v1.0 — Style: Accessible & Ethical — Colors: Navy/Amber — Font: Inter
+    </div>
+  </footer>
+
+</body>
+</html>
