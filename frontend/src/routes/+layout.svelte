@@ -24,7 +24,7 @@
 		<div class="flex">
 			<Nav isOpen={mobileNavOpen} onClose={closeMobileNav} />
 
-			<main class="flex-1 lg:ml-0">
+			<main class="flex-1 lg:ml-0" id="main-content" tabindex="-1">
 				<div class="max-w-7xl mx-auto px-4 py-6">
 					{@render children()}
 				</div>
