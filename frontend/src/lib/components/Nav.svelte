@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { tick } from 'svelte';
 
 	interface NavItem {
 		href: string;
@@ -13,6 +14,34 @@
 	}
 
 	let { isOpen = true, onClose }: Props = $props();
+
+	let navElement: HTMLElement | undefined = $state();
+
+	function trapFocus(e: KeyboardEvent) {
+		if (e.key !== 'Tab' || !navElement) return;
+		const focusable = navElement.querySelectorAll<HTMLElement>(
+			'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+		);
+		if (focusable.length === 0) return;
+		const first = focusable[0];
+		const last = focusable[focusable.length - 1];
+		if (e.shiftKey && document.activeElement === first) {
+			e.preventDefault();
+			last.focus();
+		} else if (!e.shiftKey && document.activeElement === last) {
+			e.preventDefault();
+			first.focus();
+		}
+	}
+
+	$effect(() => {
+		if (isOpen && navElement) {
+			tick().then(() => {
+				const firstLink = navElement?.querySelector<HTMLElement>('a');
+				firstLink?.focus();
+			});
+		}
+	});
 
 	const navItems: NavItem[] = [
 		{
@@ -73,6 +102,8 @@
 
 <!-- Navigation -->
 <nav
+	bind:this={navElement}
+	onkeydown={trapFocus}
 	class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50
 		lg:translate-x-0 lg:static lg:shadow-none lg:border-r lg:border-gray-200
 		{isOpen ? 'translate-x-0' : '-translate-x-full'}"
