@@ -73,13 +73,13 @@
 | Accent | `#FBBF24` | `--color-dark-accent` |
 
 ### Color Contrast Ratios (WCAG AAA)
-- Navy on White: **16.75:1** ✓
-- Amber on White: **3.06:1** (text) / **3.06:1** (large text only)
-- Amber on Navy: **5.47:1** ✓ (use amber on navy for CTA buttons)
-- White on Navy: **16.75:1** ✓
-- Navy 400 on White: **7.45:1** ✓
+- Navy on White: **16.75:1** PASS
+- Amber on White: **3.06:1** (large text only — do NOT use for body text)
+- Amber on Navy: **5.47:1** PASS (use amber text on navy backgrounds)
+- White on Navy: **16.75:1** PASS
+- Navy 400 on White: **7.45:1** PASS
 
-> **Rule:** Never use amber (#D97706) as text on white backgrounds for body text. Use it for large headings (24px+), buttons (white text on amber), or as an accent on dark backgrounds.
+**Rule:** Never use amber (#D97706) as body text on white. Use it for large headings (24px+), buttons (white text on amber bg), or as accent on dark backgrounds.
 
 ---
 
@@ -111,19 +111,6 @@ body {
 | Body | 16px / 1rem | 400 | 1.6 | 0 | Default body text |
 | Body Small | 14px / 0.875rem | 400 | 1.5 | 0.01em | Secondary text, captions |
 | Caption | 12px / 0.75rem | 500 | 1.4 | 0.02em | Labels, badges, metadata |
-
-### Tailwind Config
-
-```js
-// tailwind.config.js
-module.exports = {
-  theme: {
-    fontFamily: {
-      sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-    },
-  },
-}
-```
 
 ---
 
@@ -169,175 +156,63 @@ module.exports = {
 
 ### Buttons
 
-```html
-<!-- Primary -->
-<button class="bg-[#0F172A] text-white px-5 py-2.5 rounded font-medium
-               hover:bg-[#1E293B] transition-colors duration-200
-               focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2
-               cursor-pointer">
-  Save Record
-</button>
+**Primary** — Navy background, white text
+**Accent/CTA** — Amber background, white text
+**Secondary/Outline** — Transparent, border, navy text
+**Destructive** — Red background, white text
 
-<!-- Accent / CTA -->
-<button class="bg-[#D97706] text-white px-5 py-2.5 rounded font-medium
-               hover:bg-[#B45309] transition-colors duration-200
-               focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2
-               cursor-pointer">
-  Add Member
-</button>
-
-<!-- Secondary / Outline -->
-<button class="border border-[#E2E8F0] text-[#0F172A] px-5 py-2.5 rounded font-medium
-               hover:bg-[#F8FAFC] transition-colors duration-200
-               focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2
-               cursor-pointer">
-  Cancel
-</button>
-
-<!-- Destructive -->
-<button class="bg-[#DC2626] text-white px-5 py-2.5 rounded font-medium
-               hover:bg-[#B91C1C] transition-colors duration-200
-               focus:outline-none focus:ring-2 focus:ring-[#DC2626] focus:ring-offset-2
-               cursor-pointer">
-  Delete
-</button>
-```
-
-**Button Sizing:**
+Sizing:
 - Small: `px-3 py-1.5 text-sm` (14px)
 - Default: `px-5 py-2.5 text-base` (16px)
 - Large: `px-6 py-3 text-lg` (18px)
-- **Minimum touch target: 44x44px**
+- Minimum touch target: **44x44px**
+
+All buttons require:
+- `cursor-pointer`
+- `transition-colors duration-200`
+- `focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2`
 
 ### Form Inputs
 
-```html
-<!-- Text Input -->
-<div class="space-y-1.5">
-  <label for="name" class="block text-sm font-medium text-[#0F172A]">
-    Full Name
-  </label>
-  <input
-    type="text"
-    id="name"
-    class="w-full px-3 py-2.5 border border-[#E2E8F0] rounded
-           text-[#0F172A] placeholder-[#94A3B8]
-           focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:border-[#D97706]
-           transition-colors duration-150"
-    placeholder="Enter full name"
-  />
-</div>
-
-<!-- Error State -->
-<input
-  class="w-full px-3 py-2.5 border border-[#DC2626] rounded
-         text-[#0F172A] bg-[#FEF2F2]
-         focus:outline-none focus:ring-2 focus:ring-[#DC2626] focus:border-[#DC2626]"
-/>
-<p class="text-sm text-[#DC2626] mt-1">This field is required</p>
-```
+- Label: `text-sm font-medium text-[#0F172A]`
+- Input: `border border-[#E2E8F0] rounded px-3 py-2.5`
+- Focus: `focus:ring-2 focus:ring-[#D97706] focus:border-[#D97706]`
+- Error: `border-[#DC2626] bg-[#FEF2F2]`
+- Hint text: `text-sm text-[#94A3B8]`
 
 ### Cards
 
-```html
-<div class="bg-white border border-[#E2E8F0] rounded-lg p-5
-            hover:shadow-md transition-shadow duration-200">
-  <h4 class="text-lg font-semibold text-[#0F172A] mb-2">Card Title</h4>
-  <p class="text-[#475569] text-base leading-relaxed">
-    Card content with secondary text styling.
-  </p>
-</div>
-```
+- Background: white
+- Border: `1px solid #E2E8F0`
+- Border radius: 8px
+- Padding: 20px
+- Hover: `shadow-md` with 200ms transition
 
-### Badges / Tags
+### Badges
 
-```html
-<!-- Active -->
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-             bg-[#ECFDF5] text-[#059669]">
-  Active
-</span>
+- **Active:** `bg-[#ECFDF5] text-[#059669]`
+- **Inactive:** `bg-[#F1F5F9] text-[#475569]`
+- **Pending:** `bg-[#FFFBEB] text-[#D97706]`
 
-<!-- Inactive -->
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-             bg-[#F1F5F9] text-[#475569]">
-  Inactive
-</span>
+### Alerts
 
-<!-- Accent -->
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-             bg-[#FFFBEB] text-[#D97706]">
-  Pending
-</span>
-```
-
-### Navigation
-
-```html
-<nav class="bg-[#0F172A] text-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
-      <div class="flex items-center space-x-8">
-        <span class="text-xl font-bold">ParishHub</span>
-        <a href="#" class="text-[#CBD5E1] hover:text-white transition-colors duration-150
-                          focus:outline-none focus:ring-2 focus:ring-[#D97706] rounded px-2 py-1">
-          Dashboard
-        </a>
-      </div>
-    </div>
-  </div>
-</nav>
-```
-
-### Alerts / Notifications
-
-```html
-<!-- Success -->
-<div class="flex items-start gap-3 p-4 bg-[#ECFDF5] border border-[#059669]/20 rounded-lg"
-     role="alert">
-  <svg class="w-5 h-5 text-[#059669] mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-  </svg>
-  <p class="text-[#059669] text-sm font-medium">Record saved successfully.</p>
-</div>
-
-<!-- Error -->
-<div class="flex items-start gap-3 p-4 bg-[#FEF2F2] border border-[#DC2626]/20 rounded-lg"
-     role="alert">
-  <svg class="w-5 h-5 text-[#DC2626] mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-  </svg>
-  <p class="text-[#DC2626] text-sm font-medium">Something went wrong. Please try again.</p>
-</div>
-```
+- **Success:** `bg-[#ECFDF5] border-[#059669]/20 text-[#059669]`
+- **Error:** `bg-[#FEF2F2] border-[#DC2626]/20 text-[#DC2626]`
+- Always use `role="alert"` for accessibility
+- Include SVG icon (no emojis)
 
 ### Tables
 
-```html
-<div class="overflow-x-auto">
-  <table class="w-full text-left">
-    <thead class="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-      <tr>
-        <th class="px-4 py-3 text-xs font-semibold text-[#475569] uppercase tracking-wider">
-          Name
-        </th>
-        <th class="px-4 py-3 text-xs font-semibold text-[#475569] uppercase tracking-wider">
-          Status
-        </th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-[#E2E8F0]">
-      <tr class="hover:bg-[#F8FAFC] transition-colors duration-150">
-        <td class="px-4 py-3 text-[#0F172A]">John Doe</td>
-        <td class="px-4 py-3">
-          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                       bg-[#ECFDF5] text-[#059669]">Active</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-```
+- Header: `bg-[#F8FAFC]`, uppercase caption text
+- Rows: `divide-[#E2E8F0]`, hover `bg-[#F8FAFC]`
+- Cell padding: `px-4 py-3`
+
+### Navigation
+
+- Background: `#0F172A` (navy)
+- Text: white for brand, `#CBD5E1` for links
+- Link hover: white with 150ms transition
+- Height: 56px (h-14)
 
 ---
 
@@ -345,97 +220,61 @@ module.exports = {
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `z-base` | 0 | Default stacking |
 | `z-dropdown` | 10 | Dropdowns, popovers |
 | `z-sticky` | 20 | Sticky headers, navbars |
 | `z-overlay` | 30 | Modal backdrops |
 | `z-modal` | 40 | Modal dialogs |
 | `z-toast` | 50 | Toast notifications |
 
-> **Rule:** Never use arbitrary z-index values. Always use this scale.
+**Rule:** Never use arbitrary z-index values. Always use this scale.
 
 ---
 
 ## 7. Interaction States
 
-### Hover Transitions
-- **Duration:** 150-300ms
-- **Easing:** `ease-in-out` (default) or `ease-out` for entering elements
+### Hover
+- Duration: 150-300ms
+- Easing: ease-in-out or ease-out
 - All clickable elements must have visible hover states
 
-### Focus States
-- **Ring:** 2px solid `#D97706` with 2px offset
-- Must be visible on ALL interactive elements
-- Never use `outline: none` without replacing with a focus ring
+### Focus
+- Ring: 2px solid `#D97706` with 2px offset
+- Visible on ALL interactive elements
+- Never use `outline: none` without replacement
 
-### Loading States
-- Form submissions: show spinner → success/error feedback
+### Loading
+- Form submissions: show spinner then success/error feedback
 - Lazy load heavy assets (tables, images, charts)
 - Skeleton screens for data-heavy pages
 
 ---
 
-## 8. Accessibility Checklist
-
-### Compliance Target: WCAG AAA
-
-- [ ] Text contrast ratio minimum **4.5:1** (normal text), **3:1** (large text 18px+)
-- [ ] All interactive elements have **focus states** visible via keyboard
-- [ ] **44x44px minimum** touch targets on mobile
-- [ ] All images have meaningful `alt` text
-- [ ] Form inputs have associated `<label>` elements
-- [ ] ARIA labels on icon-only buttons
-- [ ] Skip navigation link for keyboard users
-- [ ] `prefers-reduced-motion` respected — disable animations when set
-- [ ] Semantic HTML (`<nav>`, `<main>`, `<section>`, `<article>`)
-- [ ] Color is never the sole indicator of state (always paired with text/icon)
-
-### Pre-Delivery Checklist
-
-- [ ] No emojis as icons — use **SVG icons** (Heroicons or Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover transitions 150-300ms
-- [ ] Text contrast 4.5:1 minimum
-- [ ] Responsive tested at: 375px, 768px, 1024px, 1440px
-- [ ] Form submissions show loading → success/error feedback
-- [ ] `prefers-reduced-motion` media query in CSS
-
----
-
-## 9. Iconography
+## 8. Iconography
 
 **Library:** Lucide (preferred) or Heroicons
 **Style:** Outline, 1.5px stroke
 **Sizes:** 16px (inline), 20px (default), 24px (large), 32px (feature)
 
-```html
-<!-- Lucide example -->
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-     fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-     stroke-linejoin="round">
-  <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/>
-  <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-</svg>
-```
+Never use emojis as icons. Always use SVG.
 
 ---
 
-## 10. Motion & Animation
+## 9. Motion & Animation
 
 ### Principles
 - Motion supports meaning — never decorative only
 - Respect `prefers-reduced-motion: reduce`
 - Keep durations short (150-300ms)
 
-### Standard Animations
+### Standard Durations
 
-| Action | Duration | Easing | Property |
-|--------|----------|--------|----------|
-| Button hover | 150ms | ease-out | background-color |
-| Card hover | 200ms | ease-out | box-shadow |
-| Modal enter | 200ms | ease-out | opacity + transform |
-| Toast enter | 250ms | ease-out | transform (slide up) |
-| Page transition | 300ms | ease-in-out | opacity |
+| Action | Duration | Easing |
+|--------|----------|--------|
+| Button hover | 150ms | ease-out |
+| Card hover | 200ms | ease-out |
+| Modal enter | 200ms | ease-out |
+| Toast enter | 250ms | ease-out |
+| Page transition | 300ms | ease-in-out |
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -449,7 +288,38 @@ module.exports = {
 
 ---
 
-## 11. CSS Custom Properties (Copy-Paste Ready)
+## 10. Accessibility Checklist
+
+### WCAG AAA Target
+
+**Contrast & Color**
+- [ ] Text contrast 4.5:1 minimum (normal text)
+- [ ] Large text (18px+) contrast 3:1 minimum
+- [ ] Color never sole indicator of state
+- [ ] Focus ring visible on all interactive elements
+
+**Interaction**
+- [ ] 44x44px minimum touch targets
+- [ ] cursor-pointer on all clickable elements
+- [ ] Hover transitions 150-300ms
+- [ ] prefers-reduced-motion respected
+
+**Semantic HTML**
+- [ ] All images have meaningful alt text
+- [ ] Form inputs have associated labels
+- [ ] ARIA labels on icon-only buttons
+- [ ] Skip navigation link present
+- [ ] Semantic elements (nav, main, section)
+
+**Pre-Delivery**
+- [ ] No emojis — use SVG icons (Lucide)
+- [ ] Responsive: 375px, 768px, 1024px, 1440px
+- [ ] Loading states on form submissions
+- [ ] Lazy load heavy assets
+
+---
+
+## 11. CSS Custom Properties
 
 ```css
 :root {
@@ -486,24 +356,6 @@ module.exports = {
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-
   /* Z-Index */
   --z-dropdown: 10;
   --z-sticky: 20;
@@ -512,7 +364,6 @@ module.exports = {
   --z-toast: 50;
 }
 
-/* Dark Mode */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: #0F172A;
@@ -529,7 +380,7 @@ module.exports = {
 
 ---
 
-## 12. Tailwind Config Reference
+## 12. Tailwind Config
 
 ```js
 // tailwind.config.js — ParishHub Design Tokens
@@ -565,4 +416,4 @@ module.exports = {
 
 ---
 
-*This document is the single source of truth for ParishHub's visual design. All frontend work should reference these tokens and patterns.*
+*This document is the single source of truth for ParishHub visual design. All frontend work should reference these tokens and patterns.*
