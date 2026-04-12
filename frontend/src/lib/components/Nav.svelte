@@ -82,16 +82,16 @@
 <nav
 	bind:this={navElement}
 	onkeydown={trapFocus}
-	class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50
-		lg:translate-x-0 lg:static lg:shadow-none lg:border-r lg:border-gray-200
+	class="fixed top-0 left-0 h-full w-64 bg-brand-primary shadow-lg transform transition-transform duration-300 ease-in-out z-50
+		lg:translate-x-0 lg:static lg:shadow-none lg:border-r lg:border-white/10
 		{isOpen ? 'translate-x-0' : '-translate-x-full'}"
 >
 	<!-- Mobile header -->
-	<div class="flex items-center justify-between p-4 border-b border-gray-200 lg:hidden">
-		<span class="text-lg font-semibold text-gray-900">Menu</span>
+	<div class="flex items-center justify-between p-4 border-b border-white/10 lg:hidden">
+		<span class="text-lg font-semibold text-white">Menu</span>
 		<button
 			onclick={onClose}
-			class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
+			class="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-md"
 			aria-label="Close menu"
 		>
 			<X class="w-5 h-5" />
@@ -106,10 +106,11 @@
 					<a
 						href={item.href}
 						onclick={onClose}
-						class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors
+						class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-medium transition-colors
+							focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary
 							{isActive(item.href)
-							? 'bg-blue-50 text-blue-700'
-							: 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'}"
+							? 'bg-brand-primary-light text-brand-accent border-l-4 border-brand-accent'
+							: 'text-white/70 hover:bg-white/10 hover:text-white'}"
 						aria-current={isActive(item.href) ? 'page' : undefined}
 					>
 						<svelte:component this={item.icon} class="w-5 h-5 flex-shrink-0" />

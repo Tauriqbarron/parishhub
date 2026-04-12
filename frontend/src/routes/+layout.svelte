@@ -18,7 +18,7 @@
 </script>
 
 {#if data.session?.user}
-	<div class="min-h-screen bg-gray-100">
+	<div class="min-h-screen bg-brand-bg-subtle">
 		<Header session={data.session} onMenuToggle={toggleMobileNav} showMenuButton={true} />
 
 		<div class="flex">
