@@ -83,11 +83,11 @@
 </script>
 
 <div class="bg-white rounded-lg shadow">
-	<div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-		<h2 class="text-lg font-medium text-gray-900" id="household-card-heading">Household</h2>
+	<div class="px-6 py-4 border-b border-brand-border flex items-center justify-between">
+		<h2 class="text-lg font-medium text-brand-primary" id="household-card-heading">Household</h2>
 		<button
 			onclick={openAddModal}
-			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
+			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-brand-accent bg-brand-accent/10 rounded-md hover:bg-brand-accent/20 transition-colors"
 			aria-label="Add to household"
 		>
 			<svg
@@ -105,17 +105,19 @@
 	</div>
 	<div class="px-6 py-4">
 		{#if memberships.length === 0}
-			<p class="text-sm text-gray-500 text-center py-4">Not a member of any household</p>
+			<p class="text-sm text-brand-text-secondary text-center py-4">
+				Not a member of any household
+			</p>
 		{:else}
 			<div class="space-y-3">
 				{#each memberships.filter((m) => m.household) as membership (membership.household_id)}
 					<div
-						class="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-gray-50"
+						class="flex items-center justify-between p-3 rounded-lg border border-brand-border bg-brand-bg-subtle"
 					>
 						<div class="flex items-center gap-3">
 							<div class="p-2 bg-white rounded-lg shadow-sm">
 								<svg
-									class="w-5 h-5 text-gray-600"
+									class="w-5 h-5 text-brand-text-secondary"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -133,19 +135,19 @@
 							<div>
 								<a
 									href="/households/{membership.household_id}"
-									class="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+									class="font-medium text-brand-primary hover:text-brand-accent transition-colors"
 								>
 									{membership.household?.name ?? 'Unknown Household'}
 								</a>
-								<div class="text-sm text-gray-500 flex items-center gap-2">
+								<div class="text-sm text-brand-text-secondary flex items-center gap-2">
 									<span
-										class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-700"
+										class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-bg-muted text-brand-primary"
 									>
 										{roleLabels[membership.role]}
 									</span>
 									{#if membership.is_primary_household}
 										<span
-											class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700"
+											class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-success/10 text-brand-success"
 										>
 											Primary
 										</span>
@@ -155,7 +157,7 @@
 						</div>
 						<button
 							onclick={() => handleRemoveFromHousehold(membership.household_id)}
-							class="p-1.5 rounded hover:bg-red-100 text-red-600 transition-colors"
+							class="p-1.5 rounded hover:bg-brand-error/10 text-brand-error transition-colors"
 							aria-label="Remove from {membership.household?.name ?? 'household'}"
 						>
 							<svg

@@ -242,7 +242,7 @@
 	<div class="mb-4">
 		<a
 			href="/people"
-			class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
+			class="inline-flex items-center text-sm text-brand-text-secondary hover:text-brand-primary transition-colors"
 		>
 			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -257,10 +257,10 @@
 			<div class="bg-white rounded-lg shadow p-6">
 				<div class="flex items-center justify-between">
 					<div class="space-y-2">
-						<div class="h-8 bg-gray-200 rounded w-48"></div>
-						<div class="h-4 bg-gray-200 rounded w-64"></div>
+						<div class="h-8 bg-brand-bg-muted rounded w-48"></div>
+						<div class="h-4 bg-brand-bg-muted rounded w-64"></div>
 					</div>
-					<div class="h-10 bg-gray-200 rounded w-20"></div>
+					<div class="h-10 bg-brand-bg-muted rounded w-20"></div>
 				</div>
 			</div>
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -272,7 +272,7 @@
 		<!-- Error state -->
 		<div class="bg-white rounded-lg shadow p-6 text-center">
 			<svg
-				class="mx-auto h-12 w-12 text-red-400"
+				class="mx-auto h-12 w-12 text-brand-error"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -284,18 +284,18 @@
 					d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
 				/>
 			</svg>
-			<h3 class="mt-2 text-sm font-medium text-gray-900">Error loading person</h3>
-			<p class="mt-1 text-sm text-gray-500">{error}</p>
+			<h3 class="mt-2 text-sm font-medium text-brand-primary">Error loading person</h3>
+			<p class="mt-1 text-sm text-brand-text-secondary">{error}</p>
 			<div class="mt-6 flex justify-center gap-3">
 				<button
 					onclick={() => loadPerson()}
-					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
 				>
 					Try again
 				</button>
 				<button
 					onclick={() => goto('/people')}
-					class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
+					class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-md shadow-sm text-brand-primary bg-white hover:bg-brand-bg-subtle"
 				>
 					Go back
 				</button>

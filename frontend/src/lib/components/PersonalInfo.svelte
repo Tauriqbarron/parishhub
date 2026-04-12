@@ -45,8 +45,8 @@
 </script>
 
 <div class="bg-white rounded-lg shadow">
-	<div class="px-6 py-4 border-b border-gray-200">
-		<h2 class="text-lg font-medium text-gray-900">Personal Information</h2>
+	<div class="px-6 py-4 border-b border-brand-border">
+		<h2 class="text-lg font-medium text-brand-primary">Personal Information</h2>
 	</div>
 	<div class="px-6 py-4">
 		{#if isEditing}

@@ -17,12 +17,12 @@
 	};
 
 	const sacramentColors: Record<SacramentType, string> = {
-		baptism: 'bg-blue-100 text-blue-800',
-		first_communion: 'bg-purple-100 text-purple-800',
-		confirmation: 'bg-green-100 text-green-800',
-		marriage: 'bg-pink-100 text-pink-800',
-		holy_orders: 'bg-amber-100 text-amber-800',
-		anointing: 'bg-teal-100 text-teal-800'
+		baptism: 'bg-brand-accent/10 text-brand-accent',
+		first_communion: 'bg-brand-accent/10 text-brand-accent',
+		confirmation: 'bg-brand-accent/10 text-brand-accent',
+		marriage: 'bg-brand-accent/10 text-brand-accent',
+		holy_orders: 'bg-brand-accent/10 text-brand-accent',
+		anointing: 'bg-brand-accent/10 text-brand-accent'
 	};
 
 	const sacramentLabels: Record<SacramentType, string> = {
@@ -61,6 +61,6 @@
 		</span>
 	{/each}
 	{#if sacraments.length === 0}
-		<span class="text-gray-400 text-xs">-</span>
+		<span class="text-brand-text-muted text-xs">-</span>
 	{/if}
 </div>

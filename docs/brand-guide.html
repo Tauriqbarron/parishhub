@@ -1,417 +1,1465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ParishHub — Brand Guide & Design System</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --primary: #0F172A;
-      --primary-light: #1E293B;
-      --primary-muted: #475569;
-      --accent: #D97706;
-      --accent-light: #FBBF24;
-      --accent-muted: #FFFBEB;
-      --bg: #FFFFFF;
-      --bg-subtle: #F8FAFC;
-      --bg-muted: #F1F5F9;
-      --border: #E2E8F0;
-      --border-strong: #CBD5E1;
-      --text: #0F172A;
-      --text-secondary: #475569;
-      --text-muted: #94A3B8;
-      --success: #059669;
-      --success-bg: #ECFDF5;
-      --error: #DC2626;
-      --error-bg: #FEF2F2;
-      --info: #2563EB;
-      --info-bg: #EFF6FF;
-      --white: #FFFFFF;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0F172A; --bg-subtle: #1E293B; --bg-muted: #334155;
-        --border: #334155; --border-strong: #475569;
-        --text: #F8FAFC; --text-secondary: #CBD5E1; --text-muted: #94A3B8;
-        --white: #1E293B; --accent: #FBBF24;
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-    section { padding: 64px 0; border-bottom: 1px solid var(--border); }
-    section:last-child { border-bottom: none; }
-
-    /* Hero */
-    .hero { background: var(--primary); color: #F8FAFC; padding: 80px 0; text-align: center; }
-    .hero h1 { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
-    .hero .subtitle { font-size: 20px; color: #94A3B8; font-weight: 400; }
-    .hero .badge { display: inline-block; margin-top: 24px; padding: 6px 16px; background: var(--accent); color: var(--primary); font-size: 13px; font-weight: 600; border-radius: 999px; letter-spacing: 0.03em; }
-
-    h2 { font-size: 30px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
-    h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
-    .section-desc { color: var(--text-secondary); margin-bottom: 32px; font-size: 16px; }
-
-    /* Color swatches */
-    .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
-    .color-swatch { border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
-    .color-swatch .preview { height: 80px; }
-    .color-swatch .info { padding: 12px; background: var(--bg-subtle); }
-    .color-swatch .name { font-size: 13px; font-weight: 600; }
-    .color-swatch .hex { font-size: 12px; color: var(--text-muted); font-family: 'SF Mono', 'Fira Code', monospace; }
-
-    /* Type scale */
-    .type-row { display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--border); }
-    .type-row:last-child { border-bottom: none; }
-    .type-label { width: 100px; flex-shrink: 0; font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
-
-    /* Demo cards */
-    .demo-card { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 32px; margin-bottom: 24px; }
-    .demo-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px; }
-    .demo-row:last-child { margin-bottom: 0; }
-
-    /* Buttons */
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; font-family: inherit; border: none; cursor: pointer; transition: all 200ms ease-in-out; min-height: 44px; min-width: 44px; text-decoration: none; }
-    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-    .btn-primary { background: var(--primary); color: #F8FAFC; }
-    .btn-primary:hover { background: var(--primary-light); }
-    .btn-accent { background: var(--accent); color: #FFFFFF; }
-    .btn-accent:hover { background: #B45309; }
-    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn-outline:hover { background: var(--bg-subtle); }
-    .btn-destructive { background: var(--error); color: #FFFFFF; }
-    .btn-destructive:hover { background: #B91C1C; }
-    .btn-sm { padding: 6px 12px; font-size: 13px; }
-    .btn-lg { padding: 12px 24px; font-size: 16px; }
-
-    /* Inputs */
-    .input { width: 100%; max-width: 400px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; font-family: inherit; color: var(--text); background: var(--white); transition: border-color 150ms ease; }
-    .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(217,119,6,0.2); }
-    .input-error { border-color: var(--error); background: var(--error-bg); }
-    .input-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
-    .input-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-    .input-error-msg { font-size: 12px; color: var(--error); margin-top: 4px; }
-
-    /* Badges */
-    .badge-success { display: inline-flex; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--success-bg); color: var(--success); }
-    .badge-muted { display: inline-flex; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--bg-muted); color: var(--text-secondary); }
-    .badge-accent { display: inline-flex; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--accent-muted); color: var(--accent); }
-
-    /* Cards */
-    .card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px; transition: box-shadow 200ms ease; }
-    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-
-    /* Alerts */
-    .alert { display: flex; gap: 12px; padding: 16px; border-radius: 8px; border: 1px solid; }
-    .alert-success { background: var(--success-bg); border-color: rgba(5,150,105,0.2); color: var(--success); }
-    .alert-error { background: var(--error-bg); border-color: rgba(220,38,38,0.2); color: var(--error); }
-    .alert-icon { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
-
-    /* Table */
-    .demo-table { width: 100%; border-collapse: collapse; }
-    .demo-table th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); background: var(--bg-subtle); border-bottom: 1px solid var(--border); }
-    .demo-table td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--border); }
-    .demo-table tr:hover td { background: var(--bg-subtle); }
-
-    /* Nav */
-    .nav-demo { background: var(--primary); color: #F8FAFC; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; border-radius: 8px; }
-    .nav-demo .brand { font-size: 18px; font-weight: 700; }
-    .nav-demo .links { display: flex; gap: 24px; }
-    .nav-demo .links a { color: #94A3B8; text-decoration: none; font-size: 14px; transition: color 150ms ease; padding: 4px 8px; border-radius: 4px; }
-    .nav-demo .links a:hover { color: #F8FAFC; }
-    .nav-demo .links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    /* Z-index */
-    .z-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-    .z-row:last-child { border-bottom: none; }
-    .z-token { width: 120px; font-size: 13px; font-weight: 500; font-family: 'SF Mono', monospace; color: var(--accent); }
-    .z-value { width: 60px; font-size: 13px; color: var(--text-muted); }
-    .z-usage { font-size: 13px; color: var(--text-secondary); }
-
-    /* Checklist */
-    .checklist { list-style: none; }
-    .checklist li { padding: 8px 0; font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 10px; }
-    .checklist li::before { content: ''; display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border-strong); border-radius: 4px; flex-shrink: 0; }
-
-    /* Spacing */
-    .spacing-row { display: flex; align-items: center; gap: 16px; padding: 8px 0; }
-    .spacing-label { width: 80px; font-size: 12px; font-weight: 500; color: var(--text-muted); font-family: 'SF Mono', monospace; }
-    .spacing-bar { height: 24px; background: var(--accent); border-radius: 4px; opacity: 0.7; }
-
-    /* Contrast */
-    .contrast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
-    .contrast-card { border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 4px; }
-    .contrast-card .label { font-size: 13px; font-weight: 600; }
-    .contrast-card .ratio { font-size: 12px; opacity: 0.8; }
-
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 32px; }
-      h2 { font-size: 24px; }
-      .type-row { flex-direction: column; gap: 4px; }
-      .type-label { width: auto; }
-      .color-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ParishHub — Design Bible v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0F172A;--primary-light:#1E293B;--primary-muted:#475569;--accent:#D97706;--accent-light:#FBBF24;--accent-muted:#FFFBEB;--bg:#FFFFFF;--bg-subtle:#F8FAFC;--bg-muted:#F1F5F9;--border:#E2E8F0;--border-strong:#CBD5E1;--text:#0F172A;--text-secondary:#475569;--text-muted:#94A3B8;--success:#059669;--success-bg:#ECFDF5;--error:#DC2626;--error-bg:#FEF2F2;--info:#2563EB;--info-bg:#EFF6FF;--white:#FFFFFF}
+[data-theme="dark"]{--primary:#0F172A;--bg:#0F172A;--bg-subtle:#1E293B;--bg-muted:#334155;--border:#334155;--border-strong:#475569;--text:#F8FAFC;--text-secondary:#CBD5E1;--text-muted:#94A3B8;--white:#1E293B;--accent:#FBBF24;--accent-muted:rgba(251,191,36,0.15);--success-bg:rgba(5,150,105,0.15);--error-bg:rgba(220,38,38,0.15);--info-bg:rgba(37,99,235,0.15)}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background 300ms,color 300ms}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+section{padding:64px 0;border-bottom:1px solid var(--border)}
+section:last-child{border-bottom:none}
+h2{font-size:30px;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+h3{font-size:20px;font-weight:600;margin-bottom:12px;margin-top:36px}
+.section-desc{color:var(--text-secondary);margin-bottom:32px;font-size:16px}
+.hero{background:var(--primary);color:#F8FAFC;padding:80px 0;text-align:center;position:relative}
+.hero h1{font-size:48px;font-weight:700;letter-spacing:-.02em;margin-bottom:12px}
+.hero .subtitle{font-size:20px;color:#94A3B8}
+.hero .badge{display:inline-block;margin-top:24px;padding:6px 16px;background:var(--accent);color:var(--primary);font-size:13px;font-weight:600;border-radius:999px;letter-spacing:.03em}
+.toggle-wrap{position:fixed;top:16px;right:16px;z-index:100}
+.toggle-btn{background:var(--bg-subtle);border:1px solid var(--border);border-radius:999px;padding:8px 16px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;color:var(--text);transition:all 200ms;display:flex;align-items:center;gap:6px}
+.toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.color-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.color-swatch{border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.color-swatch .preview{height:80px}
+.color-swatch .info{padding:12px;background:var(--bg-subtle)}
+.color-swatch .name{font-size:13px;font-weight:600}
+.color-swatch .hex{font-size:12px;color:var(--text-muted);font-family:'SF Mono','Fira Code',monospace}
+.contrast-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.contrast-card{border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:4px;border:1px solid var(--border)}
+.contrast-card .label{font-size:14px;font-weight:600}
+.contrast-card .ratio{font-size:13px;opacity:.85}
+.contrast-card .grade{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;display:inline-block;margin-top:4px}
+.grade-aaa{background:var(--success-bg);color:var(--success)}
+.grade-aa{background:var(--accent-muted);color:var(--accent)}
+.grade-aa-large{background:var(--info-bg);color:var(--info)}
+.type-row{display:flex;align-items:baseline;gap:24px;padding:16px 0;border-bottom:1px solid var(--border)}
+.type-row:last-child{border-bottom:none}
+.type-label{width:120px;flex-shrink:0;font-size:12px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.type-meta{font-size:12px;color:var(--text-muted);margin-left:auto;font-family:'SF Mono',monospace;white-space:nowrap}
+.demo-card{background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:32px;margin-bottom:24px}
+.demo-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+.demo-row:last-child{margin-bottom:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:500;font-family:inherit;border:none;cursor:pointer;transition:all 200ms ease-in-out;min-height:44px;min-width:44px;text-decoration:none}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-primary{background:var(--primary);color:#F8FAFC}
+.btn-primary:hover{background:var(--primary-light)}
+.btn-accent{background:var(--accent);color:#FFFFFF}
+.btn-accent:hover{background:#B45309}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{background:var(--bg-subtle)}
+.btn-ghost{background:transparent;color:var(--text);border:none}
+.btn-ghost:hover{background:var(--bg-muted)}
+.btn-destructive{background:var(--error);color:#FFFFFF}
+.btn-destructive:hover{background:#B91C1C}
+.btn-sm{padding:6px 12px;font-size:13px;min-height:32px}
+.btn-lg{padding:12px 24px;font-size:16px;min-height:48px}
+.input{width:100%;max-width:400px;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;color:var(--text);background:var(--white);transition:border-color 150ms ease}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,119,6,.15)}
+.input-error{border-color:var(--error)!important;background:var(--error-bg)}
+.input-label{display:block;font-size:14px;font-weight:500;margin-bottom:6px}
+.input-hint{font-size:12px;color:var(--text-muted);margin-top:4px}
+.input-error-msg{font-size:12px;color:var(--error);margin-top:4px}
+.badge{display:inline-flex;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500}
+.badge-success{background:var(--success-bg);color:var(--success)}
+.badge-muted{background:var(--bg-muted);color:var(--text-secondary)}
+.badge-accent{background:var(--accent-muted);color:var(--accent)}
+.badge-error{background:var(--error-bg);color:var(--error)}
+.card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:20px;transition:box-shadow 200ms ease}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.alert{display:flex;gap:12px;padding:16px;border-radius:8px;border:1px solid;font-size:14px}
+.alert-success{background:var(--success-bg);border-color:rgba(5,150,105,.2);color:var(--success)}
+.alert-error{background:var(--error-bg);border-color:rgba(220,38,38,.2);color:var(--error)}
+.alert-warning{background:var(--accent-muted);border-color:rgba(217,119,6,.2);color:var(--accent)}
+.alert-info{background:var(--info-bg);border-color:rgba(37,99,235,.2);color:var(--info)}
+.alert-icon{width:20px;height:20px;flex-shrink:0;margin-top:1px}
+.demo-table{width:100%;border-collapse:collapse}
+.demo-table th{text-align:left;padding:12px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);background:var(--bg-subtle);border-bottom:1px solid var(--border)}
+.demo-table td{padding:12px 16px;font-size:14px;border-bottom:1px solid var(--border)}
+.demo-table tr:hover td{background:var(--bg-subtle)}
+.nav-demo{background:var(--primary);color:#F8FAFC;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;border-radius:8px}
+.nav-demo .brand{font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px}
+.nav-demo .links{display:flex;gap:24px}
+.nav-demo .links a{color:#94A3B8;text-decoration:none;font-size:14px;transition:color 150ms ease;padding:4px 8px;border-radius:4px}
+.nav-demo .links a:hover{color:#F8FAFC}
+.nav-demo .links a.active{color:#F8FAFC;border-bottom:2px solid var(--accent)}
+.spacing-row{display:flex;align-items:center;gap:16px;padding:8px 0}
+.spacing-label{width:90px;font-size:12px;font-weight:500;color:var(--text-muted);font-family:'SF Mono',monospace;flex-shrink:0}
+.spacing-bar{height:24px;background:var(--accent);border-radius:4px;opacity:.7}
+.spacing-val{font-size:12px;color:var(--text-muted);width:40px}
+.spacing-use{font-size:12px;color:var(--text-secondary)}
+.z-row{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--border)}
+.z-row:last-child{border-bottom:none}
+.z-token{width:130px;font-size:13px;font-weight:500;font-family:'SF Mono',monospace;color:var(--accent)}
+.z-value{width:60px;font-size:13px;color:var(--text-muted)}
+.z-usage{font-size:13px;color:var(--text-secondary)}
+.radius-row{display:flex;align-items:center;gap:16px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.radius-row:last-child{border-bottom:none}
+.radius-token{width:110px;font-size:13px;font-weight:500;font-family:'SF Mono',monospace;color:var(--accent)}
+.radius-val{width:60px;font-size:13px;color:var(--text-muted)}
+.radius-demo{width:48px;height:48px;background:var(--accent-muted);border:2px solid var(--accent);flex-shrink:0}
+.radius-use{font-size:13px;color:var(--text-secondary)}
+.bp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.bp-card{background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
+.bp-card .bp-name{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:var(--accent)}
+.bp-card .bp-width{font-size:20px;font-weight:700;margin:4px 0}
+.bp-card .bp-target{font-size:12px;color:var(--text-muted)}
+.checklist{list-style:none}
+.checklist li{padding:8px 0;font-size:14px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--border)}
+.checklist li:last-child{border-bottom:none}
+.checklist li::before{content:'';display:inline-block;width:18px;height:18px;border:2px solid var(--border-strong);border-radius:4px;flex-shrink:0;margin-top:2px}
+.logo-showcase{display:flex;gap:40px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+.logo-item{text-align:center}
+.logo-item p{font-size:13px;color:var(--text-muted);margin-top:12px;font-weight:500}
+.wordmark-demo{display:flex;align-items:center;gap:16px;justify-content:center;padding:32px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:12px;margin:32px auto;max-width:500px}
+.wordmark-demo .tagline{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:500}
+.size-row{display:flex;gap:40px;justify-content:center;align-items:flex-end;margin:32px 0}
+.size-item{text-align:center}
+.size-item p{font-size:11px;color:var(--text-muted);margin-top:8px}
+.dont-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+.dont-card{background:var(--error-bg);border:1px solid rgba(220,38,38,.2);border-radius:8px;padding:16px;text-align:center}
+.dont-card .icon{margin-bottom:8px}
+.dont-card p{font-size:13px;color:var(--error);font-weight:500}
+.dark-preview{background:#0F172A;border-radius:16px;padding:40px;margin:32px 0}
+.dark-preview .dark-row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+.dark-preview .dark-swatch{text-align:center}
+.dark-preview .dark-swatch .sw{width:80px;height:80px;border-radius:12px;margin:0 auto 8px}
+.dark-preview .dark-swatch p{font-size:12px;color:#94A3B8}
+.dark-preview .dark-swatch .hex{font-size:11px;color:#64748B;font-family:monospace}
+.pillars{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:32px}
+.pillar{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:20px}
+.pillar h4{font-size:16px;font-weight:600;margin-bottom:8px}
+.pillar p{font-size:14px;color:var(--text-secondary)}
+.tagline-box{text-align:center;margin-top:32px;padding:24px;background:var(--accent-muted);border-radius:12px}
+.tagline-box .label{font-size:12px;color:var(--accent);font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.tagline-box .text{font-size:28px;font-weight:700;color:var(--text)}
+.tagline-box .note{font-size:13px;color:var(--text-muted);margin-top:8px}
+.voice-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.voice-item{padding:16px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:500}
+.voice-item span{color:var(--accent)}
+.clearspace-box{display:flex;justify-content:center;margin:32px 0}
+.clearspace-visual{border:2px dashed var(--accent);border-radius:8px;padding:32px;position:relative}
+.clearspace-visual::before{content:'clear space';position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--accent);font-weight:500;letter-spacing:1px;text-transform:uppercase;background:var(--bg);padding:0 8px}
+.icon-table{width:100%;border-collapse:collapse}
+.icon-table th{text-align:left;padding:12px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);background:var(--bg-subtle);border-bottom:1px solid var(--border)}
+.icon-table td{padding:12px 16px;font-size:14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.motion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.motion-card{background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
+.motion-card .action{font-size:14px;font-weight:600;margin-bottom:8px}
+.motion-card .dur{font-size:24px;font-weight:700;color:var(--accent)}
+.motion-card .ease{font-size:12px;color:var(--text-muted);margin-top:4px}
+.css-block{background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:20px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto;margin:16px 0;white-space:pre;color:var(--text-secondary)}
+.css-block .kw{color:var(--accent)}
+.css-block .str{color:var(--success)}
+.css-block .cmt{color:var(--text-muted);font-style:italic}
+.brand-rules{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.rule-col{background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:24px}
+.rule-col h3{margin-top:0}
+.rule-col ul{list-style:none;padding:0}
+.rule-col li{padding:8px 0;font-size:14px;color:var(--text-secondary);border-bottom:1px solid var(--border);display:flex;gap:8px}
+.rule-col li:last-child{border-bottom:none}
+.rule-col li::before{flex-shrink:0;font-weight:700}
+.rule-do li::before{content:'✓';color:var(--success)}
+.rule-dont li::before{content:'✗';color:var(--error)}
+footer{padding:32px 0;text-align:center;color:var(--text-muted);font-size:13px}
+.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:24px}
+.toc a{display:block;padding:10px 16px;border-radius:6px;font-size:14px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border);transition:all 150ms}
+.toc a:hover{border-color:var(--accent);color:var(--accent)}
+.toc .num{font-weight:600;color:var(--accent);margin-right:8px}
+@media(max-width:768px){.hero h1{font-size:32px}h2{font-size:24px}.type-row{flex-direction:column;gap:4px}.type-label{width:auto}.color-grid{grid-template-columns:repeat(2,1fr)}.logo-showcase{gap:24px}.brand-rules{grid-template-columns:1fr}.nav-demo{flex-direction:column;height:auto;padding:16px;gap:12px}}
+</style>
 </head>
 <body>
 
-  <!-- Hero -->
-  <header class="hero">
-    <div class="container">
-      <h1>ParishHub</h1>
-      <p class="subtitle">Brand Guide &amp; Design System v1.0</p>
-      <span class="badge">ACCESSIBLE &amp; ETHICAL STYLE</span>
-    </div>
-  </header>
+<!-- DARK MODE TOGGLE -->
+<div class="toggle-wrap">
+<button class="toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+</div>
 
-  <!-- Colors -->
-  <section>
-    <div class="container">
-      <h2>Color System</h2>
-      <p class="section-desc">Navy + Amber palette — validated for professional, trustworthy parish software.</p>
+<!-- HERO -->
+<header class="hero">
+<div class="container">
+<svg viewBox="0 0 200 200" width="120" height="120" style="display:block;margin:0 auto 24px">
+<path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#f8fafc" stroke-width="5"/>
+<rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/>
+<rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/>
+<path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#f8fafc" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="100" y1="112" x2="100" y2="104" stroke="#D97706" stroke-width="2"/>
+<line x1="96" y1="108" x2="104" y2="108" stroke="#D97706" stroke-width="2"/>
+<rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#f8fafc" stroke-width="1.5"/>
+</svg>
+<div style="display:flex;align-items:center;gap:16px;justify-content:center;margin-bottom:4px">
+<h1 style="margin:0">ParishHub</h1>
+</div>
+<p class="subtitle">Design Bible v2.0 — M1 Shield Cathedral</p>
+<div style="margin-top:16px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#D97706;font-weight:500">Parish Records · Perfected</div>
+<span class="badge" style="margin-top:20px">LIGHT THEME DEFAULT</span>
+</div>
+</header>
 
-      <h3>Primary</h3>
-      <div class="color-grid">
-        <div class="color-swatch"><div class="preview" style="background:#0F172A"></div><div class="info"><div class="name">Navy (Primary)</div><div class="hex">#0F172A</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#1E293B"></div><div class="info"><div class="name">Navy 600</div><div class="hex">#1E293B</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#475569"></div><div class="info"><div class="name">Navy 400</div><div class="hex">#475569</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#D97706"></div><div class="info"><div class="name">Amber (Accent)</div><div class="hex">#D97706</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#FBBF24"></div><div class="info"><div class="name">Amber 300</div><div class="hex">#FBBF24</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#FFFBEB"></div><div class="info"><div class="name">Amber 50</div><div class="hex">#FFFBEB</div></div></div>
-      </div>
+<!-- TABLE OF CONTENTS -->
+<section>
+<div class="container">
+<h2>Table of Contents</h2>
+<p class="section-desc">Everything you need to build consistent ParishHub interfaces.</p>
+<div class="toc">
+<a href="#brand"><span class="num">01</span> Brand Overview</a>
+<a href="#logo"><span class="num">02</span> Logo System</a>
+<a href="#color"><span class="num">03</span> Color System</a>
+<a href="#type"><span class="num">04</span> Typography</a>
+<a href="#spacing"><span class="num">05</span> Spacing & Layout</a>
+<a href="#components"><span class="num">06</span> Components</a>
+<a href="#darkmode"><span class="num">07</span> Dark Mode</a>
+<a href="#icons"><span class="num">08</span> Iconography</a>
+<a href="#motion"><span class="num">09</span> Motion & Animation</a>
+<a href="#a11y"><span class="num">10</span> Accessibility</a>
+<a href="#impl"><span class="num">11</span> Implementation</a>
+<a href="#rules"><span class="num">12</span> Brand Rules</a>
+</div>
+</div>
+</section>
 
-      <h3 style="margin-top:32px">Neutrals</h3>
-      <div class="color-grid">
-        <div class="color-swatch"><div class="preview" style="background:#FFFFFF;border-bottom:1px solid #E2E8F0"></div><div class="info"><div class="name">White</div><div class="hex">#FFFFFF</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#F8FAFC"></div><div class="info"><div class="name">Subtle</div><div class="hex">#F8FAFC</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#F1F5F9"></div><div class="info"><div class="name">Muted</div><div class="hex">#F1F5F9</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#E2E8F0"></div><div class="info"><div class="name">Border</div><div class="hex">#E2E8F0</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#94A3B8"></div><div class="info"><div class="name">Text Muted</div><div class="hex">#94A3B8</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#475569"></div><div class="info"><div class="name">Text Secondary</div><div class="hex">#475569</div></div></div>
-      </div>
+<!-- 1. BRAND OVERVIEW -->
+<section id="brand">
+<div class="container">
+<h2>1. Brand Overview</h2>
+<p class="section-desc">ParishHub is a parish management platform for Catholic communities. It handles member records, sacraments, household data, and community events — the sacred operational backbone of a parish.</p>
+<h3>Brand Pillars</h3>
+<div class="pillars">
+<div class="pillar"><h4>🛡 Trustworthy</h4><p>Handles sacred community data with reverence and care</p></div>
+<div class="pillar"><h4>♿ Accessible</h4><p>WCAG AAA compliant — works for every parishioner and staff member</p></div>
+<div class="pillar"><h4>☀ Warm</h4><p>Approachable and human, not clinical or cold</p></div>
+<div class="pillar"><h4>⚡ Professional</h4><p>Enterprise-grade reliability meets parish simplicity</p></div>
+</div>
+<h3>Brand Voice</h3>
+<div class="voice-list">
+<div class="voice-item">Clear, <span>not clever</span></div>
+<div class="voice-item">Warm, <span>not casual</span></div>
+<div class="voice-item">Reverent, <span>not stiff</span></div>
+<div class="voice-item">Helpful, <span>not preachy</span></div>
+</div>
+<div class="tagline-box">
+<div class="label">Tagline</div>
+<div class="text">Parish Records · Perfected</div>
+<div class="note">Use sparingly — logo lockups and marketing only. Never in UI copy.</div>
+</div>
+</div>
+</section>
 
-      <h3 style="margin-top:32px">Semantic</h3>
-      <div class="color-grid">
-        <div class="color-swatch"><div class="preview" style="background:#059669"></div><div class="info"><div class="name">Success</div><div class="hex">#059669</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#DC2626"></div><div class="info"><div class="name">Error</div><div class="hex">#DC2626</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#D97706"></div><div class="info"><div class="name">Warning</div><div class="hex">#D97706</div></div></div>
-        <div class="color-swatch"><div class="preview" style="background:#2563EB"></div><div class="info"><div class="name">Info</div><div class="hex">#2563EB</div></div></div>
-      </div>
+<!-- 2. LOGO SYSTEM -->
+<section id="logo">
+<div class="container">
+<h2>2. Logo System</h2>
+<p class="section-desc">The M1 Shield Cathedral — a shield containing a cross above a house silhouette. The cross represents faith. The house represents community. The shield represents trust and protection.</p>
 
-      <h3 style="margin-top:32px">Contrast Ratios</h3>
-      <div class="contrast-grid">
-        <div class="contrast-card" style="background:#0F172A;color:#FFFFFF"><span class="label">Navy on White</span><span class="ratio">16.75:1 — WCAG AAA</span></div>
-        <div class="contrast-card" style="background:#D97706;color:#0F172A"><span class="label">Navy on Amber</span><span class="ratio">5.47:1 — WCAG AA</span></div>
-        <div class="contrast-card" style="background:#FFFFFF;color:#475569;border:1px solid #E2E8F0"><span class="label">Navy 400 on White</span><span class="ratio">7.45:1 — WCAG AAA</span></div>
-        <div class="contrast-card" style="background:#0F172A;color:#FBBF24"><span class="label">Amber 300 on Navy</span><span class="ratio">10.2:1 — WCAG AAA</span></div>
-      </div>
-    </div>
-  </section>
+<h3>Logo Variants</h3>
+<div class="logo-showcase">
+<div class="logo-item">
+<svg viewBox="0 0 200 200" width="120" height="120"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="112" x2="100" y2="104" stroke="#D97706" stroke-width="2"/><line x1="96" y1="108" x2="104" y2="108" stroke="#D97706" stroke-width="2"/><rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#0F172A" stroke-width="1.5"/></svg>
+<p>Light (Default)</p>
+</div>
+<div class="logo-item">
+<svg viewBox="0 0 200 200" width="120" height="120"><rect x="20" y="20" width="160" height="160" rx="16" fill="#0F172A"/><path d="M100,32 L158,58 L158,118 Q158,160 100,176 Q42,160 42,118 L42,58 Z" fill="none" stroke="#f8fafc" stroke-width="4"/><rect x="96" y="50" width="8" height="46" rx="1" fill="#D97706"/><rect x="82" y="62" width="36" height="7" rx="1" fill="#D97706"/><path d="M82,152 L82,130 L100,116 L118,130 L118,152 Z" fill="none" stroke="#f8fafc" stroke-width="2" stroke-linejoin="round"/><line x1="100" y1="114" x2="100" y2="108" stroke="#D97706" stroke-width="1.5"/><line x1="97" y1="111" x2="103" y2="111" stroke="#D97706" stroke-width="1.5"/><rect x="96" y="140" width="8" height="12" rx="4" fill="none" stroke="#f8fafc" stroke-width="1.5"/></svg>
+<p>Dark</p>
+</div>
+<div class="logo-item">
+<svg viewBox="0 0 32 32" width="64" height="64"><rect width="32" height="32" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width=".5"/><path d="M16,4 L27,9 L27,20 Q27,27 16,30 Q5,27 5,20 L5,9 Z" fill="none" stroke="#0F172A" stroke-width="2"/><rect x="14.5" y="7" width="3" height="8" rx=".5" fill="#D97706"/><rect x="12" y="9.5" width="8" height="2" rx=".5" fill="#D97706"/><path d="M11,25 L11,21 L16,17 L21,21 L21,25 Z" fill="none" stroke="#0F172A" stroke-width="1.5" stroke-linejoin="round"/></svg>
+<p>Favicon (32px)</p>
+</div>
+<div class="logo-item">
+<svg viewBox="0 0 512 512" width="80" height="80"><rect width="512" height="512" rx="96" fill="#0F172A"/><path d="M256,60 L420,130 L420,340 Q420,452 256,484 Q92,452 92,340 L92,130 Z" fill="none" stroke="#f8fafc" stroke-width="16"/><rect x="244" y="140" width="24" height="100" rx="3" fill="#D97706"/><rect x="210" y="168" width="92" height="16" rx="3" fill="#D97706"/><path d="M190,380 L190,330 L256,288 L322,330 L322,380 Z" fill="none" stroke="#f8fafc" stroke-width="10" stroke-linejoin="round"/><line x1="256" y1="284" x2="256" y2="268" stroke="#D97706" stroke-width="6"/><line x1="248" y1="276" x2="264" y2="268" stroke="#D97706" stroke-width="6"/><rect x="248" y="356" width="16" height="24" rx="8" fill="none" stroke="#f8fafc" stroke-width="6"/></svg>
+<p>App Icon (512px)</p>
+</div>
+<div class="logo-item">
+<svg viewBox="0 0 200 200" width="120" height="120"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#0F172A"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#0F172A"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="112" x2="100" y2="104" stroke="#0F172A" stroke-width="2"/><line x1="96" y1="108" x2="104" y2="108" stroke="#0F172A" stroke-width="2"/><rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#0F172A" stroke-width="1.5"/></svg>
+<p>Mono Navy</p>
+</div>
+</div>
 
-  <!-- Typography -->
-  <section>
-    <div class="container">
-      <h2>Typography</h2>
-      <p class="section-desc">Inter — clean, modern, excellent readability for form-heavy data apps.</p>
+<h3>Size Test</h3>
+<div class="size-row">
+<div class="size-item"><svg viewBox="0 0 200 200" width="16" height="16"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/></svg><p>16px</p></div>
+<div class="size-item"><svg viewBox="0 0 200 200" width="32" height="32"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg><p>32px</p></div>
+<div class="size-item"><svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg><p>48px</p></div>
+<div class="size-item"><svg viewBox="0 0 200 200" width="64" height="64"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg><p>64px</p></div>
+<div class="size-item"><svg viewBox="0 0 200 200" width="128" height="128"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="112" x2="100" y2="104" stroke="#D97706" stroke-width="2"/><line x1="96" y1="108" x2="104" y2="108" stroke="#D97706" stroke-width="2"/><rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#0F172A" stroke-width="1.5"/></svg><p>128px</p></div>
+</div>
 
-      <div class="type-row"><span class="type-label">Display</span><span style="font-size:48px;font-weight:700;letter-spacing:-0.02em;line-height:1.1">Parish Records</span></div>
-      <div class="type-row"><span class="type-label">H1</span><span style="font-size:36px;font-weight:700;letter-spacing:-0.01em;line-height:1.2">Dashboard Overview</span></div>
-      <div class="type-row"><span class="type-label">H2</span><span style="font-size:30px;font-weight:600;line-height:1.3">Family Members</span></div>
-      <div class="type-row"><span class="type-label">H3</span><span style="font-size:24px;font-weight:600;line-height:1.4">Sacrament Records</span></div>
-      <div class="type-row"><span class="type-label">H4</span><span style="font-size:20px;font-weight:600;line-height:1.4">Contact Details</span></div>
-      <div class="type-row"><span class="type-label">Body</span><span style="font-size:16px;font-weight:400;line-height:1.6;color:var(--text-secondary)">Manage parish member records, sacraments, household data, and community events in one unified platform.</span></div>
-      <div class="type-row"><span class="type-label">Small</span><span style="font-size:14px;font-weight:400;line-height:1.5;color:var(--text-muted)">Last updated 2 hours ago</span></div>
-      <div class="type-row"><span class="type-label">Caption</span><span style="font-size:12px;font-weight:500;line-height:1.4;color:var(--text-muted);letter-spacing:0.02em">REQUIRED FIELD</span></div>
-    </div>
-  </section>
+<h3>Wordmark Lockup</h3>
+<div class="wordmark-demo">
+<svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg>
+<div><h2 style="font-size:2rem;margin:0;color:var(--text)">ParishHub</h2><div class="tagline">Parish Records · Perfected</div></div>
+</div>
 
-  <!-- Components -->
-  <section>
-    <div class="container">
-      <h2>Components</h2>
-      <p class="section-desc">Reusable UI patterns for ParishHub.</p>
+<h3>Logo Clear Space</h3>
+<p style="color:var(--text-secondary);margin-bottom:16px">Minimum clear space equals the height of the cross element (~52 units in the 200-unit viewBox).</p>
+<div class="clearspace-box">
+<div class="clearspace-visual">
+<svg viewBox="0 0 200 200" width="80" height="80"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg>
+</div>
+</div>
 
-      <h3>Buttons</h3>
-      <div class="demo-card">
-        <div class="demo-row">
-          <button class="btn btn-primary">Save Record</button>
-          <button class="btn btn-accent">Add Member</button>
-          <button class="btn btn-outline">Cancel</button>
-          <button class="btn btn-destructive">Delete</button>
-        </div>
-        <div class="demo-row">
-          <button class="btn btn-primary btn-sm">Small</button>
-          <button class="btn btn-primary">Default</button>
-          <button class="btn btn-primary btn-lg">Large</button>
-        </div>
-      </div>
+<h3>Logo Don'ts</h3>
+<div class="dont-grid">
+<div class="dont-card"><div class="icon" style="transform:rotate(20deg)"><svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#DC2626" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#DC2626"/></svg></div><p>Don't rotate</p></div>
+<div class="dont-card"><div class="icon"><svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#3B82F6" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#EC4899"/></svg></div><p>Don't recolor</p></div>
+<div class="dont-card"><div class="icon"><svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,16 L172,50 L172,122 Q172,174 100,192 Q28,174 28,122 L28,50 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/></svg></div><p>Don't stretch</p></div>
+<div class="dont-card"><div class="icon"><svg viewBox="0 0 200 200" width="48" height="48" style="filter:drop-shadow(4px 4px 4px rgba(0,0,0,.3))"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/></svg></div><p>No shadows</p></div>
+</div>
+</div>
+</section>
 
-      <h3>Form Inputs</h3>
-      <div class="demo-card">
-        <div style="max-width:400px">
-          <label class="input-label" for="demo-name">Full Name</label>
-          <input class="input" type="text" id="demo-name" placeholder="Enter full name" />
-          <p class="input-hint">As it appears on official documents</p>
-        </div>
-        <div style="max-width:400px;margin-top:20px">
-          <label class="input-label" for="demo-email">Email Address</label>
-          <input class="input input-error" type="email" id="demo-email" value="invalid-email" />
-          <p class="input-error-msg">Please enter a valid email address</p>
-        </div>
-      </div>
+<!-- DARK MODE TOGGLE -->
+<div class="toggle-wrap">
+<button class="toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+</div>
 
-      <h3>Badges</h3>
-      <div class="demo-card">
-        <div class="demo-row">
-          <span class="badge-success">Active</span>
-          <span class="badge-muted">Inactive</span>
-          <span class="badge-accent">Pending Review</span>
-        </div>
-      </div>
+<!-- HERO -->
+<header class="hero">
+<div class="container">
+<svg viewBox="0 0 200 200" width="120" height="120" style="display:block;margin:0 auto 24px">
+<path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#f8fafc" stroke-width="5"/>
+<rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/>
+<rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/>
+<path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#f8fafc" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="100" y1="112" x2="100" y2="104" stroke="#D97706" stroke-width="2"/>
+<line x1="96" y1="108" x2="104" y2="108" stroke="#D97706" stroke-width="2"/>
+<rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#f8fafc" stroke-width="1.5"/>
+</svg>
+<div style="display:flex;align-items:center;gap:16px;justify-content:center;margin-bottom:4px">
+<h1 style="margin:0">ParishHub</h1>
+</div>
+<p class="subtitle">Design Bible v2.0 — M1 Shield Cathedral</p>
+<div style="margin-top:16px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#D97706;font-weight:500">Parish Records · Perfected</div>
+<span class="badge" style="margin-top:20px">LIGHT THEME DEFAULT</span>
+</div>
+</header>
 
-      <h3>Alerts</h3>
-      <div class="demo-card" style="display:flex;flex-direction:column;gap:12px">
-        <div class="alert alert-success">
-          <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          <span style="font-size:14px;font-weight:500">Record saved successfully.</span>
-        </div>
-        <div class="alert alert-error">
-          <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
-          <span style="font-size:14px;font-weight:500">Something went wrong. Please try again.</span>
-        </div>
-      </div>
+<!-- TABLE OF CONTENTS -->
+<section>
+<div class="container">
+<h2>Table of Contents</h2>
+<p class="section-desc">Everything you need to build consistent ParishHub interfaces.</p>
+<div class="toc">
+<a href="#brand"><span class="num">01</span> Brand Overview</a>
+<a href="#logo"><span class="num">02</span> Logo System</a>
+<a href="#color"><span class="num">03</span> Color System</a>
+<a href="#type"><span class="num">04</span> Typography</a>
+<a href="#spacing"><span class="num">05</span> Spacing & Layout</a>
+<a href="#components"><span class="num">06</span> Components</a>
+<a href="#darkmode"><span class="num">07</span> Dark Mode</a>
+<a href="#icons"><span class="num">08</span> Iconography</a>
+<a href="#motion"><span class="num">09</span> Motion & Animation</a>
+<a href="#a11y"><span class="num">10</span> Accessibility</a>
+<a href="#impl"><span class="num">11</span> Implementation</a>
+<a href="#rules"><span class="num">12</span> Brand Rules</a>
+</div>
+</div>
+</section>
 
-      <h3>Cards</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
-        <div class="card">
-          <h4 style="font-size:16px;font-weight:600;margin-bottom:8px">John Doe</h4>
-          <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">Member since 2019. Last attended Sunday Mass.</p>
-          <span class="badge-success">Active</span>
-        </div>
-        <div class="card">
-          <h4 style="font-size:16px;font-weight:600;margin-bottom:8px">Household #142</h4>
-          <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">4 members. Registered at St. Mary's Parish.</p>
-          <span class="badge-accent">Pending Update</span>
-        </div>
-        <div class="card">
-          <h4 style="font-size:16px;font-weight:600;margin-bottom:8px">Baptism Certificate</h4>
-          <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">Sacrament recorded March 15, 2024.</p>
-          <span class="badge-muted">Archived</span>
-        </div>
-      </div>
+<!-- 1. BRAND OVERVIEW -->
+<section id="brand">
+<div class="container">
+<h2>1. Brand Overview</h2>
+<p class="section-desc">ParishHub is a parish management platform for Catholic communities. It handles member records, sacraments, household data, and community events — the sacred operational backbone of a parish.</p>
+<h3>Brand Pillars</h3>
+<div class="pillars">
+<div class="pillar"><h4>🛡 Trustworthy</h4><p>Handles sacred community data with reverence and care</p></div>
+<div class="pillar"><h4>♿ Accessible</h4><p>WCAG AAA compliant — works for every parishioner and staff member</p></div>
+<div class="pillar"><h4>☀ Warm</h4><p>Approachable and human, not clinical or cold</p></div>
+<div class="pillar"><h4>⚡ Professional</h4><p>Enterprise-grade reliability meets parish simplicity</p></div>
+</div>
+<h3>Brand Voice</h3>
+<div class="voice-list">
+<div class="voice-item">Clear, <span>not clever</span></div>
+<div class="voice-item">Warm, <span>not casual</span></div>
+<div class="voice-item">Reverent, <span>not stiff</span></div>
+<div class="voice-item">Helpful, <span>not preachy</span></div>
+</div>
+<div class="tagline-box">
+<div class="label">Tagline</div>
+<div class="text">Parish Records · Perfected</div>
+<div class="note">Use sparingly — logo lockups and marketing only. Never in UI copy.</div>
+</div>
+</div>
+</section>
 
-      <h3 style="margin-top:32px">Table</h3>
-      <div class="demo-card" style="padding:0;overflow:hidden">
-        <table class="demo-table">
-          <thead><tr><th>Name</th><th>Household</th><th>Status</th><th>Last Updated</th></tr></thead>
-          <tbody>
-            <tr><td>John Doe</td><td>#142</td><td><span class="badge-success">Active</span></td><td style="color:var(--text-muted)">2 hours ago</td></tr>
-            <tr><td>Maria Santos</td><td>#087</td><td><span class="badge-success">Active</span></td><td style="color:var(--text-muted)">1 day ago</td></tr>
-            <tr><td>James Wilson</td><td>#203</td><td><span class="badge-muted">Inactive</span></td><td style="color:var(--text-muted)">3 weeks ago</td></tr>
-          </tbody>
-        </table>
-      </div>
+<!-- 2. LOGO SYSTEM -->
+<section id="logo">
+<div class="container">
+<h2>2. Logo System</h2>
+<p class="section-desc">The M1 Shield Cathedral — a shield containing a cross above a house silhouette. The cross represents faith. The house represents community. The shield represents trust and protection.</p>
 
-      <h3 style="margin-top:32px">Navigation</h3>
-      <div class="nav-demo">
-        <span class="brand">ParishHub</span>
-        <div class="links">
-          <a href="#">Dashboard</a>
-          <a href="#">Members</a>
-          <a href="#">Sacraments</a>
-          <a href="#">Reports</a>
-        </div>
-      </div>
-    </div>
-  </section>
+<h3>Logo Variants</h3>
+<div class="logo-showcase">
+<div class="logo-item">
+<svg viewBox="0 0 200 200" width="120" height="120"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="112" x2="100" y2="104" stroke="#D97706" stroke-width="2"/><line x1="96" y1="108" x2="104" y2="108" stroke="#D97706" stroke-width="2"/><rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#0F172A" stroke-width="1.5"/></svg>
+<p>Light (Default)</p>
+</div>
+<div class="logo-item">
+<svg viewBox="0 0 200 200" width="120" height="120"><rect x="20" y="20" width="160" height="160" rx="16" fill="#0F172A"/><path d="M100,32 L158,58 L158,118 Q158,160 100,176 Q42,160 42,118 L42,58 Z" fill="none" stroke="#f8fafc" stroke-width="4"/><rect x="96" y="50" width="8" height="46" rx="1" fill="#D97706"/><rect x="82" y="62" width="36" height="7" rx="1" fill="#D97706"/><path d="M82,152 L82,130 L100,116 L118,130 L118,152 Z" fill="none" stroke="#f8fafc" stroke-width="2" stroke-linejoin="round"/><line x1="100" y1="114" x2="100" y2="108" stroke="#D97706" stroke-width="1.5"/><line x1="97" y1="111" x2="103" y2="111" stroke="#D97706" stroke-width="1.5"/><rect x="96" y="140" width="8" height="12" rx="4" fill="none" stroke="#f8fafc" stroke-width="1.5"/></svg>
+<p>Dark</p>
+</div>
+<div class="logo-item">
+<svg viewBox="0 0 32 32" width="64" height="64"><rect width="32" height="32" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width=".5"/><path d="M16,4 L27,9 L27,20 Q27,27 16,30 Q5,27 5,20 L5,9 Z" fill="none" stroke="#0F172A" stroke-width="2"/><rect x="14.5" y="7" width="3" height="8" rx=".5" fill="#D97706"/><rect x="12" y="9.5" width="8" height="2" rx=".5" fill="#D97706"/><path d="M11,25 L11,21 L16,17 L21,21 L21,25 Z" fill="none" stroke="#0F172A" stroke-width="1.5" stroke-linejoin="round"/></svg>
+<p>Favicon (32px)</p>
+</div>
+<div class="logo-item">
+<svg viewBox="0 0 512 512" width="80" height="80"><rect width="512" height="512" rx="96" fill="#0F172A"/><path d="M256,60 L420,130 L420,340 Q420,452 256,484 Q92,452 92,340 L92,130 Z" fill="none" stroke="#f8fafc" stroke-width="16"/><rect x="244" y="140" width="24" height="100" rx="3" fill="#D97706"/><rect x="210" y="168" width="92" height="16" rx="3" fill="#D97706"/><path d="M190,380 L190,330 L256,288 L322,330 L322,380 Z" fill="none" stroke="#f8fafc" stroke-width="10" stroke-linejoin="round"/><line x1="256" y1="284" x2="256" y2="268" stroke="#D97706" stroke-width="6"/><line x1="248" y1="276" x2="264" y2="268" stroke="#D97706" stroke-width="6"/><rect x="248" y="356" width="16" height="24" rx="8" fill="none" stroke="#f8fafc" stroke-width="6"/></svg>
+<p>App Icon (512px)</p>
+</div>
+<div class="logo-item">
+<svg viewBox="0 0 200 200" width="120" height="120"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#0F172A"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#0F172A"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="112" x2="100" y2="104" stroke="#0F172A" stroke-width="2"/><line x1="96" y1="108" x2="104" y2="108" stroke="#0F172A" stroke-width="2"/><rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#0F172A" stroke-width="1.5"/></svg>
+<p>Mono Navy</p>
+</div>
+</div>
 
-  <!-- Spacing -->
-  <section>
-    <div class="container">
-      <h2>Spacing Scale</h2>
-      <p class="section-desc">4px base unit — consistent rhythm across all components.</p>
-      <div class="spacing-row"><span class="spacing-label">space-1</span><div class="spacing-bar" style="width:4px"></div><span style="font-size:12px;color:var(--text-muted)">4px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-2</span><div class="spacing-bar" style="width:8px"></div><span style="font-size:12px;color:var(--text-muted)">8px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-3</span><div class="spacing-bar" style="width:12px"></div><span style="font-size:12px;color:var(--text-muted)">12px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-4</span><div class="spacing-bar" style="width:16px"></div><span style="font-size:12px;color:var(--text-muted)">16px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-5</span><div class="spacing-bar" style="width:20px"></div><span style="font-size:12px;color:var(--text-muted)">20px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-6</span><div class="spacing-bar" style="width:24px"></div><span style="font-size:12px;color:var(--text-muted)">24px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-8</span><div class="spacing-bar" style="width:32px"></div><span style="font-size:12px;color:var(--text-muted)">32px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-10</span><div class="spacing-bar" style="width:40px"></div><span style="font-size:12px;color:var(--text-muted)">40px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-12</span><div class="spacing-bar" style="width:48px"></div><span style="font-size:12px;color:var(--text-muted)">48px</span></div>
-      <div class="spacing-row"><span class="spacing-label">space-16</span><div class="spacing-bar" style="width:64px"></div><span style="font-size:12px;color:var(--text-muted)">64px</span></div>
-    </div>
-  </section>
+<h3>Size Test</h3>
+<div class="size-row">
+<div class="size-item"><svg viewBox="0 0 200 200" width="16" height="16"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/></svg><p>16px</p></div>
+<div class="size-item"><svg viewBox="0 0 200 200" width="32" height="32"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg><p>32px</p></div>
+<div class="size-item"><svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg><p>48px</p></div>
+<div class="size-item"><svg viewBox="0 0 200 200" width="64" height="64"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg><p>64px</p></div>
+<div class="size-item"><svg viewBox="0 0 200 200" width="128" height="128"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="112" x2="100" y2="104" stroke="#D97706" stroke-width="2"/><line x1="96" y1="108" x2="104" y2="108" stroke="#D97706" stroke-width="2"/><rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#0F172A" stroke-width="1.5"/></svg><p>128px</p></div>
+</div>
 
-  <!-- Z-Index -->
-  <section>
-    <div class="container">
-      <h2>Z-Index Scale</h2>
-      <p class="section-desc">No arbitrary values — use this fixed scale.</p>
-      <div class="z-row"><span class="z-token">z-dropdown</span><span class="z-value">10</span><span class="z-usage">Dropdowns, popovers</span></div>
-      <div class="z-row"><span class="z-token">z-sticky</span><span class="z-value">20</span><span class="z-usage">Sticky headers, navbars</span></div>
-      <div class="z-row"><span class="z-token">z-overlay</span><span class="z-value">30</span><span class="z-usage">Modal backdrops</span></div>
-      <div class="z-row"><span class="z-token">z-modal</span><span class="z-value">40</span><span class="z-usage">Modal dialogs</span></div>
-      <div class="z-row"><span class="z-token">z-toast</span><span class="z-value">50</span><span class="z-usage">Toast notifications</span></div>
-    </div>
-  </section>
+<h3>Wordmark Lockup</h3>
+<div class="wordmark-demo">
+<svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg>
+<div><h2 style="font-size:2rem;margin:0;color:var(--text)">ParishHub</h2><div class="tagline">Parish Records · Perfected</div></div>
+</div>
 
-  <!-- Accessibility -->
-  <section>
-    <div class="container">
-      <h2>Accessibility Checklist</h2>
-      <p class="section-desc">WCAG AAA compliance target — every release must pass.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:32px">
-        <div>
-          <h3>Contrast &amp; Color</h3>
-          <ul class="checklist">
-            <li>Text contrast 4.5:1 minimum</li>
-            <li>Large text (18px+) contrast 3:1</li>
-            <li>Color never sole state indicator</li>
-            <li>Focus ring on all interactive elements</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Interaction</h3>
-          <ul class="checklist">
-            <li>44x44px minimum touch targets</li>
-            <li>cursor-pointer on clickable elements</li>
-            <li>Hover transitions 150-300ms</li>
-            <li>prefers-reduced-motion respected</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Semantic HTML</h3>
-          <ul class="checklist">
-            <li>All images have alt text</li>
-            <li>Form inputs have labels</li>
-            <li>ARIA labels on icon-only buttons</li>
-            <li>Skip navigation link</li>
-            <li>Semantic elements (nav, main, section)</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Pre-Delivery</h3>
-          <ul class="checklist">
-            <li>No emojis — SVG icons (Lucide)</li>
-            <li>Responsive: 375, 768, 1024, 1440px</li>
-            <li>Loading states on submissions</li>
-            <li>Lazy load heavy assets</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
+<h3>Logo Clear Space</h3>
+<p style="color:var(--text-secondary);margin-bottom:16px">Minimum clear space equals the height of the cross element (~52 units in the 200-unit viewBox).</p>
+<div class="clearspace-box">
+<div class="clearspace-visual">
+<svg viewBox="0 0 200 200" width="80" height="80"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/></svg>
+</div>
+</div>
 
-  <footer style="padding:32px 0;text-align:center;color:var(--text-muted);font-size:13px">
-    <div class="container">ParishHub Brand Guide v1.0 — Accessible &amp; Ethical — Navy/Amber — Inter</div>
-  </footer>
+<h3>Logo Don'ts</h3>
+<div class="dont-grid">
+<div class="dont-card"><div class="icon" style="transform:rotate(20deg)"><svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#DC2626" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#DC2626"/></svg></div><p>Don't rotate</p></div>
+<div class="dont-card"><div class="icon"><svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#3B82F6" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#EC4899"/></svg></div><p>Don't recolor</p></div>
+<div class="dont-card"><div class="icon"><svg viewBox="0 0 200 200" width="48" height="48"><path d="M100,16 L172,50 L172,122 Q172,174 100,192 Q28,174 28,122 L28,50 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/></svg></div><p>Don't stretch</p></div>
+<div class="dont-card"><div class="icon"><svg viewBox="0 0 200 200" width="48" height="48" style="filter:drop-shadow(4px 4px 4px rgba(0,0,0,.3))"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#0F172A" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/></svg></div><p>No shadows</p></div>
+</div>
+</div>
+</section>
 
+<!-- 3. COLOR SYSTEM -->
+<section id="color">
+<div class="container">
+<h2>3. Color System</h2>
+<p class="section-desc">Built on two anchoring colors — Navy and Amber — chosen to convey trust and warmth. Navy says "we are serious about your data." Amber says "we are human, and we care."</p>
+
+<h3>Primary Palette</h3>
+<div class="color-grid">
+<div class="color-swatch"><div class="preview" style="background:#0F172A"></div><div class="info"><div class="name">Navy (Primary)</div><div class="hex">#0F172A</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#1E293B"></div><div class="info"><div class="name">Navy 600</div><div class="hex">#1E293B</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#475569"></div><div class="info"><div class="name">Navy 400</div><div class="hex">#475569</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#D97706"></div><div class="info"><div class="name">Amber (Accent)</div><div class="hex">#D97706</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#FBBF24"></div><div class="info"><div class="name">Amber 300</div><div class="hex">#FBBF24</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#FFFBEB"></div><div class="info"><div class="name">Amber 50</div><div class="hex">#FFFBEB</div></div></div>
+</div>
+
+<h3>Neutral Palette</h3>
+<div class="color-grid">
+<div class="color-swatch"><div class="preview" style="background:#FFFFFF;border-bottom:1px solid #E2E8F0"></div><div class="info"><div class="name">White</div><div class="hex">#FFFFFF</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#F8FAFC"></div><div class="info"><div class="name">Slate 50</div><div class="hex">#F8FAFC</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#F1F5F9"></div><div class="info"><div class="name">Slate 100</div><div class="hex">#F1F5F9</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#E2E8F0"></div><div class="info"><div class="name">Slate 200</div><div class="hex">#E2E8F0</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#CBD5E1"></div><div class="info"><div class="name">Slate 300</div><div class="hex">#CBD5E1</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#94A3B8"></div><div class="info"><div class="name">Slate 400</div><div class="hex">#94A3B8</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#475569"></div><div class="info"><div class="name">Slate 500</div><div class="hex">#475569</div></div></div>
+</div>
+
+<h3>Semantic Colors</h3>
+<div class="color-grid">
+<div class="color-swatch"><div class="preview" style="background:#059669"></div><div class="info"><div class="name">Success</div><div class="hex">#059669</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#ECFDF5"></div><div class="info"><div class="name">Success BG</div><div class="hex">#ECFDF5</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#DC2626"></div><div class="info"><div class="name">Error</div><div class="hex">#DC2626</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#FEF2F2"></div><div class="info"><div class="name">Error BG</div><div class="hex">#FEF2F2</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#D97706"></div><div class="info"><div class="name">Warning</div><div class="hex">#D97706</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#2563EB"></div><div class="info"><div class="name">Info</div><div class="hex">#2563EB</div></div></div>
+</div>
+
+<h3>Contrast Ratios (WCAG AAA)</h3>
+<div class="contrast-grid">
+<div class="contrast-card" style="background:#0F172A;color:#F8FAFC">
+<div class="label">Navy on White</div>
+<div class="ratio">16.75:1</div>
+<span class="grade grade-aaa">AAA</span>
+</div>
+<div class="contrast-card" style="background:#FFFFFF;color:#0F172A;border:1px solid #E2E8F0">
+<div class="label">White on Navy</div>
+<div class="ratio">16.75:1</div>
+<span class="grade grade-aaa">AAA</span>
+</div>
+<div class="contrast-card" style="background:#FFFFFF;color:#475569;border:1px solid #E2E8F0">
+<div class="label">Navy 400 on White</div>
+<div class="ratio">7.45:1</div>
+<span class="grade grade-aaa">AAA</span>
+</div>
+<div class="contrast-card" style="background:#0F172A;color:#D97706">
+<div class="label">Amber on Navy</div>
+<div class="ratio">5.47:1</div>
+<span class="grade grade-aa">AA</span>
+</div>
+<div class="contrast-card" style="background:#0F172A;color:#FBBF24">
+<div class="label">Amber 300 on Navy</div>
+<div class="ratio">10.2:1</div>
+<span class="grade grade-aaa">AAA</span>
+</div>
+<div class="contrast-card" style="background:#FFFFFF;color:#D97706;border:1px solid #E2E8F0">
+<div class="label">Amber on White</div>
+<div class="ratio">3.06:1</div>
+<span class="grade grade-aa-large">AA Large Only</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 4. TYPOGRAPHY -->
+<section id="type">
+<div class="container">
+<h2>4. Typography</h2>
+<p class="section-desc">Primary: Inter. Chosen for its excellent legibility at small sizes, clean geometric forms, and professional but warm character.</p>
+<div class="css-block"><span class="kw">font-family</span>: <span class="str">'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif</span>;</div>
+
+<h3>Type Scale</h3>
+<div class="type-row"><span class="type-label">Display</span><span style="font-size:48px;font-weight:700;letter-spacing:-.02em;line-height:1.1">Aa</span><span class="type-meta">48px · 700 · 1.1</span></div>
+<div class="type-row"><span class="type-label">H1</span><span style="font-size:36px;font-weight:700;letter-spacing:-.01em;line-height:1.2">Aa</span><span class="type-meta">36px · 700 · 1.2</span></div>
+<div class="type-row"><span class="type-label">H2</span><span style="font-size:30px;font-weight:600;letter-spacing:-.01em;line-height:1.3">Aa</span><span class="type-meta">30px · 600 · 1.3</span></div>
+<div class="type-row"><span class="type-label">H3</span><span style="font-size:24px;font-weight:600;line-height:1.4">Aa</span><span class="type-meta">24px · 600 · 1.4</span></div>
+<div class="type-row"><span class="type-label">H4</span><span style="font-size:20px;font-weight:600;line-height:1.4">Aa</span><span class="type-meta">20px · 600 · 1.4</span></div>
+<div class="type-row"><span class="type-label">Body Large</span><span style="font-size:18px;font-weight:400;line-height:1.6">Aa</span><span class="type-meta">18px · 400 · 1.6</span></div>
+<div class="type-row"><span class="type-label">Body</span><span style="font-size:16px;font-weight:400;line-height:1.6">Aa</span><span class="type-meta">16px · 400 · 1.6</span></div>
+<div class="type-row"><span class="type-label">Body Small</span><span style="font-size:14px;font-weight:400;line-height:1.5">Aa</span><span class="type-meta">14px · 400 · 1.5</span></div>
+<div class="type-row"><span class="type-label">Caption</span><span style="font-size:12px;font-weight:500;line-height:1.4;letter-spacing:.02em">Aa</span><span class="type-meta">12px · 500 · 1.4</span></div>
+<div class="type-row"><span class="type-label">Overline</span><span style="font-size:11px;font-weight:600;line-height:1.4;letter-spacing:.08em;text-transform:uppercase">Aa</span><span class="type-meta">11px · 600 · .08em</span></div>
+</div>
+</section>
+
+<!-- 5. SPACING & LAYOUT -->
+<section id="spacing">
+<div class="container">
+<h2>5. Spacing & Layout</h2>
+<p class="section-desc">All spacing uses a 4px base unit for consistent vertical and horizontal rhythm.</p>
+
+<h3>Spacing Scale</h3>
+<div class="spacing-row"><span class="spacing-label">space-1</span><div class="spacing-bar" style="width:4px"></div><span class="spacing-val">4px</span><span class="spacing-use">Tight inner padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-2</span><div class="spacing-bar" style="width:8px"></div><span class="spacing-val">8px</span><span class="spacing-use">Small padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-3</span><div class="spacing-bar" style="width:12px"></div><span class="spacing-val">12px</span><span class="spacing-use">Form field padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-4</span><div class="spacing-bar" style="width:16px"></div><span class="spacing-val">16px</span><span class="spacing-use">Default component</span></div>
+<div class="spacing-row"><span class="spacing-label">space-5</span><div class="spacing-bar" style="width:20px"></div><span class="spacing-val">20px</span><span class="spacing-use">Card padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-6</span><div class="spacing-bar" style="width:24px"></div><span class="spacing-val">24px</span><span class="spacing-use">Section padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-8</span><div class="spacing-bar" style="width:32px"></div><span class="spacing-val">32px</span><span class="spacing-use">Between sections</span></div>
+<div class="spacing-row"><span class="spacing-label">space-10</span><div class="spacing-bar" style="width:40px"></div><span class="spacing-val">40px</span><span class="spacing-use">Major spacing</span></div>
+<div class="spacing-row"><span class="spacing-label">space-12</span><div class="spacing-bar" style="width:48px"></div><span class="spacing-val">48px</span><span class="spacing-use">Section dividers</span></div>
+<div class="spacing-row"><span class="spacing-label">space-16</span><div class="spacing-bar" style="width:64px"></div><span class="spacing-val">64px</span><span class="spacing-use">Page margins</span></div>
+
+<h3>Border Radius</h3>
+<div class="radius-row"><span class="radius-token">rounded-none</span><span class="radius-val">0</span><div class="radius-demo" style="border-radius:0"></div><span class="radius-use">Tables</span></div>
+<div class="radius-row"><span class="radius-token">rounded-sm</span><span class="radius-val">4px</span><div class="radius-demo" style="border-radius:4px"></div><span class="radius-use">Badges</span></div>
+<div class="radius-row"><span class="radius-token">rounded</span><span class="radius-val">6px</span><div class="radius-demo" style="border-radius:6px"></div><span class="radius-use">Inputs, buttons</span></div>
+<div class="radius-row"><span class="radius-token">rounded-md</span><span class="radius-val">8px</span><div class="radius-demo" style="border-radius:8px"></div><span class="radius-use">Cards, modals</span></div>
+<div class="radius-row"><span class="radius-token">rounded-lg</span><span class="radius-val">12px</span><div class="radius-demo" style="border-radius:12px"></div><span class="radius-use">Large containers</span></div>
+<div class="radius-row"><span class="radius-token">rounded-xl</span><span class="radius-val">16px</span><div class="radius-demo" style="border-radius:16px"></div><span class="radius-use">Feature panels</span></div>
+<div class="radius-row"><span class="radius-token">rounded-full</span><span class="radius-val">9999px</span><div class="radius-demo" style="border-radius:9999px"></div><span class="radius-use">Avatars, pills</span></div>
+
+<h3>Breakpoints</h3>
+<div class="bp-grid">
+<div class="bp-card"><div class="bp-name">sm</div><div class="bp-width">375px</div><div class="bp-target">Mobile</div></div>
+<div class="bp-card"><div class="bp-name">md</div><div class="bp-width">768px</div><div class="bp-target">Tablet</div></div>
+<div class="bp-card"><div class="bp-name">lg</div><div class="bp-width">1024px</div><div class="bp-target">Small desktop</div></div>
+<div class="bp-card"><div class="bp-name">xl</div><div class="bp-width">1440px</div><div class="bp-target">Desktop</div></div>
+<div class="bp-card"><div class="bp-name">2xl</div><div class="bp-width">1920px</div><div class="bp-target">Large desktop</div></div>
+</div>
+
+<h3>Z-Index Scale</h3>
+<div class="z-row"><span class="z-token">z-base</span><span class="z-value">0</span><span class="z-usage">Default</span></div>
+<div class="z-row"><span class="z-token">z-dropdown</span><span class="z-value">10</span><span class="z-usage">Dropdowns, popovers</span></div>
+<div class="z-row"><span class="z-token">z-sticky</span><span class="z-value">20</span><span class="z-usage">Sticky headers, navbars</span></div>
+<div class="z-row"><span class="z-token">z-overlay</span><span class="z-value">30</span><span class="z-usage">Modal backdrops</span></div>
+<div class="z-row"><span class="z-token">z-modal</span><span class="z-value">40</span><span class="z-usage">Modal dialogs</span></div>
+<div class="z-row"><span class="z-token">z-toast</span><span class="z-value">50</span><span class="z-usage">Toast notifications</span></div>
+<p style="margin-top:16px;font-size:13px;color:var(--text-muted)">Rule: Never use arbitrary z-index values. Always use this scale.</p>
+</div>
+</section>
+
+<!-- 3. COLOR SYSTEM -->
+<section id="color">
+<div class="container">
+<h2>3. Color System</h2>
+<p class="section-desc">Built on two anchoring colors — Navy and Amber — chosen to convey trust and warmth. Navy says "we are serious about your data." Amber says "we are human, and we care."</p>
+
+<h3>Primary Palette</h3>
+<div class="color-grid">
+<div class="color-swatch"><div class="preview" style="background:#0F172A"></div><div class="info"><div class="name">Navy (Primary)</div><div class="hex">#0F172A</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#1E293B"></div><div class="info"><div class="name">Navy 600</div><div class="hex">#1E293B</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#475569"></div><div class="info"><div class="name">Navy 400</div><div class="hex">#475569</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#D97706"></div><div class="info"><div class="name">Amber (Accent)</div><div class="hex">#D97706</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#FBBF24"></div><div class="info"><div class="name">Amber 300</div><div class="hex">#FBBF24</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#FFFBEB"></div><div class="info"><div class="name">Amber 50</div><div class="hex">#FFFBEB</div></div></div>
+</div>
+
+<h3>Neutral Palette</h3>
+<div class="color-grid">
+<div class="color-swatch"><div class="preview" style="background:#FFFFFF;border-bottom:1px solid #E2E8F0"></div><div class="info"><div class="name">White</div><div class="hex">#FFFFFF</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#F8FAFC"></div><div class="info"><div class="name">Slate 50</div><div class="hex">#F8FAFC</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#F1F5F9"></div><div class="info"><div class="name">Slate 100</div><div class="hex">#F1F5F9</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#E2E8F0"></div><div class="info"><div class="name">Slate 200</div><div class="hex">#E2E8F0</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#CBD5E1"></div><div class="info"><div class="name">Slate 300</div><div class="hex">#CBD5E1</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#94A3B8"></div><div class="info"><div class="name">Slate 400</div><div class="hex">#94A3B8</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#475569"></div><div class="info"><div class="name">Slate 500</div><div class="hex">#475569</div></div></div>
+</div>
+
+<h3>Semantic Colors</h3>
+<div class="color-grid">
+<div class="color-swatch"><div class="preview" style="background:#059669"></div><div class="info"><div class="name">Success</div><div class="hex">#059669</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#ECFDF5"></div><div class="info"><div class="name">Success BG</div><div class="hex">#ECFDF5</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#DC2626"></div><div class="info"><div class="name">Error</div><div class="hex">#DC2626</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#FEF2F2"></div><div class="info"><div class="name">Error BG</div><div class="hex">#FEF2F2</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#D97706"></div><div class="info"><div class="name">Warning</div><div class="hex">#D97706</div></div></div>
+<div class="color-swatch"><div class="preview" style="background:#2563EB"></div><div class="info"><div class="name">Info</div><div class="hex">#2563EB</div></div></div>
+</div>
+
+<h3>Contrast Ratios (WCAG AAA)</h3>
+<div class="contrast-grid">
+<div class="contrast-card" style="background:#0F172A;color:#F8FAFC">
+<div class="label">Navy on White</div>
+<div class="ratio">16.75:1</div>
+<span class="grade grade-aaa">AAA</span>
+</div>
+<div class="contrast-card" style="background:#FFFFFF;color:#0F172A;border:1px solid #E2E8F0">
+<div class="label">White on Navy</div>
+<div class="ratio">16.75:1</div>
+<span class="grade grade-aaa">AAA</span>
+</div>
+<div class="contrast-card" style="background:#FFFFFF;color:#475569;border:1px solid #E2E8F0">
+<div class="label">Navy 400 on White</div>
+<div class="ratio">7.45:1</div>
+<span class="grade grade-aaa">AAA</span>
+</div>
+<div class="contrast-card" style="background:#0F172A;color:#D97706">
+<div class="label">Amber on Navy</div>
+<div class="ratio">5.47:1</div>
+<span class="grade grade-aa">AA</span>
+</div>
+<div class="contrast-card" style="background:#0F172A;color:#FBBF24">
+<div class="label">Amber 300 on Navy</div>
+<div class="ratio">10.2:1</div>
+<span class="grade grade-aaa">AAA</span>
+</div>
+<div class="contrast-card" style="background:#FFFFFF;color:#D97706;border:1px solid #E2E8F0">
+<div class="label">Amber on White</div>
+<div class="ratio">3.06:1</div>
+<span class="grade grade-aa-large">AA Large Only</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 4. TYPOGRAPHY -->
+<section id="type">
+<div class="container">
+<h2>4. Typography</h2>
+<p class="section-desc">Primary: Inter. Chosen for its excellent legibility at small sizes, clean geometric forms, and professional but warm character.</p>
+<div class="css-block"><span class="kw">font-family</span>: <span class="str">'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif</span>;</div>
+
+<h3>Type Scale</h3>
+<div class="type-row"><span class="type-label">Display</span><span style="font-size:48px;font-weight:700;letter-spacing:-.02em;line-height:1.1">Aa</span><span class="type-meta">48px · 700 · 1.1</span></div>
+<div class="type-row"><span class="type-label">H1</span><span style="font-size:36px;font-weight:700;letter-spacing:-.01em;line-height:1.2">Aa</span><span class="type-meta">36px · 700 · 1.2</span></div>
+<div class="type-row"><span class="type-label">H2</span><span style="font-size:30px;font-weight:600;letter-spacing:-.01em;line-height:1.3">Aa</span><span class="type-meta">30px · 600 · 1.3</span></div>
+<div class="type-row"><span class="type-label">H3</span><span style="font-size:24px;font-weight:600;line-height:1.4">Aa</span><span class="type-meta">24px · 600 · 1.4</span></div>
+<div class="type-row"><span class="type-label">H4</span><span style="font-size:20px;font-weight:600;line-height:1.4">Aa</span><span class="type-meta">20px · 600 · 1.4</span></div>
+<div class="type-row"><span class="type-label">Body Large</span><span style="font-size:18px;font-weight:400;line-height:1.6">Aa</span><span class="type-meta">18px · 400 · 1.6</span></div>
+<div class="type-row"><span class="type-label">Body</span><span style="font-size:16px;font-weight:400;line-height:1.6">Aa</span><span class="type-meta">16px · 400 · 1.6</span></div>
+<div class="type-row"><span class="type-label">Body Small</span><span style="font-size:14px;font-weight:400;line-height:1.5">Aa</span><span class="type-meta">14px · 400 · 1.5</span></div>
+<div class="type-row"><span class="type-label">Caption</span><span style="font-size:12px;font-weight:500;line-height:1.4;letter-spacing:.02em">Aa</span><span class="type-meta">12px · 500 · 1.4</span></div>
+<div class="type-row"><span class="type-label">Overline</span><span style="font-size:11px;font-weight:600;line-height:1.4;letter-spacing:.08em;text-transform:uppercase">Aa</span><span class="type-meta">11px · 600 · .08em</span></div>
+</div>
+</section>
+
+<!-- 5. SPACING & LAYOUT -->
+<section id="spacing">
+<div class="container">
+<h2>5. Spacing & Layout</h2>
+<p class="section-desc">All spacing uses a 4px base unit for consistent vertical and horizontal rhythm.</p>
+
+<h3>Spacing Scale</h3>
+<div class="spacing-row"><span class="spacing-label">space-1</span><div class="spacing-bar" style="width:4px"></div><span class="spacing-val">4px</span><span class="spacing-use">Tight inner padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-2</span><div class="spacing-bar" style="width:8px"></div><span class="spacing-val">8px</span><span class="spacing-use">Small padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-3</span><div class="spacing-bar" style="width:12px"></div><span class="spacing-val">12px</span><span class="spacing-use">Form field padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-4</span><div class="spacing-bar" style="width:16px"></div><span class="spacing-val">16px</span><span class="spacing-use">Default component</span></div>
+<div class="spacing-row"><span class="spacing-label">space-5</span><div class="spacing-bar" style="width:20px"></div><span class="spacing-val">20px</span><span class="spacing-use">Card padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-6</span><div class="spacing-bar" style="width:24px"></div><span class="spacing-val">24px</span><span class="spacing-use">Section padding</span></div>
+<div class="spacing-row"><span class="spacing-label">space-8</span><div class="spacing-bar" style="width:32px"></div><span class="spacing-val">32px</span><span class="spacing-use">Between sections</span></div>
+<div class="spacing-row"><span class="spacing-label">space-10</span><div class="spacing-bar" style="width:40px"></div><span class="spacing-val">40px</span><span class="spacing-use">Major spacing</span></div>
+<div class="spacing-row"><span class="spacing-label">space-12</span><div class="spacing-bar" style="width:48px"></div><span class="spacing-val">48px</span><span class="spacing-use">Section dividers</span></div>
+<div class="spacing-row"><span class="spacing-label">space-16</span><div class="spacing-bar" style="width:64px"></div><span class="spacing-val">64px</span><span class="spacing-use">Page margins</span></div>
+
+<h3>Border Radius</h3>
+<div class="radius-row"><span class="radius-token">rounded-none</span><span class="radius-val">0</span><div class="radius-demo" style="border-radius:0"></div><span class="radius-use">Tables</span></div>
+<div class="radius-row"><span class="radius-token">rounded-sm</span><span class="radius-val">4px</span><div class="radius-demo" style="border-radius:4px"></div><span class="radius-use">Badges</span></div>
+<div class="radius-row"><span class="radius-token">rounded</span><span class="radius-val">6px</span><div class="radius-demo" style="border-radius:6px"></div><span class="radius-use">Inputs, buttons</span></div>
+<div class="radius-row"><span class="radius-token">rounded-md</span><span class="radius-val">8px</span><div class="radius-demo" style="border-radius:8px"></div><span class="radius-use">Cards, modals</span></div>
+<div class="radius-row"><span class="radius-token">rounded-lg</span><span class="radius-val">12px</span><div class="radius-demo" style="border-radius:12px"></div><span class="radius-use">Large containers</span></div>
+<div class="radius-row"><span class="radius-token">rounded-xl</span><span class="radius-val">16px</span><div class="radius-demo" style="border-radius:16px"></div><span class="radius-use">Feature panels</span></div>
+<div class="radius-row"><span class="radius-token">rounded-full</span><span class="radius-val">9999px</span><div class="radius-demo" style="border-radius:9999px"></div><span class="radius-use">Avatars, pills</span></div>
+
+<h3>Breakpoints</h3>
+<div class="bp-grid">
+<div class="bp-card"><div class="bp-name">sm</div><div class="bp-width">375px</div><div class="bp-target">Mobile</div></div>
+<div class="bp-card"><div class="bp-name">md</div><div class="bp-width">768px</div><div class="bp-target">Tablet</div></div>
+<div class="bp-card"><div class="bp-name">lg</div><div class="bp-width">1024px</div><div class="bp-target">Small desktop</div></div>
+<div class="bp-card"><div class="bp-name">xl</div><div class="bp-width">1440px</div><div class="bp-target">Desktop</div></div>
+<div class="bp-card"><div class="bp-name">2xl</div><div class="bp-width">1920px</div><div class="bp-target">Large desktop</div></div>
+</div>
+
+<h3>Z-Index Scale</h3>
+<div class="z-row"><span class="z-token">z-base</span><span class="z-value">0</span><span class="z-usage">Default</span></div>
+<div class="z-row"><span class="z-token">z-dropdown</span><span class="z-value">10</span><span class="z-usage">Dropdowns, popovers</span></div>
+<div class="z-row"><span class="z-token">z-sticky</span><span class="z-value">20</span><span class="z-usage">Sticky headers, navbars</span></div>
+<div class="z-row"><span class="z-token">z-overlay</span><span class="z-value">30</span><span class="z-usage">Modal backdrops</span></div>
+<div class="z-row"><span class="z-token">z-modal</span><span class="z-value">40</span><span class="z-usage">Modal dialogs</span></div>
+<div class="z-row"><span class="z-token">z-toast</span><span class="z-value">50</span><span class="z-usage">Toast notifications</span></div>
+<p style="margin-top:16px;font-size:13px;color:var(--text-muted)">Rule: Never use arbitrary z-index values. Always use this scale.</p>
+</div>
+</section>
+
+<!-- 6. COMPONENTS -->
+<section id="components">
+<div class="container">
+<h2>6. Components</h2>
+<p class="section-desc">Live-rendered component examples. Every variant, every state.</p>
+
+<h3>Buttons</h3>
+<div class="demo-card">
+<p style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Variants</p>
+<div class="demo-row">
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-accent">Accent</button>
+<button class="btn btn-outline">Outline</button>
+<button class="btn btn-ghost">Ghost</button>
+<button class="btn btn-destructive">Destructive</button>
+</div>
+<p style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:24px 0 16px">Sizes</p>
+<div class="demo-row">
+<button class="btn btn-primary btn-sm">Small</button>
+<button class="btn btn-primary">Default</button>
+<button class="btn btn-primary btn-lg">Large</button>
+</div>
+</div>
+
+<h3>Form Inputs</h3>
+<div class="demo-card" style="max-width:500px">
+<div style="margin-bottom:20px">
+<label class="input-label">Email address</label>
+<input class="input" type="email" placeholder="you@example.com">
+<div class="input-hint">We'll never share your email.</div>
+</div>
+<div style="margin-bottom:20px">
+<label class="input-label">Password</label>
+<input class="input input-error" type="password" value="abc">
+<div class="input-error-msg">Password must be at least 8 characters.</div>
+</div>
+<div>
+<label class="input-label">Disabled</label>
+<input class="input" type="text" placeholder="Cannot edit" disabled style="opacity:.5;cursor:not-allowed">
+</div>
+</div>
+
+<h3>Cards</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+<div class="card">
+<h4 style="font-size:16px;font-weight:600;margin-bottom:8px">Member Record</h4>
+<p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">Maria Santos — Baptized 2024-03-15</p>
+<span class="badge badge-success">Active</span>
+</div>
+<div class="card">
+<h4 style="font-size:16px;font-weight:600;margin-bottom:8px">Sacrament Record</h4>
+<p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">First Communion — St. Joseph Parish</p>
+<span class="badge badge-accent">Pending</span>
+</div>
+<div class="card">
+<h4 style="font-size:16px;font-weight:600;margin-bottom:8px">Household</h4>
+<p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">Santos Family — 4 members</p>
+<span class="badge badge-muted">Inactive</span>
+</div>
+</div>
+
+<h3>Badges</h3>
+<div class="demo-card">
+<div class="demo-row">
+<span class="badge badge-success">Active</span>
+<span class="badge badge-muted">Inactive</span>
+<span class="badge badge-accent">Pending</span>
+<span class="badge badge-error">Error</span>
+</div>
+</div>
+
+<h3>Alerts</h3>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div class="alert alert-success" role="alert">
+<svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+<span>Record saved successfully. Member added to database.</span>
+</div>
+<div class="alert alert-error" role="alert">
+<svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+<span>Invalid date format. Please use YYYY-MM-DD.</span>
+</div>
+<div class="alert alert-warning" role="alert">
+<svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+<span>This household has no primary contact assigned.</span>
+</div>
+<div class="alert alert-info" role="alert">
+<svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+<span>Parish year rolls over on September 1. Records will auto-archive.</span>
+</div>
+</div>
+
+<h3>Table</h3>
+<div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px">
+<table class="demo-table">
+<thead><tr><th>Member</th><th>Sacrament</th><th>Date</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Maria Santos</td><td>Baptism</td><td>2024-03-15</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>Jose Reyes</td><td>First Communion</td><td>2024-05-20</td><td><span class="badge badge-accent">Pending</span></td></tr>
+<tr><td>Ana Cruz</td><td>Confirmation</td><td>2024-09-08</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>Carlos Lopez</td><td>Marriage</td><td>2024-12-01</td><td><span class="badge badge-muted">Scheduled</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Navigation</h3>
+<div class="nav-demo">
+<div class="brand">
+<svg viewBox="0 0 200 200" width="24" height="24"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#f8fafc" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/></svg>
+ParishHub
+</div>
+<div class="links">
+<a href="#" class="active">Dashboard</a>
+<a href="#">Members</a>
+<a href="#">Sacraments</a>
+<a href="#">Reports</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 6. COMPONENTS -->
+<section id="components">
+<div class="container">
+<h2>6. Components</h2>
+<p class="section-desc">Live-rendered component examples. Every variant, every state.</p>
+
+<h3>Buttons</h3>
+<div class="demo-card">
+<p style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Variants</p>
+<div class="demo-row">
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-accent">Accent</button>
+<button class="btn btn-outline">Outline</button>
+<button class="btn btn-ghost">Ghost</button>
+<button class="btn btn-destructive">Destructive</button>
+</div>
+<p style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:24px 0 16px">Sizes</p>
+<div class="demo-row">
+<button class="btn btn-primary btn-sm">Small</button>
+<button class="btn btn-primary">Default</button>
+<button class="btn btn-primary btn-lg">Large</button>
+</div>
+</div>
+
+<h3>Form Inputs</h3>
+<div class="demo-card" style="max-width:500px">
+<div style="margin-bottom:20px">
+<label class="input-label">Email address</label>
+<input class="input" type="email" placeholder="you@example.com">
+<div class="input-hint">We'll never share your email.</div>
+</div>
+<div style="margin-bottom:20px">
+<label class="input-label">Password</label>
+<input class="input input-error" type="password" value="abc">
+<div class="input-error-msg">Password must be at least 8 characters.</div>
+</div>
+<div>
+<label class="input-label">Disabled</label>
+<input class="input" type="text" placeholder="Cannot edit" disabled style="opacity:.5;cursor:not-allowed">
+</div>
+</div>
+
+<h3>Cards</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+<div class="card">
+<h4 style="font-size:16px;font-weight:600;margin-bottom:8px">Member Record</h4>
+<p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">Maria Santos — Baptized 2024-03-15</p>
+<span class="badge badge-success">Active</span>
+</div>
+<div class="card">
+<h4 style="font-size:16px;font-weight:600;margin-bottom:8px">Sacrament Record</h4>
+<p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">First Communion — St. Joseph Parish</p>
+<span class="badge badge-accent">Pending</span>
+</div>
+<div class="card">
+<h4 style="font-size:16px;font-weight:600;margin-bottom:8px">Household</h4>
+<p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">Santos Family — 4 members</p>
+<span class="badge badge-muted">Inactive</span>
+</div>
+</div>
+
+<h3>Badges</h3>
+<div class="demo-card">
+<div class="demo-row">
+<span class="badge badge-success">Active</span>
+<span class="badge badge-muted">Inactive</span>
+<span class="badge badge-accent">Pending</span>
+<span class="badge badge-error">Error</span>
+</div>
+</div>
+
+<h3>Alerts</h3>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div class="alert alert-success" role="alert">
+<svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+<span>Record saved successfully. Member added to database.</span>
+</div>
+<div class="alert alert-error" role="alert">
+<svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+<span>Invalid date format. Please use YYYY-MM-DD.</span>
+</div>
+<div class="alert alert-warning" role="alert">
+<svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+<span>This household has no primary contact assigned.</span>
+</div>
+<div class="alert alert-info" role="alert">
+<svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+<span>Parish year rolls over on September 1. Records will auto-archive.</span>
+</div>
+</div>
+
+<h3>Table</h3>
+<div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px">
+<table class="demo-table">
+<thead><tr><th>Member</th><th>Sacrament</th><th>Date</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Maria Santos</td><td>Baptism</td><td>2024-03-15</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>Jose Reyes</td><td>First Communion</td><td>2024-05-20</td><td><span class="badge badge-accent">Pending</span></td></tr>
+<tr><td>Ana Cruz</td><td>Confirmation</td><td>2024-09-08</td><td><span class="badge badge-success">Complete</span></td></tr>
+<tr><td>Carlos Lopez</td><td>Marriage</td><td>2024-12-01</td><td><span class="badge badge-muted">Scheduled</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Navigation</h3>
+<div class="nav-demo">
+<div class="brand">
+<svg viewBox="0 0 200 200" width="24" height="24"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#f8fafc" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/></svg>
+ParishHub
+</div>
+<div class="links">
+<a href="#" class="active">Dashboard</a>
+<a href="#">Members</a>
+<a href="#">Sacraments</a>
+<a href="#">Reports</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 7. DARK MODE -->
+<section id="darkmode">
+<div class="container">
+<h2>7. Dark Mode</h2>
+<p class="section-desc">Dark mode is not a color inversion — it is a carefully tuned alternate palette that maintains the same visual hierarchy and brand identity.</p>
+
+<h3>Dark Mode Palette</h3>
+<div class="dark-preview">
+<div class="dark-row">
+<div class="dark-swatch"><div class="sw" style="background:#0F172A;border:1px solid #334155"></div><p>Background</p><span class="hex">#0F172A</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#1E293B"></div><p>Subtle</p><span class="hex">#1E293B</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#334155"></div><p>Muted</p><span class="hex">#334155</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#475569"></div><p>Border Strong</p><span class="hex">#475569</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#F8FAFC"></div><p>Text Primary</p><span class="hex">#F8FAFC</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#CBD5E1"></div><p>Text Secondary</p><span class="hex">#CBD5E1</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#94A3B8"></div><p>Text Muted</p><span class="hex">#94A3B8</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#FBBF24"></div><p>Accent</p><span class="hex">#FBBF24</span></div>
+</div>
+<div style="margin-top:24px">
+<svg viewBox="0 0 200 200" width="80" height="80" style="display:block;margin:0 auto"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#f8fafc" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#f8fafc" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="112" x2="100" y2="104" stroke="#D97706" stroke-width="2"/><line x1="96" y1="108" x2="104" y2="108" stroke="#D97706" stroke-width="2"/><rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#f8fafc" stroke-width="1.5"/></svg>
+<p style="text-align:center;color:#94A3B8;font-size:13px;margin-top:8px">Logo in dark mode — white outlines, amber cross stays</p>
+</div>
+</div>
+
+<h3>Dark Mode Rules</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+<div class="card" style="padding:16px"><strong style="font-size:14px">1.</strong> <span style="font-size:14px;color:var(--text-secondary)">Logo switches to dark variant (white outlines, amber cross stays)</span></div>
+<div class="card" style="padding:16px"><strong style="font-size:14px">2.</strong> <span style="font-size:14px;color:var(--text-secondary)">Accent lightens from #D97706 to #FBBF24 for contrast</span></div>
+<div class="card" style="padding:16px"><strong style="font-size:14px">3.</strong> <span style="font-size:14px;color:var(--text-secondary)">Text muted stays #94A3B8 — works on both backgrounds</span></div>
+<div class="card" style="padding:16px"><strong style="font-size:14px">4.</strong> <span style="font-size:14px;color:var(--text-secondary)">Semantic colors (success, error, info) do not change</span></div>
+</div>
+</div>
+</section>
+
+<!-- 8. ICONOGRAPHY -->
+<section id="icons">
+<div class="container">
+<h2>8. Iconography</h2>
+<p class="section-desc">Primary: Lucide. Fallback: Heroicons. Outline style, 1.5px stroke, round line cap and join.</p>
+
+<h3>Icon Sizes</h3>
+<div style="overflow-x:auto">
+<table class="icon-table">
+<thead><tr><th>Token</th><th>Size</th><th>Usage</th><th>Preview</th></tr></thead>
+<tbody>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-xs</td><td>12px</td><td>Inline with small text</td><td><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-sm</td><td>16px</td><td>Inline with body text</td><td><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-md</td><td>20px</td><td>Default — buttons, lists</td><td><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-lg</td><td>24px</td><td>Section headers</td><td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-xl</td><td>32px</td><td>Feature highlights</td><td><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-2xl</td><td>48px</td><td>Hero illustrations</td><td><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- 9. MOTION & ANIMATION -->
+<section id="motion">
+<div class="container">
+<h2>9. Motion & Animation</h2>
+<p class="section-desc">Motion supports meaning — never decorative only. Always respect prefers-reduced-motion.</p>
+
+<h3>Duration Scale</h3>
+<div class="motion-grid">
+<div class="motion-card"><div class="action">Button hover</div><div class="dur">150ms</div><div class="ease">ease-out</div></div>
+<div class="motion-card"><div class="action">Card hover</div><div class="dur">200ms</div><div class="ease">ease-out</div></div>
+<div class="motion-card"><div class="action">Modal enter</div><div class="dur">200ms</div><div class="ease">ease-out</div></div>
+<div class="motion-card"><div class="action">Toast enter</div><div class="dur">250ms</div><div class="ease">ease-out</div></div>
+<div class="motion-card"><div class="action">Page transition</div><div class="dur">300ms</div><div class="ease">ease-in-out</div></div>
+<div class="motion-card"><div class="action">Skeleton pulse</div><div class="dur">1.5s</div><div class="ease">infinite</div></div>
+</div>
+
+<h3>Reduced Motion</h3>
+<div class="css-block"><span class="kw">@media</span> (<span class="str">prefers-reduced-motion: reduce</span>) {
+  *, *::before, *::after {
+    <span class="kw">animation-duration</span>: <span class="str">0.01ms</span> !important;
+    <span class="kw">animation-iteration-count</span>: <span class="str">1</span> !important;
+    <span class="kw">transition-duration</span>: <span class="str">0.01ms</span> !important;
+  }
+}</div>
+</div>
+</section>
+
+<!-- 10. ACCESSIBILITY -->
+<section id="a11y">
+<div class="container">
+<h2>10. Accessibility</h2>
+<p class="section-desc">Target: WCAG AAA. Every release must pass this checklist.</p>
+
+<h3>Contrast & Color</h3>
+<ul class="checklist">
+<li>Text contrast 4.5:1 minimum (normal text)</li>
+<li>Large text (18px+) contrast 3:1 minimum</li>
+<li>Color never sole indicator of state</li>
+<li>Focus ring visible on all interactive elements</li>
+</ul>
+
+<h3>Interaction</h3>
+<ul class="checklist">
+<li>44×44px minimum touch targets</li>
+<li>cursor-pointer on all clickable elements</li>
+<li>Hover transitions 150–300ms</li>
+<li>prefers-reduced-motion respected</li>
+</ul>
+
+<h3>Semantic HTML</h3>
+<ul class="checklist">
+<li>All images have meaningful alt text</li>
+<li>Form inputs have associated &lt;label&gt; elements</li>
+<li>ARIA labels on icon-only buttons</li>
+<li>Skip navigation link present</li>
+<li>Semantic elements: nav, main, section, article</li>
+</ul>
+
+<h3>Pre-Delivery</h3>
+<ul class="checklist">
+<li>No emojis — use SVG icons (Lucide)</li>
+<li>Responsive: 375px, 768px, 1024px, 1440px</li>
+<li>Loading states on form submissions</li>
+<li>Lazy load heavy assets</li>
+</ul>
+</div>
+</section>
+
+<!-- 11. IMPLEMENTATION -->
+<section id="impl">
+<div class="container">
+<h2>11. Implementation</h2>
+<p class="section-desc">CSS custom properties and Tailwind config for direct copy-paste into your project.</p>
+
+<h3>CSS Custom Properties</h3>
+<div class="css-block"><span class="kw">:root</span> {
+  <span class="cmt">/* Primary */</span>
+  <span class="kw">--color-primary</span>: <span class="str">#0F172A</span>;
+  <span class="kw">--color-primary-light</span>: <span class="str">#1E293B</span>;
+  <span class="kw">--color-primary-muted</span>: <span class="str">#475569</span>;
+
+  <span class="cmt">/* Accent */</span>
+  <span class="kw">--color-accent</span>: <span class="str">#D97706</span>;
+  <span class="kw">--color-accent-light</span>: <span class="str">#FBBF24</span>;
+  <span class="kw">--color-accent-muted</span>: <span class="str">#FFFBEB</span>;
+
+  <span class="cmt">/* Neutral */</span>
+  <span class="kw">--color-bg</span>: <span class="str">#FFFFFF</span>;
+  <span class="kw">--color-bg-subtle</span>: <span class="str">#F8FAFC</span>;
+  <span class="kw">--color-bg-muted</span>: <span class="str">#F1F5F9</span>;
+  <span class="kw">--color-border</span>: <span class="str">#E2E8F0</span>;
+  <span class="kw">--color-border-strong</span>: <span class="str">#CBD5E1</span>;
+  <span class="kw">--color-text</span>: <span class="str">#0F172A</span>;
+  <span class="kw">--color-text-secondary</span>: <span class="str">#475569</span>;
+  <span class="kw">--color-text-muted</span>: <span class="str">#94A3B8</span>;
+
+  <span class="cmt">/* Semantic */</span>
+  <span class="kw">--color-success</span>: <span class="str">#059669</span>;
+  <span class="kw">--color-error</span>: <span class="str">#DC2626</span>;
+  <span class="kw">--color-warning</span>: <span class="str">#D97706</span>;
+  <span class="kw">--color-info</span>: <span class="str">#2563EB</span>;
+
+  <span class="cmt">/* Z-Index */</span>
+  <span class="kw">--z-dropdown</span>: <span class="str">10</span>;
+  <span class="kw">--z-sticky</span>: <span class="str">20</span>;
+  <span class="kw">--z-overlay</span>: <span class="str">30</span>;
+  <span class="kw">--z-modal</span>: <span class="str">40</span>;
+  <span class="kw">--z-toast</span>: <span class="str">50</span>;
+}</div>
+
+<h3>Tailwind Config</h3>
+<div class="css-block"><span class="cmt">// tailwind.config.js — ParishHub Design Tokens</span>
+<span class="kw">module</span>.<span class="kw">exports</span> = {
+  theme: {
+    extend: {
+      colors: {
+        primary: { DEFAULT: <span class="str">'#0F172A'</span>, light: <span class="str">'#1E293B'</span>, muted: <span class="str">'#475569'</span> },
+        accent:  { DEFAULT: <span class="str">'#D97706'</span>, light: <span class="str">'#FBBF24'</span>, muted: <span class="str">'#FFFBEB'</span> },
+      },
+      fontFamily: {
+        sans: [<span class="str">'Inter'</span>, <span class="str">'-apple-system'</span>, <span class="str">'sans-serif'</span>],
+      },
+      zIndex: {
+        dropdown: <span class="str">'10'</span>, sticky: <span class="str">'20'</span>,
+        overlay: <span class="str">'30'</span>, modal: <span class="str">'40'</span>, toast: <span class="str">'50'</span>,
+      },
+    },
+  },
+}</div>
+</div>
+</section>
+
+<!-- 12. BRAND RULES -->
+<section id="rules">
+<div class="container">
+<h2>12. Brand Rules</h2>
+<p class="section-desc">The non-negotiables. Follow these or don't ship.</p>
+<div class="brand-rules">
+<div class="rule-col rule-do">
+<h3 style="color:var(--success)">Do</h3>
+<ul>
+<li>Use the M1 shield logo as the primary brand mark</li>
+<li>Keep light theme as the default experience</li>
+<li>Use amber sparingly and purposefully</li>
+<li>Maintain clear space around the logo</li>
+<li>Use Inter for all text</li>
+<li>Follow the spacing scale — no magic numbers</li>
+</ul>
+</div>
+<div class="rule-col rule-dont">
+<h3 style="color:var(--error)">Don't</h3>
+<ul>
+<li>Don't modify the logo colors, proportions, or orientation</li>
+<li>Don't use amber as body text on white backgrounds</li>
+<li>Don't introduce colors outside this palette</li>
+<li>Don't use arbitrary z-index values</li>
+<li>Don't use emojis as icons</li>
+<li>Don't skip accessibility checks</li>
+<li>Don't animate the logo without approval</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="container">
+<p><em>This document is the single source of truth for ParishHub visual design.</em></p>
+<p style="margin-top:8px">Version 2.0 · Last Updated 2026-04-12 · M1 Shield Cathedral</p>
+</div>
+</footer>
+
+<script>
+function toggleTheme(){
+  const b=document.body;
+  const btn=document.getElementById('themeBtn');
+  if(b.getAttribute('data-theme')==='dark'){
+    b.removeAttribute('data-theme');
+    btn.textContent='🌙 Dark';
+  }else{
+    b.setAttribute('data-theme','dark');
+    btn.textContent='☀️ Light';
+  }
+}
+</script>
+</body>
+</html>
+
+<!-- 7. DARK MODE -->
+<section id="darkmode">
+<div class="container">
+<h2>7. Dark Mode</h2>
+<p class="section-desc">Dark mode is not a color inversion — it is a carefully tuned alternate palette that maintains the same visual hierarchy and brand identity.</p>
+
+<h3>Dark Mode Palette</h3>
+<div class="dark-preview">
+<div class="dark-row">
+<div class="dark-swatch"><div class="sw" style="background:#0F172A;border:1px solid #334155"></div><p>Background</p><span class="hex">#0F172A</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#1E293B"></div><p>Subtle</p><span class="hex">#1E293B</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#334155"></div><p>Muted</p><span class="hex">#334155</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#475569"></div><p>Border Strong</p><span class="hex">#475569</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#F8FAFC"></div><p>Text Primary</p><span class="hex">#F8FAFC</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#CBD5E1"></div><p>Text Secondary</p><span class="hex">#CBD5E1</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#94A3B8"></div><p>Text Muted</p><span class="hex">#94A3B8</span></div>
+<div class="dark-swatch"><div class="sw" style="background:#FBBF24"></div><p>Accent</p><span class="hex">#FBBF24</span></div>
+</div>
+<div style="margin-top:24px">
+<svg viewBox="0 0 200 200" width="80" height="80" style="display:block;margin:0 auto"><path d="M100,22 L166,54 L166,118 Q166,168 100,186 Q34,168 34,118 L34,54 Z" fill="none" stroke="#f8fafc" stroke-width="5"/><rect x="96" y="44" width="8" height="52" rx="1" fill="#D97706"/><rect x="80" y="58" width="40" height="8" rx="1" fill="#D97706"/><path d="M80,156 L80,130 L100,114 L120,130 L120,156 Z" fill="none" stroke="#f8fafc" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="112" x2="100" y2="104" stroke="#D97706" stroke-width="2"/><line x1="96" y1="108" x2="104" y2="108" stroke="#D97706" stroke-width="2"/><rect x="96" y="144" width="8" height="12" rx="4" fill="none" stroke="#f8fafc" stroke-width="1.5"/></svg>
+<p style="text-align:center;color:#94A3B8;font-size:13px;margin-top:8px">Logo in dark mode — white outlines, amber cross stays</p>
+</div>
+</div>
+
+<h3>Dark Mode Rules</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+<div class="card" style="padding:16px"><strong style="font-size:14px">1.</strong> <span style="font-size:14px;color:var(--text-secondary)">Logo switches to dark variant (white outlines, amber cross stays)</span></div>
+<div class="card" style="padding:16px"><strong style="font-size:14px">2.</strong> <span style="font-size:14px;color:var(--text-secondary)">Accent lightens from #D97706 to #FBBF24 for contrast</span></div>
+<div class="card" style="padding:16px"><strong style="font-size:14px">3.</strong> <span style="font-size:14px;color:var(--text-secondary)">Text muted stays #94A3B8 — works on both backgrounds</span></div>
+<div class="card" style="padding:16px"><strong style="font-size:14px">4.</strong> <span style="font-size:14px;color:var(--text-secondary)">Semantic colors (success, error, info) do not change</span></div>
+</div>
+</div>
+</section>
+
+<!-- 8. ICONOGRAPHY -->
+<section id="icons">
+<div class="container">
+<h2>8. Iconography</h2>
+<p class="section-desc">Primary: Lucide. Fallback: Heroicons. Outline style, 1.5px stroke, round line cap and join.</p>
+
+<h3>Icon Sizes</h3>
+<div style="overflow-x:auto">
+<table class="icon-table">
+<thead><tr><th>Token</th><th>Size</th><th>Usage</th><th>Preview</th></tr></thead>
+<tbody>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-xs</td><td>12px</td><td>Inline with small text</td><td><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-sm</td><td>16px</td><td>Inline with body text</td><td><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-md</td><td>20px</td><td>Default — buttons, lists</td><td><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-lg</td><td>24px</td><td>Section headers</td><td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-xl</td><td>32px</td><td>Feature highlights</td><td><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+<tr><td style="font-family:'SF Mono',monospace;color:var(--accent)">icon-2xl</td><td>48px</td><td>Hero illustrations</td><td><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- 9. MOTION & ANIMATION -->
+<section id="motion">
+<div class="container">
+<h2>9. Motion & Animation</h2>
+<p class="section-desc">Motion supports meaning — never decorative only. Always respect prefers-reduced-motion.</p>
+
+<h3>Duration Scale</h3>
+<div class="motion-grid">
+<div class="motion-card"><div class="action">Button hover</div><div class="dur">150ms</div><div class="ease">ease-out</div></div>
+<div class="motion-card"><div class="action">Card hover</div><div class="dur">200ms</div><div class="ease">ease-out</div></div>
+<div class="motion-card"><div class="action">Modal enter</div><div class="dur">200ms</div><div class="ease">ease-out</div></div>
+<div class="motion-card"><div class="action">Toast enter</div><div class="dur">250ms</div><div class="ease">ease-out</div></div>
+<div class="motion-card"><div class="action">Page transition</div><div class="dur">300ms</div><div class="ease">ease-in-out</div></div>
+<div class="motion-card"><div class="action">Skeleton pulse</div><div class="dur">1.5s</div><div class="ease">infinite</div></div>
+</div>
+
+<h3>Reduced Motion</h3>
+<div class="css-block"><span class="kw">@media</span> (<span class="str">prefers-reduced-motion: reduce</span>) {
+  *, *::before, *::after {
+    <span class="kw">animation-duration</span>: <span class="str">0.01ms</span> !important;
+    <span class="kw">animation-iteration-count</span>: <span class="str">1</span> !important;
+    <span class="kw">transition-duration</span>: <span class="str">0.01ms</span> !important;
+  }
+}</div>
+</div>
+</section>
+
+<!-- 10. ACCESSIBILITY -->
+<section id="a11y">
+<div class="container">
+<h2>10. Accessibility</h2>
+<p class="section-desc">Target: WCAG AAA. Every release must pass this checklist.</p>
+
+<h3>Contrast & Color</h3>
+<ul class="checklist">
+<li>Text contrast 4.5:1 minimum (normal text)</li>
+<li>Large text (18px+) contrast 3:1 minimum</li>
+<li>Color never sole indicator of state</li>
+<li>Focus ring visible on all interactive elements</li>
+</ul>
+
+<h3>Interaction</h3>
+<ul class="checklist">
+<li>44×44px minimum touch targets</li>
+<li>cursor-pointer on all clickable elements</li>
+<li>Hover transitions 150–300ms</li>
+<li>prefers-reduced-motion respected</li>
+</ul>
+
+<h3>Semantic HTML</h3>
+<ul class="checklist">
+<li>All images have meaningful alt text</li>
+<li>Form inputs have associated &lt;label&gt; elements</li>
+<li>ARIA labels on icon-only buttons</li>
+<li>Skip navigation link present</li>
+<li>Semantic elements: nav, main, section, article</li>
+</ul>
+
+<h3>Pre-Delivery</h3>
+<ul class="checklist">
+<li>No emojis — use SVG icons (Lucide)</li>
+<li>Responsive: 375px, 768px, 1024px, 1440px</li>
+<li>Loading states on form submissions</li>
+<li>Lazy load heavy assets</li>
+</ul>
+</div>
+</section>
+
+<!-- 11. IMPLEMENTATION -->
+<section id="impl">
+<div class="container">
+<h2>11. Implementation</h2>
+<p class="section-desc">CSS custom properties and Tailwind config for direct copy-paste into your project.</p>
+
+<h3>CSS Custom Properties</h3>
+<div class="css-block"><span class="kw">:root</span> {
+  <span class="cmt">/* Primary */</span>
+  <span class="kw">--color-primary</span>: <span class="str">#0F172A</span>;
+  <span class="kw">--color-primary-light</span>: <span class="str">#1E293B</span>;
+  <span class="kw">--color-primary-muted</span>: <span class="str">#475569</span>;
+
+  <span class="cmt">/* Accent */</span>
+  <span class="kw">--color-accent</span>: <span class="str">#D97706</span>;
+  <span class="kw">--color-accent-light</span>: <span class="str">#FBBF24</span>;
+  <span class="kw">--color-accent-muted</span>: <span class="str">#FFFBEB</span>;
+
+  <span class="cmt">/* Neutral */</span>
+  <span class="kw">--color-bg</span>: <span class="str">#FFFFFF</span>;
+  <span class="kw">--color-bg-subtle</span>: <span class="str">#F8FAFC</span>;
+  <span class="kw">--color-bg-muted</span>: <span class="str">#F1F5F9</span>;
+  <span class="kw">--color-border</span>: <span class="str">#E2E8F0</span>;
+  <span class="kw">--color-border-strong</span>: <span class="str">#CBD5E1</span>;
+  <span class="kw">--color-text</span>: <span class="str">#0F172A</span>;
+  <span class="kw">--color-text-secondary</span>: <span class="str">#475569</span>;
+  <span class="kw">--color-text-muted</span>: <span class="str">#94A3B8</span>;
+
+  <span class="cmt">/* Semantic */</span>
+  <span class="kw">--color-success</span>: <span class="str">#059669</span>;
+  <span class="kw">--color-error</span>: <span class="str">#DC2626</span>;
+  <span class="kw">--color-warning</span>: <span class="str">#D97706</span>;
+  <span class="kw">--color-info</span>: <span class="str">#2563EB</span>;
+
+  <span class="cmt">/* Z-Index */</span>
+  <span class="kw">--z-dropdown</span>: <span class="str">10</span>;
+  <span class="kw">--z-sticky</span>: <span class="str">20</span>;
+  <span class="kw">--z-overlay</span>: <span class="str">30</span>;
+  <span class="kw">--z-modal</span>: <span class="str">40</span>;
+  <span class="kw">--z-toast</span>: <span class="str">50</span>;
+}</div>
+
+<h3>Tailwind Config</h3>
+<div class="css-block"><span class="cmt">// tailwind.config.js — ParishHub Design Tokens</span>
+<span class="kw">module</span>.<span class="kw">exports</span> = {
+  theme: {
+    extend: {
+      colors: {
+        primary: { DEFAULT: <span class="str">'#0F172A'</span>, light: <span class="str">'#1E293B'</span>, muted: <span class="str">'#475569'</span> },
+        accent:  { DEFAULT: <span class="str">'#D97706'</span>, light: <span class="str">'#FBBF24'</span>, muted: <span class="str">'#FFFBEB'</span> },
+      },
+      fontFamily: {
+        sans: [<span class="str">'Inter'</span>, <span class="str">'-apple-system'</span>, <span class="str">'sans-serif'</span>],
+      },
+      zIndex: {
+        dropdown: <span class="str">'10'</span>, sticky: <span class="str">'20'</span>,
+        overlay: <span class="str">'30'</span>, modal: <span class="str">'40'</span>, toast: <span class="str">'50'</span>,
+      },
+    },
+  },
+}</div>
+</div>
+</section>
+
+<!-- 12. BRAND RULES -->
+<section id="rules">
+<div class="container">
+<h2>12. Brand Rules</h2>
+<p class="section-desc">The non-negotiables. Follow these or don't ship.</p>
+<div class="brand-rules">
+<div class="rule-col rule-do">
+<h3 style="color:var(--success)">Do</h3>
+<ul>
+<li>Use the M1 shield logo as the primary brand mark</li>
+<li>Keep light theme as the default experience</li>
+<li>Use amber sparingly and purposefully</li>
+<li>Maintain clear space around the logo</li>
+<li>Use Inter for all text</li>
+<li>Follow the spacing scale — no magic numbers</li>
+</ul>
+</div>
+<div class="rule-col rule-dont">
+<h3 style="color:var(--error)">Don't</h3>
+<ul>
+<li>Don't modify the logo colors, proportions, or orientation</li>
+<li>Don't use amber as body text on white backgrounds</li>
+<li>Don't introduce colors outside this palette</li>
+<li>Don't use arbitrary z-index values</li>
+<li>Don't use emojis as icons</li>
+<li>Don't skip accessibility checks</li>
+<li>Don't animate the logo without approval</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="container">
+<p><em>This document is the single source of truth for ParishHub visual design.</em></p>
+<p style="margin-top:8px">Version 2.0 · Last Updated 2026-04-12 · M1 Shield Cathedral</p>
+</div>
+</footer>
+
+<script>
+function toggleTheme(){
+  const b=document.body;
+  const btn=document.getElementById('themeBtn');
+  if(b.getAttribute('data-theme')==='dark'){
+    b.removeAttribute('data-theme');
+    btn.textContent='🌙 Dark';
+  }else{
+    b.setAttribute('data-theme','dark');
+    btn.textContent='☀️ Light';
+  }
+}
+</script>
 </body>
 </html>

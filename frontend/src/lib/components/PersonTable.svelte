@@ -49,22 +49,22 @@
 </script>
 
 <div class="overflow-x-auto" role="region" aria-label="People list">
-	<table class="min-w-full divide-y divide-gray-200" aria-label="People table">
-		<thead class="bg-gray-50">
+	<table class="min-w-full divide-y divide-brand-border" aria-label="People table">
+		<thead class="bg-brand-bg-subtle">
 			<tr>
 				<th
 					scope="col"
-					class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+					class="px-6 py-3 text-left text-xs font-medium text-brand-text-secondary uppercase tracking-wider"
 				>
 					<button
 						onclick={() => handleSort('last_name')}
-						class="group inline-flex items-center gap-1 hover:text-gray-700"
+						class="group inline-flex items-center gap-1 hover:text-brand-primary"
 					>
 						Name
 						<span
 							class="flex-none rounded {sortBy === 'last_name'
-								? 'text-gray-900'
-								: 'text-gray-400 group-hover:text-gray-500'}"
+								? 'text-brand-primary'
+								: 'text-brand-text-muted group-hover:text-brand-text-secondary'}"
 						>
 							{#if sortBy === 'last_name'}
 								{#if sortOrder === 'asc'}
@@ -105,13 +105,13 @@
 				>
 					<button
 						onclick={() => handleSort('date_of_birth')}
-						class="group inline-flex items-center gap-1 hover:text-gray-700"
+						class="group inline-flex items-center gap-1 hover:text-brand-primary"
 					>
 						Age
 						<span
 							class="flex-none rounded {sortBy === 'date_of_birth'
-								? 'text-gray-900'
-								: 'text-gray-400 group-hover:text-gray-500'}"
+								? 'text-brand-primary'
+								: 'text-brand-text-muted group-hover:text-brand-text-secondary'}"
 						>
 							{#if sortBy === 'date_of_birth'}
 								{#if sortOrder === 'asc'}
@@ -158,13 +158,13 @@
 				>
 					<button
 						onclick={() => handleSort('email')}
-						class="group inline-flex items-center gap-1 hover:text-gray-700"
+						class="group inline-flex items-center gap-1 hover:text-brand-primary"
 					>
 						Contact
 						<span
 							class="flex-none rounded {sortBy === 'email'
-								? 'text-gray-900'
-								: 'text-gray-400 group-hover:text-gray-500'}"
+								? 'text-brand-primary'
+								: 'text-brand-text-muted group-hover:text-brand-text-secondary'}"
 						>
 							{#if sortBy === 'email'}
 								{#if sortOrder === 'asc'}
@@ -213,7 +213,7 @@
 				</th>
 			</tr>
 		</thead>
-		<tbody class="bg-white divide-y divide-gray-200">
+		<tbody class="bg-white divide-y divide-brand-border">
 			{#each persons as person (person.id)}
 				<tr
 					onclick={() => onRowClick(person)}
@@ -226,13 +226,13 @@
 					tabindex="0"
 					role="button"
 					aria-label="View details for {formatName(person)}"
-					class="hover:bg-gray-50 cursor-pointer transition-colors"
+					class="hover:bg-brand-bg-subtle cursor-pointer transition-colors"
 				>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<div class="flex items-center">
-							<div class="text-sm font-medium text-gray-900">{formatName(person)}</div>
+							<div class="text-sm font-medium text-brand-primary">{formatName(person)}</div>
 							{#if person.death}
-								<span class="ml-2 inline-flex items-center text-gray-600" title="Deceased">
+								<span class="ml-2 inline-flex items-center text-brand-text-muted" title="Deceased">
 									<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 										<path
 											d="M12 2c.3 0 .5.2.5.5v9.5h9.5c.3 0 .5.2.5.5s-.2.5-.5.5H12.5v9.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V12.5H2c-.3 0-.5-.2-.5-.5s.2-.5.5-.5h9.5V2.5c0-.3.2-.5.5-.5z"
@@ -243,13 +243,15 @@
 						</div>
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
-						<div class="text-sm text-gray-900">{calculateAge(person.date_of_birth) ?? '-'}</div>
+						<div class="text-sm text-brand-primary">
+							{calculateAge(person.date_of_birth) ?? '-'}
+						</div>
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
-						<div class="text-sm text-gray-900">{formatGender(person.gender)}</div>
+						<div class="text-sm text-brand-primary">{formatGender(person.gender)}</div>
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
-						<div class="text-sm text-gray-900">{person.email || '-'}</div>
+						<div class="text-sm text-brand-primary">{person.email || '-'}</div>
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<SacramentBadges sacraments={person.sacraments} />
@@ -260,7 +262,7 @@
 								e.stopPropagation();
 								onRowClick(person);
 							}}
-							class="text-gray-400 hover:text-gray-600 mr-3"
+							class="text-brand-text-muted hover:text-brand-text-secondary mr-3"
 							aria-label="View {formatName(person)}"
 						>
 							<svg
@@ -290,7 +292,7 @@
 								e.stopPropagation();
 								onEdit(person);
 							}}
-							class="text-blue-400 hover:text-blue-600"
+							class="text-brand-accent hover:text-brand-accent/80"
 							aria-label="Edit {formatName(person)}"
 						>
 							<svg

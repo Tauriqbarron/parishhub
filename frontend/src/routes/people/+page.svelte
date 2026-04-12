@@ -50,12 +50,12 @@
 <div>
 	<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 		<div>
-			<h1 class="text-2xl font-bold text-gray-900">People</h1>
-			<p class="text-gray-600 mt-1">Manage parishioners and their records</p>
+			<h1 class="text-2xl font-bold text-brand-primary">People</h1>
+			<p class="text-brand-text-secondary mt-1">Manage parishioners and their records</p>
 		</div>
 		<a
 			href="/people/new"
-			class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+			class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent"
 		>
 			<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -88,17 +88,17 @@
 		{#if $peopleStore.loading}
 			<!-- Loading Skeleton -->
 			<div class="animate-pulse">
-				<div class="px-6 py-4 border-b border-gray-200">
-					<div class="h-4 bg-gray-200 rounded w-1/4"></div>
+				<div class="px-6 py-4 border-b border-brand-border">
+					<div class="h-4 bg-brand-bg-muted rounded w-1/4"></div>
 				</div>
 				{#each Array.from({ length: 5 }, (_, i) => i) as i (i)}
-					<div class="px-6 py-4 border-b border-gray-200">
+					<div class="px-6 py-4 border-b border-brand-border">
 						<div class="flex items-center space-x-4">
-							<div class="h-4 bg-gray-200 rounded w-1/4"></div>
-							<div class="h-4 bg-gray-200 rounded w-16"></div>
-							<div class="h-4 bg-gray-200 rounded w-12"></div>
-							<div class="h-4 bg-gray-200 rounded w-1/3"></div>
-							<div class="h-4 bg-gray-200 rounded w-20"></div>
+							<div class="h-4 bg-brand-bg-muted rounded w-1/4"></div>
+							<div class="h-4 bg-brand-bg-muted rounded w-16"></div>
+							<div class="h-4 bg-brand-bg-muted rounded w-12"></div>
+							<div class="h-4 bg-brand-bg-muted rounded w-1/3"></div>
+							<div class="h-4 bg-brand-bg-muted rounded w-20"></div>
 						</div>
 					</div>
 				{/each}
@@ -107,7 +107,7 @@
 			<!-- Error State -->
 			<div class="p-6 text-center">
 				<svg
-					class="mx-auto h-12 w-12 text-red-400"
+					class="mx-auto h-12 w-12 text-brand-error"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -119,12 +119,12 @@
 						d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
 					/>
 				</svg>
-				<h3 class="mt-2 text-sm font-medium text-gray-900">Error loading people</h3>
-				<p class="mt-1 text-sm text-gray-500">{$peopleStore.error}</p>
+				<h3 class="mt-2 text-sm font-medium text-brand-primary">Error loading people</h3>
+				<p class="mt-1 text-sm text-brand-text-secondary">{$peopleStore.error}</p>
 				<div class="mt-6">
 					<button
 						onclick={() => peopleStore.load($peopleStore.filters)}
-						class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+						class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
 					>
 						Try again
 					</button>
@@ -134,7 +134,7 @@
 			<!-- Empty State -->
 			<div class="p-6 text-center">
 				<svg
-					class="mx-auto h-12 w-12 text-gray-400"
+					class="mx-auto h-12 w-12 text-brand-text-muted"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -146,8 +146,8 @@
 						d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
 					/>
 				</svg>
-				<h3 class="mt-2 text-sm font-medium text-gray-900">No people found</h3>
-				<p class="mt-1 text-sm text-gray-500">
+				<h3 class="mt-2 text-sm font-medium text-brand-primary">No people found</h3>
+				<p class="mt-1 text-sm text-brand-text-secondary">
 					{#if searchValue || Object.values($peopleStore.filters).some((v) => v !== undefined && v !== '')}
 						No people match your search criteria. Try adjusting your filters.
 					{:else}
@@ -158,7 +158,7 @@
 					<div class="mt-6">
 						<a
 							href="/people/new"
-							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
 						>
 							<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path

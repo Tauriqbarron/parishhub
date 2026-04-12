@@ -30,22 +30,22 @@
 </script>
 
 <div class="overflow-x-auto" role="region" aria-label="Households list">
-	<table class="min-w-full divide-y divide-gray-200" aria-label="Households table">
-		<thead class="bg-gray-50">
+	<table class="min-w-full divide-y divide-brand-border" aria-label="Households table">
+		<thead class="bg-brand-bg-subtle">
 			<tr>
 				<th
 					scope="col"
-					class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+					class="px-6 py-3 text-left text-xs font-medium text-brand-text-secondary uppercase tracking-wider"
 				>
 					<button
 						onclick={() => handleSort('name')}
-						class="group inline-flex items-center gap-1 hover:text-gray-700"
+						class="group inline-flex items-center gap-1 hover:text-brand-primary"
 					>
 						Name
 						<span
 							class="flex-none rounded {sortBy === 'name'
-								? 'text-gray-900'
-								: 'text-gray-400 group-hover:text-gray-500'}"
+								? 'text-brand-primary'
+								: 'text-brand-text-muted group-hover:text-brand-text-secondary'}"
 						>
 							{#if sortBy === 'name'}
 								{#if sortOrder === 'asc'}
@@ -100,7 +100,7 @@
 				</th>
 			</tr>
 		</thead>
-		<tbody class="bg-white divide-y divide-gray-200">
+		<tbody class="bg-white divide-y divide-brand-border">
 			{#each households as household (household.id)}
 				<tr
 					onclick={() => onRowClick(household)}
@@ -113,13 +113,13 @@
 					tabindex="0"
 					role="button"
 					aria-label="View details for {household.name}"
-					class="hover:bg-gray-50 cursor-pointer transition-colors"
+					class="hover:bg-brand-bg-subtle cursor-pointer transition-colors"
 				>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<div class="flex items-center">
-							<div class="p-2 bg-blue-50 rounded-lg mr-3">
+							<div class="p-2 bg-brand-accent/10 rounded-lg mr-3">
 								<svg
-									class="w-5 h-5 text-blue-600"
+									class="w-5 h-5 text-brand-accent"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -134,15 +134,15 @@
 									/>
 								</svg>
 							</div>
-							<div class="text-sm font-medium text-gray-900">{household.name}</div>
+							<div class="text-sm font-medium text-brand-primary">{household.name}</div>
 						</div>
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
-						<div class="text-sm text-gray-900">{formatAddress(household)}</div>
+						<div class="text-sm text-brand-primary">{formatAddress(household)}</div>
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<span
-							class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+							class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-bg-muted text-brand-primary"
 						>
 							{household.member_count}
 							{household.member_count === 1 ? 'member' : 'members'}
@@ -154,7 +154,7 @@
 								e.stopPropagation();
 								onRowClick(household);
 							}}
-							class="text-gray-400 hover:text-gray-600 mr-3"
+							class="text-brand-text-muted hover:text-brand-text-secondary mr-3"
 							aria-label="View {household.name}"
 						>
 							<svg
@@ -184,7 +184,7 @@
 								e.stopPropagation();
 								onEdit(household);
 							}}
-							class="text-blue-400 hover:text-blue-600"
+							class="text-brand-accent hover:text-brand-accent/80"
 							aria-label="Edit {household.name}"
 						>
 							<svg

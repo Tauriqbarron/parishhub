@@ -47,27 +47,27 @@
 
 {#if pages > 0}
 	<div
-		class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+		class="flex items-center justify-between border-t border-brand-border bg-white px-4 py-3 sm:px-6"
 	>
 		<div class="flex flex-1 justify-between sm:hidden">
 			<button
 				onclick={() => goToPage(page - 1)}
 				disabled={page === 1}
-				class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+				class="relative inline-flex items-center rounded-md border border-brand-border bg-white px-4 py-2 text-sm font-medium text-brand-text-secondary hover:bg-brand-bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				Previous
 			</button>
 			<button
 				onclick={() => goToPage(page + 1)}
 				disabled={page === pages}
-				class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+				class="relative ml-3 inline-flex items-center rounded-md border border-brand-border bg-white px-4 py-2 text-sm font-medium text-brand-text-secondary hover:bg-brand-bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				Next
 			</button>
 		</div>
 		<div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
 			<div>
-				<p class="text-sm text-gray-700">
+				<p class="text-sm text-brand-text-secondary">
 					Showing <span class="font-medium">{startItem}</span> to
 					<span class="font-medium">{endItem}</span> of
 					<span class="font-medium">{total}</span> results
@@ -78,7 +78,7 @@
 					<button
 						onclick={() => goToPage(page - 1)}
 						disabled={page === 1}
-						class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+						class="relative inline-flex items-center rounded-l-md px-2 py-2 text-brand-text-muted ring-1 ring-inset ring-brand-border hover:bg-brand-bg-muted focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						<span class="sr-only">Previous</span>
 						<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -93,7 +93,7 @@
 					{#each visiblePages() as pageNum, i (i)}
 						{#if pageNum === '...'}
 							<span
-								class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300"
+								class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-brand-text-secondary ring-1 ring-inset ring-brand-border"
 							>
 								...
 							</span>
@@ -102,8 +102,8 @@
 								onclick={() => goToPage(pageNum as number)}
 								class="relative inline-flex items-center px-4 py-2 text-sm font-semibold {page ===
 								pageNum
-									? 'z-10 bg-blue-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
-									: 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'}"
+									? 'z-10 bg-brand-accent text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent'
+									: 'text-brand-primary ring-1 ring-inset ring-brand-border hover:bg-brand-bg-muted focus:z-20 focus:outline-offset-0'}"
 							>
 								{pageNum}
 							</button>
@@ -113,7 +113,7 @@
 					<button
 						onclick={() => goToPage(page + 1)}
 						disabled={page === pages}
-						class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+						class="relative inline-flex items-center rounded-r-md px-2 py-2 text-brand-text-muted ring-1 ring-inset ring-brand-border hover:bg-brand-bg-muted focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						<span class="sr-only">Next</span>
 						<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

@@ -102,14 +102,19 @@
 	);
 </script>
 
-<div class="bg-white border border-gray-200 rounded-lg">
+<div class="bg-white border border-brand-border rounded-lg">
 	<button
 		type="button"
 		onclick={() => (isExpanded = !isExpanded)}
-		class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 rounded-lg"
+		class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-brand-bg-muted rounded-lg"
 	>
 		<div class="flex items-center gap-2">
-			<svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg
+				class="h-5 w-5 text-brand-text-muted"
+				fill="none"
+				stroke="currentColor"
+				viewBox="0 0 24 24"
+			>
 				<path
 					stroke-linecap="round"
 					stroke-linejoin="round"
@@ -117,17 +122,17 @@
 					d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
 				/>
 			</svg>
-			<span class="font-medium text-gray-700">Filters</span>
+			<span class="font-medium text-brand-text-secondary">Filters</span>
 			{#if hasActiveFilters}
 				<span
-					class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800"
+					class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-accent/10 text-brand-accent"
 				>
 					Active
 				</span>
 			{/if}
 		</div>
 		<svg
-			class="h-5 w-5 text-gray-400 transition-transform {isExpanded ? 'rotate-180' : ''}"
+			class="h-5 w-5 text-brand-text-muted transition-transform {isExpanded ? 'rotate-180' : ''}"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"
@@ -137,16 +142,18 @@
 	</button>
 
 	{#if isExpanded}
-		<div class="px-4 pb-4 border-t border-gray-200 pt-4">
+		<div class="px-4 pb-4 border-t border-brand-border pt-4">
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				<!-- Gender Filter -->
 				<div>
-					<label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+					<label for="gender" class="block text-sm font-medium text-brand-text-secondary mb-1"
+						>Gender</label
+					>
 					<select
 						id="gender"
 						bind:value={gender}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each genderOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -156,12 +163,14 @@
 
 				<!-- Status Filter -->
 				<div>
-					<label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+					<label for="status" class="block text-sm font-medium text-brand-text-secondary mb-1"
+						>Status</label
+					>
 					<select
 						id="status"
 						bind:value={statusFilter}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each deceasedOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -171,7 +180,8 @@
 
 				<!-- Age Range -->
 				<fieldset>
-					<legend class="block text-sm font-medium text-gray-700 mb-1">Age Range</legend>
+					<legend class="block text-sm font-medium text-brand-text-secondary mb-1">Age Range</legend
+					>
 					<div class="flex items-center gap-2">
 						<input
 							type="number"
@@ -181,9 +191,9 @@
 							aria-label="Minimum age"
 							min="0"
 							max="150"
-							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						/>
-						<span class="text-gray-500">-</span>
+						<span class="text-brand-text-muted">-</span>
 						<input
 							type="number"
 							bind:value={maxAge}
@@ -192,21 +202,21 @@
 							aria-label="Maximum age"
 							min="0"
 							max="150"
-							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						/>
 					</div>
 				</fieldset>
 
 				<!-- Household Filter -->
 				<div>
-					<label for="household" class="block text-sm font-medium text-gray-700 mb-1"
+					<label for="household" class="block text-sm font-medium text-brand-text-secondary mb-1"
 						>Household</label
 					>
 					<select
 						id="household"
 						bind:value={householdFilter}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each householdOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -216,14 +226,17 @@
 
 				<!-- Has Sacrament -->
 				<div>
-					<label for="hasSacrament" class="block text-sm font-medium text-gray-700 mb-1">
+					<label
+						for="hasSacrament"
+						class="block text-sm font-medium text-brand-text-secondary mb-1"
+					>
 						Has Received
 					</label>
 					<select
 						id="hasSacrament"
 						bind:value={hasSacrament}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each sacramentOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -233,14 +246,17 @@
 
 				<!-- Missing Sacrament -->
 				<div>
-					<label for="missingSacrament" class="block text-sm font-medium text-gray-700 mb-1">
+					<label
+						for="missingSacrament"
+						class="block text-sm font-medium text-brand-text-secondary mb-1"
+					>
 						Missing Sacrament
 					</label>
 					<select
 						id="missingSacrament"
 						bind:value={missingSacrament}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each sacramentOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -254,7 +270,7 @@
 					<button
 						type="button"
 						onclick={clearFilters}
-						class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+						class="px-3 py-1.5 text-sm text-brand-accent hover:text-amber-700 hover:bg-brand-bg-muted rounded-md transition-colors"
 					>
 						Clear all filters
 					</button>

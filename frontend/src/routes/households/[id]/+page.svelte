@@ -170,7 +170,7 @@
 	<div class="mb-4">
 		<a
 			href="/households"
-			class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
+			class="inline-flex items-center text-sm text-brand-text-secondary hover:text-brand-primary transition-colors"
 		>
 			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -185,22 +185,24 @@
 			<div class="bg-white rounded-lg shadow p-6">
 				<div class="flex items-center justify-between">
 					<div class="space-y-2">
-						<div class="h-8 bg-gray-200 rounded w-48"></div>
-						<div class="h-4 bg-gray-200 rounded w-64"></div>
+						<div class="h-8 bg-brand-bg-muted rounded w-48"></div>
+						<div class="h-4 bg-brand-bg-muted rounded w-64"></div>
 					</div>
-					<div class="h-10 bg-gray-200 rounded w-20"></div>
+					<div class="h-10 bg-brand-bg-muted rounded w-20"></div>
 				</div>
 			</div>
 			<div class="bg-white rounded-lg shadow p-6">
-				<div class="h-6 bg-gray-200 rounded w-24 mb-4"></div>
+				<div class="h-6 bg-brand-bg-muted rounded w-24 mb-4"></div>
 				<div class="space-y-3">
 					{#each Array.from({ length: 3 }, (_, i) => i) as i (i)}
-						<div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+						<div
+							class="flex items-center justify-between p-3 border border-brand-border rounded-lg"
+						>
 							<div class="flex items-center gap-3">
-								<div class="h-10 w-10 bg-gray-200 rounded-full"></div>
-								<div class="h-4 bg-gray-200 rounded w-32"></div>
+								<div class="h-10 w-10 bg-brand-bg-muted rounded-full"></div>
+								<div class="h-4 bg-brand-bg-muted rounded w-32"></div>
 							</div>
-							<div class="h-4 bg-gray-200 rounded w-16"></div>
+							<div class="h-4 bg-brand-bg-muted rounded w-16"></div>
 						</div>
 					{/each}
 				</div>
@@ -210,7 +212,7 @@
 		<!-- Error state -->
 		<div class="bg-white rounded-lg shadow p-6 text-center">
 			<svg
-				class="mx-auto h-12 w-12 text-red-400"
+				class="mx-auto h-12 w-12 text-brand-error"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -222,18 +224,18 @@
 					d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
 				/>
 			</svg>
-			<h3 class="mt-2 text-sm font-medium text-gray-900">Error loading household</h3>
-			<p class="mt-1 text-sm text-gray-500">{error}</p>
+			<h3 class="mt-2 text-sm font-medium text-brand-primary">Error loading household</h3>
+			<p class="mt-1 text-sm text-brand-text-secondary">{error}</p>
 			<div class="mt-6 flex justify-center gap-3">
 				<button
 					onclick={() => loadHousehold()}
-					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
 				>
 					Try again
 				</button>
 				<button
 					onclick={() => goto('/households')}
-					class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
+					class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-md shadow-sm text-brand-primary bg-white hover:bg-brand-bg-subtle"
 				>
 					Go back
 				</button>
@@ -242,12 +244,12 @@
 	{:else if household}
 		<!-- Household Header -->
 		<div class="bg-white rounded-lg shadow">
-			<div class="px-6 py-4 border-b border-gray-200">
+			<div class="px-6 py-4 border-b border-brand-border">
 				<div class="flex items-start justify-between">
 					<div class="flex items-center gap-4">
-						<div class="p-3 bg-blue-50 rounded-lg">
+						<div class="p-3 bg-brand-accent/10 rounded-lg">
 							<svg
-								class="w-8 h-8 text-blue-600"
+								class="w-8 h-8 text-brand-accent"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -268,9 +270,9 @@
 									class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent"
 								/>
 							{:else}
-								<h1 class="text-2xl font-bold text-gray-900">{household.name}</h1>
+								<h1 class="text-2xl font-bold text-brand-primary">{household.name}</h1>
 							{/if}
-							<p class="text-gray-600 mt-1">
+							<p class="text-brand-text-secondary mt-1">
 								{household.member_count}
 								{household.member_count === 1 ? 'member' : 'members'}
 							</p>
@@ -281,27 +283,27 @@
 							<button
 								onclick={handleCancel}
 								disabled={isSaving}
-								class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+								class="px-4 py-2 text-sm font-medium text-brand-primary bg-white border border-brand-border rounded-md hover:bg-brand-bg-subtle disabled:opacity-50"
 							>
 								Cancel
 							</button>
 							<button
 								onclick={handleSave}
 								disabled={isSaving}
-								class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+								class="px-4 py-2 text-sm font-medium text-white bg-brand-accent rounded-md hover:bg-brand-accent/90 disabled:opacity-50"
 							>
 								{isSaving ? 'Saving...' : 'Save'}
 							</button>
 						{:else}
 							<button
 								onclick={toggleEdit}
-								class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+								class="px-4 py-2 text-sm font-medium text-brand-primary bg-white border border-brand-border rounded-md hover:bg-brand-bg-subtle"
 							>
 								Edit
 							</button>
 							<button
 								onclick={handleDeleteHousehold}
-								class="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-md hover:bg-red-50"
+								class="px-4 py-2 text-sm font-medium text-brand-error bg-white border border-brand-error/30 rounded-md hover:bg-brand-error/10"
 							>
 								Delete
 							</button>
@@ -312,7 +314,9 @@
 
 			<!-- Address Section -->
 			<div class="px-6 py-4">
-				<h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Address</h3>
+				<h3 class="text-sm font-medium text-brand-text-secondary uppercase tracking-wide mb-3">
+					Address
+				</h3>
 				{#if isEditing}
 					<div class="space-y-3">
 						<div>
@@ -368,11 +372,11 @@
 
 		<!-- Members Section -->
 		<div class="mt-6 bg-white rounded-lg shadow">
-			<div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-				<h2 class="text-lg font-medium text-gray-900">Members</h2>
+			<div class="px-6 py-4 border-b border-brand-border flex items-center justify-between">
+				<h2 class="text-lg font-medium text-brand-primary">Members</h2>
 				<button
 					onclick={() => (showAddMemberModal = true)}
-					class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
+					class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-brand-accent bg-brand-accent/10 rounded-md hover:bg-brand-accent/20 transition-colors"
 				>
 					<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -387,19 +391,19 @@
 			</div>
 			<div class="px-6 py-4">
 				{#if household.members.length === 0}
-					<p class="text-sm text-gray-500 text-center py-8">
+					<p class="text-sm text-brand-text-secondary text-center py-8">
 						No members in this household yet. Add a member to get started.
 					</p>
 				{:else}
 					<div class="space-y-3">
 						{#each household.members as member (member.person_id)}
 							<div
-								class="flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors"
+								class="flex items-center justify-between p-4 rounded-lg border border-brand-border bg-brand-bg-subtle hover:bg-brand-bg-muted transition-colors"
 							>
 								<div class="flex items-center gap-4">
 									<div class="p-2 bg-white rounded-full shadow-sm">
 										<svg
-											class="w-6 h-6 text-gray-600"
+											class="w-6 h-6 text-brand-text-secondary"
 											fill="none"
 											stroke="currentColor"
 											viewBox="0 0 24 24"
@@ -415,7 +419,7 @@
 									<div>
 										<a
 											href="/people/{member.person_id}"
-											class="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+											class="font-medium text-brand-primary hover:text-brand-accent transition-colors"
 										>
 											{formatMemberName(member)}
 										</a>
@@ -443,7 +447,7 @@
 											{:else}
 												<button
 													onclick={() => startEditRole(member.person_id, member.role)}
-													class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
+													class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-bg-muted text-brand-primary hover:bg-brand-border transition-colors"
 													title="Click to change role"
 												>
 													{roleLabels[member.role]}
@@ -464,7 +468,7 @@
 											{/if}
 											{#if member.is_primary_household}
 												<span
-													class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700"
+													class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-success/10 text-brand-success"
 												>
 													Primary
 												</span>
@@ -474,7 +478,7 @@
 								</div>
 								<button
 									onclick={() => handleRemoveMember(member.person_id, formatMemberName(member))}
-									class="p-2 rounded hover:bg-red-100 text-red-600 transition-colors"
+									class="p-2 rounded hover:bg-brand-error/10 text-brand-error transition-colors"
 									title="Remove from household"
 								>
 									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
