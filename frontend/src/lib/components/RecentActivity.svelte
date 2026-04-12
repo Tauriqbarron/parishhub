@@ -28,15 +28,15 @@
 	function getActivityIcon(type: string): { icon: Component; color: string; bg: string } {
 		switch (type) {
 			case 'person_added':
-				return { icon: UserPlus, color: 'text-blue-600', bg: 'bg-blue-100' };
+				return { icon: UserPlus, color: 'text-brand-accent', bg: 'bg-brand-accent/10' };
 			case 'sacrament_recorded':
-				return { icon: Church, color: 'text-purple-600', bg: 'bg-purple-100' };
+				return { icon: Church, color: 'text-brand-primary-light', bg: 'bg-brand-primary/10' };
 			case 'household_created':
-				return { icon: Home, color: 'text-green-600', bg: 'bg-green-100' };
+				return { icon: Home, color: 'text-brand-success', bg: 'bg-brand-success/10' };
 			case 'death_recorded':
-				return { icon: Skull, color: 'text-gray-600', bg: 'bg-gray-100' };
+				return { icon: Skull, color: 'text-brand-text-muted', bg: 'bg-brand-bg-muted' };
 			default:
-				return { icon: Home, color: 'text-green-600', bg: 'bg-green-100' };
+				return { icon: Home, color: 'text-brand-success', bg: 'bg-brand-success/10' };
 		}
 	}
 
@@ -56,10 +56,10 @@
 	}
 </script>
 
-<div class="bg-white rounded-lg shadow p-6">
-	<h3 class="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
+<div class="bg-white rounded-lg shadow border border-brand-border p-6">
+	<h3 class="text-lg font-medium text-brand-primary mb-4">Recent Activity</h3>
 	{#if activities.length === 0}
-		<p class="text-gray-500 text-sm">No recent activity</p>
+		<p class="text-brand-text-secondary text-sm">No recent activity</p>
 	{:else}
 		<div class="space-y-4">
 			{#each activities as activity}
@@ -72,16 +72,16 @@
 							e.preventDefault();
 							goto(href);
 						}}
-						class="flex items-start gap-3 hover:bg-gray-50 rounded-lg p-2 -m-2 cursor-pointer transition-colors group"
+						class="flex items-start gap-3 hover:bg-brand-bg-subtle rounded-lg p-2 -m-2 cursor-pointer transition-colors group"
 					>
 						<div class="p-2 rounded-full flex-shrink-0 {iconInfo.bg}">
 							<svelte:component this={iconInfo.icon} class="w-4 h-4 {iconInfo.color}" />
 						</div>
 						<div class="flex-1 min-w-0">
-							<p class="text-sm text-gray-900 group-hover:text-blue-600 transition-colors">
+							<p class="text-sm text-brand-primary group-hover:text-brand-accent transition-colors">
 								{activity.description}
 							</p>
-							<p class="text-xs text-gray-500">{formatTimeAgo(activity.timestamp)}</p>
+							<p class="text-xs text-brand-text-muted">{formatTimeAgo(activity.timestamp)}</p>
 						</div>
 					</a>
 				{:else}
@@ -90,8 +90,8 @@
 							<svelte:component this={iconInfo.icon} class="w-4 h-4 {iconInfo.color}" />
 						</div>
 						<div class="flex-1 min-w-0">
-							<p class="text-sm text-gray-900">{activity.description}</p>
-							<p class="text-xs text-gray-500">{formatTimeAgo(activity.timestamp)}</p>
+							<p class="text-sm text-brand-primary">{activity.description}</p>
+							<p class="text-xs text-brand-text-muted">{formatTimeAgo(activity.timestamp)}</p>
 						</div>
 					</div>
 				{/if}
