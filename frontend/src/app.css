@@ -1,3 +1,151 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Design Tokens (Light Mode) ── */
+:root {
+	/* Primary */
+	--color-primary: #0f172a;
+	--color-primary-light: #1e293b;
+	--color-primary-muted: #475569;
+	/* Accent */
+	--color-accent: #d97706;
+	--color-accent-light: #fbbf24;
+	--color-accent-muted: #fffbeb;
+	/* Backgrounds */
+	--color-bg: #ffffff;
+	--color-bg-subtle: #f8fafc;
+	--color-bg-muted: #f1f5f9;
+	/* Borders */
+	--color-border: #e2e8f0;
+	--color-border-strong: #cbd5e1;
+	/* Text */
+	--color-text: #0f172a;
+	--color-text-secondary: #475569;
+	--color-text-muted: #94a3b8;
+	/* Semantic */
+	--color-success: #059669;
+	--color-error: #dc2626;
+	--color-info: #2563eb;
+	/* Shadows */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+	/* Motion */
+	--transition-fast: 150ms ease;
+	--transition-normal: 200ms ease;
+	--transition-slow: 300ms ease;
+	/* Radius */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+	--radius-xl: 16px;
+}
+
+/* ── Design Tokens (Dark Mode) ── */
+[data-theme='dark'] {
+	--color-primary: #f8fafc;
+	--color-primary-light: #cbd5e1;
+	--color-primary-muted: #94a3b8;
+	--color-accent: #fbbf24;
+	--color-accent-light: #fcd34d;
+	--color-bg: #0f172a;
+	--color-bg-subtle: #1e293b;
+	--color-bg-muted: #334155;
+	--color-border: #334155;
+	--color-border-strong: #475569;
+	--color-text: #f8fafc;
+	--color-text-secondary: #cbd5e1;
+	--color-text-muted: #94a3b8;
+	--color-success: #34d399;
+	--color-error: #f87171;
+	--color-info: #60a5fa;
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+}
+
+/* ── Base Typography ── */
+@layer base {
+	body {
+		font-family:
+			'Inter',
+			system-ui,
+			-apple-system,
+			sans-serif;
+		color: var(--color-text);
+		background-color: var(--color-bg);
+		font-size: 16px;
+		line-height: 1.6;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	h1 {
+		font-size: 2.25rem;
+		font-weight: 700;
+		line-height: 1.2;
+	}
+	h2 {
+		font-size: 1.875rem;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+	h3 {
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 1.4;
+	}
+	h4 {
+		font-size: 1.25rem;
+		font-weight: 600;
+		line-height: 1.4;
+	}
+}
+
+/* ── Utility Classes ── */
+@layer components {
+	.card {
+		background: var(--color-bg);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-sm);
+		transition: box-shadow var(--transition-normal);
+	}
+
+	.card:hover {
+		box-shadow: var(--shadow-md);
+	}
+
+	.btn-primary {
+		background: var(--color-accent);
+		color: white;
+		font-weight: 500;
+		padding: 0.625rem 1.25rem;
+		border-radius: var(--radius-md);
+		transition: all var(--transition-fast);
+		cursor: pointer;
+	}
+
+	.btn-primary:hover {
+		background: #b45309;
+	}
+
+	.focus-ring:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 2px;
+	}
+
+	/* Reduced motion */
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+}
