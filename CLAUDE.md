@@ -1,4 +1,4 @@
-# Parish Database - Claude Code Instructions
+# ParishHub - Claude Code Instructions
 
 ## Interaction Rules
 - **NO CHAT:** Do not reply with conversational text. Output only tool uses or final confirmation.
@@ -13,13 +13,13 @@
 
 ## Project Details & Basic Memory (AUTO-LOAD)
 
-Architecture, stack, workflow patterns, deployment setup, and test/verification rules are stored in **basic-memory** under the `parish-database` project.
+Architecture, stack, workflow patterns, deployment setup, and test/verification rules are stored in **basic-memory** under the `parishhub` project.
 
 ### Session Startup (MANDATORY)
 
 At the **start of every session**, before doing any work:
 
-1. Run `build_context` for the `parish-database` project to load all stored knowledge.
+1. Run `build_context` for the `parishhub` project to load all stored knowledge.
 2. Run `search_notes` with broad queries (e.g., "architecture", "deployment", "stack", "conventions", "testing") to surface relevant context.
 
 ### Ongoing Usage

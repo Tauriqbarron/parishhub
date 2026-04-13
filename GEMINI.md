@@ -1,4 +1,4 @@
-# Parish Database - Gemini AI Context
+# ParishHub - Gemini AI Context
 
 ## 1. Project Overview
 A comprehensive parish management system handling members, households, sacraments, and analytics.

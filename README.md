@@ -53,7 +53,7 @@ The easiest way to run the application is using Docker Compose.
 1. **Clone the repository**
    ```bash
    git clone <repository_url>
-   cd parish-database
+   cd parishhub
    ```
 
 2. **Start the application**
@@ -127,7 +127,7 @@ npm run check # Run TypeScript check
 ## 📁 Project Structure
 
 ```
-parish-database/
+parishhub/
 ├── backend/               # FastAPI application
 │   ├── app/
 │   │   ├── models/        # SQLAlchemy Database Models
