@@ -68,7 +68,7 @@
 				class="flex-shrink-0 p-1 -m-1 rounded hover:bg-black/5 transition-colors"
 				aria-label="Dismiss notification"
 			>
-				<X class="w-4 h-4 text-gray-500" />
+				<X class="w-4 h-4 text-brand-text-secondary" />
 			</button>
 		</div>
 	{/each}

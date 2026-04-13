@@ -13,13 +13,13 @@
 	let { session, onMenuToggle, showMenuButton = false }: Props = $props();
 </script>
 
-<header class="bg-white shadow-sm sticky top-0 z-40 border-b border-brand-border">
+<header class="bg-white sticky top-0 z-40 border-b border-brand-border">
 	<div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 		<div class="flex items-center gap-3">
 			{#if showMenuButton}
 				<button
 					onclick={onMenuToggle}
-					class="p-2 -ml-2 text-brand-primary-muted hover:text-brand-primary hover:bg-brand-bg-muted rounded-md lg:hidden"
+					class="p-2 -ml-2 text-brand-text-muted hover:text-brand-primary hover:bg-brand-bg-subtle rounded-sm lg:hidden"
 					aria-label="Toggle navigation menu"
 				>
 					<Menu class="w-6 h-6" />
@@ -43,7 +43,7 @@
 			</div>
 			<button
 				onclick={() => signOut()}
-				class="px-3 py-1.5 text-sm text-brand-text-muted hover:text-brand-primary hover:bg-brand-bg-muted rounded-md transition-colors"
+				class="px-3 py-1.5 text-sm text-brand-text-muted hover:text-brand-primary hover:bg-brand-bg-subtle rounded-sm transition-colors"
 			>
 				Sign out
 			</button>

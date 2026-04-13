@@ -96,22 +96,22 @@
 	let currentYear = new Date().getFullYear();
 </script>
 
-<div class="space-y-6">
+<div class="space-y-10">
 	<!-- Page Header -->
-	<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+	<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
 		<div>
-			<h1 class="text-2xl font-bold text-brand-primary">Dashboard</h1>
+			<h1 class="text-3xl font-bold text-brand-primary tracking-tight">Dashboard</h1>
 			<p class="text-brand-text-secondary mt-1">Welcome to the ParishHub management system</p>
 		</div>
 		<div class="flex items-center gap-2">
 			<div
-				class="w-3 h-3 rounded-full {healthStatus === 'connected'
+				class="w-2.5 h-2.5 rounded-full {healthStatus === 'connected'
 					? 'bg-brand-success'
 					: healthStatus === 'loading'
 						? 'bg-brand-accent animate-pulse'
 						: 'bg-brand-error'}"
 			></div>
-			<span class="text-sm text-brand-text-secondary">
+			<span class="text-sm text-brand-text-muted">
 				{healthStatus === 'loading'
 					? 'Connecting...'
 					: healthStatus === 'connected'
@@ -123,14 +123,14 @@
 
 	{#if loading}
 		<!-- Loading State -->
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			{#each [1, 2, 3, 4] as n (n)}
-				<div class="bg-white rounded-lg shadow border border-brand-border p-6 animate-pulse">
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+			{#each [1, 2, 3, 4, 5] as n (n)}
+				<div class="bg-white rounded-lg border border-brand-border p-6 animate-pulse">
 					<div class="flex items-center gap-4">
-						<div class="p-3 rounded-full bg-brand-bg-muted w-14 h-14"></div>
+						<div class="p-3 rounded-lg bg-brand-bg-muted w-13 h-13"></div>
 						<div class="space-y-2">
 							<div class="h-8 bg-brand-bg-muted rounded w-16"></div>
-							<div class="h-4 bg-brand-bg-muted rounded w-24"></div>
+							<div class="h-4 bg-brand-bg-muted rounded w-20"></div>
 						</div>
 					</div>
 				</div>
@@ -148,7 +148,7 @@
 			</div>
 			<button
 				onclick={loadDashboard}
-				class="mt-4 px-4 py-2 bg-brand-error text-white rounded-lg hover:opacity-90 transition-opacity"
+				class="mt-4 px-4 py-2 bg-brand-error text-white rounded-sm hover:opacity-90 transition-opacity"
 			>
 				Retry
 			</button>
@@ -189,8 +189,10 @@
 		</div>
 
 		<!-- Quick Entry: Sunday Attendance -->
-		<div class="bg-white rounded-lg shadow border border-brand-border p-6">
-			<h3 class="text-lg font-medium text-brand-primary mb-4">Quick Entry: Sunday Attendance</h3>
+		<div class="bg-brand-bg-subtle rounded-lg border border-brand-border p-6">
+			<h3 class="text-lg font-semibold text-brand-primary mb-4 tracking-tight">
+				Quick Entry: Sunday Attendance
+			</h3>
 			<form
 				onsubmit={(e) => {
 					e.preventDefault();
@@ -206,7 +208,7 @@
 						type="date"
 						id="quick-date"
 						bind:value={quickEntryDate}
-						class="px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
+						class="px-3 py-2 border border-brand-border rounded-sm bg-white text-brand-primary focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 					/>
 				</div>
 				<div>
@@ -217,7 +219,7 @@
 					<select
 						id="quick-mass-time"
 						bind:value={quickEntryMassTime}
-						class="px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent"
+						class="px-3 py-2 border border-brand-border rounded-sm bg-white text-brand-primary focus:ring-2 focus:ring-brand-accent focus:border-transparent"
 					>
 						<option value="">All Masses</option>
 						{#each massTimeOptions as massTime}
@@ -234,13 +236,13 @@
 						id="quick-count"
 						bind:value={quickEntryCount}
 						min="0"
-						class="px-3 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent w-32"
+						class="px-3 py-2 border border-brand-border rounded-sm bg-white text-brand-primary focus:ring-2 focus:ring-brand-accent focus:border-transparent w-32"
 					/>
 				</div>
 				<button
 					type="submit"
 					disabled={quickEntrySubmitting}
-					class="px-6 py-2 bg-brand-accent text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+					class="px-5 py-2 bg-brand-accent text-white rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50 text-sm font-medium"
 				>
 					{quickEntrySubmitting ? 'Saving...' : 'Record'}
 				</button>

@@ -72,7 +72,7 @@
 			<div class="space-y-4">
 				<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 					<div>
-						<label for="first_name" class="block text-sm font-medium text-gray-700">
+						<label for="first_name" class="block text-sm font-medium text-brand-primary">
 							First Name *
 						</label>
 						<input
@@ -80,22 +80,22 @@
 							id="first_name"
 							bind:value={editForm.first_name}
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						/>
 					</div>
 					<div>
-						<label for="middle_name" class="block text-sm font-medium text-gray-700">
+						<label for="middle_name" class="block text-sm font-medium text-brand-primary">
 							Middle Name
 						</label>
 						<input
 							type="text"
 							id="middle_name"
 							bind:value={editForm.middle_name}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						/>
 					</div>
 					<div>
-						<label for="last_name" class="block text-sm font-medium text-gray-700">
+						<label for="last_name" class="block text-sm font-medium text-brand-primary">
 							Last Name *
 						</label>
 						<input
@@ -103,29 +103,29 @@
 							id="last_name"
 							bind:value={editForm.last_name}
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						/>
 					</div>
 				</div>
 
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div>
-						<label for="date_of_birth" class="block text-sm font-medium text-gray-700">
+						<label for="date_of_birth" class="block text-sm font-medium text-brand-primary">
 							Date of Birth
 						</label>
 						<input
 							type="date"
 							id="date_of_birth"
 							bind:value={editForm.date_of_birth}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						/>
 					</div>
 					<div>
-						<label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+						<label for="gender" class="block text-sm font-medium text-brand-primary">Gender</label>
 						<select
 							id="gender"
 							bind:value={editForm.gender}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						>
 							<option value={null}>Not specified</option>
 							<option value="male">Male</option>
@@ -136,27 +136,27 @@
 
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div>
-						<label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+						<label for="email" class="block text-sm font-medium text-brand-primary">Email</label>
 						<input
 							type="email"
 							id="email"
 							bind:value={editForm.email}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						/>
 					</div>
 					<div>
-						<label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+						<label for="phone" class="block text-sm font-medium text-brand-primary">Phone</label>
 						<input
 							type="tel"
 							id="phone"
 							bind:value={editForm.phone}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						/>
 					</div>
 				</div>
 
 				<div>
-					<label for="address_line1" class="block text-sm font-medium text-gray-700">
+					<label for="address_line1" class="block text-sm font-medium text-brand-primary">
 						Address Line 1
 					</label>
 					<AddressAutocomplete
@@ -174,47 +174,47 @@
 				</div>
 
 				<div>
-					<label for="address_line2" class="block text-sm font-medium text-gray-700">
+					<label for="address_line2" class="block text-sm font-medium text-brand-primary">
 						Address Line 2
 					</label>
 					<input
 						type="text"
 						id="address_line2"
 						bind:value={editForm.address_line2}
-						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 					/>
 				</div>
 
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div>
-						<label for="city" class="block text-sm font-medium text-gray-700">City</label>
+						<label for="city" class="block text-sm font-medium text-brand-primary">City</label>
 						<input
 							type="text"
 							id="city"
 							bind:value={editForm.city}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						/>
 					</div>
 					<div>
-						<label for="postal_code" class="block text-sm font-medium text-gray-700">
+						<label for="postal_code" class="block text-sm font-medium text-brand-primary">
 							Postal Code
 						</label>
 						<input
 							type="text"
 							id="postal_code"
 							bind:value={editForm.postal_code}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 						/>
 					</div>
 				</div>
 
 				<div>
-					<label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+					<label for="notes" class="block text-sm font-medium text-brand-primary">Notes</label>
 					<textarea
 						id="notes"
 						bind:value={editForm.notes}
 						rows="3"
-						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 					></textarea>
 				</div>
 			</div>
@@ -222,21 +222,21 @@
 			<!-- Display mode -->
 			<dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
 				<div>
-					<dt class="text-sm font-medium text-gray-500">Date of Birth</dt>
-					<dd class="mt-1 text-sm text-gray-900">
+					<dt class="text-sm font-medium text-brand-text-secondary">Date of Birth</dt>
+					<dd class="mt-1 text-sm text-brand-primary">
 						{formatDate(person.date_of_birth)}
 						{#if age !== null}
-							<span class="text-gray-500">(Age {age})</span>
+							<span class="text-brand-text-secondary">(Age {age})</span>
 						{/if}
 					</dd>
 				</div>
 				<div>
-					<dt class="text-sm font-medium text-gray-500">Gender</dt>
-					<dd class="mt-1 text-sm text-gray-900">{formatGender(person.gender)}</dd>
+					<dt class="text-sm font-medium text-brand-text-secondary">Gender</dt>
+					<dd class="mt-1 text-sm text-brand-primary">{formatGender(person.gender)}</dd>
 				</div>
 				<div>
-					<dt class="text-sm font-medium text-gray-500">Email</dt>
-					<dd class="mt-1 text-sm text-gray-900">
+					<dt class="text-sm font-medium text-brand-text-secondary">Email</dt>
+					<dd class="mt-1 text-sm text-brand-primary">
 						{#if person.email}
 							<a href="mailto:{person.email}" class="text-blue-600 hover:text-blue-800">
 								{person.email}
@@ -247,8 +247,8 @@
 					</dd>
 				</div>
 				<div>
-					<dt class="text-sm font-medium text-gray-500">Phone</dt>
-					<dd class="mt-1 text-sm text-gray-900">
+					<dt class="text-sm font-medium text-brand-text-secondary">Phone</dt>
+					<dd class="mt-1 text-sm text-brand-primary">
 						{#if person.phone}
 							<a href="tel:{person.phone}" class="text-blue-600 hover:text-blue-800">
 								{person.phone}
@@ -259,15 +259,15 @@
 					</dd>
 				</div>
 				<div class="sm:col-span-2">
-					<dt class="text-sm font-medium text-gray-500">Address</dt>
-					<dd class="mt-1 text-sm text-gray-900">
+					<dt class="text-sm font-medium text-brand-text-secondary">Address</dt>
+					<dd class="mt-1 text-sm text-brand-primary">
 						{#if hasPersonAddress(person)}
 							{formatAddress(person)}
 						{:else if getHouseholdAddress(person)}
 							{@const hAddr = getHouseholdAddress(person)!}
 							<span class="inline-flex items-center gap-1">
 								<svg
-									class="w-3.5 h-3.5 text-gray-400"
+									class="w-3.5 h-3.5 text-brand-text-muted"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -281,7 +281,7 @@
 								</svg>
 								{hAddr.address}
 							</span>
-							<span class="text-xs text-gray-500 block mt-0.5"
+							<span class="text-xs text-brand-text-secondary block mt-0.5"
 								>from household: {hAddr.householdName}</span
 							>
 						{:else}
@@ -291,8 +291,8 @@
 				</div>
 				{#if person.notes}
 					<div class="sm:col-span-2">
-						<dt class="text-sm font-medium text-gray-500">Notes</dt>
-						<dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{person.notes}</dd>
+						<dt class="text-sm font-medium text-brand-text-secondary">Notes</dt>
+						<dd class="mt-1 text-sm text-brand-primary whitespace-pre-wrap">{person.notes}</dd>
 					</div>
 				{/if}
 			</dl>

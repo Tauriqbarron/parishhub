@@ -115,7 +115,7 @@
 	onclick={handleBackdropClick}
 >
 	<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-		<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+		<div class="fixed inset-0 bg-brand-bg-subtle0 bg-opacity-75 transition-opacity"></div>
 
 		<div
 			class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
@@ -124,11 +124,11 @@
 			<form onsubmit={handleSubmit}>
 				<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">Add Member</h3>
+						<h3 class="text-lg font-semibold text-brand-primary" id="modal-title">Add Member</h3>
 						<button
 							type="button"
 							onclick={onClose}
-							class="text-gray-400 hover:text-gray-500"
+							class="text-brand-text-muted hover:text-brand-text-secondary"
 							aria-label="Close modal"
 						>
 							<svg
@@ -155,7 +155,7 @@
 							<div>
 								<span
 									id="selected-person-label"
-									class="block text-sm font-medium text-gray-700 mb-1">Selected Person</span
+									class="block text-sm font-medium text-brand-primary mb-1">Selected Person</span
 								>
 								<div
 									class="flex items-center justify-between p-3 rounded-lg border border-blue-200 bg-blue-50"
@@ -180,11 +180,11 @@
 											</svg>
 										</div>
 										<div>
-											<div class="font-medium text-gray-900">
+											<div class="font-medium text-brand-primary">
 												{formatPersonName(selectedPerson)}
 											</div>
 											{#if selectedPerson.email}
-												<div class="text-sm text-gray-500">{selectedPerson.email}</div>
+												<div class="text-sm text-brand-text-secondary">{selectedPerson.email}</div>
 											{/if}
 										</div>
 									</div>
@@ -214,7 +214,7 @@
 							</div>
 						{:else}
 							<div>
-								<label for="person-search" class="block text-sm font-medium text-gray-700">
+								<label for="person-search" class="block text-sm font-medium text-brand-primary">
 									Search Person <span aria-hidden="true" class="text-red-500">*</span><span
 										class="sr-only">(required)</span
 									>
@@ -229,12 +229,12 @@
 										placeholder="Type to search by name or email..."
 										aria-required="true"
 										aria-describedby="search-status"
-										class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+										class="block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									/>
 									{#if isSearching}
 										<div class="absolute right-3 top-2.5" aria-hidden="true">
 											<svg
-												class="animate-spin h-5 w-5 text-gray-400"
+												class="animate-spin h-5 w-5 text-brand-text-muted"
 												fill="none"
 												viewBox="0 0 24 24"
 												role="img"
@@ -264,30 +264,32 @@
 								<!-- Search Results -->
 								{#if searchResults.length > 0}
 									<div
-										class="mt-2 border border-gray-200 rounded-md shadow-sm max-h-48 overflow-y-auto"
+										class="mt-2 border border-brand-border rounded-sm shadow-sm max-h-48 overflow-y-auto"
 									>
 										{#each searchResults as person (person.id)}
 											<button
 												type="button"
 												onclick={() => selectPerson(person)}
-												class="w-full px-4 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+												class="w-full px-4 py-2 text-left hover:bg-brand-bg-subtle border-b border-brand-border last:border-b-0"
 											>
-												<div class="font-medium text-gray-900">{formatPersonName(person)}</div>
+												<div class="font-medium text-brand-primary">{formatPersonName(person)}</div>
 												{#if person.email}
-													<div class="text-sm text-gray-500">{person.email}</div>
+													<div class="text-sm text-brand-text-secondary">{person.email}</div>
 												{/if}
 											</button>
 										{/each}
 									</div>
 								{:else if searchQuery.length >= 2 && !isSearching}
-									<p class="mt-2 text-sm text-gray-500">No people found matching your search.</p>
+									<p class="mt-2 text-sm text-brand-text-secondary">
+										No people found matching your search.
+									</p>
 								{/if}
 							</div>
 						{/if}
 
 						<!-- Role Selection -->
 						<div>
-							<label for="role" class="block text-sm font-medium text-gray-700">
+							<label for="role" class="block text-sm font-medium text-brand-primary">
 								Role <span aria-hidden="true" class="text-red-500">*</span><span class="sr-only"
 									>(required)</span
 								>
@@ -297,7 +299,7 @@
 								name="role"
 								bind:value={selectedRole}
 								aria-required="true"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							>
 								{#each Object.entries(roleLabels) as [value, label] ([value, label])}
 									<option {value}>{label}</option>
@@ -312,27 +314,27 @@
 								id="is-primary"
 								name="is-primary"
 								bind:checked={isPrimary}
-								class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+								class="h-4 w-4 rounded border-brand-border text-blue-600 focus:ring-blue-500"
 							/>
-							<label for="is-primary" class="ml-2 block text-sm text-gray-900">
+							<label for="is-primary" class="ml-2 block text-sm text-brand-primary">
 								Primary household for this person
 							</label>
 						</div>
 					</div>
 				</div>
 
-				<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+				<div class="bg-brand-bg-subtle px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
 					<button
 						type="submit"
 						disabled={isLoading || !selectedPerson}
-						class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto disabled:opacity-50"
+						class="inline-flex w-full justify-center rounded-sm bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto disabled:opacity-50"
 					>
 						{isLoading ? 'Adding...' : 'Add Member'}
 					</button>
 					<button
 						type="button"
 						onclick={onClose}
-						class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+						class="mt-3 inline-flex w-full justify-center rounded-sm bg-white px-3 py-2 text-sm font-semibold text-brand-primary shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-brand-bg-subtle sm:mt-0 sm:w-auto"
 					>
 						Cancel
 					</button>

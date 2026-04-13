@@ -22,6 +22,7 @@
 	import DeathForm from '$lib/components/DeathForm.svelte';
 	import HouseholdCard from '$lib/components/HouseholdCard.svelte';
 	import FamilyTreeCard from '$lib/components/FamilyTreeCard.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 
 	let person = $state<PersonWithRelations | null>(null);
 	let familyTree = $state<FamilyTree | null>(null);
@@ -238,18 +239,13 @@
 </script>
 
 <div>
-	<!-- Back link -->
-	<div class="mb-4">
-		<a
-			href="/people"
-			class="inline-flex items-center text-sm text-brand-text-secondary hover:text-brand-primary transition-colors"
-		>
-			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-			</svg>
-			Back to list
-		</a>
-	</div>
+	<Breadcrumbs
+		items={[
+			{ label: 'Dashboard', href: '/' },
+			{ label: 'People', href: '/people' },
+			{ label: person ? `${person.first_name} ${person.last_name}` : 'Person' }
+		]}
+	/>
 
 	{#if loading}
 		<!-- Loading skeleton -->
@@ -289,13 +285,13 @@
 			<div class="mt-6 flex justify-center gap-3">
 				<button
 					onclick={() => loadPerson()}
-					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
+					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90"
 				>
 					Try again
 				</button>
 				<button
 					onclick={() => goto('/people')}
-					class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-md shadow-sm text-brand-primary bg-white hover:bg-brand-bg-subtle"
+					class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-sm text-brand-primary bg-white hover:bg-brand-bg-subtle"
 				>
 					Go back
 				</button>

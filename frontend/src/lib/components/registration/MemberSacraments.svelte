@@ -264,7 +264,7 @@
 	</button>
 
 	{#if expanded}
-		<div class="px-4 pb-4 border-t border-gray-100">
+		<div class="px-4 pb-4 border-t border-brand-border">
 			<div class="mt-4 space-y-3">
 				{#each member.sacraments as sacrament, index}
 					{@const colors = sacramentColors[sacrament.type] || sacramentColors.baptism}
@@ -391,7 +391,7 @@
 
 					<div class="space-y-3">
 						<div>
-							<label for="date-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+							<label for="date-{member.tempId}" class="block text-sm text-brand-primary mb-1">
 								Date Received <span class="text-red-500">*</span>
 							</label>
 							<input
@@ -403,7 +403,7 @@
 						</div>
 
 						<div>
-							<label for="church-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+							<label for="church-{member.tempId}" class="block text-sm text-brand-primary mb-1">
 								Church/Location
 							</label>
 							<input
@@ -416,7 +416,7 @@
 						</div>
 
 						<div>
-							<label for="minister-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+							<label for="minister-{member.tempId}" class="block text-sm text-brand-primary mb-1">
 								Minister/Celebrant
 							</label>
 							<input
@@ -431,7 +431,10 @@
 						{#if addingType === 'baptism'}
 							<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
 								<div>
-									<label for="godfather-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+									<label
+										for="godfather-{member.tempId}"
+										class="block text-sm text-brand-primary mb-1"
+									>
 										Godfather
 									</label>
 									<select
@@ -459,7 +462,10 @@
 									/>
 								</div>
 								<div>
-									<label for="godmother-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+									<label
+										for="godmother-{member.tempId}"
+										class="block text-sm text-brand-primary mb-1"
+									>
 										Godmother
 									</label>
 									<select
@@ -490,7 +496,10 @@
 						{:else if addingType === 'confirmation'}
 							<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
 								<div>
-									<label for="sponsor-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+									<label
+										for="sponsor-{member.tempId}"
+										class="block text-sm text-brand-primary mb-1"
+									>
 										Sponsor
 									</label>
 									<select
@@ -520,7 +529,7 @@
 								<div>
 									<label
 										for="confirmation-name-{member.tempId}"
-										class="block text-sm text-gray-700 mb-1"
+										class="block text-sm text-brand-primary mb-1"
 									>
 										Confirmation Name
 									</label>
@@ -535,7 +544,7 @@
 							</div>
 						{:else if addingType === 'marriage'}
 							<div>
-								<label for="spouse-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+								<label for="spouse-{member.tempId}" class="block text-sm text-brand-primary mb-1">
 									Spouse
 								</label>
 								<select
@@ -564,7 +573,10 @@
 							</div>
 							<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
 								<div>
-									<label for="witness1-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+									<label
+										for="witness1-{member.tempId}"
+										class="block text-sm text-brand-primary mb-1"
+									>
 										Witness 1
 									</label>
 									<select
@@ -592,7 +604,10 @@
 									/>
 								</div>
 								<div>
-									<label for="witness2-{member.tempId}" class="block text-sm text-gray-700 mb-1">
+									<label
+										for="witness2-{member.tempId}"
+										class="block text-sm text-brand-primary mb-1"
+									>
 										Witness 2
 									</label>
 									<select
@@ -635,7 +650,7 @@
 						<button
 							type="button"
 							onclick={resetForm}
-							class="px-4 py-2 border border-brand-border rounded text-sm bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-gray-500"
+							class="px-4 py-2 border border-brand-border rounded text-sm bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-brand-accent"
 						>
 							Cancel
 						</button>
@@ -643,7 +658,7 @@
 				</div>
 			{:else}
 				<div class="mt-4">
-					<p class="text-sm text-gray-600 mb-2">Add a sacrament:</p>
+					<p class="text-sm text-brand-text-secondary mb-2">Add a sacrament:</p>
 					<div class="flex flex-wrap gap-2">
 						{#each sacramentTypes as type}
 							{@const existing = getSacramentByType(type.value)}
@@ -653,7 +668,7 @@
 								onclick={() => startAdd(type.value)}
 								class="px-3 py-1.5 text-sm rounded-full border transition-colors {existing
 									? colors.bg + ' ' + colors.border + ' ' + colors.text
-									: 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'}"
+									: 'bg-brand-bg-subtle border-brand-border text-brand-text-secondary hover:bg-brand-bg-muted'}"
 							>
 								{#if existing}
 									<svg

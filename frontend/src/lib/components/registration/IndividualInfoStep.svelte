@@ -92,7 +92,7 @@
 				type="text"
 				value={member.firstName || ''}
 				oninput={(e) => handleInput('firstName', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				class="mt-1 block w-full rounded-sm shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
 				{errors.firstName ? 'border-brand-error' : 'border-brand-border'}"
 			/>
 			{#if errors.firstName}
@@ -109,7 +109,7 @@
 				type="text"
 				value={member.middleName || ''}
 				oninput={(e) => handleInput('middleName', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+				class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 			/>
 		</div>
 
@@ -122,7 +122,7 @@
 				type="text"
 				value={member.lastName || ''}
 				oninput={(e) => handleInput('lastName', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				class="mt-1 block w-full rounded-sm shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
 				{errors.lastName ? 'border-brand-error' : 'border-brand-border'}"
 			/>
 			{#if errors.lastName}
@@ -139,7 +139,7 @@
 				type="date"
 				value={member.dateOfBirth || ''}
 				oninput={(e) => handleInput('dateOfBirth', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+				class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 			/>
 		</div>
 
@@ -149,7 +149,7 @@
 				id="gender"
 				value={member.gender || ''}
 				onchange={(e) => handleInput('gender', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+				class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 			>
 				<option value="">Select...</option>
 				<option value="male">Male</option>
@@ -164,7 +164,7 @@
 				type="tel"
 				value={member.phone || ''}
 				oninput={(e) => handleInput('phone', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+				class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 			/>
 		</div>
 
@@ -175,7 +175,7 @@
 				type="email"
 				value={member.email || ''}
 				oninput={(e) => handleInput('email', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				class="mt-1 block w-full rounded-sm shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
 				{errors.email ? 'border-brand-error' : 'border-brand-border'}"
 			/>
 			{#if errors.email}

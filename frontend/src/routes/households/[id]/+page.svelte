@@ -10,6 +10,7 @@
 	} from '$lib/api';
 	import { toasts } from '$lib/stores/toast';
 	import AddMemberModal from '$lib/components/AddMemberModal.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 
 	let household = $state<HouseholdWithMembers | null>(null);
 	let loading = $state(true);
@@ -166,18 +167,13 @@
 </script>
 
 <div>
-	<!-- Back link -->
-	<div class="mb-4">
-		<a
-			href="/households"
-			class="inline-flex items-center text-sm text-brand-text-secondary hover:text-brand-primary transition-colors"
-		>
-			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-			</svg>
-			Back to list
-		</a>
-	</div>
+	<Breadcrumbs
+		items={[
+			{ label: 'Dashboard', href: '/' },
+			{ label: 'Households', href: '/households' },
+			{ label: household?.name || 'Household' }
+		]}
+	/>
 
 	{#if loading}
 		<!-- Loading skeleton -->
@@ -229,13 +225,13 @@
 			<div class="mt-6 flex justify-center gap-3">
 				<button
 					onclick={() => loadHousehold()}
-					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
+					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90"
 				>
 					Try again
 				</button>
 				<button
 					onclick={() => goto('/households')}
-					class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-md shadow-sm text-brand-primary bg-white hover:bg-brand-bg-subtle"
+					class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-sm text-brand-primary bg-white hover:bg-brand-bg-subtle"
 				>
 					Go back
 				</button>
@@ -267,7 +263,7 @@
 								<input
 									type="text"
 									bind:value={editForm.name}
-									class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent"
+									class="text-2xl font-bold text-brand-primary border-b-2 border-blue-500 focus:outline-none bg-transparent"
 								/>
 							{:else}
 								<h1 class="text-2xl font-bold text-brand-primary">{household.name}</h1>
@@ -283,27 +279,27 @@
 							<button
 								onclick={handleCancel}
 								disabled={isSaving}
-								class="px-4 py-2 text-sm font-medium text-brand-primary bg-white border border-brand-border rounded-md hover:bg-brand-bg-subtle disabled:opacity-50"
+								class="px-4 py-2 text-sm font-medium text-brand-primary bg-white border border-brand-border rounded-sm hover:bg-brand-bg-subtle disabled:opacity-50"
 							>
 								Cancel
 							</button>
 							<button
 								onclick={handleSave}
 								disabled={isSaving}
-								class="px-4 py-2 text-sm font-medium text-white bg-brand-accent rounded-md hover:bg-brand-accent/90 disabled:opacity-50"
+								class="px-4 py-2 text-sm font-medium text-white bg-brand-accent rounded-sm hover:bg-brand-accent/90 disabled:opacity-50"
 							>
 								{isSaving ? 'Saving...' : 'Save'}
 							</button>
 						{:else}
 							<button
 								onclick={toggleEdit}
-								class="px-4 py-2 text-sm font-medium text-brand-primary bg-white border border-brand-border rounded-md hover:bg-brand-bg-subtle"
+								class="px-4 py-2 text-sm font-medium text-brand-primary bg-white border border-brand-border rounded-sm hover:bg-brand-bg-subtle"
 							>
 								Edit
 							</button>
 							<button
 								onclick={handleDeleteHousehold}
-								class="px-4 py-2 text-sm font-medium text-brand-error bg-white border border-brand-error/30 rounded-md hover:bg-brand-error/10"
+								class="px-4 py-2 text-sm font-medium text-brand-error bg-white border border-brand-error/30 rounded-sm hover:bg-brand-error/10"
 							>
 								Delete
 							</button>
@@ -320,52 +316,52 @@
 				{#if isEditing}
 					<div class="space-y-3">
 						<div>
-							<label for="address_line1" class="block text-sm font-medium text-gray-700">
+							<label for="address_line1" class="block text-sm font-medium text-brand-primary">
 								Address Line 1
 							</label>
 							<input
 								type="text"
 								id="address_line1"
 								bind:value={editForm.address_line1}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							/>
 						</div>
 						<div>
-							<label for="address_line2" class="block text-sm font-medium text-gray-700">
+							<label for="address_line2" class="block text-sm font-medium text-brand-primary">
 								Address Line 2
 							</label>
 							<input
 								type="text"
 								id="address_line2"
 								bind:value={editForm.address_line2}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							/>
 						</div>
 						<div class="grid grid-cols-2 gap-4">
 							<div>
-								<label for="city" class="block text-sm font-medium text-gray-700">City</label>
+								<label for="city" class="block text-sm font-medium text-brand-primary">City</label>
 								<input
 									type="text"
 									id="city"
 									bind:value={editForm.city}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 							</div>
 							<div>
-								<label for="postal_code" class="block text-sm font-medium text-gray-700">
+								<label for="postal_code" class="block text-sm font-medium text-brand-primary">
 									Postal Code
 								</label>
 								<input
 									type="text"
 									id="postal_code"
 									bind:value={editForm.postal_code}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 							</div>
 						</div>
 					</div>
 				{:else}
-					<p class="text-gray-900">{formatAddress()}</p>
+					<p class="text-brand-primary">{formatAddress()}</p>
 				{/if}
 			</div>
 		</div>
@@ -376,7 +372,7 @@
 				<h2 class="text-lg font-medium text-brand-primary">Members</h2>
 				<button
 					onclick={() => (showAddMemberModal = true)}
-					class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-brand-accent bg-brand-accent/10 rounded-md hover:bg-brand-accent/20 transition-colors"
+					class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-brand-accent bg-brand-accent/10 rounded-sm hover:bg-brand-accent/20 transition-colors"
 				>
 					<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -432,7 +428,7 @@
 															member.person_id,
 															(e.target as HTMLSelectElement).value as HouseholdRole
 														)}
-													class="text-xs rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+													class="text-xs rounded border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500"
 												>
 													{#each Object.entries(roleLabels) as [value, label] ([value, label])}
 														<option {value}>{label}</option>
@@ -440,7 +436,7 @@
 												</select>
 												<button
 													onclick={cancelEditRole}
-													class="text-xs text-gray-500 hover:text-gray-700"
+													class="text-xs text-brand-text-secondary hover:text-brand-primary"
 												>
 													Cancel
 												</button>

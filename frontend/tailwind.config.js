@@ -5,18 +5,24 @@ export default {
 		extend: {
 			colors: {
 				brand: {
-					primary: '#0F172A',
-					'primary-light': '#1E293B',
-					'primary-muted': '#475569',
+					/* Warm near-black, not cold slate */
+					primary: '#1A1A1A',
+					'primary-light': '#31302E',
+					'primary-muted': '#615D59',
+					/* Amber accent (parish warmth) */
 					accent: '#D97706',
 					'accent-light': '#FBBF24',
 					'accent-muted': '#FFFBEB',
-					'bg-subtle': '#F8FAFC',
-					'bg-muted': '#F1F5F9',
-					border: '#E2E8F0',
-					'border-strong': '#CBD5E1',
-					'text-secondary': '#475569',
-					'text-muted': '#94A3B8',
+					/* Warm white backgrounds */
+					'bg-subtle': '#F6F5F4',
+					'bg-muted': '#EDECEB',
+					/* Whisper borders */
+					border: 'rgba(0, 0, 0, 0.08)',
+					'border-strong': 'rgba(0, 0, 0, 0.15)',
+					/* Warm text tones */
+					'text-secondary': '#615D59',
+					'text-muted': '#A39E98',
+					/* Semantic */
 					success: '#059669',
 					error: '#DC2626',
 					info: '#2563EB'
@@ -31,10 +37,29 @@ export default {
 				lg: '12px',
 				xl: '16px'
 			},
+			boxShadow: {
+				/* Multi-layer Notion-style shadows */
+				sm: '0 1px 2px 0 rgba(0, 0, 0, 0.04)',
+				md:
+					'rgba(0, 0, 0, 0.04) 0px 4px 18px, ' +
+					'rgba(0, 0, 0, 0.027) 0px 2px 7px, ' +
+					'rgba(0, 0, 0, 0.02) 0px 0.8px 3px, ' +
+					'rgba(0, 0, 0, 0.01) 0px 0.2px 1px',
+				lg:
+					'rgba(0, 0, 0, 0.01) 0px 1px 3px, ' +
+					'rgba(0, 0, 0, 0.02) 0px 3px 7px, ' +
+					'rgba(0, 0, 0, 0.02) 0px 7px 15px, ' +
+					'rgba(0, 0, 0, 0.04) 0px 14px 28px, ' +
+					'rgba(0, 0, 0, 0.05) 0px 23px 52px'
+			},
 			transitionDuration: {
 				fast: '150ms',
 				normal: '200ms',
 				slow: '300ms'
+			},
+			letterSpacing: {
+				tight: '-0.02em',
+				tighter: '-0.025em'
 			},
 			zIndex: {
 				dropdown: '10',

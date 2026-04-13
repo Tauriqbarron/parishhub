@@ -20,7 +20,7 @@
 	{#if qrDataUrl}
 		<div class="text-center">
 			<img src={qrDataUrl} alt="Registration QR Code" class="mx-auto mb-2" />
-			<p class="text-sm text-gray-600">{registrationUrl}</p>
+			<p class="text-sm text-brand-text-secondary">{registrationUrl}</p>
 			<a href={qrDataUrl} download="parish-registration-qr.png" class="text-blue-600 underline">
 				Download QR Code
 			</a>

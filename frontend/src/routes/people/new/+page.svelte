@@ -189,7 +189,7 @@
 	<div class="mb-4">
 		<a
 			href="/people"
-			class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
+			class="inline-flex items-center text-sm text-brand-text-secondary hover:text-brand-primary transition-colors"
 		>
 			<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -200,8 +200,8 @@
 
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="text-2xl font-bold text-gray-900">Add New Person</h1>
-		<p class="text-gray-600 mt-1">Add a new parishioner to the database</p>
+		<h1 class="text-2xl font-bold text-brand-primary">Add New Person</h1>
+		<p class="text-brand-text-secondary mt-1">Add a new parishioner to the database</p>
 	</div>
 
 	<!-- Form -->
@@ -213,18 +213,18 @@
 			}}
 		>
 			<!-- Required Section -->
-			<div class="px-6 py-4 border-b border-gray-200">
-				<h2 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h2>
+			<div class="px-6 py-4 border-b border-brand-border">
+				<h2 class="text-lg font-medium text-brand-primary mb-4">Basic Information</h2>
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div>
-						<label for="first_name" class="block text-sm font-medium text-gray-700">
+						<label for="first_name" class="block text-sm font-medium text-brand-primary">
 							First Name <span class="text-red-500">*</span>
 						</label>
 						<input
 							type="text"
 							id="first_name"
 							bind:value={firstName}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm {errors.first_name
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm {errors.first_name
 								? 'border-red-300 focus:border-red-500 focus:ring-red-500'
 								: ''}"
 							placeholder="Enter first name"
@@ -234,14 +234,14 @@
 						{/if}
 					</div>
 					<div>
-						<label for="last_name" class="block text-sm font-medium text-gray-700">
+						<label for="last_name" class="block text-sm font-medium text-brand-primary">
 							Last Name <span class="text-red-500">*</span>
 						</label>
 						<input
 							type="text"
 							id="last_name"
 							bind:value={lastName}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm {errors.last_name
+							class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm {errors.last_name
 								? 'border-red-300 focus:border-red-500 focus:ring-red-500'
 								: ''}"
 							placeholder="Enter last name"
@@ -277,20 +277,20 @@
 
 			<!-- Expanded Section -->
 			{#if showMoreDetails}
-				<div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-					<h3 class="text-md font-medium text-gray-900 mb-4">Additional Details</h3>
+				<div class="px-6 py-4 border-b border-brand-border bg-brand-bg-subtle">
+					<h3 class="text-md font-medium text-brand-primary mb-4">Additional Details</h3>
 
 					<div class="space-y-4">
 						<!-- Middle Name -->
 						<div>
-							<label for="middle_name" class="block text-sm font-medium text-gray-700">
+							<label for="middle_name" class="block text-sm font-medium text-brand-primary">
 								Middle Name
 							</label>
 							<input
 								type="text"
 								id="middle_name"
 								bind:value={middleName}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								placeholder="Enter middle name"
 							/>
 						</div>
@@ -298,22 +298,24 @@
 						<!-- Date of Birth and Gender -->
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div>
-								<label for="date_of_birth" class="block text-sm font-medium text-gray-700">
+								<label for="date_of_birth" class="block text-sm font-medium text-brand-primary">
 									Date of Birth
 								</label>
 								<input
 									type="date"
 									id="date_of_birth"
 									bind:value={dateOfBirth}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 							</div>
 							<div>
-								<label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+								<label for="gender" class="block text-sm font-medium text-brand-primary"
+									>Gender</label
+								>
 								<select
 									id="gender"
 									bind:value={gender}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								>
 									<option value={null}>Select gender...</option>
 									<option value="male">Male</option>
@@ -325,12 +327,13 @@
 						<!-- Email and Phone -->
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div>
-								<label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+								<label for="email" class="block text-sm font-medium text-brand-primary">Email</label
+								>
 								<input
 									type="email"
 									id="email"
 									bind:value={email}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm {errors.email
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm {errors.email
 										? 'border-red-300 focus:border-red-500 focus:ring-red-500'
 										: ''}"
 									placeholder="email@example.com"
@@ -340,12 +343,13 @@
 								{/if}
 							</div>
 							<div>
-								<label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+								<label for="phone" class="block text-sm font-medium text-brand-primary">Phone</label
+								>
 								<input
 									type="tel"
 									id="phone"
 									bind:value={phone}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="(555) 123-4567"
 								/>
 							</div>
@@ -353,51 +357,51 @@
 
 						<!-- Address -->
 						<div>
-							<label for="address_line1" class="block text-sm font-medium text-gray-700">
+							<label for="address_line1" class="block text-sm font-medium text-brand-primary">
 								Address Line 1
 							</label>
 							<input
 								type="text"
 								id="address_line1"
 								bind:value={addressLine1}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								placeholder="Street address"
 							/>
 						</div>
 
 						<div>
-							<label for="address_line2" class="block text-sm font-medium text-gray-700">
+							<label for="address_line2" class="block text-sm font-medium text-brand-primary">
 								Address Line 2
 							</label>
 							<input
 								type="text"
 								id="address_line2"
 								bind:value={addressLine2}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								placeholder="Apartment, suite, etc."
 							/>
 						</div>
 
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div>
-								<label for="city" class="block text-sm font-medium text-gray-700">City</label>
+								<label for="city" class="block text-sm font-medium text-brand-primary">City</label>
 								<input
 									type="text"
 									id="city"
 									bind:value={city}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="City"
 								/>
 							</div>
 							<div>
-								<label for="postal_code" class="block text-sm font-medium text-gray-700">
+								<label for="postal_code" class="block text-sm font-medium text-brand-primary">
 									Postal Code
 								</label>
 								<input
 									type="text"
 									id="postal_code"
 									bind:value={postalCode}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="12345"
 								/>
 							</div>
@@ -405,12 +409,12 @@
 
 						<!-- Notes -->
 						<div>
-							<label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+							<label for="notes" class="block text-sm font-medium text-brand-primary">Notes</label>
 							<textarea
 								id="notes"
 								bind:value={notes}
 								rows="3"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								placeholder="Any additional notes..."
 							></textarea>
 						</div>
@@ -419,21 +423,21 @@
 			{/if}
 
 			<!-- Household Section -->
-			<div class="px-6 py-4 border-b border-gray-200">
+			<div class="px-6 py-4 border-b border-brand-border">
 				<div class="flex items-center">
 					<input
 						type="checkbox"
 						id="add_to_household"
 						bind:checked={addToHousehold}
-						class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+						class="h-4 w-4 rounded border-brand-border text-blue-600 focus:ring-blue-500"
 					/>
-					<label for="add_to_household" class="ml-2 block text-sm font-medium text-gray-700">
+					<label for="add_to_household" class="ml-2 block text-sm font-medium text-brand-primary">
 						Add to existing household
 					</label>
 				</div>
 
 				{#if addToHousehold}
-					<div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+					<div class="mt-4 p-4 bg-brand-bg-subtle rounded-lg border border-brand-border">
 						{#if loadingHouseholds}
 							<div class="flex items-center justify-center py-4">
 								<svg class="animate-spin h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24">
@@ -451,22 +455,22 @@
 										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 									></path>
 								</svg>
-								<span class="ml-2 text-sm text-gray-600">Loading households...</span>
+								<span class="ml-2 text-sm text-brand-text-secondary">Loading households...</span>
 							</div>
 						{:else if availableHouseholds.length === 0}
-							<p class="text-sm text-gray-500 text-center py-2">
+							<p class="text-sm text-brand-text-secondary text-center py-2">
 								No households available. You can add to a household later.
 							</p>
 						{:else}
 							<div class="space-y-4">
 								<div>
-									<label for="household" class="block text-sm font-medium text-gray-700">
+									<label for="household" class="block text-sm font-medium text-brand-primary">
 										Select Household
 									</label>
 									<select
 										id="household"
 										bind:value={selectedHouseholdId}
-										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+										class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									>
 										<option value={null}>Choose a household...</option>
 										{#each availableHouseholds as household (household.id)}
@@ -477,13 +481,16 @@
 
 								{#if selectedHouseholdId}
 									<div>
-										<label for="household_role" class="block text-sm font-medium text-gray-700">
+										<label
+											for="household_role"
+											class="block text-sm font-medium text-brand-primary"
+										>
 											Role in Household
 										</label>
 										<select
 											id="household_role"
 											bind:value={householdRole}
-											class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+											class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 										>
 											{#each Object.entries(roleLabels) as [value, label]}
 												<option {value}>{label}</option>
@@ -529,12 +536,14 @@
 			</div>
 
 			<!-- Actions -->
-			<div class="px-6 py-4 bg-gray-50 rounded-b-lg flex flex-col sm:flex-row sm:justify-end gap-3">
+			<div
+				class="px-6 py-4 bg-brand-bg-subtle rounded-b-lg flex flex-col sm:flex-row sm:justify-end gap-3"
+			>
 				<button
 					type="button"
 					onclick={handleCancel}
 					disabled={isSaving}
-					class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+					class="inline-flex justify-center items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-sm text-brand-primary bg-white hover:bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
 				>
 					Cancel
 				</button>
@@ -542,7 +551,7 @@
 					type="button"
 					onclick={handleSaveAndAddAnother}
 					disabled={isSaving}
-					class="inline-flex justify-center items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+					class="inline-flex justify-center items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
 				>
 					{#if isSaving}
 						<svg
@@ -570,7 +579,7 @@
 				<button
 					type="submit"
 					disabled={isSaving}
-					class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+					class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
 				>
 					{#if isSaving}
 						<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">

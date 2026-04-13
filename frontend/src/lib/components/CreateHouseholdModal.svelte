@@ -66,7 +66,7 @@
 	tabindex="-1"
 >
 	<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-		<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+		<div class="fixed inset-0 bg-brand-bg-subtle0 bg-opacity-75 transition-opacity"></div>
 
 		<div
 			class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
@@ -76,11 +76,13 @@
 			<form onsubmit={handleSubmit}>
 				<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">Create Household</h3>
+						<h3 class="text-lg font-semibold text-brand-primary" id="modal-title">
+							Create Household
+						</h3>
 						<button
 							type="button"
 							onclick={onClose}
-							class="text-gray-400 hover:text-gray-500"
+							class="text-brand-text-muted hover:text-brand-text-secondary"
 							aria-label="Close modal"
 						>
 							<svg
@@ -103,7 +105,7 @@
 
 					<div class="space-y-4">
 						<div>
-							<label for="name" class="block text-sm font-medium text-gray-700">
+							<label for="name" class="block text-sm font-medium text-brand-primary">
 								Household Name <span aria-hidden="true" class="text-red-500">*</span><span
 									class="sr-only">(required)</span
 								>
@@ -117,7 +119,7 @@
 								aria-required="true"
 								aria-invalid={errors.name ? 'true' : undefined}
 								aria-describedby={errors.name ? 'name-error' : undefined}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							/>
 							{#if errors.name}
 								<p id="name-error" class="mt-1 text-sm text-red-600" role="alert">{errors.name}</p>
@@ -125,7 +127,7 @@
 						</div>
 
 						<div>
-							<label for="address_line1" class="block text-sm font-medium text-gray-700">
+							<label for="address_line1" class="block text-sm font-medium text-brand-primary">
 								Address Line 1
 							</label>
 							<AddressAutocomplete
@@ -143,7 +145,7 @@
 						</div>
 
 						<div>
-							<label for="address_line2" class="block text-sm font-medium text-gray-700">
+							<label for="address_line2" class="block text-sm font-medium text-brand-primary">
 								Address Line 2
 							</label>
 							<input
@@ -152,23 +154,23 @@
 								name="address_line2"
 								bind:value={form.address_line2}
 								placeholder="Apartment, suite, etc."
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							/>
 						</div>
 
 						<div class="grid grid-cols-2 gap-4">
 							<div>
-								<label for="city" class="block text-sm font-medium text-gray-700">City</label>
+								<label for="city" class="block text-sm font-medium text-brand-primary">City</label>
 								<input
 									type="text"
 									id="city"
 									name="city"
 									bind:value={form.city}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 							</div>
 							<div>
-								<label for="postal_code" class="block text-sm font-medium text-gray-700">
+								<label for="postal_code" class="block text-sm font-medium text-brand-primary">
 									Postal Code
 								</label>
 								<input
@@ -176,25 +178,25 @@
 									id="postal_code"
 									name="postal_code"
 									bind:value={form.postal_code}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+				<div class="bg-brand-bg-subtle px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
 					<button
 						type="submit"
 						disabled={isLoading}
-						class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto disabled:opacity-50"
+						class="inline-flex w-full justify-center rounded-sm bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto disabled:opacity-50"
 					>
 						{isLoading ? 'Creating...' : 'Create Household'}
 					</button>
 					<button
 						type="button"
 						onclick={onClose}
-						class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+						class="mt-3 inline-flex w-full justify-center rounded-sm bg-white px-3 py-2 text-sm font-semibold text-brand-primary shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-brand-bg-subtle sm:mt-0 sm:w-auto"
 					>
 						Cancel
 					</button>

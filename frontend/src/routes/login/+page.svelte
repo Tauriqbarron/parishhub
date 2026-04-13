@@ -72,7 +72,7 @@
 						fill="#EA4335"
 					/>
 				</svg>
-				<span class="text-gray-700 font-medium">Sign in with Google</span>
+				<span class="text-brand-primary font-medium">Sign in with Google</span>
 			</button>
 
 			<p class="mt-6 text-center text-xs text-brand-text-muted">

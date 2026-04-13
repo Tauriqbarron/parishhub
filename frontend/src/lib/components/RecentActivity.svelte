@@ -57,12 +57,12 @@
 	}
 </script>
 
-<div class="bg-white rounded-lg shadow border border-brand-border p-6">
-	<h3 class="text-lg font-medium text-brand-primary mb-4">Recent Activity</h3>
+<div class="bg-white rounded-lg border border-brand-border p-6">
+	<h3 class="text-lg font-semibold text-brand-primary mb-4 tracking-tight">Recent Activity</h3>
 	{#if activities.length === 0}
 		<p class="text-brand-text-secondary text-sm">No recent activity</p>
 	{:else}
-		<div class="space-y-4">
+		<div class="space-y-3">
 			{#each activities as activity}
 				{@const href = getHref(activity)}
 				{@const iconInfo = getActivityIcon(activity.type)}
@@ -75,24 +75,28 @@
 						}}
 						class="flex items-start gap-3 hover:bg-brand-bg-subtle rounded-lg p-2 -m-2 cursor-pointer transition-colors group"
 					>
-						<div class="p-2 rounded-full flex-shrink-0 {iconInfo.bg}">
+						<div class="p-2 rounded-lg flex-shrink-0 {iconInfo.bg}">
 							<svelte:component this={iconInfo.icon} class="w-4 h-4 {iconInfo.color}" />
 						</div>
 						<div class="flex-1 min-w-0">
 							<p class="text-sm text-brand-primary group-hover:text-brand-accent transition-colors">
 								{activity.description}
 							</p>
-							<p class="text-xs text-brand-text-muted">{formatTimeAgo(activity.timestamp)}</p>
+							<p class="text-xs text-brand-text-muted mt-0.5">
+								{formatTimeAgo(activity.timestamp)}
+							</p>
 						</div>
 					</a>
 				{:else}
-					<div class="flex items-start gap-3">
-						<div class="p-2 rounded-full flex-shrink-0 {iconInfo.bg}">
+					<div class="flex items-start gap-3 p-2 -m-2">
+						<div class="p-2 rounded-lg flex-shrink-0 {iconInfo.bg}">
 							<svelte:component this={iconInfo.icon} class="w-4 h-4 {iconInfo.color}" />
 						</div>
 						<div class="flex-1 min-w-0">
 							<p class="text-sm text-brand-primary">{activity.description}</p>
-							<p class="text-xs text-brand-text-muted">{formatTimeAgo(activity.timestamp)}</p>
+							<p class="text-xs text-brand-text-muted mt-0.5">
+								{formatTimeAgo(activity.timestamp)}
+							</p>
 						</div>
 					</div>
 				{/if}

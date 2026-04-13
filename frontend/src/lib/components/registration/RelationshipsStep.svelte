@@ -247,7 +247,7 @@
 						{/if}
 						{#if member.familyRole}
 							<span
-								class="ml-1 text-xs bg-gray-100 text-brand-text-secondary px-2 py-0.5 rounded-full capitalize"
+								class="ml-1 text-xs bg-brand-bg-muted text-brand-text-secondary px-2 py-0.5 rounded-full capitalize"
 							>
 								{member.familyRole}
 							</span>
@@ -260,7 +260,9 @@
 						{#each member.relationships as rel}
 							{@const targetMember = getMemberById(rel.targetTempId)}
 							{#if targetMember}
-								<div class="flex items-center justify-between bg-gray-50 rounded px-3 py-2 text-sm">
+								<div
+									class="flex items-center justify-between bg-brand-bg-subtle rounded px-3 py-2 text-sm"
+								>
 									<span>
 										<span class="text-brand-text-secondary"
 											>{getRelationshipLabel(rel.relationshipType)}</span
@@ -346,7 +348,7 @@
 								<button
 									type="button"
 									onclick={resetForm}
-									class="px-3 py-2 border border-brand-border rounded text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+									class="px-3 py-2 border border-brand-border rounded text-sm hover:bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-gray-500"
 								>
 									Cancel
 								</button>

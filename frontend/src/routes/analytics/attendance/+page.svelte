@@ -194,7 +194,7 @@
 					id="start-date"
 					type="date"
 					bind:value={startDate}
-					class="px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+					class="px-3 py-2 border border-brand-border rounded-sm text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 				/>
 			</div>
 			<div>
@@ -205,12 +205,12 @@
 					id="end-date"
 					type="date"
 					bind:value={endDate}
-					class="px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+					class="px-3 py-2 border border-brand-border rounded-sm text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 				/>
 			</div>
 			<button
 				onclick={handleFilter}
-				class="px-4 py-2 bg-brand-accent text-white rounded-md hover:bg-brand-accent/90 transition-colors"
+				class="px-4 py-2 bg-brand-accent text-white rounded-sm hover:bg-brand-accent/90 transition-colors"
 			>
 				Filter
 			</button>
@@ -317,7 +317,7 @@
 							<button
 								onclick={() => handlePageChange(page - 1)}
 								disabled={page <= 1}
-								class="px-3 py-1 text-sm border rounded-md {page <= 1
+								class="px-3 py-1 text-sm border rounded-sm {page <= 1
 									? 'text-brand-text-muted cursor-not-allowed'
 									: 'text-brand-text-secondary hover:bg-brand-bg-subtle'}"
 							>
@@ -326,7 +326,7 @@
 							<button
 								onclick={() => handlePageChange(page + 1)}
 								disabled={page >= totalPages}
-								class="px-3 py-1 text-sm border rounded-md {page >= totalPages
+								class="px-3 py-1 text-sm border rounded-sm {page >= totalPages
 									? 'text-brand-text-muted cursor-not-allowed'
 									: 'text-brand-text-secondary hover:bg-brand-bg-subtle'}"
 							>
@@ -360,7 +360,7 @@
 						id="edit-date"
 						type="date"
 						bind:value={editForm.date}
-						class="w-full px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+						class="w-full px-3 py-2 border border-brand-border rounded-sm text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 					/>
 				</div>
 
@@ -374,7 +374,7 @@
 							id="edit-mass-time"
 							value={editForm.mass_time_id ?? ''}
 							onchange={(e) => handleEditMassTimeChange((e.target as HTMLSelectElement).value)}
-							class="w-full px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+							class="w-full px-3 py-2 border border-brand-border rounded-sm text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 						>
 							<option value="">None (Total)</option>
 							{#each massTimeOptions as mt (mt.id)}
@@ -389,7 +389,7 @@
 								type="text"
 								bind:value={editForm.mass_time}
 								placeholder="e.g., 08:00 AM or leave empty for total"
-								class="flex-1 px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+								class="flex-1 px-3 py-2 border border-brand-border rounded-sm text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 							/>
 							{#if massTimeOptions.length > 0 && editForm.customTime}
 								<button
@@ -399,7 +399,7 @@
 										editForm.mass_time = '';
 										editForm.mass_time_id = null;
 									}}
-									class="px-3 py-2 text-brand-text-muted hover:bg-brand-bg-muted rounded-md text-sm"
+									class="px-3 py-2 text-brand-text-muted hover:bg-brand-bg-muted rounded-sm text-sm"
 									title="Back to dropdown"
 								>
 									&larr;
@@ -418,7 +418,7 @@
 						type="number"
 						min="0"
 						bind:value={editForm.attendance_count}
-						class="w-full px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+						class="w-full px-3 py-2 border border-brand-border rounded-sm text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 					/>
 				</div>
 
@@ -431,7 +431,7 @@
 						bind:value={editForm.notes}
 						rows="3"
 						maxlength="2000"
-						class="w-full px-3 py-2 border border-brand-border rounded-md text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+						class="w-full px-3 py-2 border border-brand-border rounded-sm text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 					></textarea>
 				</div>
 			</div>
@@ -439,21 +439,21 @@
 			<div class="flex items-center justify-between mt-6">
 				<button
 					onclick={() => confirmDelete(editingRecord!.id)}
-					class="px-3 py-2 text-sm text-brand-error hover:text-brand-error/80 hover:bg-brand-error/10 rounded-md transition-colors"
+					class="px-3 py-2 text-sm text-brand-error hover:text-brand-error/80 hover:bg-brand-error/10 rounded-sm transition-colors"
 				>
 					Delete Record
 				</button>
 				<div class="flex gap-3">
 					<button
 						onclick={cancelEdit}
-						class="px-4 py-2 text-sm text-brand-text-secondary hover:bg-brand-bg-muted rounded-md transition-colors"
+						class="px-4 py-2 text-sm text-brand-text-secondary hover:bg-brand-bg-muted rounded-sm transition-colors"
 					>
 						Cancel
 					</button>
 					<button
 						onclick={handleSave}
 						disabled={saving || editForm.attendance_count < 0}
-						class="px-4 py-2 bg-brand-accent text-white rounded-md hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+						class="px-4 py-2 bg-brand-accent text-white rounded-sm hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						{saving ? 'Saving...' : 'Save Changes'}
 					</button>
@@ -477,13 +477,13 @@
 						showDeleteConfirm = false;
 						deletingId = null;
 					}}
-					class="px-4 py-2 text-sm text-brand-text-secondary hover:bg-brand-bg-muted rounded-md transition-colors"
+					class="px-4 py-2 text-sm text-brand-text-secondary hover:bg-brand-bg-muted rounded-sm transition-colors"
 				>
 					Cancel
 				</button>
 				<button
 					onclick={handleDelete}
-					class="px-4 py-2 bg-brand-error text-white rounded-md hover:bg-brand-error/90 transition-colors"
+					class="px-4 py-2 bg-brand-error text-white rounded-sm hover:bg-brand-error/90 transition-colors"
 				>
 					Delete
 				</button>

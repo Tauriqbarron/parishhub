@@ -53,14 +53,14 @@
 			<button
 				onclick={() => goToPage(page - 1)}
 				disabled={page === 1}
-				class="relative inline-flex items-center rounded-md border border-brand-border bg-white px-4 py-2 text-sm font-medium text-brand-text-secondary hover:bg-brand-bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+				class="relative inline-flex items-center rounded-sm border border-brand-border bg-white px-4 py-2 text-sm font-medium text-brand-text-secondary hover:bg-brand-bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				Previous
 			</button>
 			<button
 				onclick={() => goToPage(page + 1)}
 				disabled={page === pages}
-				class="relative ml-3 inline-flex items-center rounded-md border border-brand-border bg-white px-4 py-2 text-sm font-medium text-brand-text-secondary hover:bg-brand-bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+				class="relative ml-3 inline-flex items-center rounded-sm border border-brand-border bg-white px-4 py-2 text-sm font-medium text-brand-text-secondary hover:bg-brand-bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				Next
 			</button>
@@ -74,7 +74,7 @@
 				</p>
 			</div>
 			<div>
-				<nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+				<nav class="isolate inline-flex -space-x-px rounded-sm shadow-sm" aria-label="Pagination">
 					<button
 						onclick={() => goToPage(page - 1)}
 						disabled={page === 1}

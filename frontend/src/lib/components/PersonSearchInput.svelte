@@ -100,7 +100,7 @@
 	<div
 		class="flex items-center justify-between p-3 rounded-lg border {isLinkedPerson(value)
 			? 'border-blue-200 bg-blue-50'
-			: 'border-gray-200 bg-gray-50'}"
+			: 'border-brand-border bg-brand-bg-subtle'}"
 	>
 		<div class="flex items-center gap-3">
 			<div class="p-2 bg-white rounded-lg shadow-sm">
@@ -122,7 +122,7 @@
 					</svg>
 				{:else}
 					<svg
-						class="w-5 h-5 text-gray-600"
+						class="w-5 h-5 text-brand-text-secondary"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
@@ -139,8 +139,8 @@
 				{/if}
 			</div>
 			<div>
-				<div class="font-medium text-gray-900">{value.name}</div>
-				<div class="text-xs text-gray-500">
+				<div class="font-medium text-brand-primary">{value.name}</div>
+				<div class="text-xs text-brand-text-secondary">
 					{isLinkedPerson(value) ? 'Linked to database' : 'Manual entry'}
 				</div>
 			</div>
@@ -148,7 +148,7 @@
 		<button
 			type="button"
 			onclick={clearSelection}
-			class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition-colors"
+			class="p-1.5 rounded hover:bg-brand-bg-muted text-brand-text-secondary transition-colors"
 			aria-label="Clear selection"
 		>
 			<svg
@@ -182,11 +182,16 @@
 			role="combobox"
 			aria-haspopup="listbox"
 			aria-expanded={showDropdown && (searchResults.length > 0 || searchQuery.length >= 2)}
-			class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+			class="block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 		/>
 		{#if isSearching}
 			<div class="absolute right-3 top-2.5" aria-hidden="true">
-				<svg class="animate-spin h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" role="img">
+				<svg
+					class="animate-spin h-5 w-5 text-brand-text-muted"
+					fill="none"
+					viewBox="0 0 24 24"
+					role="img"
+				>
 					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
 					></circle>
 					<path
@@ -200,14 +205,14 @@
 
 		{#if showDropdown && (searchResults.length > 0 || (searchQuery.length >= 2 && !isSearching))}
 			<div
-				class="absolute z-10 mt-1 w-full border border-gray-200 rounded-md shadow-lg bg-white max-h-48 overflow-y-auto"
+				class="absolute z-10 mt-1 w-full border border-brand-border rounded-sm shadow-lg bg-white max-h-48 overflow-y-auto"
 				role="listbox"
 			>
 				{#each searchResults as person (person.id)}
 					<button
 						type="button"
 						onclick={() => selectPerson(person)}
-						class="w-full px-4 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+						class="w-full px-4 py-2 text-left hover:bg-brand-bg-subtle border-b border-brand-border last:border-b-0"
 						role="option"
 						aria-selected="false"
 					>
@@ -228,9 +233,9 @@
 								/>
 							</svg>
 							<div>
-								<div class="font-medium text-gray-900">{formatPersonName(person)}</div>
+								<div class="font-medium text-brand-primary">{formatPersonName(person)}</div>
 								{#if person.email}
-									<div class="text-sm text-gray-500">{person.email}</div>
+									<div class="text-sm text-brand-text-secondary">{person.email}</div>
 								{/if}
 							</div>
 						</div>
@@ -240,13 +245,13 @@
 					<button
 						type="button"
 						onclick={useManualEntry}
-						class="w-full px-4 py-2 text-left hover:bg-gray-50 border-t border-gray-200"
+						class="w-full px-4 py-2 text-left hover:bg-brand-bg-subtle border-t border-brand-border"
 						role="option"
 						aria-selected="false"
 					>
 						<div class="flex items-center gap-2">
 							<svg
-								class="w-4 h-4 text-gray-500 flex-shrink-0"
+								class="w-4 h-4 text-brand-text-secondary flex-shrink-0"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -261,7 +266,7 @@
 								/>
 							</svg>
 							<div>
-								<div class="text-gray-700">
+								<div class="text-brand-primary">
 									Use "<span class="font-medium">{searchQuery.trim()}</span>" as manual entry
 								</div>
 							</div>

@@ -354,17 +354,17 @@
 							<input
 								type="date"
 								bind:value={customStartDate}
-								class="px-3 py-1.5 text-sm border border-brand-border rounded-md focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+								class="px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 							/>
 							<span class="text-brand-text-muted text-sm">to</span>
 							<input
 								type="date"
 								bind:value={customEndDate}
-								class="px-3 py-1.5 text-sm border border-brand-border rounded-md focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
+								class="px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
 							/>
 							<button
 								onclick={loadAttendanceStats}
-								class="px-4 py-1.5 text-sm bg-brand-accent text-white rounded-md hover:bg-brand-accent/90 transition-colors"
+								class="px-4 py-1.5 text-sm bg-brand-accent text-white rounded-sm hover:bg-brand-accent/90 transition-colors"
 							>
 								Apply
 							</button>

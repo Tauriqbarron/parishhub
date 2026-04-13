@@ -171,12 +171,17 @@
 		role="combobox"
 		aria-haspopup="listbox"
 		aria-expanded={showDropdown && searchResults.length > 0}
-		class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
+		class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm
 			{error ? 'border-red-500' : ''}"
 	/>
 	{#if isSearching}
 		<div class="absolute right-3 top-3.5" aria-hidden="true">
-			<svg class="animate-spin h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" role="img">
+			<svg
+				class="animate-spin h-5 w-5 text-brand-text-muted"
+				fill="none"
+				viewBox="0 0 24 24"
+				role="img"
+			>
 				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
 				></circle>
 				<path
@@ -190,7 +195,7 @@
 
 	{#if showDropdown && searchResults.length > 0}
 		<div
-			class="absolute z-10 mt-1 w-full border border-gray-200 rounded-md shadow-lg bg-white max-h-60 overflow-y-auto"
+			class="absolute z-10 mt-1 w-full border border-brand-border rounded-sm shadow-lg bg-white max-h-60 overflow-y-auto"
 			role="listbox"
 		>
 			{#each searchResults as result, i (result.id)}
@@ -200,14 +205,14 @@
 						e.preventDefault();
 						selectAddress(result);
 					}}
-					class="w-full px-4 py-2.5 text-left hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors
+					class="w-full px-4 py-2.5 text-left hover:bg-blue-50 border-b border-brand-border last:border-b-0 transition-colors
 						{i === highlightedIndex ? 'bg-blue-50' : ''}"
 					role="option"
 					aria-selected={i === highlightedIndex}
 				>
 					<div class="flex items-start gap-2">
 						<svg
-							class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5"
+							class="w-4 h-4 text-brand-text-muted flex-shrink-0 mt-0.5"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -227,7 +232,7 @@
 								d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
 							/>
 						</svg>
-						<span class="text-sm text-gray-900">{result.full_address}</span>
+						<span class="text-sm text-brand-primary">{result.full_address}</span>
 					</div>
 				</button>
 			{/each}

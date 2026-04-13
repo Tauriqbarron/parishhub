@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { Plus } from 'lucide-svelte';
 	import { householdsStore } from '$lib/stores/households';
 	import type { Household, HouseholdFilters, HouseholdWithMembers } from '$lib/api';
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import HouseholdTable from '$lib/components/HouseholdTable.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import CreateHouseholdModal from '$lib/components/CreateHouseholdModal.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import PageHeader from '$lib/components/PageHeader.svelte';
 
 	let searchValue = $state('');
 	let showCreateModal = $state(false);
@@ -43,21 +46,18 @@
 </script>
 
 <div>
-	<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-		<div>
-			<h1 class="text-2xl font-bold text-brand-primary">Households</h1>
-			<p class="text-brand-text-secondary mt-1">Manage parish households and their members</p>
-		</div>
-		<button
-			onclick={() => (showCreateModal = true)}
-			class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent"
-		>
-			<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-			</svg>
-			New Household
-		</button>
-	</div>
+	<Breadcrumbs />
+	<PageHeader title="Households" subtitle="Manage parish households and their members">
+		{#snippet actions()}
+			<button
+				onclick={() => (showCreateModal = true)}
+				class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent"
+			>
+				<Plus class="w-4 h-4" />
+				New Household
+			</button>
+		{/snippet}
+	</PageHeader>
 
 	<!-- Search -->
 	<div class="mb-6">
@@ -69,7 +69,7 @@
 	</div>
 
 	<!-- Results -->
-	<div class="bg-white shadow rounded-lg overflow-hidden">
+	<div class="bg-white rounded-lg border border-brand-border overflow-hidden">
 		{#if $householdsStore.loading}
 			<!-- Loading Skeleton -->
 			<div class="animate-pulse">
@@ -108,7 +108,7 @@
 				<div class="mt-6">
 					<button
 						onclick={() => householdsStore.load($householdsStore.filters)}
-						class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
+						class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90"
 					>
 						Try again
 					</button>
@@ -142,16 +142,9 @@
 					<div class="mt-6">
 						<button
 							onclick={() => (showCreateModal = true)}
-							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
+							class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90"
 						>
-							<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M12 4v16m8-8H4"
-								/>
-							</svg>
+							<Plus class="w-4 h-4" />
 							New Household
 						</button>
 					</div>

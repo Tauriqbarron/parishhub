@@ -89,7 +89,7 @@
 	</div>
 
 	<!-- QR Code Registration Section -->
-	<div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+	<div class="bg-white rounded-lg border border-brand-border overflow-hidden mb-6">
 		<div class="px-6 py-4 border-b border-brand-border">
 			<h2 class="text-lg font-medium text-brand-primary">QR Code Registration</h2>
 			<p class="text-sm text-brand-text-muted mt-1">
@@ -120,13 +120,13 @@
 							id="baseUrl"
 							bind:value={baseUrl}
 							placeholder="https://your-parish.example.com"
-							class="flex-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+							class="flex-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						/>
 						<button
 							type="button"
 							onclick={saveBaseUrl}
 							disabled={saving}
-							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-brand-accent text-white hover:bg-brand-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:opacity-50 disabled:cursor-not-allowed"
+							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-sm bg-brand-accent text-white hover:bg-brand-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{#if saving}
 								<svg
@@ -164,14 +164,14 @@
 						</label>
 						<div class="flex items-center gap-3">
 							<div
-								class="flex-1 bg-brand-bg-subtle rounded-md px-3 py-2 text-sm text-brand-text-secondary border border-brand-border truncate"
+								class="flex-1 bg-brand-bg-subtle rounded-sm px-3 py-2 text-sm text-brand-text-secondary border border-brand-border truncate"
 							>
 								{registrationUrl}
 							</div>
 							<button
 								type="button"
 								onclick={copyRegistrationUrl}
-								class="inline-flex items-center px-3 py-2 border border-brand-border text-sm font-medium rounded-md text-brand-text-secondary bg-white hover:bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+								class="inline-flex items-center px-3 py-2 border border-brand-border text-sm font-medium rounded-sm text-brand-text-secondary bg-white hover:bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 							>
 								<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path
@@ -203,7 +203,7 @@
 								<button
 									type="button"
 									onclick={downloadQrCode}
-									class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-success text-white hover:bg-brand-success/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-success"
+									class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-sm text-white bg-brand-success text-white hover:bg-brand-success/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-success"
 								>
 									<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path
@@ -219,7 +219,7 @@
 						</div>
 					</div>
 				{:else if urlNotConfigured}
-					<div class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+					<div class="bg-yellow-50 border border-yellow-200 rounded-sm p-4">
 						<div class="flex">
 							<svg
 								class="h-5 w-5 text-yellow-400"
@@ -248,7 +248,7 @@
 	</div>
 
 	<!-- Mass Times Link -->
-	<div class="bg-white shadow rounded-lg overflow-hidden">
+	<div class="bg-white rounded-lg border border-brand-border overflow-hidden">
 		<div class="px-6 py-4 border-b border-brand-border">
 			<h2 class="text-lg font-medium text-brand-primary">Mass Times</h2>
 			<p class="text-sm text-brand-text-muted mt-1">Configure mass times for attendance tracking</p>
@@ -256,7 +256,7 @@
 		<div class="p-6">
 			<a
 				href="/settings/mass-times"
-				class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-md text-brand-text-secondary bg-white hover:bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+				class="inline-flex items-center px-4 py-2 border border-brand-border text-sm font-medium rounded-sm text-brand-text-secondary bg-white hover:bg-brand-bg-subtle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 			>
 				<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path

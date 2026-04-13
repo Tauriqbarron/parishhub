@@ -153,7 +153,7 @@
 						id="gender"
 						bind:value={gender}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each genderOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -170,7 +170,7 @@
 						id="status"
 						bind:value={statusFilter}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each deceasedOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -191,7 +191,7 @@
 							aria-label="Minimum age"
 							min="0"
 							max="150"
-							class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+							class="block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						/>
 						<span class="text-brand-text-muted">-</span>
 						<input
@@ -202,7 +202,7 @@
 							aria-label="Maximum age"
 							min="0"
 							max="150"
-							class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+							class="block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						/>
 					</div>
 				</fieldset>
@@ -216,7 +216,7 @@
 						id="household"
 						bind:value={householdFilter}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each householdOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -236,7 +236,7 @@
 						id="hasSacrament"
 						bind:value={hasSacrament}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each sacramentOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -256,7 +256,7 @@
 						id="missingSacrament"
 						bind:value={missingSacrament}
 						onchange={applyFilters}
-						class="block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						{#each sacramentOptions as option (option.value)}
 							<option value={option.value}>{option.label}</option>
@@ -270,7 +270,7 @@
 					<button
 						type="button"
 						onclick={clearFilters}
-						class="px-3 py-1.5 text-sm text-brand-accent hover:text-amber-700 hover:bg-brand-bg-muted rounded-md transition-colors"
+						class="px-3 py-1.5 text-sm text-brand-accent hover:text-amber-700 hover:bg-brand-bg-muted rounded-sm transition-colors"
 					>
 						Clear all filters
 					</button>

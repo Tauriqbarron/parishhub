@@ -90,7 +90,7 @@
 	</button>
 
 	{#if expanded}
-		<div class="px-4 pb-4 pt-2 border-t border-gray-100 space-y-4">
+		<div class="px-4 pb-4 pt-2 border-t border-brand-border space-y-4">
 			<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 				<div>
 					<div class="flex items-center">
@@ -107,7 +107,7 @@
 						type="text"
 						value={member.firstName}
 						oninput={(e) => handleInput('firstName', e.currentTarget.value)}
-						class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						placeholder="First name"
 					/>
 				</div>
@@ -127,7 +127,7 @@
 						type="text"
 						value={member.middleName}
 						oninput={(e) => handleInput('middleName', e.currentTarget.value)}
-						class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						placeholder="Middle name"
 					/>
 				</div>
@@ -147,7 +147,7 @@
 						type="text"
 						value={member.lastName}
 						oninput={(e) => handleInput('lastName', e.currentTarget.value)}
-						class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						placeholder="Last name"
 					/>
 				</div>
@@ -169,7 +169,7 @@
 						type="date"
 						value={member.dateOfBirth}
 						oninput={(e) => handleInput('dateOfBirth', e.currentTarget.value)}
-						class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					/>
 				</div>
 
@@ -187,7 +187,7 @@
 						id="gender-{member.tempId}"
 						value={member.gender}
 						onchange={(e) => handleInput('gender', e.currentTarget.value)}
-						class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 					>
 						<option value="">Select gender</option>
 						<option value="male">Male</option>
@@ -212,7 +212,7 @@
 						type="tel"
 						value={member.phone}
 						oninput={(e) => handleInput('phone', e.currentTarget.value)}
-						class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						placeholder="(555) 123-4567"
 					/>
 				</div>
@@ -232,14 +232,14 @@
 						type="email"
 						value={member.email}
 						oninput={(e) => handleInput('email', e.currentTarget.value)}
-						class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+						class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 						placeholder="email@example.com"
 					/>
 				</div>
 			</div>
 
 			{#if externalErrors.length > 0}
-				<div class="p-3 bg-brand-error/10 border-brand-error rounded-md">
+				<div class="p-3 bg-brand-error/10 border-brand-error rounded-sm">
 					<p class="text-sm font-medium text-brand-error">Please fix the following:</p>
 					<ul class="mt-1 text-sm text-brand-error list-disc list-inside">
 						{#each externalErrors as error}
@@ -276,7 +276,7 @@
 
 				{#if showDeleteConfirm}
 					<div class="flex items-center gap-2">
-						<span class="text-sm text-gray-600">Remove this member?</span>
+						<span class="text-sm text-brand-text-secondary">Remove this member?</span>
 						<button
 							type="button"
 							onclick={executeDelete}
@@ -287,7 +287,7 @@
 						<button
 							type="button"
 							onclick={cancelDelete}
-							class="px-3 py-1 text-sm font-medium text-brand-text-secondary bg-gray-100 rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+							class="px-3 py-1 text-sm font-medium text-brand-text-secondary bg-brand-bg-muted rounded hover:bg-brand-bg-muted focus:outline-none focus:ring-2 focus:ring-brand-accent"
 						>
 							Cancel
 						</button>

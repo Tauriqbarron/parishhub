@@ -4,41 +4,46 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* ── Design Tokens (Light Mode) ── */
+/* ── Design Tokens (Light Mode — Notion-inspired warm neutrals) ── */
 :root {
-	/* Primary */
-	--color-primary: #0f172a;
-	--color-primary-light: #1e293b;
-	--color-primary-muted: #475569;
-	/* Accent */
+	/* Primary — warm near-black, not cold slate */
+	--color-primary: #1a1a1a;
+	--color-primary-light: #31302e;
+	--color-primary-muted: #615d59;
+	/* Accent — amber (parish warmth) */
 	--color-accent: #d97706;
 	--color-accent-light: #fbbf24;
 	--color-accent-muted: #fffbeb;
-	/* Backgrounds */
+	/* Backgrounds — warm white undertones */
 	--color-bg: #ffffff;
-	--color-bg-subtle: #f8fafc;
-	--color-bg-muted: #f1f5f9;
-	/* Borders */
-	--color-border: #e2e8f0;
-	--color-border-strong: #cbd5e1;
-	/* Text */
-	--color-text: #0f172a;
-	--color-text-secondary: #475569;
-	--color-text-muted: #94a3b8;
+	--color-bg-subtle: #f6f5f4;
+	--color-bg-muted: #edeceb;
+	/* Borders — whisper-weight, warm */
+	--color-border: rgba(0, 0, 0, 0.08);
+	--color-border-strong: rgba(0, 0, 0, 0.15);
+	/* Text — warm near-black, not pure black */
+	--color-text: rgba(0, 0, 0, 0.92);
+	--color-text-secondary: #615d59;
+	--color-text-muted: #a39e98;
 	/* Semantic */
 	--color-success: #059669;
 	--color-error: #dc2626;
 	--color-info: #2563eb;
 	/* Chart Colors */
-	--chart-1: #3b82f6;
-	--chart-2: #10b981;
-	--chart-3: #8b5cf6;
-	--chart-4: #ec4899;
-	--chart-5: #f59e0b;
-	/* Shadows */
-	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+	--chart-1: #d97706;
+	--chart-2: #059669;
+	--chart-3: #2563eb;
+	--chart-4: #dc2626;
+	--chart-5: #7c3aed;
+	/* Shadows — multi-layer, low opacity (Notion style) */
+	--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+	--shadow-md:
+		rgba(0, 0, 0, 0.04) 0px 4px 18px, rgba(0, 0, 0, 0.027) 0px 2px 7px,
+		rgba(0, 0, 0, 0.02) 0px 0.8px 3px, rgba(0, 0, 0, 0.01) 0px 0.2px 1px;
+	--shadow-lg:
+		rgba(0, 0, 0, 0.01) 0px 1px 3px, rgba(0, 0, 0, 0.02) 0px 3px 7px,
+		rgba(0, 0, 0, 0.02) 0px 7px 15px, rgba(0, 0, 0, 0.04) 0px 14px 28px,
+		rgba(0, 0, 0, 0.05) 0px 23px 52px;
 	/* Motion */
 	--transition-fast: 150ms ease;
 	--transition-normal: 200ms ease;
@@ -60,23 +65,26 @@
 	--color-bg: #0f172a;
 	--color-bg-subtle: #1e293b;
 	--color-bg-muted: #334155;
-	--color-border: #334155;
-	--color-border-strong: #475569;
-	--color-text: #f8fafc;
+	--color-border: rgba(255, 255, 255, 0.08);
+	--color-border-strong: rgba(255, 255, 255, 0.15);
+	--color-text: rgba(255, 255, 255, 0.92);
 	--color-text-secondary: #cbd5e1;
 	--color-text-muted: #94a3b8;
 	--color-success: #34d399;
 	--color-error: #f87171;
 	--color-info: #60a5fa;
-	/* Chart Colors (brighter for dark mode) */
-	--chart-1: #60a5fa;
+	--chart-1: #fcd34d;
 	--chart-2: #34d399;
-	--chart-3: #a78bfa;
-	--chart-4: #f472b6;
-	--chart-5: #fcd34d;
-	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
-	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+	--chart-3: #60a5fa;
+	--chart-4: #f87171;
+	--chart-5: #a78bfa;
+	--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+	--shadow-md:
+		rgba(0, 0, 0, 0.12) 0px 4px 18px, rgba(0, 0, 0, 0.08) 0px 2px 7px,
+		rgba(0, 0, 0, 0.06) 0px 0.8px 3px;
+	--shadow-lg:
+		rgba(0, 0, 0, 0.08) 0px 1px 3px, rgba(0, 0, 0, 0.12) 0px 7px 15px,
+		rgba(0, 0, 0, 0.16) 0px 23px 52px;
 }
 
 /* ── Base Typography ── */
@@ -99,16 +107,19 @@
 		font-size: 2.25rem;
 		font-weight: 700;
 		line-height: 1.2;
+		letter-spacing: -0.02em;
 	}
 	h2 {
 		font-size: 1.875rem;
 		font-weight: 600;
 		line-height: 1.3;
+		letter-spacing: -0.015em;
 	}
 	h3 {
 		font-size: 1.5rem;
 		font-weight: 600;
 		line-height: 1.4;
+		letter-spacing: -0.01em;
 	}
 	h4 {
 		font-size: 1.25rem;
@@ -131,18 +142,44 @@
 		box-shadow: var(--shadow-md);
 	}
 
+	.card-elevated {
+		background: var(--color-bg);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-md);
+		transition: box-shadow var(--transition-normal);
+	}
+
+	.card-elevated:hover {
+		box-shadow: var(--shadow-lg);
+	}
+
 	.btn-primary {
 		background: var(--color-accent);
 		color: white;
 		font-weight: 500;
 		padding: 0.625rem 1.25rem;
-		border-radius: var(--radius-md);
+		border-radius: var(--radius-sm);
 		transition: all var(--transition-fast);
 		cursor: pointer;
 	}
 
 	.btn-primary:hover {
 		background: #b45309;
+	}
+
+	.btn-secondary {
+		background: rgba(0, 0, 0, 0.05);
+		color: var(--color-text);
+		font-weight: 500;
+		padding: 0.625rem 1.25rem;
+		border-radius: var(--radius-sm);
+		transition: all var(--transition-fast);
+		cursor: pointer;
+	}
+
+	.btn-secondary:hover {
+		background: rgba(0, 0, 0, 0.08);
 	}
 
 	.focus-ring:focus-visible {
@@ -159,13 +196,20 @@
 		background: var(--color-accent);
 		color: white;
 		font-weight: 600;
-		border-radius: var(--radius-md);
+		border-radius: var(--radius-sm);
 		text-decoration: none;
 		transition: top var(--transition-fast);
 	}
 
 	.skip-link:focus {
 		top: 8px;
+	}
+
+	/* Section divider — Notion-style warm white alternation */
+	.section-alt {
+		background: var(--color-bg-subtle);
+		border-top: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	/* Reduced motion */

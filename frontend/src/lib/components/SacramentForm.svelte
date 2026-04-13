@@ -82,7 +82,7 @@
 >
 	<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 		<!-- Backdrop -->
-		<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+		<div class="fixed inset-0 bg-brand-bg-subtle0 bg-opacity-75 transition-opacity"></div>
 
 		<!-- Modal panel -->
 		<div
@@ -93,13 +93,13 @@
 			<form onsubmit={handleSubmit}>
 				<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">
+						<h3 class="text-lg font-semibold text-brand-primary" id="modal-title">
 							{isEditing ? 'Edit Sacrament' : 'Add Sacrament'}
 						</h3>
 						<button
 							type="button"
 							onclick={onClose}
-							class="text-gray-400 hover:text-gray-500"
+							class="text-brand-text-muted hover:text-brand-text-secondary"
 							aria-label="Close modal"
 						>
 							<svg
@@ -123,7 +123,7 @@
 					<div class="space-y-4">
 						<!-- Sacrament Type -->
 						<div>
-							<label for="sacrament_type" class="block text-sm font-medium text-gray-700">
+							<label for="sacrament_type" class="block text-sm font-medium text-brand-primary">
 								Sacrament Type <span aria-hidden="true">*</span><span class="sr-only"
 									>(required)</span
 								>
@@ -135,20 +135,22 @@
 								disabled={isEditing}
 								required
 								aria-required="true"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-brand-bg-muted"
 							>
 								{#each availableTypes as type (type)}
 									<option value={type}>{sacramentLabels[type]}</option>
 								{/each}
 							</select>
 							{#if isEditing}
-								<p class="mt-1 text-xs text-gray-500">Sacrament type cannot be changed</p>
+								<p class="mt-1 text-xs text-brand-text-secondary">
+									Sacrament type cannot be changed
+								</p>
 							{/if}
 						</div>
 
 						<!-- Date Received -->
 						<div>
-							<label for="date_received" class="block text-sm font-medium text-gray-700">
+							<label for="date_received" class="block text-sm font-medium text-brand-primary">
 								Date Received <span aria-hidden="true">*</span><span class="sr-only"
 									>(required)</span
 								>
@@ -160,14 +162,14 @@
 								bind:value={dateReceived}
 								required
 								aria-required="true"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							/>
 						</div>
 
 						<!-- Type-specific fields -->
 						{#if sacramentType === 'baptism'}
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Godfather</label>
+								<label class="block text-sm font-medium text-brand-primary">Godfather</label>
 								<PersonSearchInput
 									value={additionalData.godfather_id
 										? {
@@ -198,7 +200,7 @@
 								/>
 							</div>
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Godmother</label>
+								<label class="block text-sm font-medium text-brand-primary">Godmother</label>
 								<PersonSearchInput
 									value={additionalData.godmother_id
 										? {
@@ -229,7 +231,7 @@
 								/>
 							</div>
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Minister</label>
+								<label class="block text-sm font-medium text-brand-primary">Minister</label>
 								<PersonSearchInput
 									value={additionalData.minister_id
 										? {
@@ -261,7 +263,7 @@
 							</div>
 						{:else if sacramentType === 'first_communion'}
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Sponsor</label>
+								<label class="block text-sm font-medium text-brand-primary">Sponsor</label>
 								<PersonSearchInput
 									value={additionalData.sponsor_id
 										? {
@@ -293,7 +295,7 @@
 							</div>
 						{:else if sacramentType === 'confirmation'}
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Sponsor</label>
+								<label class="block text-sm font-medium text-brand-primary">Sponsor</label>
 								<PersonSearchInput
 									value={additionalData.sponsor_id
 										? {
@@ -324,7 +326,7 @@
 								/>
 							</div>
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Bishop</label>
+								<label class="block text-sm font-medium text-brand-primary">Bishop</label>
 								<PersonSearchInput
 									value={additionalData.bishop_id
 										? {
@@ -355,7 +357,7 @@
 								/>
 							</div>
 							<div>
-								<label for="confirmation_name" class="block text-sm font-medium text-gray-700">
+								<label for="confirmation_name" class="block text-sm font-medium text-brand-primary">
 									Confirmation Name
 								</label>
 								<input
@@ -368,12 +370,12 @@
 											confirmation_name: e.currentTarget.value
 										})}
 									placeholder="Confirmation name (if different)"
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 							</div>
 						{:else if sacramentType === 'marriage'}
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Spouse</label>
+								<label class="block text-sm font-medium text-brand-primary">Spouse</label>
 								<PersonSearchInput
 									value={additionalData.spouse_id
 										? {
@@ -404,7 +406,7 @@
 								/>
 							</div>
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Witness 1</label>
+								<label class="block text-sm font-medium text-brand-primary">Witness 1</label>
 								<PersonSearchInput
 									value={additionalData.witness1_id
 										? {
@@ -435,7 +437,7 @@
 								/>
 							</div>
 							<div>
-								<label class="block text-sm font-medium text-gray-700">Witness 2</label>
+								<label class="block text-sm font-medium text-brand-primary">Witness 2</label>
 								<PersonSearchInput
 									value={additionalData.witness2_id
 										? {
@@ -467,7 +469,7 @@
 							</div>
 						{:else if sacramentType === 'holy_orders'}
 							<div>
-								<label for="ordaining_bishop" class="block text-sm font-medium text-gray-700">
+								<label for="ordaining_bishop" class="block text-sm font-medium text-brand-primary">
 									Ordaining Bishop
 								</label>
 								<input
@@ -480,31 +482,31 @@
 											ordaining_bishop: e.currentTarget.value
 										})}
 									placeholder="Name of ordaining bishop"
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 							</div>
 						{/if}
 
 						<!-- Notes -->
 						<div>
-							<label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+							<label for="notes" class="block text-sm font-medium text-brand-primary">Notes</label>
 							<textarea
 								id="notes"
 								name="notes"
 								bind:value={notes}
 								rows="3"
 								placeholder="Additional notes..."
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							></textarea>
 						</div>
 					</div>
 				</div>
 
-				<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+				<div class="bg-brand-bg-subtle px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
 					<button
 						type="submit"
 						disabled={isSaving || !dateReceived}
-						class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto disabled:opacity-50"
+						class="inline-flex w-full justify-center rounded-sm bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto disabled:opacity-50"
 					>
 						{#if isSaving}
 							Saving...
@@ -515,7 +517,7 @@
 					<button
 						type="button"
 						onclick={onClose}
-						class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+						class="mt-3 inline-flex w-full justify-center rounded-sm bg-white px-3 py-2 text-sm font-semibold text-brand-primary shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-brand-bg-subtle sm:mt-0 sm:w-auto"
 					>
 						Cancel
 					</button>

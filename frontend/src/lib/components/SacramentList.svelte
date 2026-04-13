@@ -99,8 +99,8 @@
 </script>
 
 <div class="bg-white rounded-lg shadow">
-	<div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-		<h2 class="text-lg font-medium text-gray-900" id="sacraments-heading">Sacraments</h2>
+	<div class="px-6 py-4 border-b border-brand-border flex items-center justify-between">
+		<h2 class="text-lg font-medium text-brand-primary" id="sacraments-heading">Sacraments</h2>
 		<button
 			onclick={onAdd}
 			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
@@ -127,14 +127,14 @@
 				<div
 					class="flex items-center justify-between p-3 rounded-lg border {sacrament
 						? colors.bg + ' ' + colors.border
-						: 'bg-gray-50 border-gray-200'}"
+						: 'bg-brand-bg-subtle border-brand-border'}"
 				>
 					<div class="flex items-center gap-3">
 						<!-- Status indicator -->
 						<div
 							class="w-6 h-6 rounded-full flex items-center justify-center {sacrament
 								? colors.bg + ' ' + colors.text
-								: 'bg-gray-200 text-gray-400'}"
+								: 'bg-brand-bg-muted text-brand-text-muted'}"
 						>
 							{#if sacrament}
 								<svg
@@ -172,7 +172,7 @@
 						</div>
 
 						<div>
-							<div class="font-medium {sacrament ? colors.text : 'text-gray-500'}">
+							<div class="font-medium {sacrament ? colors.text : 'text-brand-text-secondary'}">
 								{sacramentLabels[type]}
 							</div>
 							{#if sacrament}
@@ -237,7 +237,7 @@
 									{/if}
 								{/each}
 							{:else}
-								<div class="text-sm text-gray-400">Not received</div>
+								<div class="text-sm text-brand-text-muted">Not received</div>
 							{/if}
 						</div>
 					</div>

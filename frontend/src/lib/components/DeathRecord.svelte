@@ -88,27 +88,29 @@
 		<!-- Main Death Info -->
 		<div class="space-y-4">
 			<div>
-				<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Date of Death</h3>
-				<p class="mt-1 text-base text-gray-900 font-medium">
+				<h3 class="text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
+					Date of Death
+				</h3>
+				<p class="mt-1 text-base text-brand-primary font-medium">
 					{formatDate(death.date_of_death)}
 				</p>
 			</div>
 
 			{#if death.place_of_death}
 				<div>
-					<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+					<h3 class="text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
 						Place of Death
 					</h3>
-					<p class="mt-1 text-base text-gray-900">{death.place_of_death}</p>
+					<p class="mt-1 text-base text-brand-primary">{death.place_of_death}</p>
 				</div>
 			{/if}
 
 			{#if death.cause_of_death}
 				<div>
-					<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+					<h3 class="text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
 						Cause of Death
 					</h3>
-					<p class="mt-1 text-base text-gray-900">{death.cause_of_death}</p>
+					<p class="mt-1 text-base text-brand-primary">{death.cause_of_death}</p>
 				</div>
 			{/if}
 		</div>
@@ -117,8 +119,10 @@
 		<div class="space-y-4">
 			{#if death.funeral_date || death.funeral_location}
 				<div>
-					<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Funeral</h3>
-					<p class="mt-1 text-base text-gray-900">
+					<h3 class="text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
+						Funeral
+					</h3>
+					<p class="mt-1 text-base text-brand-primary">
 						{#if death.funeral_date}
 							{formatDate(death.funeral_date)}
 						{/if}
@@ -132,8 +136,10 @@
 
 			{#if death.burial_date || death.burial_location}
 				<div>
-					<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Burial</h3>
-					<p class="mt-1 text-base text-gray-900">
+					<h3 class="text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
+						Burial
+					</h3>
+					<p class="mt-1 text-base text-brand-primary">
 						{#if death.burial_date}
 							{formatDate(death.burial_date)}
 						{/if}
@@ -147,10 +153,10 @@
 
 			{#if death.officiating_priest}
 				<div>
-					<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+					<h3 class="text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
 						Officiating Priest
 					</h3>
-					<p class="mt-1 text-base text-gray-900">
+					<p class="mt-1 text-base text-brand-primary">
 						<a href="/people/{death.officiating_priest.id}" class="text-blue-600 hover:underline">
 							{death.officiating_priest.first_name}
 							{death.officiating_priest.last_name}
@@ -159,10 +165,10 @@
 				</div>
 			{:else if death.officiating_priest_id}
 				<div>
-					<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+					<h3 class="text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
 						Officiating Priest
 					</h3>
-					<p class="mt-1 text-base text-gray-900 italic text-gray-500">
+					<p class="mt-1 text-base text-brand-primary italic text-brand-text-secondary">
 						Priest ID: {death.officiating_priest_id}
 					</p>
 				</div>
@@ -171,9 +177,11 @@
 
 		<!-- Notes -->
 		{#if death.notes}
-			<div class="col-span-full pt-4 border-t border-gray-100">
-				<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Notes</h3>
-				<p class="mt-1 text-sm text-gray-700 whitespace-pre-line">{death.notes}</p>
+			<div class="col-span-full pt-4 border-t border-brand-border">
+				<h3 class="text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
+					Notes
+				</h3>
+				<p class="mt-1 text-sm text-brand-primary whitespace-pre-line">{death.notes}</p>
 			</div>
 		{/if}
 	</div>

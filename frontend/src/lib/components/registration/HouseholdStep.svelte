@@ -84,7 +84,7 @@
 			type="text"
 			value={household.name}
 			oninput={(e) => handleInput('name', e.currentTarget.value)}
-			class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+			class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
 				{errors.name ? 'border-brand-error' : ''}"
 			placeholder="e.g., The Smith Family"
 		/>
@@ -127,7 +127,7 @@
 				type="text"
 				value={household.city}
 				oninput={(e) => handleInput('city', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+				class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
 					{errors.city ? 'border-brand-error' : ''}"
 				placeholder="City"
 			/>
@@ -148,7 +148,7 @@
 				type="text"
 				value={household.state}
 				oninput={(e) => handleInput('state', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+				class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 				placeholder="State/Province"
 			/>
 		</div>
@@ -167,7 +167,7 @@
 				type="text"
 				value={household.zipCode}
 				oninput={(e) => handleInput('zipCode', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+				class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 				placeholder="12345"
 			/>
 		</div>
@@ -184,7 +184,7 @@
 				type="tel"
 				value={household.phone}
 				oninput={(e) => handleInput('phone', e.currentTarget.value)}
-				class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+				class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 				placeholder="(555) 123-4567"
 			/>
 		</div>
@@ -202,7 +202,7 @@
 			type="email"
 			value={household.email}
 			oninput={(e) => handleInput('email', e.currentTarget.value)}
-			class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
+			class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm
 				{errors.email ? 'border-brand-error' : ''}"
 			placeholder="family@example.com"
 		/>
@@ -225,7 +225,7 @@
 			type="date"
 			value={household.attendingSince}
 			oninput={(e) => handleInput('attendingSince', e.currentTarget.value)}
-			class="mt-1 block w-full rounded-md border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
+			class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-brand-accent focus:ring-brand-accent sm:text-sm"
 		/>
 	</div>
 </div>

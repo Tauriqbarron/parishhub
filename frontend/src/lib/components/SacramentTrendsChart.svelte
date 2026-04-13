@@ -33,18 +33,20 @@
 	}
 </script>
 
-<div class="bg-white rounded-lg shadow p-6">
-	<h3 class="text-lg font-medium text-gray-900 mb-4">Sacrament Trends (Last 5 Years)</h3>
+<div class="bg-white rounded-lg border border-brand-border p-6">
+	<h3 class="text-lg font-semibold text-brand-primary mb-4 tracking-tight">
+		Sacrament Trends (Last 5 Years)
+	</h3>
 
 	{#if trends.length === 0}
-		<p class="text-gray-500 text-sm">No sacrament data available</p>
+		<p class="text-brand-text-secondary text-sm">No sacrament data available</p>
 	{:else}
 		<!-- Legend -->
 		<div class="flex flex-wrap gap-4 mb-6">
 			{#each sacramentTypes as type}
 				<div class="flex items-center gap-2">
-					<div class="w-3 h-3 rounded" style="background-color: {type.color}"></div>
-					<span class="text-xs text-gray-600">{type.label}</span>
+					<div class="w-3 h-3 rounded-sm" style="background-color: {type.color}"></div>
+					<span class="text-xs text-brand-text-secondary">{type.label}</span>
 				</div>
 			{/each}
 		</div>
@@ -53,7 +55,7 @@
 		<div class="relative">
 			<!-- Y-axis labels -->
 			<div
-				class="absolute left-0 top-0 bottom-8 w-8 flex flex-col justify-between text-xs text-gray-500"
+				class="absolute left-0 top-0 bottom-8 w-8 flex flex-col justify-between text-xs text-brand-text-muted"
 			>
 				<span>{maxValue}</span>
 				<span>{Math.round(maxValue / 2)}</span>
@@ -79,7 +81,7 @@
 								{/each}
 							</div>
 							<!-- Year label -->
-							<span class="text-xs text-gray-600 mt-1">{trend.year}</span>
+							<span class="text-xs text-brand-text-secondary mt-1">{trend.year}</span>
 						</div>
 					{/each}
 				</div>
@@ -90,19 +92,19 @@
 		<div class="mt-6 overflow-x-auto">
 			<table class="w-full text-sm">
 				<thead>
-					<tr class="border-b">
-						<th class="text-left py-2 text-gray-600 font-medium">Year</th>
+					<tr class="border-b border-brand-border">
+						<th class="text-left py-2 text-brand-text-secondary font-medium">Year</th>
 						{#each sacramentTypes as type}
-							<th class="text-center py-2 text-gray-600 font-medium">{type.label}</th>
+							<th class="text-center py-2 text-brand-text-secondary font-medium">{type.label}</th>
 						{/each}
 					</tr>
 				</thead>
 				<tbody>
 					{#each trends as trend}
-						<tr class="border-b">
-							<td class="py-2 font-medium">{trend.year}</td>
+						<tr class="border-b border-brand-border">
+							<td class="py-2 font-medium text-brand-primary">{trend.year}</td>
 							{#each sacramentTypes as type}
-								<td class="text-center py-2">{trend[type.key]}</td>
+								<td class="text-center py-2 text-brand-text-secondary">{trend[type.key]}</td>
 							{/each}
 						</tr>
 					{/each}

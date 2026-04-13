@@ -107,11 +107,11 @@
 </script>
 
 <div class="bg-white rounded-lg shadow">
-	<div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-		<h2 class="text-lg font-medium text-gray-900" id="family-tree-heading">Family</h2>
+	<div class="px-6 py-4 border-b border-brand-border flex items-center justify-between">
+		<h2 class="text-lg font-medium text-brand-primary" id="family-tree-heading">Family</h2>
 		<button
 			onclick={openAddModal}
-			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
+			class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-sm hover:bg-blue-100 transition-colors"
 			aria-label="Add family relationship"
 		>
 			<svg
@@ -129,13 +129,15 @@
 	</div>
 	<div class="px-6 py-4">
 		{#if !hasAnyRelationships}
-			<p class="text-sm text-gray-500 text-center py-4">No family relationships recorded</p>
+			<p class="text-sm text-brand-text-secondary text-center py-4">
+				No family relationships recorded
+			</p>
 		{:else}
 			<div class="space-y-4">
 				<!-- Spouse -->
 				{#if familyTree.spouse}
 					<div>
-						<h3 class="text-sm font-medium text-gray-500 mb-2">Spouse</h3>
+						<h3 class="text-sm font-medium text-brand-text-secondary mb-2">Spouse</h3>
 						<div
 							class="flex items-center justify-between p-3 rounded-lg border border-pink-200 bg-pink-50"
 						>
@@ -159,7 +161,7 @@
 								</div>
 								<a
 									href="/people/{familyTree.spouse.id}"
-									class="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+									class="font-medium text-brand-primary hover:text-blue-600 transition-colors"
 								>
 									{formatName(familyTree.spouse)}
 								</a>
@@ -192,7 +194,7 @@
 				<!-- Parents -->
 				{#if familyTree.parents.length > 0}
 					<div>
-						<h3 class="text-sm font-medium text-gray-500 mb-2">Parents</h3>
+						<h3 class="text-sm font-medium text-brand-text-secondary mb-2">Parents</h3>
 						<div class="space-y-2">
 							{#each familyTree.parents as parent (parent.relationship_id)}
 								<div
@@ -207,7 +209,7 @@
 										</div>
 										<a
 											href="/people/{parent.id}"
-											class="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+											class="font-medium text-brand-primary hover:text-blue-600 transition-colors"
 										>
 											{formatName(parent)}
 										</a>
@@ -242,7 +244,7 @@
 				<!-- Children -->
 				{#if familyTree.children.length > 0}
 					<div>
-						<h3 class="text-sm font-medium text-gray-500 mb-2">Children</h3>
+						<h3 class="text-sm font-medium text-brand-text-secondary mb-2">Children</h3>
 						<div class="space-y-2">
 							{#each familyTree.children as child (child.relationship_id)}
 								<div
@@ -257,7 +259,7 @@
 										</div>
 										<a
 											href="/people/{child.id}"
-											class="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+											class="font-medium text-brand-primary hover:text-blue-600 transition-colors"
 										>
 											{formatName(child)}
 										</a>
@@ -292,7 +294,7 @@
 				<!-- Siblings -->
 				{#if familyTree.siblings.length > 0}
 					<div>
-						<h3 class="text-sm font-medium text-gray-500 mb-2">Siblings</h3>
+						<h3 class="text-sm font-medium text-brand-text-secondary mb-2">Siblings</h3>
 						<div class="space-y-2">
 							{#each familyTree.siblings as sibling (sibling.relationship_id)}
 								<div
@@ -307,7 +309,7 @@
 										</div>
 										<a
 											href="/people/{sibling.id}"
-											class="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+											class="font-medium text-brand-primary hover:text-blue-600 transition-colors"
 										>
 											{formatName(sibling)}
 										</a>
@@ -356,7 +358,7 @@
 		tabindex="-1"
 	>
 		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-			<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+			<div class="fixed inset-0 bg-brand-bg-subtle0 bg-opacity-75 transition-opacity"></div>
 
 			<div
 				class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
@@ -365,11 +367,13 @@
 			>
 				<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold text-gray-900" id="modal-title">Add Relationship</h3>
+						<h3 class="text-lg font-semibold text-brand-primary" id="modal-title">
+							Add Relationship
+						</h3>
 						<button
 							type="button"
 							onclick={() => (showAddModal = false)}
-							class="text-gray-400 hover:text-gray-500"
+							class="text-brand-text-muted hover:text-brand-text-secondary"
 							aria-label="Close modal"
 						>
 							<svg
@@ -393,7 +397,7 @@
 					<div class="space-y-4">
 						<!-- Search for person -->
 						<div>
-							<label for="search" class="block text-sm font-medium text-gray-700">
+							<label for="search" class="block text-sm font-medium text-brand-primary">
 								Search Person <span aria-hidden="true">*</span><span class="sr-only"
 									>(required)</span
 								>
@@ -407,12 +411,12 @@
 									oninput={() => searchPeople()}
 									placeholder="Type at least 2 characters..."
 									aria-required="true"
-									class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+									class="block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 								/>
 								{#if isSearching}
 									<div class="absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
 										<svg
-											class="w-4 h-4 animate-spin text-gray-400"
+											class="w-4 h-4 animate-spin text-brand-text-muted"
 											fill="none"
 											viewBox="0 0 24 24"
 											role="img"
@@ -438,34 +442,34 @@
 
 						<!-- Search results -->
 						{#if availablePeople.length > 0}
-							<div class="max-h-48 overflow-y-auto border rounded-md divide-y">
+							<div class="max-h-48 overflow-y-auto border rounded-sm divide-y">
 								{#each availablePeople as person (person.id)}
 									<button
 										type="button"
 										onclick={() => (selectedPersonId = person.id)}
-										class="w-full px-3 py-2 text-left hover:bg-gray-50 transition-colors {selectedPersonId ===
+										class="w-full px-3 py-2 text-left hover:bg-brand-bg-subtle transition-colors {selectedPersonId ===
 										person.id
 											? 'bg-blue-50 border-l-2 border-blue-500'
 											: ''}"
 									>
-										<div class="font-medium text-gray-900">
+										<div class="font-medium text-brand-primary">
 											{person.first_name}
 											{person.middle_name ?? ''}
 											{person.last_name}
 										</div>
 										{#if person.email}
-											<div class="text-sm text-gray-500">{person.email}</div>
+											<div class="text-sm text-brand-text-secondary">{person.email}</div>
 										{/if}
 									</button>
 								{/each}
 							</div>
 						{:else if searchQuery.length >= 2 && !isSearching}
-							<p class="text-sm text-gray-500 text-center py-2">No people found</p>
+							<p class="text-sm text-brand-text-secondary text-center py-2">No people found</p>
 						{/if}
 
 						<!-- Relationship type -->
 						<div>
-							<label for="relationship_type" class="block text-sm font-medium text-gray-700">
+							<label for="relationship_type" class="block text-sm font-medium text-brand-primary">
 								Relationship Type <span aria-hidden="true">*</span><span class="sr-only"
 									>(required)</span
 								>
@@ -476,32 +480,32 @@
 								bind:value={selectedRelationshipType}
 								aria-required="true"
 								aria-describedby="relationship-help"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-sm border-brand-border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 							>
 								{#each Object.entries(relationshipLabels) as [value, label] ([value, label])}
 									<option {value}>{label}</option>
 								{/each}
 							</select>
-							<p id="relationship-help" class="mt-1 text-xs text-gray-500">
+							<p id="relationship-help" class="mt-1 text-xs text-brand-text-secondary">
 								This describes the selected person's relationship to this person
 							</p>
 						</div>
 					</div>
 				</div>
 
-				<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+				<div class="bg-brand-bg-subtle px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
 					<button
 						type="button"
 						onclick={handleAddRelationship}
 						disabled={isLoading || !selectedPersonId}
-						class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto disabled:opacity-50"
+						class="inline-flex w-full justify-center rounded-sm bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:w-auto disabled:opacity-50"
 					>
 						{isLoading ? 'Adding...' : 'Add Relationship'}
 					</button>
 					<button
 						type="button"
 						onclick={() => (showAddModal = false)}
-						class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+						class="mt-3 inline-flex w-full justify-center rounded-sm bg-white px-3 py-2 text-sm font-semibold text-brand-primary shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-brand-bg-subtle sm:mt-0 sm:w-auto"
 					>
 						Cancel
 					</button>

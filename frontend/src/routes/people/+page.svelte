@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { Plus } from 'lucide-svelte';
 	import { peopleStore } from '$lib/stores/people';
 	import type { Gender, SacramentType, PersonWithRelations, PersonFilters } from '$lib/api';
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import FilterPanel from '$lib/components/FilterPanel.svelte';
 	import PersonTable from '$lib/components/PersonTable.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import PageHeader from '$lib/components/PageHeader.svelte';
 
 	interface Filters {
 		gender?: Gender;
@@ -48,21 +51,18 @@
 </script>
 
 <div>
-	<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-		<div>
-			<h1 class="text-2xl font-bold text-brand-primary">People</h1>
-			<p class="text-brand-text-secondary mt-1">Manage parishioners and their records</p>
-		</div>
-		<a
-			href="/people/new"
-			class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent"
-		>
-			<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-			</svg>
-			Add Person
-		</a>
-	</div>
+	<Breadcrumbs />
+	<PageHeader title="People" subtitle="Manage parishioners and their records">
+		{#snippet actions()}
+			<a
+				href="/people/new"
+				class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent"
+			>
+				<Plus class="w-4 h-4" />
+				Add Person
+			</a>
+		{/snippet}
+	</PageHeader>
 
 	<!-- Search and Filters -->
 	<div class="space-y-4 mb-6">
@@ -84,7 +84,7 @@
 	</div>
 
 	<!-- Results -->
-	<div class="bg-white shadow rounded-lg overflow-hidden">
+	<div class="bg-white rounded-lg border border-brand-border overflow-hidden">
 		{#if $peopleStore.loading}
 			<!-- Loading Skeleton -->
 			<div class="animate-pulse">
@@ -124,7 +124,7 @@
 				<div class="mt-6">
 					<button
 						onclick={() => peopleStore.load($peopleStore.filters)}
-						class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
+						class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90"
 					>
 						Try again
 					</button>
@@ -158,16 +158,9 @@
 					<div class="mt-6">
 						<a
 							href="/people/new"
-							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-accent hover:bg-brand-accent/90"
+							class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90"
 						>
-							<svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M12 4v16m8-8H4"
-								/>
-							</svg>
+							<Plus class="w-4 h-4" />
 							Add Person
 						</a>
 					</div>

@@ -392,7 +392,7 @@
 						<ul class="space-y-2">
 							{#each allRelationships as rel}
 								{#if rel.to}
-									<li class="text-sm text-gray-700">
+									<li class="text-sm text-brand-primary">
 										<span class="font-medium">{getMemberName(rel.from)}</span>
 										<span class="text-brand-text-muted"> is </span>
 										<span class="font-medium text-brand-accent"
@@ -440,7 +440,7 @@
 								<div class="flex flex-wrap gap-2">
 									{#each member.sacraments as sacrament}
 										<span
-											class="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm"
+											class="inline-flex items-center gap-1 px-2 py-1 bg-brand-bg-muted text-brand-primary rounded text-sm"
 										>
 											<svg
 												class="w-3 h-3 text-brand-success"
