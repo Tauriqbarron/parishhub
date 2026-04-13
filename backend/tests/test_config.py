@@ -72,7 +72,7 @@ class TestCorsOriginsList:
 
 class TestAuthorizedEmailsList:
     def test_empty_string(self):
-        s = _settings()
+        s = _settings(authorized_emails="")
         assert s.authorized_emails_list == []
 
     def test_single_email(self):

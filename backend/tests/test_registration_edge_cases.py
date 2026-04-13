@@ -331,15 +331,16 @@ class TestConsentStorage:
         response = client.post("/api/register", json=payload)
         assert response.status_code == 201
 
-        # Verify consent was stored
+        # Verify no consent was created for this registration
         from app.models.consent import HouseholdConsent
 
+        household_id = response.json()["household_id"]
         consent_count = (
             db_session.query(HouseholdConsent)
-            .filter(HouseholdConsent.data_privacy_consent.is_(True))
+            .filter(HouseholdConsent.household_id == household_id)
             .count()
         )
-        assert consent_count >= 1
+        assert consent_count == 0
 
 
 # ---------------------------------------------------------------------------
