@@ -590,3 +590,129 @@ class TestRegistrationURLConfig:
         response = client.get("/api/v1/registration/url")
 
         assert response.status_code == 401
+
+
+class TestRegistrationErrorPaths:
+    """Tests for generic-exception and HTTPException error handlers in registration router.
+
+    Covers lines 60-66 (submit_registration generic Exception),
+    lines 97-99 (submit_individual_registration HTTPException re-raise),
+    and lines 100-106 (submit_individual_registration generic Exception).
+    """
+
+    @pytest.fixture(autouse=True)
+    def _delay(self):
+        """Small delay to avoid rate limiting."""
+        time.sleep(0.2)
+
+    # ------------------------------------------------------------------
+    # submit_registration — generic Exception → 500 + rollback
+    # ------------------------------------------------------------------
+
+    def test_submit_registration_generic_exception_returns_500(
+        self, client, monkeypatch
+    ):
+        """When service.register raises RuntimeError, endpoint returns 500."""
+        from app.services import registration as reg_module
+
+        def _boom(*args, **kwargs):
+            raise RuntimeError("simulated failure")
+
+        monkeypatch.setattr(reg_module.RegistrationService, "register", _boom)
+
+        payload = {
+            "household_name": "Error Test Family",
+            "members": [
+                {
+                    "tempId": "m1",
+                    "firstName": "Alice",
+                    "lastName": "Error",
+                }
+            ],
+        }
+        response = client.post("/api/register", json=payload)
+        assert response.status_code == 500
+        assert "Registration failed" in response.json()["detail"]
+
+    def test_submit_registration_http_exception_is_reraised(self, client, monkeypatch):
+        """When service.register raises HTTPException(400), it is re-raised (not 500)."""
+        from fastapi import HTTPException, status
+
+        from app.services import registration as reg_module
+
+        def _bad_request(*args, **kwargs):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="intentional 400",
+            )
+
+        monkeypatch.setattr(reg_module.RegistrationService, "register", _bad_request)
+
+        payload = {
+            "household_name": "HTTP Error Family",
+            "members": [
+                {
+                    "tempId": "m1",
+                    "firstName": "Bob",
+                    "lastName": "Http",
+                }
+            ],
+        }
+        response = client.post("/api/register", json=payload)
+        assert response.status_code == 400
+        assert "intentional 400" in response.json()["detail"]
+
+    # ------------------------------------------------------------------
+    # submit_individual_registration — HTTPException re-raise (97-99)
+    # ------------------------------------------------------------------
+
+    def test_submit_individual_http_exception_reraised(self, client, monkeypatch):
+        """When register_individual raises HTTPException, it is re-raised with rollback."""
+        from fastapi import HTTPException, status
+
+        from app.services import registration as reg_module
+
+        def _bad_request_indiv(*args, **kwargs):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="individual 422",
+            )
+
+        monkeypatch.setattr(
+            reg_module.RegistrationService,
+            "register_individual",
+            _bad_request_indiv,
+        )
+
+        payload = {
+            "firstName": "Carol",
+            "lastName": "Individual",
+        }
+        response = client.post("/api/register/individual", json=payload)
+        assert response.status_code == 422
+        assert "individual 422" in response.json()["detail"]
+
+    # ------------------------------------------------------------------
+    # submit_individual_registration — generic Exception → 500 (100-106)
+    # ------------------------------------------------------------------
+
+    def test_submit_individual_generic_exception_returns_500(self, client, monkeypatch):
+        """When register_individual raises RuntimeError, endpoint returns 500."""
+        from app.services import registration as reg_module
+
+        def _boom_indiv(*args, **kwargs):
+            raise RuntimeError("individual simulated failure")
+
+        monkeypatch.setattr(
+            reg_module.RegistrationService,
+            "register_individual",
+            _boom_indiv,
+        )
+
+        payload = {
+            "firstName": "Dave",
+            "lastName": "IndividualError",
+        }
+        response = client.post("/api/register/individual", json=payload)
+        assert response.status_code == 500
+        assert "Registration failed" in response.json()["detail"]

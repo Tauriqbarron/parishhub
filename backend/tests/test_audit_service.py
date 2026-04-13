@@ -4,6 +4,8 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
+import pytest
+
 from app.services.audit import AuditService
 
 
@@ -192,3 +194,35 @@ class TestAuditTimestamp:
         db_session.commit()
 
         assert entry.timestamp is not None
+
+
+class TestAuditServiceEdgeCases:
+    """Edge case tests for AuditService."""
+
+    def test_get_audit_service_with_none_db_raises(self):
+        """Test that get_audit_service raises RuntimeError when db is None."""
+        from app.services.audit import get_audit_service
+
+        with pytest.raises(RuntimeError, match="requires a database session"):
+            get_audit_service(None)
+
+    def test_get_audit_service_with_valid_db(self, db_session: Session):
+        """Test that get_audit_service returns AuditService with valid db."""
+        from app.services.audit import get_audit_service
+
+        service = get_audit_service(db_session)
+        assert isinstance(service, AuditService)
+        assert service.db is db_session
+
+    def test_get_by_date_range_empty_result(self, db_session: Session):
+        """Test get_by_date_range returns empty list when no entries match."""
+        svc = AuditService(db_session)
+        # Log an entry
+        svc.log_create(resource_type="person", resource_id=1, new_values={})
+        db_session.commit()
+
+        # Query a date range that doesn't include the entry
+        start = date(2000, 1, 1)
+        end = date(2000, 12, 31)
+        entries = svc.get_by_date_range(start, end)
+        assert len(entries) == 0

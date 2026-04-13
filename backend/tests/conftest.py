@@ -18,6 +18,7 @@ from sqlalchemy.pool import StaticPool
 from app.database import Base, get_db
 from app.limiter import limiter
 from app.main import app
+from app.models.nz_address import NZAddress  # noqa: F401 — ensure table exists in tests
 from app.models.person import Gender, Person
 
 
@@ -29,11 +30,25 @@ def _get_test_engine():
         engine = create_engine(postgres_url, pool_pre_ping=True)
         return engine, False
     # Default: in-memory SQLite for fast local unit tests
-    return create_engine(
+    engine = create_engine(
         "sqlite:///:memory:",
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
-    ), True
+    )
+    # Register a stub similarity() so pg_trgm-dependent code doesn't crash
+    _conn = engine.raw_connection()
+    _conn.create_function(
+        "similarity",
+        2,
+        lambda a, b: (
+            sum(1 for c in str(a).lower() if c in str(b).lower())
+            / max(len(str(a)), len(str(b)))
+            if a and b
+            else 0.0
+        ),
+    )
+    _conn.close()
+    return engine, True
 
 
 @pytest.fixture(scope="function")

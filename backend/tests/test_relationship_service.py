@@ -338,3 +338,107 @@ class TestFamilyTreeQueryCount:
         )
         # First query should select FamilyRelationship rows for alice
         # Second query should be SELECT persons WHERE id IN (...)
+
+
+class TestFamilyTreeEdgeCases:
+    """Edge case tests for family tree functionality."""
+
+    def test_family_tree_with_null_related_person(self, db_session):
+        """Test family tree when related_person is None (orphaned relationship)."""
+        alice = Person(first_name="Alice", last_name="Smith")
+        db_session.add(alice)
+        db_session.flush()
+
+        # Create a relationship with a non-existent related_person_id
+        rel = FamilyRelationship(
+            person_id=alice.id,
+            related_person_id=9999,  # Non-existent person
+            relationship_type=RelationshipType.PARENT,
+        )
+        db_session.add(rel)
+        db_session.commit()
+
+        svc = FamilyRelationshipService(SqlAlchemyRelationshipRepository(db_session))
+        tree = svc.get_family_tree(alice.id)
+
+        # The relationship should be skipped because related_person is None
+        assert len(tree["parents"]) == 0
+        assert len(tree["children"]) == 0
+        assert tree["spouse"] is None
+        assert len(tree["siblings"]) == 0
+
+    def test_family_tree_with_siblings(self, db_session):
+        """Test family tree correctly identifies sibling relationships."""
+        alice = Person(first_name="Alice", last_name="Smith")
+        bob = Person(first_name="Bob", last_name="Smith")
+        carol = Person(first_name="Carol", last_name="Smith")
+        db_session.add_all([alice, bob, carol])
+        db_session.flush()
+
+        # Create sibling relationships
+        rel1 = FamilyRelationship(
+            person_id=alice.id,
+            related_person_id=bob.id,
+            relationship_type=RelationshipType.SIBLING,
+        )
+        rel2 = FamilyRelationship(
+            person_id=alice.id,
+            related_person_id=carol.id,
+            relationship_type=RelationshipType.SIBLING,
+        )
+        db_session.add_all([rel1, rel2])
+        db_session.commit()
+
+        svc = FamilyRelationshipService(SqlAlchemyRelationshipRepository(db_session))
+        tree = svc.get_family_tree(alice.id)
+
+        assert len(tree["siblings"]) == 2
+        sibling_ids = {s["id"] for s in tree["siblings"]}
+        assert bob.id in sibling_ids
+        assert carol.id in sibling_ids
+
+    def test_family_tree_with_all_relationship_types(self, db_session):
+        """Test family tree with all relationship types present."""
+        alice = Person(first_name="Alice", last_name="Smith")
+        parent = Person(first_name="Parent", last_name="Smith")
+        child = Person(first_name="Child", last_name="Smith")
+        spouse = Person(first_name="Spouse", last_name="Jones")
+        sibling = Person(first_name="Sibling", last_name="Smith")
+        db_session.add_all([alice, parent, child, spouse, sibling])
+        db_session.flush()
+
+        # Create all relationship types
+        relationships = [
+            FamilyRelationship(
+                person_id=alice.id,
+                related_person_id=parent.id,
+                relationship_type=RelationshipType.CHILD,
+            ),
+            FamilyRelationship(
+                person_id=alice.id,
+                related_person_id=child.id,
+                relationship_type=RelationshipType.PARENT,
+            ),
+            FamilyRelationship(
+                person_id=alice.id,
+                related_person_id=spouse.id,
+                relationship_type=RelationshipType.SPOUSE,
+            ),
+            FamilyRelationship(
+                person_id=alice.id,
+                related_person_id=sibling.id,
+                relationship_type=RelationshipType.SIBLING,
+            ),
+        ]
+        db_session.add_all(relationships)
+        db_session.commit()
+
+        svc = FamilyRelationshipService(SqlAlchemyRelationshipRepository(db_session))
+        tree = svc.get_family_tree(alice.id)
+
+        assert len(tree["parents"]) == 1  # Parent (from CHILD relationship)
+        assert len(tree["children"]) == 1  # Child (from PARENT relationship)
+        assert tree["spouse"] is not None
+        assert tree["spouse"]["id"] == spouse.id
+        assert len(tree["siblings"]) == 1
+        assert tree["siblings"][0]["id"] == sibling.id
