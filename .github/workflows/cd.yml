@@ -30,7 +30,7 @@ jobs:
           sudo chown "$(whoami)" /var/log/parish-deploy /var/backups/parish-db
 
       - name: Copy .env file
-        run: cp /home/deploy/parish-database/.env .env
+        run: cp /home/deploy/parishhub/.env .env
 
       - name: Deploy
         run: bash scripts/deploy.sh --force
