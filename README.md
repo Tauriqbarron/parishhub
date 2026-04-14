@@ -1,4 +1,4 @@
-# Parish Database
+# ParishHub
 
 A comprehensive web-based application designed for parishes to manage member information, families, sacraments, and attendance records. This solution provides tools for administrative staff to maintain accurate records and generate insightful analytics about their community.
 
