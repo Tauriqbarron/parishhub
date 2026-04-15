@@ -1,0 +1,76 @@
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { memberApi, type MinistrySummary } from '$lib/api';
+	import { Users, Shield, ChevronRight } from 'lucide-svelte';
+
+	let ministries = $state<MinistrySummary[]>([]);
+	let loading = $state(true);
+	let error = $state('');
+
+	onMount(async () => {
+		try {
+			const result = await memberApi.ministries();
+			ministries = result.ministries;
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Failed to load groups';
+		} finally {
+			loading = false;
+		}
+	});
+</script>
+
+<div>
+	<h1 class="text-xl font-semibold text-gray-900 mb-4">My Groups</h1>
+
+	{#if loading}
+		<div class="space-y-3">
+			{#each [1, 2] as i}
+				<div class="animate-pulse bg-white rounded-lg border border-gray-200 p-4">
+					<div class="h-4 bg-gray-100 rounded w-1/3 mb-2"></div>
+					<div class="h-3 bg-gray-100 rounded w-2/3"></div>
+				</div>
+			{/each}
+		</div>
+	{:else if error}
+		<div class="p-4 bg-red-50 rounded-lg text-red-700 text-sm">{error}</div>
+	{:else if ministries.length === 0}
+		<div class="bg-white rounded-lg border border-gray-200 p-8 text-center">
+			<Users class="mx-auto w-10 h-10 text-gray-300" />
+			<p class="mt-2 text-sm text-gray-500">You're not part of any groups yet.</p>
+			<p class="text-xs text-gray-400">Ask your leader to add you.</p>
+		</div>
+	{:else}
+		<div class="space-y-3">
+			{#each ministries as m (m.id)}
+				<button
+					class="w-full text-left bg-white rounded-lg border border-gray-200 p-4 hover:border-orange-200 transition-colors"
+					onclick={() => goto(`/groups/${m.id}`)}
+				>
+					<div class="flex items-center justify-between">
+						<div class="min-w-0 flex-1">
+							<div class="flex items-center gap-2">
+								<h3 class="text-sm font-medium text-gray-900 truncate">{m.name}</h3>
+								{#if m.user_role === 'leader' || m.user_role === 'admin'}
+									<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-orange-50 text-orange-700 rounded text-[10px] font-medium">
+										<Shield class="w-3 h-3" /> {m.user_role}
+									</span>
+								{/if}
+								{#if !m.is_active}
+									<span class="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px]">Inactive</span>
+								{/if}
+							</div>
+							{#if m.description}
+								<p class="mt-0.5 text-xs text-gray-400 truncate">{m.description}</p>
+							{/if}
+							<p class="mt-1 text-xs text-gray-400">
+								<Users class="w-3 h-3 inline" /> {m.member_count} member{m.member_count !== 1 ? 's' : ''}
+							</p>
+						</div>
+						<ChevronRight class="w-4 h-4 text-gray-300 shrink-0 ml-2" />
+					</div>
+				</button>
+			{/each}
+		</div>
+	{/if}
+</div>

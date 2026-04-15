@@ -27,3 +27,4 @@ docs/
 # Coverage
 coverage/
 **/coverage/
+.venv/

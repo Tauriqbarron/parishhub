@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     database_url: str
 
     # CORS — stored as str to avoid pydantic-settings JSON parse errors
-    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3001,http://127.0.0.1:3001"
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174,http://localhost:3001,http://127.0.0.1:3001"
 
     @property
     def cors_origins_list(self) -> list[str]:

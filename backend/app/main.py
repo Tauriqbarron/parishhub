@@ -22,6 +22,8 @@ from app.routers import (
     deaths,
     households,
     mass_times,
+    member,
+    member_auth,
     ministries,
     persons,
     registration,
@@ -113,6 +115,8 @@ app.include_router(registration.url_router)
 app.include_router(addresses.router)
 app.include_router(ministries.router)
 app.include_router(ministries.persons_router)
+app.include_router(member_auth.router)
+app.include_router(member.router)
 
 
 # Prometheus metrics instrumentation
