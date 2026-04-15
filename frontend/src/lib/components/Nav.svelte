@@ -92,7 +92,7 @@
 	<!-- Mobile header -->
 	<div class="flex items-center justify-between p-4 border-b border-brand-border lg:hidden">
 		<div class="flex items-center gap-2">
-			<Logo size={24} />
+			<Logo size={24} detail="simple" />
 			<span class="text-lg font-semibold text-brand-primary tracking-tight">ParishHub</span>
 		</div>
 		<button
