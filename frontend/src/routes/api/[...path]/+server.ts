@@ -23,7 +23,8 @@ export const DELETE: RequestHandler = async ({ params, url, locals }) => {
 };
 
 // Public API paths that don't require authentication
-const PUBLIC_API_PATHS = ['register'];
+// 'auth' must be public so Auth.js's own endpoints work through the proxy
+const PUBLIC_API_PATHS = ['register', 'auth'];
 
 async function proxyRequest(
 	method: string,
