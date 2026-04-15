@@ -872,3 +872,163 @@ export const registrationApi = {
 	updateUrl: (config: RegistrationURLConfig) =>
 		api.put<RegistrationURLResponse>('/v1/registration/url', config)
 };
+
+// ---------------------------------------------------------------------------
+// Ministries
+// ---------------------------------------------------------------------------
+export interface Ministry {
+	id: number;
+	name: string;
+	description: string | null;
+	leader_id: number | null;
+	is_active: boolean;
+	member_count: number;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface MinistryDetail extends Ministry {
+	members: MinistryMember[];
+	events: MinistryEvent[];
+}
+
+export interface MinistryCreate {
+	name: string;
+	description?: string | null;
+	leader_id?: number | null;
+	is_active?: boolean;
+}
+
+export interface MinistryUpdate {
+	name?: string;
+	description?: string | null;
+	leader_id?: number | null;
+	is_active?: boolean;
+}
+
+export interface MinistryMember {
+	id: number;
+	ministry_id: number;
+	person_id: number;
+	role: string;
+	joined_date: string | null;
+	is_active: boolean;
+	person_name: string | null;
+	created_at: string;
+}
+
+export interface MinistryMemberCreate {
+	ministry_id: number;
+	person_id: number;
+	role?: string;
+	joined_date?: string | null;
+	is_active?: boolean;
+}
+
+export interface MinistryMemberUpdate {
+	role?: string;
+	is_active?: boolean;
+}
+
+export interface MinistryEvent {
+	id: number;
+	ministry_id: number;
+	title: string;
+	description: string | null;
+	event_date: string;
+	location: string | null;
+	attendance_count: number;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface MinistryEventCreate {
+	ministry_id: number;
+	title: string;
+	description?: string | null;
+	event_date: string;
+	location?: string | null;
+}
+
+export interface MinistryEventUpdate {
+	title?: string;
+	description?: string | null;
+	event_date?: string;
+	location?: string | null;
+}
+
+export interface AttendanceRecord {
+	id: number;
+	event_id: number;
+	person_id: number;
+	attended: boolean;
+	person_name: string | null;
+	created_at: string;
+}
+
+export interface MinistryFilters {
+	search?: string;
+	is_active?: boolean;
+	sort_by?: 'name' | 'created_at' | 'member_count';
+	sort_order?: 'asc' | 'desc';
+	page?: number;
+	per_page?: number;
+}
+
+export const ministryApi = {
+	list: (filters: MinistryFilters = {}) => {
+		const params = new URLSearchParams();
+		for (const [key, value] of Object.entries(filters)) {
+			if (value !== undefined && value !== null && value !== '') {
+				params.set(key, String(value));
+			}
+		}
+		const qs = params.toString();
+		return api.get<PaginatedResponse<Ministry>>(`/ministries${qs ? `?${qs}` : ''}`);
+	},
+
+	get: (id: number) => api.get<MinistryDetail>(`/ministries/${id}`),
+
+	create: (data: MinistryCreate) => api.post<Ministry>('/ministries', data),
+
+	update: (id: number, data: MinistryUpdate) => api.put<Ministry>(`/ministries/${id}`, data),
+
+	delete: (id: number) => api.delete<void>(`/ministries/${id}`),
+
+	getStatistics: () =>
+		api.get<{ total_ministries: number; total_members: number; upcoming_events: number }>(
+			'/ministries/statistics'
+		),
+
+	// Members
+	addMember: (data: MinistryMemberCreate) =>
+		api.post<MinistryMember>(`/ministries/${data.ministry_id}/members`, data),
+
+	updateMember: (ministryId: number, memberId: number, data: MinistryMemberUpdate) =>
+		api.put<MinistryMember>(`/ministries/${ministryId}/members/${memberId}`, data),
+
+	removeMember: (ministryId: number, memberId: number) =>
+		api.delete<void>(`/ministries/${ministryId}/members/${memberId}`),
+
+	// Events
+	listEvents: (ministryId: number) =>
+		api.get<MinistryEvent[]>(`/ministries/${ministryId}/events`),
+
+	createEvent: (data: MinistryEventCreate) =>
+		api.post<MinistryEvent>(`/ministries/${data.ministry_id}/events`, data),
+
+	updateEvent: (ministryId: number, eventId: number, data: MinistryEventUpdate) =>
+		api.put<MinistryEvent>(`/ministries/${ministryId}/events/${eventId}`, data),
+
+	deleteEvent: (ministryId: number, eventId: number) =>
+		api.delete<void>(`/ministries/${ministryId}/events/${eventId}`),
+
+	// Attendance
+	recordAttendance: (ministryId: number, eventId: number, personIds: number[]) =>
+		api.post<AttendanceRecord[]>(`/ministries/${ministryId}/events/${eventId}/attendance`, {
+			person_ids: personIds
+		}),
+
+	getAttendance: (ministryId: number, eventId: number) =>
+		api.get<AttendanceRecord[]>(`/ministries/${ministryId}/events/${eventId}/attendance`)
+};
