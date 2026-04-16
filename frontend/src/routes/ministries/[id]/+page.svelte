@@ -213,16 +213,24 @@
 				<Shield class="w-4 h-4" /> Leader
 			</h2>
 
-			{#if ministry.leader_id}
+			{#if ministry.leader}
 				<div class="flex items-center justify-between">
-					<div>
-						{#each ministry!.members.filter(m => m.person_id === ministry!.leader_id) as leader}
-							<p class="text-sm font-medium text-brand-primary">{leader.person_name || `Person #${leader.person_id}`}</p>
-						{/each}
-						{#if ministry!.members.filter(m => m.person_id === ministry!.leader_id).length === 0}
-							<p class="text-sm font-medium text-brand-primary">Leader assigned (ID: {ministry.leader_id})</p>
-						{/if}
-					</div>
+					<a
+						href="/people/{ministry.leader.id}"
+						class="group flex items-center gap-2"
+					>
+						<div class="w-8 h-8 rounded-full bg-brand-accent/10 flex items-center justify-center text-sm font-medium text-brand-accent">
+							{ministry.leader.first_name[0]}{ministry.leader.last_name[0]}
+						</div>
+						<div>
+							<p class="text-sm font-medium text-brand-primary group-hover:text-brand-accent transition-colors">
+								{ministry.leader.first_name} {ministry.leader.last_name}
+							</p>
+							{#if ministry.leader.email}
+								<p class="text-xs text-brand-text-secondary">{ministry.leader.email}</p>
+							{/if}
+						</div>
+					</a>
 					<button onclick={removeLeader}
 						class="text-sm text-red-500 hover:text-red-700">Remove</button>
 				</div>

@@ -13,6 +13,7 @@ from app.limiter import limiter
 from app.schemas.ministry import (
     AttendanceBatchCreate,
     AttendanceResponse,
+    LeaderInfo,
     MinistryCreate,
     MinistryDetailResponse,
     MinistryEventCreate,
@@ -133,6 +134,13 @@ async def get_ministry(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ministry not found")
     resp = MinistryDetailResponse.model_validate(ministry)
     resp.member_count = len(ministry.members) if ministry.members else 0
+    if ministry.leader:
+        resp.leader = LeaderInfo(
+            id=ministry.leader.id,
+            first_name=ministry.leader.first_name,
+            last_name=ministry.leader.last_name,
+            email=ministry.leader.email,
+        )
     return resp
 
 

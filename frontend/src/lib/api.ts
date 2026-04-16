@@ -887,9 +887,17 @@ export interface Ministry {
 	updated_at: string;
 }
 
+export interface LeaderInfo {
+	id: number;
+	first_name: string;
+	last_name: string;
+	email: string | null;
+}
+
 export interface MinistryDetail extends Ministry {
 	members: MinistryMember[];
 	events: MinistryEvent[];
+	leader: LeaderInfo | null;
 }
 
 export interface MinistryCreate {

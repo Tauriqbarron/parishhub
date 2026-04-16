@@ -36,9 +36,20 @@ class MinistryResponse(MinistryBase):
     updated_at: datetime
 
 
+class LeaderInfo(BaseModel):
+    """Minimal person info for leader display."""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    first_name: str
+    last_name: str
+    email: Optional[str] = None
+
+
 class MinistryDetailResponse(MinistryResponse):
     members: list["MinistryMemberResponse"] = []
     events: list["MinistryEventResponse"] = []
+    leader: Optional[LeaderInfo] = None
 
 
 # ---------------------------------------------------------------------------
