@@ -85,10 +85,33 @@ export interface MinistryEvent {
 	title: string;
 	description: string | null;
 	event_date: string;
+	start_time: string | null;
+	end_time: string | null;
 	location: string | null;
+	event_type: string;
+	capacity: number | null;
+	is_cancelled: boolean;
+	recurrence_rule: string | null;
+	rsvp_count: number;
+	spots_remaining: number | null;
 	attendance_count: number;
 	ministry_id?: number;
 	ministry_name?: string;
+}
+
+export interface EventDetail extends MinistryEvent {
+	user_rsvp: string | null;
+	rsvp_summary: { going: number; maybe: number; not_going: number };
+	rsvps: Array<{ id: number; person_id: number; person_name: string | null; status: string }>;
+	attendance: Array<{ person_id: number; person_name: string | null; attended: boolean }>;
+}
+
+export interface EventRSVP {
+	id: number;
+	event_id: number;
+	person_id: number;
+	person_name: string | null;
+	status: string;
 }
 
 export interface WeekDashboard {
@@ -122,10 +145,40 @@ export const memberApi = {
 			events: MinistryEvent[];
 		}>(`/member/ministries/${id}`),
 
-	addMember: (ministryId: number, data: { email: string; name?: string; role?: string }) =>
+	addMember: (ministryId: number, data: { email?: string; name?: string; person_id?: number; role?: string }) =>
 		request<{ id: number; person_name: string | null; message: string }>(
 			`/member/ministries/${ministryId}/members`,
 			{ method: 'POST', body: JSON.stringify(data) }
+		),
+
+	searchPersons: (query: string) =>
+		request<{ items: Array<{ id: number; first_name: string; last_name: string; email: string | null }> }>(
+			`/member/persons/search?q=${encodeURIComponent(query)}`
+		),
+
+	eventDetail: (eventId: number) =>
+		request<EventDetail>(`/member/events/${eventId}`),
+
+	rsvp: (eventId: number, status: string) =>
+		request<{ id: number; status: string; rsvp_count: number; spots_remaining: number | null }>(
+			`/member/events/${eventId}/rsvp`,
+			{ method: 'POST', body: JSON.stringify({ status }) }
+		),
+
+	getRsvps: (eventId: number) =>
+		request<{ rsvps: EventRSVP[]; going_count: number; maybe_count: number; not_going_count: number }>(
+			`/member/events/${eventId}/rsvps`
+		),
+
+	recordAttendance: (eventId: number, personIds: number[]) =>
+		request<{ recorded: number }>(
+			`/member/events/${eventId}/attendance`,
+			{ method: 'POST', body: JSON.stringify({ person_ids: personIds }) }
+		),
+
+	getAttendance: (eventId: number) =>
+		request<{ attendance: Array<{ person_id: number; person_name: string | null; attended: boolean }> }>(
+			`/member/events/${eventId}/attendance`
 		),
 
 	removeMember: (ministryId: number, memberId: number) =>
@@ -138,7 +191,7 @@ export const memberApi = {
 
 	createEvent: (
 		ministryId: number,
-		data: { title: string; description?: string; event_date: string; location?: string }
+		data: { title: string; description?: string; event_date: string; location?: string; start_time?: string; end_time?: string; event_type?: string; capacity?: number; recurrence_rule?: string; recurrence_end?: string }
 	) =>
 		request<MinistryEvent>(`/member/ministries/${ministryId}/events`, {
 			method: 'POST',

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { memberApi, type MinistryMember, type MinistryEvent } from '$lib/api';
 	import { ArrowLeft, Users, Calendar, Plus, X, Trash2, Shield } from 'lucide-svelte';
+	import EventCard from '$lib/components/EventCard.svelte';
 
 	let ministry = $state<{
 		id: number;
@@ -21,8 +21,10 @@
 
 	// Add member form
 	let showAddMember = $state(false);
-	let newEmail = $state('');
-	let newName = $state('');
+	let searchQuery = $state('');
+	let searchResults = $state<Array<{ id: number; first_name: string; last_name: string; email: string | null }>>([]);
+	let isSearching = $state(false);
+	let searchTimeout: ReturnType<typeof setTimeout>;
 	let addingMember = $state(false);
 	let addError = $state('');
 
@@ -34,6 +36,12 @@
 	let eventDescription = $state('');
 	let creatingEvent = $state(false);
 	let eventError = $state('');
+	let eventStartTime = $state('');
+	let eventEndTime = $state('');
+	let eventType = $state('other');
+	let eventCapacity = $state('');
+	let recurrence = $state('none');
+	let recurrenceEnd = $state('');
 
 	const ministryId = $derived(Number($page.params.id));
 	const isLeader = $derived(
@@ -55,18 +63,36 @@
 		if (ministryId) loadMinistry();
 	});
 
-	async function handleAddMember() {
-		if (!newEmail.trim()) return;
+	function handleSearchInput(e: Event) {
+		const val = (e.target as HTMLInputElement).value;
+		searchQuery = val;
+		clearTimeout(searchTimeout);
+		if (val.trim().length < 2) {
+			searchResults = [];
+			return;
+		}
+		searchTimeout = setTimeout(async () => {
+			isSearching = true;
+			try {
+				const result = await memberApi.searchPersons(val.trim());
+				const existingIds = new Set(ministry?.members.map(m => m.person_id) ?? []);
+				searchResults = result.items.filter(p => !existingIds.has(p.id));
+			} catch {
+				searchResults = [];
+			} finally {
+				isSearching = false;
+			}
+		}, 300);
+	}
+
+	async function handleAddMember(person: { id: number; first_name: string; last_name: string }) {
 		addingMember = true;
 		addError = '';
 		try {
-			await memberApi.addMember(ministryId, {
-				email: newEmail.trim(),
-				name: newName.trim() || undefined
-			});
-			newEmail = '';
-			newName = '';
+			await memberApi.addMember(ministryId, { person_id: person.id });
 			showAddMember = false;
+			searchQuery = '';
+			searchResults = [];
 			await loadMinistry();
 		} catch (err) {
 			addError = err instanceof Error ? err.message : 'Failed to add member';
@@ -93,6 +119,12 @@
 			await memberApi.createEvent(ministryId, {
 				title: eventTitle.trim(),
 				event_date: eventDate,
+				start_time: eventStartTime || undefined,
+				end_time: eventEndTime || undefined,
+				event_type: eventType,
+				capacity: eventCapacity ? Number(eventCapacity) : undefined,
+				recurrence_rule: recurrence !== 'none' ? recurrence : undefined,
+				recurrence_end: recurrence !== 'none' && recurrenceEnd ? recurrenceEnd : undefined,
 				location: eventLocation.trim() || undefined,
 				description: eventDescription.trim() || undefined
 			});
@@ -100,6 +132,12 @@
 			eventDate = '';
 			eventLocation = '';
 			eventDescription = '';
+			eventStartTime = '';
+			eventEndTime = '';
+			eventType = 'other';
+			eventCapacity = '';
+			recurrence = 'none';
+			recurrenceEnd = '';
 			showCreateEvent = false;
 			await loadMinistry();
 		} catch (err) {
@@ -184,33 +222,48 @@
 					<div class="mb-3 bg-white rounded-lg border border-gray-200 p-4">
 						<div class="flex items-center justify-between mb-3">
 							<h3 class="text-sm font-medium text-gray-900">Add Member</h3>
-							<button onclick={() => (showAddMember = false)} class="text-gray-400 hover:text-gray-600">
+							<button onclick={() => { showAddMember = false; searchQuery = ''; searchResults = []; }} class="text-gray-400 hover:text-gray-600">
 								<X class="w-4 h-4" />
 							</button>
 						</div>
 						{#if addError}
 							<p class="mb-2 text-sm text-red-600">{addError}</p>
 						{/if}
-						<div class="space-y-2">
-							<input
-								type="email"
-								bind:value={newEmail}
-								placeholder="Email address"
-								class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none"
-							/>
+						<div class="relative">
 							<input
 								type="text"
-								bind:value={newName}
-								placeholder="Name (optional)"
+								value={searchQuery}
+								oninput={handleSearchInput}
+								placeholder="Search by name..."
 								class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none"
 							/>
-							<button
-								onclick={handleAddMember}
-								disabled={addingMember || !newEmail.trim()}
-								class="px-3 py-1.5 text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 disabled:opacity-50"
-							>
-								{addingMember ? 'Adding...' : 'Add'}
-							</button>
+							{#if isSearching}
+								<div class="absolute right-3 top-2">
+									<svg class="animate-spin h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24">
+										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+									</svg>
+								</div>
+							{/if}
+							{#if searchResults.length > 0}
+								<div class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+									{#each searchResults as person (person.id)}
+										<button
+											type="button"
+											onclick={() => handleAddMember(person)}
+											disabled={addingMember}
+											class="w-full px-4 py-2 text-left hover:bg-orange-50 border-b border-gray-100 last:border-b-0 disabled:opacity-50"
+										>
+											<p class="text-sm font-medium text-gray-900">{person.first_name} {person.last_name}</p>
+											{#if person.email}
+												<p class="text-xs text-gray-400">{person.email}</p>
+											{/if}
+										</button>
+									{/each}
+								</div>
+							{:else if searchQuery.trim().length >= 2 && !isSearching}
+								<div class="mt-1 text-xs text-gray-400">No people found</div>
+							{/if}
 						</div>
 					</div>
 				{/if}
@@ -293,6 +346,54 @@
 								rows={2}
 								class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none resize-none"
 							></textarea>
+							<select
+								bind:value={eventType}
+								class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none"
+							>
+								<option value="other">Other</option>
+								<option value="service">Service</option>
+								<option value="meeting">Meeting</option>
+								<option value="social">Social</option>
+								<option value="outreach">Outreach</option>
+							</select>
+							<div class="flex gap-2">
+								<input
+									type="time"
+									bind:value={eventStartTime}
+									placeholder="Start time"
+									class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none"
+								/>
+								<input
+									type="time"
+									bind:value={eventEndTime}
+									placeholder="End time"
+									class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none"
+								/>
+							</div>
+							<input
+								type="number"
+								bind:value={eventCapacity}
+								placeholder="Capacity (optional)"
+								min="1"
+								class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none"
+							/>
+							<select
+								bind:value={recurrence}
+								class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none"
+							>
+								<option value="none">Does not repeat</option>
+								<option value="weekly">Weekly</option>
+								<option value="biweekly">Every 2 weeks</option>
+								<option value="monthly">Monthly</option>
+							</select>
+							{#if recurrence !== 'none'}
+								<input
+									type="date"
+									bind:value={recurrenceEnd}
+									placeholder="Repeat until"
+									class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none"
+								/>
+							{/if}
 							<button
 								onclick={handleCreateEvent}
 								disabled={creatingEvent || !eventTitle.trim() || !eventDate}
@@ -310,17 +411,7 @@
 					<p class="p-4 text-sm text-gray-400 text-center">No events yet</p>
 				{:else}
 					{#each ministry.events as event (event.id)}
-						<div class="px-4 py-3">
-							<h4 class="text-sm font-medium text-gray-900">{event.title}</h4>
-							<p class="text-xs text-gray-400">
-								{formatDate(event.event_date)}
-								{#if event.location}· {event.location}{/if}
-								· {event.attendance_count} attended
-							</p>
-							{#if event.description}
-								<p class="mt-1 text-xs text-gray-400">{event.description}</p>
-							{/if}
-						</div>
+						<EventCard {event} onclick={() => goto(`/groups/${ministryId}/events/${event.id}`)} />
 					{/each}
 				{/if}
 			</div>

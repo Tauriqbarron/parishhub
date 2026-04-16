@@ -3,7 +3,7 @@
 from datetime import date, datetime
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -97,6 +97,13 @@ class MinistryEvent(Base):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     event_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     location: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    start_time: Mapped[Optional[str]] = mapped_column(String(5), nullable=True)  # "19:00"
+    end_time: Mapped[Optional[str]] = mapped_column(String(5), nullable=True)    # "21:00"
+    event_type: Mapped[str] = mapped_column(String(50), default="other", nullable=False)
+    capacity: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # null = unlimited
+    recurrence_rule: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)  # RRULE
+    recurrence_end: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    is_cancelled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False
     )
@@ -108,6 +115,9 @@ class MinistryEvent(Base):
     ministry: Mapped["Ministry"] = relationship("Ministry", back_populates="events")
     attendance: Mapped[list["MinistryEventAttendance"]] = relationship(
         "MinistryEventAttendance", back_populates="event", cascade="all, delete-orphan"
+    )
+    rsvps: Mapped[list["EventRSVP"]] = relationship(
+        "EventRSVP", back_populates="event", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:
@@ -146,6 +156,40 @@ class MinistryEventAttendance(Base):
         return (
             f"<MinistryEventAttendance(id={self.id}, event_id={self.event_id}, "
             f"person_id={self.person_id}, attended={self.attended})>"
+        )
+
+
+class EventRSVP(Base):
+    """RSVP status for a person at a ministry event."""
+
+    __tablename__ = "event_rsvps"
+    __table_args__ = (
+        UniqueConstraint("event_id", "person_id", name="uq_event_rsvp_person"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    event_id: Mapped[int] = mapped_column(
+        ForeignKey("ministry_events.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    person_id: Mapped[int] = mapped_column(
+        ForeignKey("persons.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    status: Mapped[str] = mapped_column(String(20), nullable=False)  # going, not_going, maybe
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+    # Relationships
+    event: Mapped["MinistryEvent"] = relationship("MinistryEvent", back_populates="rsvps")
+    person: Mapped["Person"] = relationship("Person", foreign_keys=[person_id])
+
+    def __repr__(self) -> str:
+        return (
+            f"<EventRSVP(id={self.id}, event_id={self.event_id}, "
+            f"person_id={self.person_id}, status='{self.status}')>"
         )
 
 

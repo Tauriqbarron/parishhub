@@ -89,6 +89,12 @@ class MinistryEventBase(BaseModel):
     description: Annotated[Optional[str], Field(max_length=5000)] = None
     event_date: date
     location: Annotated[Optional[str], Field(max_length=200)] = None
+    start_time: Optional[str] = None  # "19:00"
+    end_time: Optional[str] = None    # "21:00"
+    event_type: str = "other"
+    capacity: Optional[int] = None
+    recurrence_rule: Optional[str] = None
+    recurrence_end: Optional[date] = None
 
 
 class MinistryEventCreate(MinistryEventBase):
@@ -106,7 +112,10 @@ class MinistryEventResponse(MinistryEventBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    is_cancelled: bool = False
     attendance_count: int = 0
+    rsvp_count: int = 0
+    spots_remaining: Optional[int] = None
     created_at: datetime
     updated_at: datetime
 
@@ -127,6 +136,25 @@ class AttendanceResponse(BaseModel):
     attended: bool
     person_name: Optional[str] = None
     created_at: datetime
+
+
+# ---------------------------------------------------------------------------
+# RSVP
+# ---------------------------------------------------------------------------
+class EventRSVPCreate(BaseModel):
+    status: str  # going, not_going, maybe
+
+
+class EventRSVPResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    event_id: int
+    person_id: int
+    person_name: Optional[str] = None
+    status: str
+    created_at: datetime
+    updated_at: datetime
 
 
 # ---------------------------------------------------------------------------

@@ -115,7 +115,22 @@ class TestMinistryMembers:
             MinistryMemberCreate(ministry_id=m.id, person_id=person.id)
         )
         assert member.person_id == person.id
-        assert member.role == "member"
+        assert member.role == "leader"  # first member = leader
+
+    def test_add_co_leader(self, service, person):
+        m = service.create_ministry(MinistryCreate(name="Test"))
+        from app.models.person import Person
+        service._validate_person_exists  # ensure exists
+        # Create second person
+        person2 = Person(first_name="Jane", last_name="Doe", email="jane@test.com")
+        service.db.add(person2)
+        service.db.flush()
+
+        first = service.add_member(MinistryMemberCreate(ministry_id=m.id, person_id=person.id))
+        assert first.role == "leader"
+
+        second = service.add_member(MinistryMemberCreate(ministry_id=m.id, person_id=person2.id))
+        assert second.role == "co-leader"
 
     def test_add_duplicate_member(self, service, person):
         m = service.create_ministry(MinistryCreate(name="Test"))
@@ -206,3 +221,45 @@ class TestAttendance:
         )
         with pytest.raises(MinistryValidationError, match="Person with id 9999 not found"):
             service.record_attendance(event.id, [9999])
+
+
+class TestEventSystemUpgrade:
+    """Tests for new event system fields (v2 — RSVP, time, capacity, recurrence)."""
+
+    def test_create_event_with_new_fields(self, service):
+        m = service.create_ministry(MinistryCreate(name="Youth"))
+        event = service.create_event(
+            MinistryEventCreate(
+                ministry_id=m.id,
+                title="Bible Study",
+                event_date=date(2026, 5, 1),
+                location="Room 3",
+                start_time="19:00",
+                end_time="21:00",
+                event_type="meeting",
+                capacity=20,
+                recurrence_rule="FREQ=WEEKLY;BYDAY=WE",
+                recurrence_end=date(2026, 8, 1),
+            )
+        )
+        assert event.title == "Bible Study"
+        assert event.start_time == "19:00"
+        assert event.end_time == "21:00"
+        assert event.event_type == "meeting"
+        assert event.capacity == 20
+        assert event.recurrence_rule == "FREQ=WEEKLY;BYDAY=WE"
+        assert event.recurrence_end == date(2026, 8, 1)
+
+    def test_event_type_defaults_to_other(self, service):
+        m = service.create_ministry(MinistryCreate(name="Choir"))
+        event = service.create_event(
+            MinistryEventCreate(ministry_id=m.id, title="Practice", event_date=date(2026, 5, 1))
+        )
+        assert event.event_type == "other"
+
+    def test_event_capacity_nullable(self, service):
+        m = service.create_ministry(MinistryCreate(name="Choir"))
+        event = service.create_event(
+            MinistryEventCreate(ministry_id=m.id, title="Practice", event_date=date(2026, 5, 1))
+        )
+        assert event.capacity is None
