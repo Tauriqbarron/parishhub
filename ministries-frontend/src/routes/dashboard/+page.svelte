@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { memberApi, type WeekDashboard } from '$lib/api';
-	import { Calendar, MapPin, Users } from 'lucide-svelte';
+	import { memberApi, type WeekDashboard, type MinistryEvent } from '$lib/api';
+	import { Calendar } from 'lucide-svelte';
+	import EventCard from '$lib/components/EventCard.svelte';
 
 	let dashboard = $state<WeekDashboard | null>(null);
 	let loading = $state(true);
@@ -22,38 +24,57 @@
 		return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 	}
 
+	function formatDayHeader(dateStr: string): string {
+		const date = new Date(dateStr + 'T00:00:00');
+		return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+	}
+
 	function isToday(dateStr: string): boolean {
 		const today = new Date().toISOString().split('T')[0];
 		return dateStr === today;
 	}
+
+	const groupedEvents = $derived.by(() => {
+		if (!dashboard) return [];
+		const groups: { date: string; label: string; isToday: boolean; events: MinistryEvent[] }[] = [];
+		const map = new Map<string, MinistryEvent[]>();
+		for (const event of dashboard.events) {
+			if (!map.has(event.event_date)) map.set(event.event_date, []);
+			map.get(event.event_date)!.push(event);
+		}
+		for (const [date, events] of map) {
+			groups.push({ date, label: formatDayHeader(date), isToday: isToday(date), events });
+		}
+		return groups;
+	});
 </script>
 
 <div>
 	<h1 class="text-xl font-semibold text-gray-900 mb-4">This Week</h1>
 
 	{#if loading}
-	<div class="space-y-3">
-		<div class="animate-pulse flex items-center gap-1">
-			<div class="h-3 bg-gray-100 rounded w-48"></div>
-		</div>
-		{#each [1, 2, 3] as i}
-			<div class="animate-pulse bg-white rounded-lg border border-gray-200 p-4">
-				<div class="flex items-start justify-between">
-					<div class="min-w-0 flex-1">
-						<div class="flex items-center gap-2">
-							<div class="h-3 bg-gray-100 rounded w-24"></div>
+		<div class="space-y-3">
+			<div class="animate-pulse flex items-center gap-1">
+				<div class="h-3 bg-gray-100 rounded w-48"></div>
+			</div>
+			{#each [1, 2, 3] as i}
+				<div class="animate-pulse bg-white rounded-lg border border-gray-200 p-4">
+					<div class="flex items-start justify-between">
+						<div class="min-w-0 flex-1">
+							<div class="flex items-center gap-2">
+								<div class="h-3 bg-gray-100 rounded w-24"></div>
+							</div>
+							<div class="mt-1.5 h-4 bg-gray-100 rounded w-40"></div>
+							<div class="mt-1 h-3 bg-gray-100 rounded w-28"></div>
 						</div>
-						<div class="mt-1.5 h-4 bg-gray-100 rounded w-40"></div>
-						<div class="mt-1 h-3 bg-gray-100 rounded w-28"></div>
-					</div>
-					<div class="flex items-center gap-3 ml-3">
-						<div class="h-3 bg-gray-100 rounded w-16"></div>
-						<div class="h-3 bg-gray-100 rounded w-8"></div>
+						<div class="flex items-center gap-3 ml-3">
+							<div class="h-3 bg-gray-100 rounded w-16"></div>
+							<div class="h-3 bg-gray-100 rounded w-8"></div>
+						</div>
 					</div>
 				</div>
-			</div>
-		{/each}
-	</div>
+			{/each}
+		</div>
 	{:else if error}
 		<div class="p-4 bg-red-50 rounded-lg text-red-700 text-sm">{error}</div>
 	{:else if !dashboard || dashboard.events.length === 0}
@@ -70,38 +91,19 @@
 		<p class="text-xs text-gray-400 mb-3">
 			{formatDate(dashboard.week_start)} — {formatDate(dashboard.week_end)}
 		</p>
-		<div class="space-y-3">
-			{#each dashboard.events as event (event.id)}
-				<div
-					class="bg-white rounded-lg border border-gray-200 p-4 hover:border-orange-200 transition-colors
-						{isToday(event.event_date) ? 'border-l-4 border-l-orange-500' : ''}"
-				>
-					<div class="flex items-start justify-between">
-						<div class="min-w-0 flex-1">
-							<div class="flex items-center gap-2">
-								<span class="text-xs font-medium {isToday(event.event_date) ? 'text-orange-600' : 'text-gray-400'}">
-									{formatDate(event.event_date)}
-									{#if isToday(event.event_date)}
-										<span class="ml-1 px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-[10px]">TODAY</span>
-									{/if}
-								</span>
-							</div>
-							<h3 class="mt-1 text-sm font-medium text-gray-900">{event.title}</h3>
-							<p class="text-xs text-gray-500">{event.ministry_name}</p>
-							{#if event.description}
-								<p class="mt-1 text-xs text-gray-400 line-clamp-2">{event.description}</p>
-							{/if}
-						</div>
-						<div class="flex items-center gap-3 ml-3 text-xs text-gray-400 shrink-0">
-							{#if event.location}
-								<span class="flex items-center gap-0.5">
-									<MapPin class="w-3 h-3" /> {event.location}
-								</span>
-							{/if}
-							<span class="flex items-center gap-0.5">
-								<Users class="w-3 h-3" /> {event.attendance_count}
-							</span>
-						</div>
+		<div class="space-y-4">
+			{#each groupedEvents as group (group.date)}
+				<div>
+					<h2 class="text-xs font-medium mb-1.5 {group.isToday ? 'text-orange-600' : 'text-gray-400'}">
+						{group.label}
+						{#if group.isToday}
+							<span class="ml-1 px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-[10px]">TODAY</span>
+						{/if}
+					</h2>
+					<div class="bg-white rounded-lg border border-gray-200 overflow-hidden divide-y divide-gray-100">
+						{#each group.events as event (event.id)}
+							<EventCard {event} onclick={() => goto(`/groups/${event.ministry_id ?? 0}/events/${event.id}`)} />
+						{/each}
 					</div>
 				</div>
 			{/each}
