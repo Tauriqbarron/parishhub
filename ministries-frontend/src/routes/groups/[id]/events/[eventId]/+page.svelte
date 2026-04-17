@@ -108,11 +108,35 @@
 
 <div>
 	{#if loading}
-		<div class="animate-pulse space-y-3">
-			<div class="h-6 bg-gray-100 rounded w-1/3"></div>
-			<div class="h-4 bg-gray-100 rounded w-1/2"></div>
-			<div class="h-32 bg-gray-100 rounded"></div>
+	<div class="animate-pulse space-y-4">
+		<div class="h-4 bg-gray-100 rounded w-16"></div>
+		<div>
+			<div class="h-4 bg-gray-100 rounded w-14 mb-1"></div>
+			<div class="h-6 bg-gray-100 rounded w-48"></div>
 		</div>
+		<div class="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
+			<div class="flex items-center gap-2">
+				<div class="h-4 w-4 bg-gray-100 rounded"></div>
+				<div class="h-4 bg-gray-100 rounded w-40"></div>
+			</div>
+			<div class="flex items-center gap-2">
+				<div class="h-4 w-4 bg-gray-100 rounded"></div>
+				<div class="h-4 bg-gray-100 rounded w-28"></div>
+			</div>
+			<div class="flex items-center gap-2">
+				<div class="h-4 w-4 bg-gray-100 rounded"></div>
+				<div class="h-4 bg-gray-100 rounded w-32"></div>
+			</div>
+		</div>
+		<div class="bg-white rounded-lg border border-gray-200 p-4">
+			<div class="h-4 bg-gray-100 rounded w-12 mb-3"></div>
+			<div class="flex gap-2">
+				<div class="flex-1 h-9 bg-gray-100 rounded-md"></div>
+				<div class="flex-1 h-9 bg-gray-100 rounded-md"></div>
+				<div class="flex-1 h-9 bg-gray-100 rounded-md"></div>
+			</div>
+		</div>
+	</div>
 	{:else if error}
 		<div class="p-4 bg-red-50 rounded-lg text-red-700 text-sm">{error}</div>
 		<a href="/groups/{ministryId}" class="mt-3 inline-flex items-center gap-1 text-sm text-gray-500">

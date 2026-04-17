@@ -159,11 +159,30 @@
 
 <div>
 	{#if loading}
-		<div class="animate-pulse space-y-3">
-			<div class="h-6 bg-gray-100 rounded w-1/3"></div>
-			<div class="h-4 bg-gray-100 rounded w-1/2"></div>
-			<div class="h-32 bg-gray-100 rounded"></div>
+	<div class="animate-pulse space-y-4">
+		<div class="flex items-center gap-2">
+			<div class="h-6 bg-gray-100 rounded w-36"></div>
+			<div class="h-5 bg-gray-100 rounded w-16"></div>
 		</div>
+		<div class="h-4 bg-gray-100 rounded w-48"></div>
+		<div class="border-b border-gray-200 pb-2">
+			<div class="flex gap-4">
+				<div class="h-5 bg-gray-100 rounded w-24"></div>
+				<div class="h-5 bg-gray-100 rounded w-20"></div>
+			</div>
+		</div>
+		<div class="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+			{#each [1, 2, 3] as i}
+				<div class="px-4 py-3 flex items-center justify-between">
+					<div>
+						<div class="h-4 bg-gray-100 rounded w-32 mb-1"></div>
+						<div class="h-3 bg-gray-100 rounded w-20"></div>
+					</div>
+					<div class="h-4 w-4 bg-gray-100 rounded"></div>
+				</div>
+			{/each}
+		</div>
+	</div>
 	{:else if error}
 		<div class="p-4 bg-red-50 rounded-lg text-red-700 text-sm">{error}</div>
 		<a href="/groups" class="mt-3 inline-flex items-center gap-1 text-sm text-gray-500">

@@ -55,14 +55,16 @@
 	<h1 class="text-xl font-semibold text-gray-900 mb-4">Events</h1>
 
 	{#if loading}
-		<div class="space-y-3">
-			{#each [1, 2, 3] as i}
-				<div class="animate-pulse bg-white rounded-lg border border-gray-200 p-4">
-					<div class="h-4 bg-gray-100 rounded w-1/3 mb-2"></div>
-					<div class="h-3 bg-gray-100 rounded w-1/2"></div>
-				</div>
-			{/each}
-		</div>
+	<div class="space-y-3">
+		<div class="h-3 bg-gray-100 rounded w-20 animate-pulse"></div>
+		{#each [1, 2, 3] as i}
+			<div class="animate-pulse bg-white rounded-lg border border-gray-200 p-4">
+				<div class="h-3 bg-gray-100 rounded w-24 mb-1.5"></div>
+				<div class="h-4 bg-gray-100 rounded w-36 mb-1"></div>
+				<div class="h-3 bg-gray-100 rounded w-28"></div>
+			</div>
+		{/each}
+	</div>
 	{:else if error}
 		<div class="p-4 bg-red-50 rounded-lg text-red-700 text-sm">{error}</div>
 	{:else}

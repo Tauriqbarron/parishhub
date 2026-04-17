@@ -24,14 +24,26 @@
 	<h1 class="text-xl font-semibold text-gray-900 mb-4">My Groups</h1>
 
 	{#if loading}
-		<div class="space-y-3">
-			{#each [1, 2] as i}
-				<div class="animate-pulse bg-white rounded-lg border border-gray-200 p-4">
-					<div class="h-4 bg-gray-100 rounded w-1/3 mb-2"></div>
-					<div class="h-3 bg-gray-100 rounded w-2/3"></div>
+	<div class="space-y-3">
+		{#each [1, 2] as i}
+			<div class="animate-pulse bg-white rounded-lg border border-gray-200 p-4">
+				<div class="flex items-center justify-between">
+					<div class="min-w-0 flex-1">
+						<div class="flex items-center gap-2">
+							<div class="h-4 bg-gray-100 rounded w-28"></div>
+							<div class="h-4 bg-gray-100 rounded w-14"></div>
+						</div>
+						<div class="mt-1 h-3 bg-gray-100 rounded w-40"></div>
+						<div class="mt-1.5 flex items-center gap-1">
+							<div class="h-3 w-3 bg-gray-100 rounded"></div>
+							<div class="h-3 bg-gray-100 rounded w-20"></div>
+						</div>
+					</div>
+					<div class="h-4 w-4 bg-gray-100 rounded ml-2"></div>
 				</div>
-			{/each}
-		</div>
+			</div>
+		{/each}
+	</div>
 	{:else if error}
 		<div class="p-4 bg-red-50 rounded-lg text-red-700 text-sm">{error}</div>
 	{:else if ministries.length === 0}
