@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { Home, Users, Calendar, LogOut, Menu, X } from 'lucide-svelte';
+	import { Home, Users, Calendar, LogOut, Menu, X, User } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import { memberApi, clearToken, type MemberUser } from '$lib/api';
 
@@ -35,9 +35,9 @@
 
 	const isLoginPage = $derived($page.url.pathname === '/login');
 	const navItems = $derived([
-		{ href: '/dashboard', label: 'Dashboard', icon: Home },
-		{ href: '/groups', label: 'My Groups', icon: Users },
-		{ href: '/events', label: 'Events', icon: Calendar }
+		{ href: '/dashboard', label: 'This Week', icon: Calendar },
+		{ href: '/groups', label: 'Groups', icon: Users },
+		{ href: '/profile', label: 'Profile', icon: User }
 	]);
 </script>
 
@@ -130,14 +130,14 @@
 			{/if}
 
 			<!-- Main content -->
-			<main class="flex-1 p-4 min-w-0">
+			<main class="flex-1 p-4 pb-20 min-w-0">
 				{@render children()}
 			</main>
 		</div>
 
 		<!-- Mobile bottom nav -->
-		<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30">
-			<div class="flex justify-around py-2">
+	<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30" style="padding-bottom: env(safe-area-inset-bottom)">
+		<div class="flex justify-around py-2">
 				{#each navItems as item}
 					<a
 						href={item.href}
