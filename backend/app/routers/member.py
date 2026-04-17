@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.auth.member import MemberUser, require_member
 from app.database import get_db
 from app.limiter import limiter
+from app.services.audit import AuditService
 
 router = APIRouter(prefix="/api/member", tags=["member"])
 
@@ -266,6 +267,14 @@ async def add_ministry_member(
             )
             db.add(user_role)
 
+    AuditService(db).log_create(
+        resource_type="ministry_member",
+        resource_id=ministry_id,
+        new_values={"person_id": person.id, "person_name": f"{person.first_name} {person.last_name}", "role": assigned_role},
+        user_email=member.email,
+        description=f"Added {person_email or person.first_name} to ministry {ministry_id}",
+    )
+
     db.commit()
     db.refresh(membership)
 
@@ -307,6 +316,14 @@ async def remove_ministry_member(
             UserRole.user_email == person_email,
             UserRole.ministry_id == ministry_id,
         ).delete()
+
+    AuditService(db).log_delete(
+        resource_type="ministry_member",
+        resource_id=ministry_id,
+        old_values={"member_id": member_id, "person_email": person_email},
+        user_email=member.email,
+        description=f"Removed member {member_id} from ministry {ministry_id}",
+    )
 
     db.delete(membership)
     db.commit()
@@ -397,6 +414,15 @@ async def create_ministry_event(
         recurrence_end=body.recurrence_end,
     )
     db.add(event)
+
+    AuditService(db).log_create(
+        resource_type="ministry_event",
+        resource_id=ministry_id,
+        new_values={"title": body.title, "event_date": body.event_date.isoformat(), "event_type": body.event_type},
+        user_email=member.email,
+        description=f"Created event '{body.title}' for ministry {ministry_id}",
+    )
+
     db.commit()
     db.refresh(event)
 
@@ -630,6 +656,15 @@ async def rsvp_event(
         rsvp = EventRSVP(event_id=event_id, person_id=person.id, status=body.status)
         db.add(rsvp)
 
+    AuditService(db).log_update(
+        resource_type="event_rsvp",
+        resource_id=event_id,
+        old_values={"status": existing.status} if existing else {},
+        new_values={"status": body.status, "person_id": person.id},
+        user_email=member.email,
+        description=f"RSVP '{body.status}' for event {event_id}",
+    )
+
     db.commit()
     db.refresh(rsvp)
 
@@ -738,6 +773,15 @@ async def record_attendance(
             )
             db.add(attendance)
             recorded += 1
+
+    AuditService(db).log_update(
+        resource_type="event_attendance",
+        resource_id=event_id,
+        old_values={},
+        new_values={"person_ids": list(body.person_ids), "recorded_count": recorded},
+        user_email=member.email,
+        description=f"Recorded attendance for {recorded} people at event {event_id}",
+    )
 
     db.commit()
     return {"recorded": recorded}
