@@ -62,6 +62,14 @@
 		attendedIds = new Set(attendedIds); // trigger reactivity
 	}
 
+	function selectAll() {
+		attendedIds = new Set(event?.rsvps.map(r => r.person_id) || []);
+	}
+
+	function selectNone() {
+		attendedIds = new Set();
+	}
+
 	async function saveAttendance() {
 		savingAttendance = true;
 		try {
@@ -207,7 +215,14 @@
 		<!-- Leader: Attendance Sheet -->
 		{#if event.rsvps.length > 0}
 			<div class="bg-white rounded-lg border border-gray-200 p-4">
-				<h3 class="text-sm font-medium text-gray-900 mb-3">Take Attendance</h3>
+				<div class="flex items-center justify-between mb-3">
+					<h3 class="text-sm font-medium text-gray-900">Take Attendance</h3>
+					<div class="flex items-center gap-2">
+						<span class="text-xs text-gray-400">{attendedIds.size} of {event.rsvps.length} selected</span>
+						<button onclick={selectAll} class="text-xs font-medium text-orange-600 hover:text-orange-700">All</button>
+						<button onclick={selectNone} class="text-xs font-medium text-gray-400 hover:text-gray-600">None</button>
+					</div>
+				</div>
 				<div class="divide-y divide-gray-50">
 					{#each event.rsvps as rsvp (rsvp.person_id)}
 						<label class="flex items-center gap-3 py-2 cursor-pointer">
