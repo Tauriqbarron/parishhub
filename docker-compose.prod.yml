@@ -57,6 +57,16 @@ services:
     networks:
       - parish-network
 
+  ministries-frontend:
+    build: ./ministries-frontend
+    restart: unless-stopped
+    environment:
+      - PUBLIC_API_URL=https://api.${DOMAIN_NAME}
+    depends_on:
+      - backend
+    networks:
+      - parish-network
+
   nginx:
     image: nginx:1.25-alpine
     restart: unless-stopped
@@ -68,6 +78,7 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
     depends_on:
       - frontend
+      - ministries-frontend
       - backend
     networks:
       - parish-network
