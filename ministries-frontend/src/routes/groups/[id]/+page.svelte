@@ -19,6 +19,13 @@
 	let error = $state('');
 	let activeTab = $state<'members' | 'events'>('members');
 
+$effect(() => {
+	const tab = $page.url.searchParams.get('tab');
+	if (tab === 'members' || tab === 'events') {
+		activeTab = tab;
+	}
+});
+
 	// Add member form
 	let showAddMember = $state(false);
 	let searchQuery = $state('');

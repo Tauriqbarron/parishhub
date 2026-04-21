@@ -1040,3 +1040,32 @@ export const ministryApi = {
 	getAttendance: (ministryId: number, eventId: number) =>
 		api.get<AttendanceRecord[]>(`/ministries/${ministryId}/events/${eventId}/attendance`)
 };
+
+// Calendar types and API
+export interface CalendarEvent {
+	id: number;
+	ministry_id: number;
+	ministry_name: string;
+	title: string;
+	description: string | null;
+	event_date: string;
+	location: string | null;
+	start_time: string | null;
+	end_time: string | null;
+	event_type: string;
+	capacity: number | null;
+	is_cancelled: boolean;
+	rsvp_count: number;
+	spots_remaining: number | null;
+}
+
+export const calendarApi = {
+	listEvents: (filters: { date_from?: string; date_to?: string; ministry_id?: number } = {}) => {
+		const params = new URLSearchParams();
+		if (filters.date_from) params.set('date_from', filters.date_from);
+		if (filters.date_to) params.set('date_to', filters.date_to);
+		if (filters.ministry_id) params.set('ministry_id', String(filters.ministry_id));
+		const qs = params.toString();
+		return api.get<CalendarEvent[]>(`/events${qs ? `?${qs}` : ''}`);
+	}
+};

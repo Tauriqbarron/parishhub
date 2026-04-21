@@ -13,6 +13,7 @@ from app.limiter import limiter
 from app.schemas.ministry import (
     AttendanceBatchCreate,
     AttendanceResponse,
+    CalendarEventResponse,
     LeaderInfo,
     MinistryCreate,
     MinistryDetailResponse,
@@ -134,6 +135,10 @@ async def get_ministry(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ministry not found")
     resp = MinistryDetailResponse.model_validate(ministry)
     resp.member_count = len(ministry.members) if ministry.members else 0
+    # Populate person_name on members from loaded relationship
+    for i, member in enumerate(ministry.members):
+        if member.person:
+            resp.members[i].person_name = f"{member.person.first_name} {member.person.last_name}"
     if ministry.leader:
         resp.leader = LeaderInfo(
             id=ministry.leader.id,
@@ -397,5 +402,34 @@ async def get_person_ministries(
         resp = MinistryMemberResponse.model_validate(m)
         if m.ministry:
             resp.person_name = m.ministry.name
+        results.append(resp)
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Calendar — cross-ministry events
+# ---------------------------------------------------------------------------
+calendar_router = APIRouter(prefix="/api", tags=["calendar"])
+
+
+@calendar_router.get(
+    "/events",
+    response_model=list[CalendarEventResponse],
+    summary="List all events across ministries (for calendar view)",
+)
+@limiter.limit("60/minute")
+async def list_all_events(
+    request: Request,
+    service: Annotated[MinistryService, Depends(get_ministry_service)],
+    user: Annotated[User, Depends(require_auth)],
+    date_from: Annotated[Optional[date], Query()] = None,
+    date_to: Annotated[Optional[date], Query()] = None,
+    ministry_id: Annotated[Optional[int], Query()] = None,
+) -> list[CalendarEventResponse]:
+    rows = service.list_all_events(date_from, date_to, ministry_id)
+    results = []
+    for event, ministry_name in rows:
+        resp = CalendarEventResponse.model_validate(event)
+        resp.ministry_name = ministry_name
         results.append(resp)
     return results

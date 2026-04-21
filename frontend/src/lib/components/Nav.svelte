@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { tick } from 'svelte';
-	import { Home, Users, Building2, BarChart3, ClipboardCheck, Settings, X, Heart } from 'lucide-svelte';
+	import { Home, Users, Building2, BarChart3, ClipboardCheck, Settings, X, Heart, Calendar } from 'lucide-svelte';
 	import Logo from './Logo.svelte';
 
 	type IconComponent = typeof Home;
@@ -52,6 +52,7 @@
 		{ href: '/people', label: 'People', icon: Users },
 		{ href: '/households', label: 'Households', icon: Building2 },
 		{ href: '/ministries', label: 'Ministries', icon: Heart },
+		{ href: '/calendar', label: 'Calendar', icon: Calendar },
 		{ href: '/analytics', label: 'Analytics', icon: BarChart3 },
 		{ href: '/analytics/attendance', label: 'Attendance', icon: ClipboardCheck },
 		{ href: '/settings', label: 'Settings', icon: Settings }

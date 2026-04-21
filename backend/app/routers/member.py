@@ -445,6 +445,111 @@ async def create_ministry_event(
     }
 
 
+class UpdateEventRequest(BaseModel):
+    title: str | None = None
+    description: str | None = None
+    event_date: date | None = None
+    location: str | None = None
+    start_time: str | None = None
+    end_time: str | None = None
+    event_type: str | None = None
+    capacity: int | None = None
+    recurrence_rule: str | None = None
+    recurrence_end: date | None = None
+    is_cancelled: bool | None = None
+
+
+@router.put("/events/{event_id}")
+@limiter.limit("30/minute")
+async def update_ministry_event(
+    request: Request,
+    event_id: int,
+    body: UpdateEventRequest,
+    member: Annotated[MemberUser, Depends(require_member)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """Leader updates an event."""
+    from app.models.ministry import MinistryEvent
+
+    event = db.get(MinistryEvent, event_id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    # Check user is leader of this ministry
+    user_roles_for_ministry = [
+        r for r in member.roles if r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin")
+    ]
+    if not user_roles_for_ministry:
+        raise HTTPException(status_code=403, detail="Only leaders can edit events")
+
+    update_data = body.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(event, field, value)
+
+    AuditService(db).log_update(
+        resource_type="ministry_event",
+        resource_id=event_id,
+        new_values=update_data,
+        user_email=member.email,
+        description=f"Updated event '{event.title}'",
+    )
+
+    db.commit()
+    db.refresh(event)
+
+    return {
+        "id": event.id,
+        "title": event.title,
+        "description": event.description,
+        "event_date": event.event_date.isoformat(),
+        "location": event.location,
+        "start_time": event.start_time,
+        "end_time": event.end_time,
+        "event_type": event.event_type,
+        "capacity": event.capacity,
+        "recurrence_rule": event.recurrence_rule,
+        "recurrence_end": event.recurrence_end.isoformat() if event.recurrence_end else None,
+        "is_cancelled": event.is_cancelled,
+        "attendance_count": len(event.attendance),
+    }
+
+
+@router.delete("/events/{event_id}")
+@limiter.limit("30/minute")
+async def delete_ministry_event(
+    request: Request,
+    event_id: int,
+    member: Annotated[MemberUser, Depends(require_member)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """Leader deletes an event."""
+    from app.models.ministry import MinistryEvent
+
+    event = db.get(MinistryEvent, event_id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    # Check user is leader of this ministry
+    user_roles_for_ministry = [
+        r for r in member.roles if r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin")
+    ]
+    if not user_roles_for_ministry:
+        raise HTTPException(status_code=403, detail="Only leaders can delete events")
+
+    AuditService(db).log_delete(
+        resource_type="ministry_event",
+        resource_id=event_id,
+        old_values={"title": event.title, "event_date": event.event_date.isoformat()},
+        user_email=member.email,
+        description=f"Deleted event '{event.title}'",
+    )
+
+    db.delete(event)
+    db.commit()
+
+    return {"deleted": True}
+
+
 @router.get("/persons/search")
 @limiter.limit("30/minute")
 async def search_persons(

@@ -115,6 +115,15 @@ class MinistryRepository(ABC):
         self, email: str, ministry_id: int
     ) -> Optional[UserRole]: ...
 
+    # --- Cross-ministry events (for calendar view) ---
+    @abstractmethod
+    def get_all_events(
+        self,
+        date_from: Optional[date] = None,
+        date_to: Optional[date] = None,
+        ministry_id: Optional[int] = None,
+    ) -> list[tuple[MinistryEvent, str]]: ...
+
     # --- Statistics ---
     @abstractmethod
     def get_statistics(self) -> dict[str, Any]: ...
@@ -344,6 +353,31 @@ class SqlAlchemyMinistryRepository(MinistryRepository):
         )
         return self.db.execute(stmt).scalar_one_or_none()
 
+    # --- Cross-ministry events (for calendar view) ---
+    def get_all_events(
+        self,
+        date_from: Optional[date] = None,
+        date_to: Optional[date] = None,
+        ministry_id: Optional[int] = None,
+    ) -> list[tuple[MinistryEvent, str]]:
+        stmt = (
+            select(MinistryEvent, Ministry.name)
+            .join(Ministry, MinistryEvent.ministry_id == Ministry.id)
+            .where(
+                Ministry.is_active.is_(True),
+                MinistryEvent.is_cancelled.is_(False),
+            )
+            .order_by(MinistryEvent.event_date)
+        )
+        if date_from:
+            stmt = stmt.where(MinistryEvent.event_date >= date_from)
+        if date_to:
+            stmt = stmt.where(MinistryEvent.event_date <= date_to)
+        if ministry_id:
+            stmt = stmt.where(MinistryEvent.ministry_id == ministry_id)
+        rows = self.db.execute(stmt).all()
+        return [(event, ministry_name) for event, ministry_name in rows]
+
     # --- Statistics ---
     def get_statistics(self) -> dict[str, Any]:
         total = self.db.execute(
@@ -527,6 +561,28 @@ class FakeMinistryRepository(MinistryRepository):
             if r.user_email == email and r.ministry_id == ministry_id:
                 return r
         return None
+
+    # --- Cross-ministry events (for calendar view) ---
+    def get_all_events(
+        self,
+        date_from: Optional[date] = None,
+        date_to: Optional[date] = None,
+        ministry_id: Optional[int] = None,
+    ) -> list[tuple[MinistryEvent, str]]:
+        results = []
+        for e in self._events.values():
+            m = self._ministries.get(e.ministry_id)
+            if not m or not m.is_active or e.is_cancelled:
+                continue
+            if date_from and e.event_date < date_from:
+                continue
+            if date_to and e.event_date > date_to:
+                continue
+            if ministry_id and e.ministry_id != ministry_id:
+                continue
+            results.append((e, m.name))
+        results.sort(key=lambda x: x[0].event_date)
+        return results
 
     # --- Statistics ---
     def get_statistics(self) -> dict[str, Any]:

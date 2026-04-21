@@ -153,6 +153,15 @@ class MinistryService:
     def add_member(self, data: MinistryMemberCreate) -> MinistryMember:
         self._validate_person_exists(data.person_id)
         self._validate_not_duplicate_member(data.ministry_id, data.person_id)
+
+        # Auto-assign role: first person = leader, everyone after = co-leader
+        existing_members = self.repo.get_members(data.ministry_id)
+        has_leader = any(m.role == "leader" for m in existing_members)
+        if has_leader:
+            data.role = "co-leader"
+        else:
+            data.role = "leader"
+
         member = self.repo.add_member(data)
         logger.info(
             "ministry_member_added: ministry_id=%s person_id=%s",
@@ -205,6 +214,17 @@ class MinistryService:
         if result:
             logger.info("ministry_event_deleted: event_id=%s", event_id)
         return result
+
+    # -----------------------------------------------------------------
+    # Cross-ministry events (calendar)
+    # -----------------------------------------------------------------
+    def list_all_events(
+        self,
+        date_from: Optional[date] = None,
+        date_to: Optional[date] = None,
+        ministry_id: Optional[int] = None,
+    ) -> list[tuple[MinistryEvent, str]]:
+        return self.repo.get_all_events(date_from, date_to, ministry_id)
 
     # -----------------------------------------------------------------
     # Attendance

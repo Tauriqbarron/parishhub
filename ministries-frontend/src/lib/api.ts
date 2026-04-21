@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = '/api';
 
 function getToken(): string | null {
 	if (typeof window === 'undefined') return null;
@@ -196,5 +196,19 @@ export const memberApi = {
 		request<MinistryEvent>(`/member/ministries/${ministryId}/events`, {
 			method: 'POST',
 			body: JSON.stringify(data)
+		}),
+
+	updateEvent: (
+		eventId: number,
+		data: { title?: string; description?: string; event_date?: string; location?: string; start_time?: string; end_time?: string; event_type?: string; capacity?: number; recurrence_rule?: string; recurrence_end?: string; is_cancelled?: boolean }
+	) =>
+		request<MinistryEvent>(`/member/events/${eventId}`, {
+			method: 'PUT',
+			body: JSON.stringify(data)
+		}),
+
+	deleteEvent: (eventId: number) =>
+		request<{ deleted: boolean }>(`/member/events/${eventId}`, {
+			method: 'DELETE'
 		})
 };

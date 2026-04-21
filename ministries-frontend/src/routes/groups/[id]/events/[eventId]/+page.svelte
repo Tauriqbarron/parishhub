@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { memberApi, type EventDetail } from '$lib/api';
-	import { ArrowLeft, Calendar, Clock, MapPin, Users, Shield, Check } from 'lucide-svelte';
+	import { ArrowLeft, Calendar, Clock, MapPin, Users, Shield, Check, Edit3, Trash2, X } from 'lucide-svelte';
 
 	let event = $state<EventDetail | null>(null);
 	let loading = $state(true);
@@ -10,6 +10,22 @@
 	let rsvping = $state(false);
 	let savingAttendance = $state(false);
 	let attendedIds = $state<Set<number>>(new Set());
+
+	// Edit state
+	let isEditing = $state(false);
+	let saving = $state(false);
+	let editTitle = $state('');
+	let editDescription = $state('');
+	let editDate = $state('');
+	let editLocation = $state('');
+	let editStartTime = $state('');
+	let editEndTime = $state('');
+	let editEventType = $state('other');
+	let editCapacity = $state('');
+
+	// Delete state
+	let showDeleteConfirm = $state(false);
+	let deleting = $state(false);
 
 	const eventId = $derived(Number($page.params.eventId));
 	const ministryId = $derived(Number($page.params.id));
@@ -21,7 +37,6 @@
 		loading = true;
 		try {
 			event = await memberApi.eventDetail(eventId);
-			// Initialize attendedIds from existing attendance
 			attendedIds = new Set(
 				event.attendance.filter(a => a.attended).map(a => a.person_id)
 			);
@@ -35,6 +50,58 @@
 	$effect(() => {
 		if (eventId) loadEvent();
 	});
+
+	function startEditing() {
+		if (!event) return;
+		editTitle = event.title;
+		editDescription = event.description || '';
+		editDate = event.event_date;
+		editLocation = event.location || '';
+		editStartTime = event.start_time || '';
+		editEndTime = event.end_time || '';
+		editEventType = event.event_type;
+		editCapacity = event.capacity ? String(event.capacity) : '';
+		isEditing = true;
+	}
+
+	function cancelEditing() {
+		isEditing = false;
+	}
+
+	async function saveEdit() {
+		if (!editTitle.trim() || !editDate) return;
+		saving = true;
+		try {
+			await memberApi.updateEvent(eventId, {
+				title: editTitle.trim(),
+				description: editDescription.trim() || undefined,
+				event_date: editDate,
+				location: editLocation.trim() || undefined,
+				start_time: editStartTime || undefined,
+				end_time: editEndTime || undefined,
+				event_type: editEventType,
+				capacity: editCapacity ? Number(editCapacity) : undefined
+			});
+			isEditing = false;
+			await loadEvent();
+		} catch (err) {
+			alert(err instanceof Error ? err.message : 'Failed to save changes');
+		} finally {
+			saving = false;
+		}
+	}
+
+	async function handleDelete() {
+		deleting = true;
+		try {
+			await memberApi.deleteEvent(eventId);
+			goto(`/groups/${ministryId}?tab=events`);
+		} catch (err) {
+			alert(err instanceof Error ? err.message : 'Failed to delete event');
+			showDeleteConfirm = false;
+			deleting = false;
+		}
+	}
 
 	async function handleRsvp(status: string) {
 		if (rsvping) return;
@@ -59,7 +126,7 @@
 		} else {
 			attendedIds.add(personId);
 		}
-		attendedIds = new Set(attendedIds); // trigger reactivity
+		attendedIds = new Set(attendedIds);
 	}
 
 	function selectAll() {
@@ -115,18 +182,9 @@
 			<div class="h-6 bg-gray-100 rounded w-48"></div>
 		</div>
 		<div class="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
-			<div class="flex items-center gap-2">
-				<div class="h-4 w-4 bg-gray-100 rounded"></div>
-				<div class="h-4 bg-gray-100 rounded w-40"></div>
-			</div>
-			<div class="flex items-center gap-2">
-				<div class="h-4 w-4 bg-gray-100 rounded"></div>
-				<div class="h-4 bg-gray-100 rounded w-28"></div>
-			</div>
-			<div class="flex items-center gap-2">
-				<div class="h-4 w-4 bg-gray-100 rounded"></div>
-				<div class="h-4 bg-gray-100 rounded w-32"></div>
-			</div>
+			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-gray-100 rounded"></div><div class="h-4 bg-gray-100 rounded w-40"></div></div>
+			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-gray-100 rounded"></div><div class="h-4 bg-gray-100 rounded w-28"></div></div>
+			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-gray-100 rounded"></div><div class="h-4 bg-gray-100 rounded w-32"></div></div>
 		</div>
 		<div class="bg-white rounded-lg border border-gray-200 p-4">
 			<div class="h-4 bg-gray-100 rounded w-12 mb-3"></div>
@@ -147,122 +205,207 @@
 			<ArrowLeft class="w-4 h-4" /> Group
 		</a>
 
-		<!-- Header -->
-		<div class="mb-4">
-			<div class="flex items-center gap-2 mb-1">
-				<span class="inline-block px-2 py-0.5 text-xs font-medium rounded {typeColors[event.event_type] || typeColors.other}">
-					{event.event_type}
-				</span>
-				{#if event.is_cancelled}
-					<span class="text-xs text-red-500 font-medium">Cancelled</span>
+		{#if isEditing}
+			<!-- Edit Form -->
+			<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+				<div class="flex items-center justify-between mb-3">
+					<h3 class="text-sm font-medium text-gray-900">Edit Event</h3>
+					<button onclick={cancelEditing} class="text-gray-400 hover:text-gray-600">
+						<X class="w-4 h-4" />
+					</button>
+				</div>
+				<div class="space-y-2">
+					<input type="text" bind:value={editTitle} placeholder="Event title"
+						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+					<input type="date" bind:value={editDate}
+						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+					<input type="text" bind:value={editLocation} placeholder="Location (optional)"
+						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+					<textarea bind:value={editDescription} placeholder="Description (optional)" rows={2}
+						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none resize-none"></textarea>
+					<select bind:value={editEventType}
+						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none">
+						<option value="other">Other</option>
+						<option value="service">Service</option>
+						<option value="meeting">Meeting</option>
+						<option value="social">Social</option>
+						<option value="outreach">Outreach</option>
+					</select>
+					<div class="flex gap-2">
+						<input type="time" bind:value={editStartTime} placeholder="Start time"
+							class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+						<input type="time" bind:value={editEndTime} placeholder="End time"
+							class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+					</div>
+					<input type="number" bind:value={editCapacity} placeholder="Capacity (optional)" min="1"
+						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+					<div class="flex items-center gap-2 pt-1">
+						<button onclick={saveEdit} disabled={saving || !editTitle.trim() || !editDate}
+							class="px-3 py-1.5 text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 disabled:opacity-50">
+							{saving ? 'Saving...' : 'Save'}
+						</button>
+						<button onclick={cancelEditing}
+							class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700">
+							Cancel
+						</button>
+					</div>
+				</div>
+			</div>
+		{:else}
+			<!-- Header -->
+			<div class="mb-4">
+				<div class="flex items-center justify-between">
+					<div>
+						<div class="flex items-center gap-2 mb-1">
+							<span class="inline-block px-2 py-0.5 text-xs font-medium rounded {typeColors[event.event_type] || typeColors.other}">
+								{event.event_type}
+							</span>
+							{#if event.is_cancelled}
+								<span class="text-xs text-red-500 font-medium">Cancelled</span>
+							{/if}
+						</div>
+						<h1 class="text-xl font-semibold text-gray-900">{event.title}</h1>
+						{#if event.description}
+							<p class="mt-1 text-sm text-gray-500">{event.description}</p>
+						{/if}
+					</div>
+					{#if isLeader}
+						<div class="flex items-center gap-1">
+							<button onclick={startEditing} title="Edit event"
+								class="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors">
+								<Edit3 class="w-4 h-4" />
+							</button>
+							<button onclick={() => (showDeleteConfirm = true)} title="Delete event"
+								class="p-2 text-gray-400 hover:text-red-500 rounded-md hover:bg-red-50 transition-colors">
+								<Trash2 class="w-4 h-4" />
+							</button>
+						</div>
+					{/if}
+				</div>
+			</div>
+
+			<!-- Event Info Card -->
+			<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4 space-y-2">
+				<div class="flex items-center gap-2 text-sm text-gray-600">
+					<Calendar class="w-4 h-4 text-gray-400" />
+					{formatDate(event.event_date)}
+				</div>
+				{#if event.start_time}
+					<div class="flex items-center gap-2 text-sm text-gray-600">
+						<Clock class="w-4 h-4 text-gray-400" />
+						{formatTime(event.start_time)}{event.end_time ? ' – ' + formatTime(event.end_time) : ''}
+					</div>
+				{/if}
+				{#if event.location}
+					<div class="flex items-center gap-2 text-sm text-gray-600">
+						<MapPin class="w-4 h-4 text-gray-400" />
+						{event.location}
+					</div>
+				{/if}
+				{#if event.capacity}
+					<div class="mt-2">
+						<div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+							<div class="h-full bg-orange-500 rounded-full transition-all"
+								style="width: {Math.min(100, (event.rsvp_count / event.capacity) * 100)}%"></div>
+						</div>
+						<p class="mt-1 text-xs text-gray-400">
+							{event.rsvp_count} / {event.capacity} spots filled
+							{#if event.spots_remaining !== null && event.spots_remaining > 0}
+								· {event.spots_remaining} left
+							{:else if event.spots_remaining === 0}
+								· <span class="text-red-500">Full</span>
+							{/if}
+						</p>
+					</div>
 				{/if}
 			</div>
-			<h1 class="text-xl font-semibold text-gray-900">{event.title}</h1>
-			{#if event.description}
-				<p class="mt-1 text-sm text-gray-500">{event.description}</p>
-			{/if}
-		</div>
 
-		<!-- Event Info Card -->
-		<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4 space-y-2">
-			<div class="flex items-center gap-2 text-sm text-gray-600">
-				<Calendar class="w-4 h-4 text-gray-400" />
-				{formatDate(event.event_date)}
-			</div>
-			{#if event.start_time}
-				<div class="flex items-center gap-2 text-sm text-gray-600">
-					<Clock class="w-4 h-4 text-gray-400" />
-					{formatTime(event.start_time)}{event.end_time ? ' – ' + formatTime(event.end_time) : ''}
-				</div>
-			{/if}
-			{#if event.location}
-				<div class="flex items-center gap-2 text-sm text-gray-600">
-					<MapPin class="w-4 h-4 text-gray-400" />
-					{event.location}
-				</div>
-			{/if}
-			{#if event.capacity}
-				<div class="mt-2">
-					<div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-						<div class="h-full bg-orange-500 rounded-full transition-all"
-							 style="width: {Math.min(100, (event.rsvp_count / event.capacity) * 100)}%"></div>
-					</div>
-					<p class="mt-1 text-xs text-gray-400">
-						{event.rsvp_count} / {event.capacity} spots filled
-						{#if event.spots_remaining !== null && event.spots_remaining > 0}
-							· {event.spots_remaining} left
-						{:else if event.spots_remaining === 0}
-							· <span class="text-red-500">Full</span>
-						{/if}
-					</p>
-				</div>
-			{/if}
-		</div>
-
-		<!-- RSVP Section -->
-		<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-			<h3 class="text-sm font-medium text-gray-900 mb-3">RSVP</h3>
-			<div class="flex gap-2">
-				<button onclick={() => handleRsvp('going')} disabled={rsvping}
-					class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
-						{event.user_rsvp === 'going' ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-green-50'}">
-					Going
-				</button>
-				<button onclick={() => handleRsvp('maybe')} disabled={rsvping}
-					class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
-						{event.user_rsvp === 'maybe' ? 'bg-yellow-100 text-yellow-700 border border-yellow-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-yellow-50'}">
-					Maybe
-				</button>
-				<button onclick={() => handleRsvp('not_going')} disabled={rsvping}
-					class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
-						{event.user_rsvp === 'not_going' ? 'bg-red-100 text-red-700 border border-red-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-red-50'}">
-					Can't Go
-				</button>
-			</div>
-			{#if !event.capacity}
-				<p class="mt-2 text-xs text-gray-400">{event.rsvp_count} people going</p>
-			{/if}
-		</div>
-
-		<!-- Leader: RSVP Summary -->
-		{#if event.rsvps.length > 0 || isLeader}
+			<!-- RSVP Section -->
 			<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-				<h3 class="text-sm font-medium text-gray-900 mb-2">Responses</h3>
-				<div class="flex gap-4 text-sm">
-					<span class="text-green-600">{event.rsvp_summary.going} going</span>
-					<span class="text-yellow-600">{event.rsvp_summary.maybe} maybe</span>
-					<span class="text-gray-400">{event.rsvp_summary.not_going} can't go</span>
+				<h3 class="text-sm font-medium text-gray-900 mb-3">RSVP</h3>
+				<div class="flex gap-2">
+					<button onclick={() => handleRsvp('going')} disabled={rsvping}
+						class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
+							{event.user_rsvp === 'going' ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-green-50'}">
+						Going
+					</button>
+					<button onclick={() => handleRsvp('maybe')} disabled={rsvping}
+						class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
+							{event.user_rsvp === 'maybe' ? 'bg-yellow-100 text-yellow-700 border border-yellow-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-yellow-50'}">
+						Maybe
+					</button>
+					<button onclick={() => handleRsvp('not_going')} disabled={rsvping}
+						class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
+							{event.user_rsvp === 'not_going' ? 'bg-red-100 text-red-700 border border-red-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-red-50'}">
+						Can't Go
+					</button>
 				</div>
+				{#if !event.capacity}
+					<p class="mt-2 text-xs text-gray-400">{event.rsvp_count} people going</p>
+				{/if}
 			</div>
+
+			<!-- Leader: RSVP Summary -->
+			{#if event.rsvps.length > 0 || isLeader}
+				<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+					<h3 class="text-sm font-medium text-gray-900 mb-2">Responses</h3>
+					<div class="flex gap-4 text-sm">
+						<span class="text-green-600">{event.rsvp_summary.going} going</span>
+						<span class="text-yellow-600">{event.rsvp_summary.maybe} maybe</span>
+						<span class="text-gray-400">{event.rsvp_summary.not_going} can't go</span>
+					</div>
+				</div>
+			{/if}
+
+			<!-- Leader: Attendance Sheet -->
+			{#if event.rsvps.length > 0}
+				<div class="bg-white rounded-lg border border-gray-200 p-4">
+					<div class="flex items-center justify-between mb-3">
+						<h3 class="text-sm font-medium text-gray-900">Take Attendance</h3>
+						<div class="flex items-center gap-2">
+							<span class="text-xs text-gray-400">{attendedIds.size} of {event.rsvps.length} selected</span>
+							<button onclick={selectAll} class="text-xs font-medium text-orange-600 hover:text-orange-700">All</button>
+							<button onclick={selectNone} class="text-xs font-medium text-gray-400 hover:text-gray-600">None</button>
+						</div>
+					</div>
+					<div class="divide-y divide-gray-50">
+						{#each event.rsvps as rsvp (rsvp.person_id)}
+							<label class="flex items-center gap-3 py-2 cursor-pointer">
+								<input type="checkbox"
+									checked={attendedIds.has(rsvp.person_id)}
+									onchange={() => toggleAttendance(rsvp.person_id)}
+									class="rounded border-gray-300 text-orange-600 focus:ring-orange-500" />
+								<span class="text-sm text-gray-900">{rsvp.person_name || `Person #${rsvp.person_id}`}</span>
+								<span class="text-xs text-gray-400 ml-auto">{rsvp.status}</span>
+							</label>
+						{/each}
+					</div>
+					<button onclick={saveAttendance} disabled={savingAttendance}
+						class="mt-3 px-4 py-1.5 text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 disabled:opacity-50">
+						{savingAttendance ? 'Saving...' : 'Save Attendance'}
+					</button>
+				</div>
+			{/if}
 		{/if}
 
-		<!-- Leader: Attendance Sheet -->
-		{#if event.rsvps.length > 0}
-			<div class="bg-white rounded-lg border border-gray-200 p-4">
-				<div class="flex items-center justify-between mb-3">
-					<h3 class="text-sm font-medium text-gray-900">Take Attendance</h3>
-					<div class="flex items-center gap-2">
-						<span class="text-xs text-gray-400">{attendedIds.size} of {event.rsvps.length} selected</span>
-						<button onclick={selectAll} class="text-xs font-medium text-orange-600 hover:text-orange-700">All</button>
-						<button onclick={selectNone} class="text-xs font-medium text-gray-400 hover:text-gray-600">None</button>
+		<!-- Delete Confirmation Modal -->
+		{#if showDeleteConfirm}
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onclick={() => (showDeleteConfirm = false)} onkeydown={(e) => e.key === 'Escape' && (showDeleteConfirm = false)} role="dialog" aria-modal="true" tabindex="-1">
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full mx-4" onclick={(e) => e.stopPropagation()}>
+					<h3 class="text-lg font-medium text-gray-900">Delete Event</h3>
+					<p class="mt-2 text-sm text-gray-500">
+						Delete <strong>{event.title}</strong>? This will remove all RSVPs and attendance records. Cannot be undone.
+					</p>
+					<div class="mt-4 flex items-center gap-3 justify-end">
+						<button onclick={() => (showDeleteConfirm = false)} class="px-4 py-2 text-sm text-gray-500">Cancel</button>
+						<button onclick={handleDelete} disabled={deleting}
+							class="px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 disabled:opacity-50">
+							{deleting ? 'Deleting...' : 'Delete'}
+						</button>
 					</div>
 				</div>
-				<div class="divide-y divide-gray-50">
-					{#each event.rsvps as rsvp (rsvp.person_id)}
-						<label class="flex items-center gap-3 py-2 cursor-pointer">
-							<input type="checkbox"
-								checked={attendedIds.has(rsvp.person_id)}
-								onchange={() => toggleAttendance(rsvp.person_id)}
-								class="rounded border-gray-300 text-orange-600 focus:ring-orange-500" />
-							<span class="text-sm text-gray-900">{rsvp.person_name || `Person #${rsvp.person_id}`}</span>
-							<span class="text-xs text-gray-400 ml-auto">{rsvp.status}</span>
-						</label>
-					{/each}
-				</div>
-				<button onclick={saveAttendance} disabled={savingAttendance}
-					class="mt-3 px-4 py-1.5 text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 disabled:opacity-50">
-					{savingAttendance ? 'Saving...' : 'Save Attendance'}
-				</button>
 			</div>
 		{/if}
 	{/if}

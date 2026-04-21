@@ -141,6 +141,26 @@ class AttendanceResponse(BaseModel):
 # ---------------------------------------------------------------------------
 # RSVP
 # ---------------------------------------------------------------------------
+class CalendarEventResponse(BaseModel):
+    """Event response with ministry name for cross-ministry calendar view."""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    ministry_id: int
+    ministry_name: str = ""
+    title: str
+    description: Optional[str] = None
+    event_date: date
+    location: Optional[str] = None
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
+    event_type: str = "other"
+    capacity: Optional[int] = None
+    is_cancelled: bool = False
+    rsvp_count: int = 0
+    spots_remaining: Optional[int] = None
+
+
 class EventRSVPCreate(BaseModel):
     status: str  # going, not_going, maybe
 

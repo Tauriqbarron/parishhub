@@ -81,9 +81,13 @@ setup_logging()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Add request ID middleware (runs first, before everything else)
+# Add request ID middleware (innermost — runs after CORS and security headers)
 app.add_middleware(RequestContextMiddleware)
 
+# Security headers middleware
+app.add_middleware(SecurityHeadersMiddleware)
+
+# CORS middleware (outermost — must run FIRST to handle preflight OPTIONS before anything else)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -91,9 +95,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-User-Email", "X-User-Name"],
 )
-
-# Security headers middleware
-app.add_middleware(SecurityHeadersMiddleware)
 
 # Include routers
 app.include_router(persons.router)
@@ -115,6 +116,7 @@ app.include_router(registration.url_router)
 app.include_router(addresses.router)
 app.include_router(ministries.router)
 app.include_router(ministries.persons_router)
+app.include_router(ministries.calendar_router)
 app.include_router(member_auth.router)
 app.include_router(member.router)
 
