@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from datetime import date
 from typing import Any, Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.ministry import (
@@ -360,6 +360,8 @@ class SqlAlchemyMinistryRepository(MinistryRepository):
         date_to: Optional[date] = None,
         ministry_id: Optional[int] = None,
     ) -> list[tuple[MinistryEvent, str]]:
+        from sqlalchemy import or_
+
         stmt = (
             select(MinistryEvent, Ministry.name)
             .join(Ministry, MinistryEvent.ministry_id == Ministry.id)
@@ -369,10 +371,37 @@ class SqlAlchemyMinistryRepository(MinistryRepository):
             )
             .order_by(MinistryEvent.event_date)
         )
-        if date_from:
-            stmt = stmt.where(MinistryEvent.event_date >= date_from)
-        if date_to:
-            stmt = stmt.where(MinistryEvent.event_date <= date_to)
+        if date_from and date_to:
+            # Non-recurring: event_date within range
+            # Recurring: event_date before range end AND (no end or end after range start)
+            stmt = stmt.where(
+                or_(
+                    # Non-recurring events in range
+                    and_(
+                        MinistryEvent.event_date >= date_from,
+                        MinistryEvent.event_date <= date_to,
+                        or_(
+                            MinistryEvent.recurrence_rule.is_(None),
+                            MinistryEvent.recurrence_rule == "none",
+                        ),
+                    ),
+                    # Recurring events that could have occurrences in range
+                    and_(
+                        MinistryEvent.event_date <= date_to,
+                        MinistryEvent.recurrence_rule.isnot(None),
+                        MinistryEvent.recurrence_rule != "none",
+                        or_(
+                            MinistryEvent.recurrence_end.is_(None),
+                            MinistryEvent.recurrence_end >= date_from,
+                        ),
+                    ),
+                )
+            )
+        else:
+            if date_from:
+                stmt = stmt.where(MinistryEvent.event_date >= date_from)
+            if date_to:
+                stmt = stmt.where(MinistryEvent.event_date <= date_to)
         if ministry_id:
             stmt = stmt.where(MinistryEvent.ministry_id == ministry_id)
         rows = self.db.execute(stmt).all()

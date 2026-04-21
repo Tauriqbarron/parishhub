@@ -1,6 +1,6 @@
 """Service layer for Ministry operations (DIP compliant)."""
 
-from datetime import date
+from datetime import date, timedelta
 import logging
 from typing import Any, Optional
 
@@ -218,13 +218,109 @@ class MinistryService:
     # -----------------------------------------------------------------
     # Cross-ministry events (calendar)
     # -----------------------------------------------------------------
+    def _expand_recurring(
+        self,
+        event: MinistryEvent,
+        ministry_name: str,
+        date_from: date,
+        date_to: date,
+    ) -> list[tuple[MinistryEvent, str]]:
+        """Expand a recurring event into individual occurrences within [date_from, date_to].
+
+        Returns tuples of (event_copy, ministry_name) with event_date set to each
+        occurrence. The copy shares the same id — the frontend uses id + event_date
+        to deduplicate if needed.
+        """
+        if not event.recurrence_rule or event.recurrence_rule == "none":
+            return [(event, ministry_name)]
+
+        # Interval mapping
+        intervals = {
+            "weekly": timedelta(weeks=1),
+            "biweekly": timedelta(weeks=2),
+            "monthly": None,  # handled separately
+        }
+        interval = intervals.get(event.recurrence_rule)
+        if interval is None and event.recurrence_rule != "monthly":
+            return [(event, ministry_name)]
+
+        end = event.recurrence_end or (date_to + timedelta(days=365))
+        effective_end = min(end, date_to)
+
+        occurrences = []
+        current = event.event_date
+
+        # Fast-forward to the first occurrence on or after date_from
+        if interval:
+            if current < date_from:
+                delta = date_from - current
+                steps = delta // interval
+                current = current + (interval * steps)
+                # Ensure we don't skip past the first valid occurrence
+                while current < date_from:
+                    current = current + interval
+        else:
+            # Monthly: jump months
+            if current < date_from:
+                while current < date_from:
+                    year = current.year + (current.month // 12)
+                    month = (current.month % 12) + 1
+                    try:
+                        current = current.replace(year=year, month=month)
+                    except ValueError:
+                        # Day doesn't exist in target month (e.g. Jan 31 -> Feb 28)
+                        import calendar
+                        last_day = calendar.monthrange(year, month)[1]
+                        current = current.replace(year=year, month=month, day=last_day)
+
+        while current <= effective_end:
+            if current >= date_from:
+                # Create a shallow copy with the occurrence date
+                # We use a lightweight object instead of duplicating the SQLAlchemy model
+                from copy import copy
+                occ = copy(event)
+                occ.event_date = current
+                occurrences.append((occ, ministry_name))
+
+            if interval:
+                current = current + interval
+            else:
+                # Monthly
+                year = current.year + (current.month // 12)
+                month = (current.month % 12) + 1
+                try:
+                    current = current.replace(year=year, month=month)
+                except ValueError:
+                    import calendar
+                    last_day = calendar.monthrange(year, month)[1]
+                    current = current.replace(year=year, month=month, day=last_day)
+
+        return occurrences if occurrences else [(event, ministry_name)]
+
     def list_all_events(
         self,
         date_from: Optional[date] = None,
         date_to: Optional[date] = None,
         ministry_id: Optional[int] = None,
     ) -> list[tuple[MinistryEvent, str]]:
-        return self.repo.get_all_events(date_from, date_to, ministry_id)
+        rows = self.repo.get_all_events(date_from, date_to, ministry_id)
+
+        # If no date range requested, skip expansion
+        if not date_from or not date_to:
+            return rows
+
+        expanded = []
+        for event, ministry_name in rows:
+            if event.recurrence_rule and event.recurrence_rule != "none":
+                expanded.extend(
+                    self._expand_recurring(event, ministry_name, date_from, date_to)
+                )
+            else:
+                expanded.append((event, ministry_name))
+
+        # Sort by occurrence date
+        expanded.sort(key=lambda x: x[0].event_date)
+        return expanded
 
     # -----------------------------------------------------------------
     # Attendance
