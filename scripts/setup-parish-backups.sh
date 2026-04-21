@@ -16,7 +16,7 @@ DIR="$HOME/backups/parish-hub/daily"
 TS=$(date +%F)
 LOG="$HOME/backups/parish-hub/parish-hub-backup.log"
 mkdir -p "$DIR"
-docker exec parishhub-db-1 pg_dump -U postgres parish_db | gzip > "$DIR/parish_db_${TS}.sql.gz.tmp" && mv "$DIR/parish_db_${TS}.sql.gz.tmp" "$DIR/parish_db_${TS}.sql.gz"
+docker exec parishhub-db-1 pg_dump -U parish_user parish_db | gzip > "$DIR/parish_db_${TS}.sql.gz.tmp" && mv "$DIR/parish_db_${TS}.sql.gz.tmp" "$DIR/parish_db_${TS}.sql.gz"
 SIZE=$(stat -c%s "$DIR/parish_db_${TS}.sql.gz" 2>/dev/null || echo 0)
 [ "$SIZE" -lt 100 ] && echo "$(date) ERROR: too small ($SIZE bytes)" >> "$LOG" && exit 1
 echo "$(date) OK: Daily ($SIZE bytes)" >> "$LOG"
