@@ -1,6 +1,6 @@
 #!/bin/bash
 # Parish Hub — One-shot backup setup for ProDesk server
-# Run: curl -fsSL https://raw.githubusercontent.com/Tauriqbarron/parishhub/main/scripts/setup-parish-backups.sh | bash
+# Run: gh api repos/Tauriqbarron/parishhub/contents/scripts/setup-parish-backups.sh --jq .content | base64 -d | bash
 set -euo pipefail
 
 echo "=== Parish Hub Backup Setup ==="
@@ -16,7 +16,7 @@ DIR="$HOME/backups/parish-hub/daily"
 TS=$(date +%F)
 LOG="$HOME/backups/parish-hub/parish-hub-backup.log"
 mkdir -p "$DIR"
-docker exec parish-db pg_dump -U postgres parish_db | gzip > "$DIR/parish_db_${TS}.sql.gz.tmp" && mv "$DIR/parish_db_${TS}.sql.gz.tmp" "$DIR/parish_db_${TS}.sql.gz"
+docker exec parishhub-db-1 pg_dump -U postgres parish_db | gzip > "$DIR/parish_db_${TS}.sql.gz.tmp" && mv "$DIR/parish_db_${TS}.sql.gz.tmp" "$DIR/parish_db_${TS}.sql.gz"
 SIZE=$(stat -c%s "$DIR/parish_db_${TS}.sql.gz" 2>/dev/null || echo 0)
 [ "$SIZE" -lt 100 ] && echo "$(date) ERROR: too small ($SIZE bytes)" >> "$LOG" && exit 1
 echo "$(date) OK: Daily ($SIZE bytes)" >> "$LOG"
