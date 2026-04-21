@@ -43,6 +43,14 @@
 		);
 	}
 
+	function isPast(date: Date): boolean {
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+		const d = new Date(date);
+		d.setHours(0, 0, 0, 0);
+		return d < today;
+	}
+
 	interface CalendarDay {
 		date: Date;
 		dateKey: string;
@@ -111,6 +119,7 @@
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
 					class="min-h-[100px] md:min-h-[120px] p-1.5 text-left border-r border-brand-border last:border-r-0
+						{isPast(day.date) ? 'bg-brand-bg-subtle' : ''}
 						hover:bg-brand-bg-subtle transition-colors cursor-pointer focus-visible:outline-none
 						focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-inset"
 					role="button"
