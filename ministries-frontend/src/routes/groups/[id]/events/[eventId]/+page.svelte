@@ -165,66 +165,66 @@
 	}
 
 	const typeColors: Record<string, string> = {
-		service: 'bg-orange-50 text-orange-700',
+		service: 'bg-brand-accent-muted text-brand-accent',
 		meeting: 'bg-blue-50 text-blue-700',
 		social: 'bg-pink-50 text-pink-700',
 		outreach: 'bg-green-50 text-green-700',
-		other: 'bg-gray-50 text-gray-600'
+		other: 'bg-brand-bg-subtle text-brand-text-secondary'
 	};
 </script>
 
 <div>
 	{#if loading}
 	<div class="animate-pulse space-y-4">
-		<div class="h-4 bg-gray-100 rounded w-16"></div>
+		<div class="h-4 bg-brand-bg-muted rounded w-16"></div>
 		<div>
-			<div class="h-4 bg-gray-100 rounded w-14 mb-1"></div>
-			<div class="h-6 bg-gray-100 rounded w-48"></div>
+			<div class="h-4 bg-brand-bg-muted rounded w-14 mb-1"></div>
+			<div class="h-6 bg-brand-bg-muted rounded w-48"></div>
 		</div>
-		<div class="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
-			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-gray-100 rounded"></div><div class="h-4 bg-gray-100 rounded w-40"></div></div>
-			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-gray-100 rounded"></div><div class="h-4 bg-gray-100 rounded w-28"></div></div>
-			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-gray-100 rounded"></div><div class="h-4 bg-gray-100 rounded w-32"></div></div>
+		<div class="bg-white rounded-lg border border-brand-border p-4 space-y-3">
+			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-brand-bg-muted rounded"></div><div class="h-4 bg-brand-bg-muted rounded w-40"></div></div>
+			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-brand-bg-muted rounded"></div><div class="h-4 bg-brand-bg-muted rounded w-28"></div></div>
+			<div class="flex items-center gap-2"><div class="h-4 w-4 bg-brand-bg-muted rounded"></div><div class="h-4 bg-brand-bg-muted rounded w-32"></div></div>
 		</div>
-		<div class="bg-white rounded-lg border border-gray-200 p-4">
-			<div class="h-4 bg-gray-100 rounded w-12 mb-3"></div>
+		<div class="bg-white rounded-lg border border-brand-border p-4">
+			<div class="h-4 bg-brand-bg-muted rounded w-12 mb-3"></div>
 			<div class="flex gap-2">
-				<div class="flex-1 h-9 bg-gray-100 rounded-md"></div>
-				<div class="flex-1 h-9 bg-gray-100 rounded-md"></div>
-				<div class="flex-1 h-9 bg-gray-100 rounded-md"></div>
+				<div class="flex-1 h-9 bg-brand-bg-muted rounded-sm"></div>
+				<div class="flex-1 h-9 bg-brand-bg-muted rounded-sm"></div>
+				<div class="flex-1 h-9 bg-brand-bg-muted rounded-sm"></div>
 			</div>
 		</div>
 	</div>
 	{:else if error}
 		<div class="p-4 bg-red-50 rounded-lg text-red-700 text-sm">{error}</div>
-		<a href="/groups/{ministryId}" class="mt-3 inline-flex items-center gap-1 text-sm text-gray-500">
+		<a href="/groups/{ministryId}" class="mt-3 inline-flex items-center gap-1 text-sm text-brand-text-secondary">
 			<ArrowLeft class="w-4 h-4" /> Back to group
 		</a>
 	{:else if event}
-		<a href="/groups/{ministryId}" class="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-3">
+		<a href="/groups/{ministryId}" class="inline-flex items-center gap-1 text-sm text-brand-text-muted hover:text-brand-text-secondary mb-3">
 			<ArrowLeft class="w-4 h-4" /> Group
 		</a>
 
 		{#if isEditing}
 			<!-- Edit Form -->
-			<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+			<div class="bg-white rounded-lg border border-brand-border p-4 mb-4">
 				<div class="flex items-center justify-between mb-3">
-					<h3 class="text-sm font-medium text-gray-900">Edit Event</h3>
-					<button onclick={cancelEditing} class="text-gray-400 hover:text-gray-600">
+					<h3 class="text-sm font-medium text-brand-primary">Edit Event</h3>
+					<button onclick={cancelEditing} class="text-brand-text-muted hover:text-brand-text-secondary">
 						<X class="w-4 h-4" />
 					</button>
 				</div>
 				<div class="space-y-2">
 					<input type="text" bind:value={editTitle} placeholder="Event title"
-						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+						class="w-full px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none" />
 					<input type="date" bind:value={editDate}
-						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+						class="w-full px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none" />
 					<input type="text" bind:value={editLocation} placeholder="Location (optional)"
-						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+						class="w-full px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none" />
 					<textarea bind:value={editDescription} placeholder="Description (optional)" rows={2}
-						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none resize-none"></textarea>
+						class="w-full px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none resize-none"></textarea>
 					<select bind:value={editEventType}
-						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none">
+						class="w-full px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none">
 						<option value="other">Other</option>
 						<option value="service">Service</option>
 						<option value="meeting">Meeting</option>
@@ -233,19 +233,19 @@
 					</select>
 					<div class="flex gap-2">
 						<input type="time" bind:value={editStartTime} placeholder="Start time"
-							class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+							class="flex-1 px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none" />
 						<input type="time" bind:value={editEndTime} placeholder="End time"
-							class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+							class="flex-1 px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none" />
 					</div>
 					<input type="number" bind:value={editCapacity} placeholder="Capacity (optional)" min="1"
-						class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:border-orange-400 focus:ring-1 focus:ring-orange-400 outline-none" />
+						class="w-full px-3 py-1.5 text-sm border border-brand-border rounded-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none" />
 					<div class="flex items-center gap-2 pt-1">
 						<button onclick={saveEdit} disabled={saving || !editTitle.trim() || !editDate}
-							class="px-3 py-1.5 text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 disabled:opacity-50">
+							class="px-3 py-1.5 text-sm font-medium rounded-sm text-white bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50">
 							{saving ? 'Saving...' : 'Save'}
 						</button>
 						<button onclick={cancelEditing}
-							class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700">
+							class="px-3 py-1.5 text-sm text-brand-text-secondary hover:text-brand-primary">
 							Cancel
 						</button>
 					</div>
@@ -264,19 +264,19 @@
 								<span class="text-xs text-red-500 font-medium">Cancelled</span>
 							{/if}
 						</div>
-						<h1 class="text-xl font-semibold text-gray-900">{event.title}</h1>
+						<h1 class="text-xl font-semibold text-brand-primary tracking-tight">{event.title}</h1>
 						{#if event.description}
-							<p class="mt-1 text-sm text-gray-500">{event.description}</p>
+							<p class="mt-1 text-sm text-brand-text-secondary">{event.description}</p>
 						{/if}
 					</div>
 					{#if isLeader}
 						<div class="flex items-center gap-1">
 							<button onclick={startEditing} title="Edit event"
-								class="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors">
+								class="p-2 text-brand-text-muted hover:text-brand-text-secondary rounded-sm hover:bg-brand-bg-muted transition-colors">
 								<Edit3 class="w-4 h-4" />
 							</button>
 							<button onclick={() => (showDeleteConfirm = true)} title="Delete event"
-								class="p-2 text-gray-400 hover:text-red-500 rounded-md hover:bg-red-50 transition-colors">
+								class="p-2 text-brand-text-muted hover:text-red-500 rounded-sm hover:bg-red-50 transition-colors">
 								<Trash2 class="w-4 h-4" />
 							</button>
 						</div>
@@ -285,30 +285,30 @@
 			</div>
 
 			<!-- Event Info Card -->
-			<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4 space-y-2">
-				<div class="flex items-center gap-2 text-sm text-gray-600">
-					<Calendar class="w-4 h-4 text-gray-400" />
+			<div class="bg-white rounded-lg border border-brand-border p-4 mb-4 space-y-2">
+				<div class="flex items-center gap-2 text-sm text-brand-text-secondary">
+					<Calendar class="w-4 h-4 text-brand-text-muted" />
 					{formatDate(event.event_date)}
 				</div>
 				{#if event.start_time}
-					<div class="flex items-center gap-2 text-sm text-gray-600">
-						<Clock class="w-4 h-4 text-gray-400" />
+					<div class="flex items-center gap-2 text-sm text-brand-text-secondary">
+						<Clock class="w-4 h-4 text-brand-text-muted" />
 						{formatTime(event.start_time)}{event.end_time ? ' – ' + formatTime(event.end_time) : ''}
 					</div>
 				{/if}
 				{#if event.location}
-					<div class="flex items-center gap-2 text-sm text-gray-600">
-						<MapPin class="w-4 h-4 text-gray-400" />
+					<div class="flex items-center gap-2 text-sm text-brand-text-secondary">
+						<MapPin class="w-4 h-4 text-brand-text-muted" />
 						{event.location}
 					</div>
 				{/if}
 				{#if event.capacity}
 					<div class="mt-2">
-						<div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-							<div class="h-full bg-orange-500 rounded-full transition-all"
+						<div class="h-1.5 bg-brand-bg-muted rounded-full overflow-hidden">
+							<div class="h-full bg-brand-accent-muted0 rounded-full transition-all"
 								style="width: {Math.min(100, (event.rsvp_count / event.capacity) * 100)}%"></div>
 						</div>
-						<p class="mt-1 text-xs text-gray-400">
+						<p class="mt-1 text-xs text-brand-text-muted">
 							{event.rsvp_count} / {event.capacity} spots filled
 							{#if event.spots_remaining !== null && event.spots_remaining > 0}
 								· {event.spots_remaining} left
@@ -321,67 +321,67 @@
 			</div>
 
 			<!-- RSVP Section -->
-			<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-				<h3 class="text-sm font-medium text-gray-900 mb-3">RSVP</h3>
+			<div class="bg-white rounded-lg border border-brand-border p-4 mb-4">
+				<h3 class="text-sm font-medium text-brand-primary mb-3">RSVP</h3>
 				<div class="flex gap-2">
 					<button onclick={() => handleRsvp('going')} disabled={rsvping}
-						class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
-							{event.user_rsvp === 'going' ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-green-50'}">
+						class="flex-1 py-2 rounded-sm text-sm font-medium transition-colors
+							{event.user_rsvp === 'going' ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-brand-bg-subtle text-brand-text-secondary border border-brand-border hover:bg-green-50'}">
 						Going
 					</button>
 					<button onclick={() => handleRsvp('maybe')} disabled={rsvping}
-						class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
-							{event.user_rsvp === 'maybe' ? 'bg-yellow-100 text-yellow-700 border border-yellow-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-yellow-50'}">
+						class="flex-1 py-2 rounded-sm text-sm font-medium transition-colors
+							{event.user_rsvp === 'maybe' ? 'bg-yellow-100 text-yellow-700 border border-yellow-300' : 'bg-brand-bg-subtle text-brand-text-secondary border border-brand-border hover:bg-yellow-50'}">
 						Maybe
 					</button>
 					<button onclick={() => handleRsvp('not_going')} disabled={rsvping}
-						class="flex-1 py-2 rounded-md text-sm font-medium transition-colors
-							{event.user_rsvp === 'not_going' ? 'bg-red-100 text-red-700 border border-red-300' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-red-50'}">
+						class="flex-1 py-2 rounded-sm text-sm font-medium transition-colors
+							{event.user_rsvp === 'not_going' ? 'bg-red-100 text-red-700 border border-red-300' : 'bg-brand-bg-subtle text-brand-text-secondary border border-brand-border hover:bg-red-50'}">
 						Can't Go
 					</button>
 				</div>
 				{#if !event.capacity}
-					<p class="mt-2 text-xs text-gray-400">{event.rsvp_count} people going</p>
+					<p class="mt-2 text-xs text-brand-text-muted">{event.rsvp_count} people going</p>
 				{/if}
 			</div>
 
 			<!-- Leader: RSVP Summary -->
 			{#if event.rsvps.length > 0 || isLeader}
-				<div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-					<h3 class="text-sm font-medium text-gray-900 mb-2">Responses</h3>
+				<div class="bg-white rounded-lg border border-brand-border p-4 mb-4">
+					<h3 class="text-sm font-medium text-brand-primary mb-2">Responses</h3>
 					<div class="flex gap-4 text-sm">
 						<span class="text-green-600">{event.rsvp_summary.going} going</span>
 						<span class="text-yellow-600">{event.rsvp_summary.maybe} maybe</span>
-						<span class="text-gray-400">{event.rsvp_summary.not_going} can't go</span>
+						<span class="text-brand-text-muted">{event.rsvp_summary.not_going} can't go</span>
 					</div>
 				</div>
 			{/if}
 
 			<!-- Leader: Attendance Sheet -->
 			{#if event.rsvps.length > 0}
-				<div class="bg-white rounded-lg border border-gray-200 p-4">
+				<div class="bg-white rounded-lg border border-brand-border p-4">
 					<div class="flex items-center justify-between mb-3">
-						<h3 class="text-sm font-medium text-gray-900">Take Attendance</h3>
+						<h3 class="text-sm font-medium text-brand-primary">Take Attendance</h3>
 						<div class="flex items-center gap-2">
-							<span class="text-xs text-gray-400">{attendedIds.size} of {event.rsvps.length} selected</span>
-							<button onclick={selectAll} class="text-xs font-medium text-orange-600 hover:text-orange-700">All</button>
-							<button onclick={selectNone} class="text-xs font-medium text-gray-400 hover:text-gray-600">None</button>
+							<span class="text-xs text-brand-text-muted">{attendedIds.size} of {event.rsvps.length} selected</span>
+							<button onclick={selectAll} class="text-xs font-medium text-brand-accent hover:text-brand-accent">All</button>
+							<button onclick={selectNone} class="text-xs font-medium text-brand-text-muted hover:text-brand-text-secondary">None</button>
 						</div>
 					</div>
-					<div class="divide-y divide-gray-50">
+					<div class="divide-y divide-brand-border">
 						{#each event.rsvps as rsvp (rsvp.person_id)}
 							<label class="flex items-center gap-3 py-2 cursor-pointer">
 								<input type="checkbox"
 									checked={attendedIds.has(rsvp.person_id)}
 									onchange={() => toggleAttendance(rsvp.person_id)}
-									class="rounded border-gray-300 text-orange-600 focus:ring-orange-500" />
-								<span class="text-sm text-gray-900">{rsvp.person_name || `Person #${rsvp.person_id}`}</span>
-								<span class="text-xs text-gray-400 ml-auto">{rsvp.status}</span>
+									class="rounded border-brand-border-strong text-brand-accent focus:ring-brand-accent" />
+								<span class="text-sm text-brand-primary">{rsvp.person_name || `Person #${rsvp.person_id}`}</span>
+								<span class="text-xs text-brand-text-muted ml-auto">{rsvp.status}</span>
 							</label>
 						{/each}
 					</div>
 					<button onclick={saveAttendance} disabled={savingAttendance}
-						class="mt-3 px-4 py-1.5 text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 disabled:opacity-50">
+						class="mt-3 px-4 py-1.5 text-sm font-medium rounded-sm text-white bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50">
 						{savingAttendance ? 'Saving...' : 'Save Attendance'}
 					</button>
 				</div>
@@ -394,14 +394,14 @@
 			<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onclick={() => (showDeleteConfirm = false)} onkeydown={(e) => e.key === 'Escape' && (showDeleteConfirm = false)} role="dialog" aria-modal="true" tabindex="-1">
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full mx-4" onclick={(e) => e.stopPropagation()}>
-					<h3 class="text-lg font-medium text-gray-900">Delete Event</h3>
-					<p class="mt-2 text-sm text-gray-500">
+					<h3 class="text-lg font-medium text-brand-primary">Delete Event</h3>
+					<p class="mt-2 text-sm text-brand-text-secondary">
 						Delete <strong>{event.title}</strong>? This will remove all RSVPs and attendance records. Cannot be undone.
 					</p>
 					<div class="mt-4 flex items-center gap-3 justify-end">
-						<button onclick={() => (showDeleteConfirm = false)} class="px-4 py-2 text-sm text-gray-500">Cancel</button>
+						<button onclick={() => (showDeleteConfirm = false)} class="px-4 py-2 text-sm text-brand-text-secondary">Cancel</button>
 						<button onclick={handleDelete} disabled={deleting}
-							class="px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 disabled:opacity-50">
+							class="px-4 py-2 text-sm font-medium rounded-sm text-white bg-red-600 hover:bg-red-700 disabled:opacity-50">
 							{deleting ? 'Deleting...' : 'Delete'}
 						</button>
 					</div>

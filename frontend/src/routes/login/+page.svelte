@@ -28,7 +28,7 @@
 		<!-- Brand Header Section -->
 		<div class="bg-brand-primary px-8 py-12 text-center">
 			<div class="flex flex-col items-center gap-3">
-				<Logo size={64} variant="dark" />
+				<img src="/logo-double-border-shield-cross-church.png" alt="ParishHub" width="96" height="96" class="w-24 h-24" />
 				<div>
 					<h1 class="text-3xl font-bold text-white tracking-tight">ParishHub</h1>
 					<p class="text-amber-400 text-xs font-medium tracking-[0.2em] uppercase mt-1">

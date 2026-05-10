@@ -24,6 +24,7 @@ class MemberUser(BaseModel):
     email: str
     name: str | None = None
     picture: str | None = None
+    person_id: int | None = None
     roles: list[dict] = []  # [{"role": "leader", "ministry_id": 1}, ...]
 
 
@@ -86,11 +87,16 @@ async def verify_google_token(id_token: str) -> dict:
 
 
 async def get_member_from_token(token: str, db) -> MemberUser:
-    """Decode JWT, look up roles from DB, return MemberUser."""
+    """Decode JWT, look up roles and person_id from DB, return MemberUser."""
     payload = decode_member_token(token)
     email = payload["sub"]
 
     from app.models.ministry import MinistryMember, UserRole
+    from app.models.person import Person
+
+    # Get user's Person record
+    person = db.query(Person).filter(Person.email == email).first()
+    person_id = person.id if person else None
 
     # Get user's roles
     roles_query = db.query(UserRole).filter(UserRole.user_email == email).all()
@@ -111,6 +117,7 @@ async def get_member_from_token(token: str, db) -> MemberUser:
         email=email,
         name=payload.get("name"),
         picture=payload.get("picture"),
+        person_id=person_id,
         roles=roles,
     )
 

@@ -218,6 +218,87 @@ class MinistryService:
     # -----------------------------------------------------------------
     # Cross-ministry events (calendar)
     # -----------------------------------------------------------------
+    @staticmethod
+    def expand_recurring_events(
+        events: list[MinistryEvent],
+        date_from: Optional[date] = None,
+        date_to: Optional[date] = None,
+    ) -> list[MinistryEvent]:
+        """Expand recurring events into individual occurrences within [date_from, date_to].
+
+        Returns a flat list with each occurrence as a shallow copy with its own event_date.
+        """
+        from copy import copy
+
+        if not date_from or not date_to:
+            return list(events)
+
+        intervals = {
+            "weekly": timedelta(weeks=1),
+            "biweekly": timedelta(weeks=2),
+        }
+
+        expanded = []
+        for event in events:
+            if not event.recurrence_rule or event.recurrence_rule == "none":
+                expanded.append(event)
+                continue
+
+            interval = intervals.get(event.recurrence_rule)
+            if interval is None and event.recurrence_rule != "monthly":
+                expanded.append(event)
+                continue
+
+            end = event.recurrence_end or (date_to + timedelta(days=365))
+            effective_end = min(end, date_to)
+            current = event.event_date
+
+            # Fast-forward to first occurrence >= date_from
+            if interval:
+                if current < date_from:
+                    delta = date_from - current
+                    steps = delta // interval
+                    current = current + (interval * steps)
+                    while current < date_from:
+                        current = current + interval
+            else:
+                # Monthly
+                if current < date_from:
+                    while current < date_from:
+                        year = current.year + (current.month // 12)
+                        month = (current.month % 12) + 1
+                        try:
+                            current = current.replace(year=year, month=month)
+                        except ValueError:
+                            import calendar
+                            last_day = calendar.monthrange(year, month)[1]
+                            current = current.replace(year=year, month=month, day=last_day)
+
+            while current <= effective_end:
+                if current >= date_from:
+                    occ = copy(event)
+                    occ.event_date = current
+                    # Clear deferred SQLAlchemy attributes that fail on copies
+                    try:
+                        occ.attendance = []
+                    except Exception:
+                        pass
+                    expanded.append(occ)
+                if interval:
+                    current = current + interval
+                else:
+                    year = current.year + (current.month // 12)
+                    month = (current.month % 12) + 1
+                    try:
+                        current = current.replace(year=year, month=month)
+                    except ValueError:
+                        import calendar
+                        last_day = calendar.monthrange(year, month)[1]
+                        current = current.replace(year=year, month=month, day=last_day)
+
+        expanded.sort(key=lambda e: e.event_date)
+        return expanded
+
     def _expand_recurring(
         self,
         event: MinistryEvent,

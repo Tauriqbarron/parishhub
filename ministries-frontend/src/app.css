@@ -1,20 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 
-:root {
-	--color-primary: #1a1a2e;
-	--color-accent: #ea580c;
-	--color-accent-hover: #c2410c;
-	--color-bg: #fff7ed;
-	--color-surface: #ffffff;
-	--color-border: #e5e5e5;
-	--color-text: #1a1a1a;
-	--color-text-secondary: #6b7280;
-	--color-success: #16a34a;
-	--color-error: #dc2626;
+/* ── Tailwind v4 theme — generates brand-* utility classes ── */
+@theme {
+	/* Primary — warm near-black */
+	--color-brand-primary: #1A1A1A;
+	--color-brand-primary-light: #31302E;
+	--color-brand-primary-muted: #615D59;
+	/* Amber accent (parish warmth) */
+	--color-brand-accent: #D97706;
+	--color-brand-accent-light: #FBBF24;
+	--color-brand-accent-muted: #FFFBEB;
+	/* Warm white backgrounds */
+	--color-brand-bg-subtle: #F6F5F4;
+	--color-brand-bg-muted: #EDECEB;
+	/* Whisper borders */
+	--color-brand-border: rgba(0, 0, 0, 0.08);
+	--color-brand-border-strong: rgba(0, 0, 0, 0.15);
+	/* Warm text tones */
+	--color-brand-text-secondary: #615D59;
+	--color-brand-text-muted: #A39E98;
+	/* Semantic */
+	--color-brand-success: #059669;
+	--color-brand-error: #DC2626;
+	--color-brand-info: #2563EB;
+	/* Font */
+	--font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+	/* Letter spacing */
+	--tracking-tight: -0.02em;
+	--tracking-tighter: -0.025em;
 }
 
+/* ── Base styles ── */
 body {
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-	background-color: var(--color-bg);
-	color: var(--color-text);
+	font-family: var(--font-sans);
+	background-color: var(--color-brand-bg-subtle);
+	color: var(--color-brand-primary);
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { ArrowLeft, Edit3, Trash2, X, Check, Shield } from 'lucide-svelte';
+	import { ArrowLeft, Edit3, Trash2, X, Check, Shield, UserPlus, UserMinus } from 'lucide-svelte';
 	import {
 		ministryApi,
 		personApi,
@@ -24,15 +24,21 @@
 	let editIsActive = $state(true);
 	let saving = $state(false);
 
-	// Leader assignment
+	// Leadership management
 	let leaderSearch = $state<{ id: number; name: string } | null>(null);
-	let assigningLeader = $state(false);
+	let addingLeader = $state(false);
+	let removingLeaderId = $state<number | null>(null);
 
 	// Delete
 	let showDeleteConfirm = $state(false);
 	let deleting = $state(false);
 
 	const ministryId = $derived(Number($page.params.id));
+
+	// Filter members into leader + co-leaders only
+	const leaders = $derived(
+		ministry?.members.filter(m => m.role === 'leader' || m.role === 'co-leader') ?? []
+	);
 
 	async function loadMinistry() {
 		loading = true;
@@ -88,29 +94,31 @@
 		}
 	}
 
-	async function assignLeader() {
+	async function addLeader() {
 		if (!leaderSearch) return;
-		assigningLeader = true;
+		addingLeader = true;
 		try {
-			await ministryApi.update(ministryId, { leader_id: leaderSearch.id });
-			toasts.success(`${leaderSearch.name} assigned as leader.`);
+			await ministryApi.addMember({ ministry_id: ministryId, person_id: leaderSearch.id });
+			toasts.success(`${leaderSearch.name} added to leadership.`);
 			leaderSearch = null;
 			await loadMinistry();
 		} catch (err) {
-			toasts.error(err instanceof Error ? err.message : 'Failed to assign leader.');
+			toasts.error(err instanceof Error ? err.message : 'Failed to add leader.');
 		} finally {
-			assigningLeader = false;
+			addingLeader = false;
 		}
 	}
 
-	async function removeLeader() {
-		if (!ministry) return;
+	async function removeLeader(personId: number, personName: string, role: string) {
+		removingLeaderId = personId;
 		try {
-			await ministryApi.update(ministryId, { leader_id: null });
-			toasts.success('Leader removed.');
+			await ministryApi.removeMember(ministryId, personId);
+			toasts.success(`${personName} removed from leadership.`);
 			await loadMinistry();
 		} catch (err) {
 			toasts.error(err instanceof Error ? err.message : 'Failed to remove leader.');
+		} finally {
+			removingLeaderId = null;
 		}
 	}
 
@@ -207,75 +215,70 @@
 			{/if}
 		</div>
 
-		<!-- Leader Assignment -->
-		<div class="bg-white rounded-lg border border-brand-border p-6 mb-4">
-			<h2 class="text-sm font-semibold text-brand-primary mb-3 flex items-center gap-1">
-				<Shield class="w-4 h-4" /> Leader
-			</h2>
+		<!-- Leadership Section (Leader + Co-Leaders) -->
+		<div class="bg-white rounded-lg border border-brand-border overflow-visible">
+			<div class="px-6 py-3 border-b border-brand-border">
+				<h2 class="text-sm font-semibold text-brand-primary flex items-center gap-1">
+					<Shield class="w-4 h-4" /> Leadership ({leaders.length})
+				</h2>
+			</div>
 
-			{#if ministry.leader}
-				<div class="flex items-center justify-between">
-					<a
-						href="/people/{ministry.leader.id}"
-						class="group flex items-center gap-2"
-					>
-						<div class="w-8 h-8 rounded-full bg-brand-accent/10 flex items-center justify-center text-sm font-medium text-brand-accent">
-							{ministry.leader.first_name[0]}{ministry.leader.last_name[0]}
-						</div>
-						<div>
-							<p class="text-sm font-medium text-brand-primary group-hover:text-brand-accent transition-colors">
-								{ministry.leader.first_name} {ministry.leader.last_name}
-							</p>
-							{#if ministry.leader.email}
-								<p class="text-xs text-brand-text-secondary">{ministry.leader.email}</p>
-							{/if}
-						</div>
-					</a>
-					<button onclick={removeLeader}
-						class="text-sm text-red-500 hover:text-red-700">Remove</button>
-				</div>
-			{:else}
-				<p class="text-sm text-brand-text-secondary mb-3">No leader assigned. Search for a person to assign them.</p>
-			{/if}
-
-			<div class="mt-3">
-				<PersonSearchInput
-					value={leaderSearch}
-					placeholder="Search person to assign as leader..."
-					onSelect={(v) => {
-						if (v && 'id' in v) leaderSearch = { id: v.id, name: v.name };
-						else leaderSearch = null;
-					}}
-				/>
-				{#if leaderSearch}
-					<div class="mt-2 flex items-center gap-2">
-						<span class="text-sm text-brand-primary">Assign <strong>{leaderSearch.name}</strong> as leader?</span>
-						<button onclick={assignLeader} disabled={assigningLeader}
-							class="px-3 py-1 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90 disabled:opacity-50">
-							{assigningLeader ? 'Assigning...' : 'Confirm'}
+			<!-- Add person to leadership -->
+			<div class="px-6 py-3 border-b border-brand-border bg-brand-bg-muted/30">
+				<div class="flex items-center gap-2">
+					<div class="flex-1">
+						<PersonSearchInput
+							value={leaderSearch}
+							placeholder="Search person to add to leadership..."
+							onSelect={(v) => {
+								if (v && 'id' in v) leaderSearch = { id: v.id, name: v.name };
+								else leaderSearch = null;
+							}}
+						/>
+					</div>
+					{#if leaderSearch}
+						<button onclick={addLeader} disabled={addingLeader}
+							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90 disabled:opacity-50 whitespace-nowrap">
+							<UserPlus class="w-4 h-4" /> {addingLeader ? 'Adding...' : 'Add'}
 						</button>
 						<button onclick={() => (leaderSearch = null)}
-							class="px-3 py-1 text-sm text-brand-text-secondary">Cancel</button>
-					</div>
-				{/if}
+							class="px-2 py-1.5 text-sm text-brand-text-secondary"><X class="w-4 h-4" /></button>
+					{/if}
+				</div>
+				<p class="mt-1 text-xs text-brand-text-secondary">First person becomes the Leader, others become Co-Leaders.</p>
 			</div>
-		</div>
 
-		<!-- Members list (read-only for admin) -->
-		<div class="bg-white rounded-lg border border-brand-border overflow-hidden">
-			<div class="px-6 py-3 border-b border-brand-border">
-				<h2 class="text-sm font-semibold text-brand-primary">Members ({ministry.members.length})</h2>
-			</div>
-			{#if ministry.members.length === 0}
-				<p class="p-6 text-sm text-brand-text-secondary text-center">No members yet. The leader can add members from the Ministries app.</p>
+			{#if leaders.length === 0}
+				<p class="p-6 text-sm text-brand-text-secondary text-center">No leadership assigned. Search above to add someone.</p>
 			{:else}
 				<div class="divide-y divide-brand-border">
-					{#each ministry.members as member (member.id)}
+					{#each leaders as member (member.id)}
 						<div class="px-6 py-3 flex items-center justify-between">
-							<div>
-								<p class="text-sm text-brand-primary">{member.person_name || `Person #${member.person_id}`}</p>
-								<p class="text-xs text-brand-text-secondary capitalize">{member.role}</p>
+							<div class="flex items-center gap-3">
+								<a href="/people/{member.person_id}" class="group flex items-center gap-2">
+									<div class="w-8 h-8 rounded-full bg-brand-accent/10 flex items-center justify-center text-xs font-medium text-brand-accent">
+										{(member.person_name || '??').split(' ').map(n => n[0]).join('').slice(0, 2)}
+									</div>
+									<p class="text-sm font-medium text-brand-primary group-hover:text-brand-accent transition-colors">
+										{member.person_name || `Person #${member.person_id}`}
+									</p>
+								</a>
+								{#if member.role === 'leader'}
+									<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+										<Shield class="w-3 h-3" /> Leader
+									</span>
+								{:else if member.role === 'co-leader'}
+									<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+										<Shield class="w-3 h-3" /> Co-Leader
+									</span>
+								{/if}
 							</div>
+							<button
+								onclick={() => removeLeader(member.person_id, member.person_name || `Person #${member.person_id}`, member.role)}
+								disabled={removingLeaderId === member.person_id}
+								class="text-red-400 hover:text-red-600 disabled:opacity-50">
+								<UserMinus class="w-4 h-4" />
+							</button>
 						</div>
 					{/each}
 				</div>

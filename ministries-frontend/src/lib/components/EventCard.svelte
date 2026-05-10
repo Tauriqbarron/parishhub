@@ -20,11 +20,11 @@
 	}
 
 	const typeColors: Record<string, string> = {
-		service: 'bg-orange-50 text-orange-700',
+		service: 'bg-brand-accent-muted text-brand-accent',
 		meeting: 'bg-blue-50 text-blue-700',
 		social: 'bg-pink-50 text-pink-700',
 		outreach: 'bg-green-50 text-green-700',
-		other: 'bg-gray-50 text-gray-600'
+		other: 'bg-brand-bg-subtle text-brand-text-secondary'
 	};
 
 	const timeRange = $derived(
@@ -34,7 +34,7 @@
 	);
 </script>
 
-<button {onclick} class="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
+<button {onclick} class="w-full text-left px-4 py-3 hover:bg-brand-bg-subtle transition-colors border-b border-brand-border last:border-b-0">
 	<div class="flex items-start justify-between gap-2">
 		<div class="min-w-0 flex-1">
 			<div class="flex items-center gap-1.5 mb-0.5">
@@ -42,14 +42,14 @@
 					{event.event_type}
 				</span>
 				{#if event.recurrence_rule}
-					<Repeat class="w-3 h-3 text-gray-400" />
+					<Repeat class="w-3 h-3 text-brand-text-muted" />
 				{/if}
 				{#if event.is_cancelled}
 					<span class="text-xs text-red-500 font-medium">Cancelled</span>
 				{/if}
 			</div>
-			<h4 class="text-sm font-medium text-gray-900 truncate">{event.title}</h4>
-			<div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-xs text-gray-400">
+			<h4 class="text-sm font-medium text-brand-primary truncate">{event.title}</h4>
+			<div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-xs text-brand-text-muted">
 				<span class="flex items-center gap-0.5">
 					<Calendar class="w-3 h-3" />
 					{formatDate(event.event_date)}
@@ -70,12 +70,12 @@
 		</div>
 		<div class="text-right shrink-0">
 			{#if event.capacity}
-				<span class="flex items-center gap-0.5 text-xs {event.spots_remaining === 0 ? 'text-red-500' : 'text-gray-400'}">
+				<span class="flex items-center gap-0.5 text-xs {event.spots_remaining === 0 ? 'text-red-500' : 'text-brand-text-muted'}">
 					<Users class="w-3 h-3" />
 					{event.spots_remaining === 0 ? 'Full' : `${event.spots_remaining} left`}
 				</span>
 			{:else}
-				<span class="text-xs text-gray-400">{event.rsvp_count} going</span>
+				<span class="text-xs text-brand-text-muted">{event.rsvp_count} going</span>
 			{/if}
 		</div>
 	</div>

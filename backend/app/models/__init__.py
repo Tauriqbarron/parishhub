@@ -16,10 +16,25 @@ from app.models.ministry import (
     MinistryMember,
     UserRole,
 )
+from app.models.notification import (
+    Announcement,
+    NotificationDelivery,
+    NotificationPreference,
+    ReminderLog,
+)
 from app.models.nz_address import NZAddress
 from app.models.person import Gender, Person
 from app.models.relationship import FamilyRelationship, RelationshipType
 from app.models.sacrament import Sacrament, SacramentType
+from app.models.roster import (
+    PersonRosterRole,
+    RosterAssignment,
+    RosterInstance,
+    RosterRole,
+    RosterSwapRequest,
+    RosterTemplate,
+    RosterTemplateSlot,
+)
 from app.models.settings import Setting
 
 __all__ = [
@@ -47,4 +62,15 @@ __all__ = [
     "PopulationSnapshot",
     "Setting",
     "HouseholdConsent",
+    "PersonRosterRole",
+    "RosterAssignment",
+    "RosterInstance",
+    "RosterRole",
+    "RosterSwapRequest",
+    "RosterTemplate",
+    "RosterTemplateSlot",
+    "Announcement",
+    "NotificationDelivery",
+    "NotificationPreference",
+    "ReminderLog",
 ]

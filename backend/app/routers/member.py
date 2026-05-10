@@ -10,10 +10,21 @@ from sqlalchemy.orm import Session
 from app.auth.member import MemberUser, require_member
 from app.database import get_db
 from app.limiter import limiter
+from app.schemas.ministry import AttendanceBatchCreate, EventRSVPCreate
 from app.services.audit import AuditService
 
 router = APIRouter(prefix="/api/member", tags=["member"])
 
+
+# ---------------------------------------------------------------------------
+# Current Member
+# ---------------------------------------------------------------------------
+@router.get("/me")
+async def get_me(
+    member: Annotated[MemberUser, Depends(require_member)],
+):
+    """Get current authenticated member (includes roles and person_id)."""
+    return member
 
 # ---------------------------------------------------------------------------
 # Dashboard
@@ -149,6 +160,22 @@ async def get_ministry_detail(
                 "role": mem.role,
                 "joined_date": mem.joined_date.isoformat() if mem.joined_date else None,
                 "is_active": mem.is_active,
+                # Full person record from the unified people table - ministries portal displays these fields
+                "person": {
+                    "id": mem.person.id,
+                    "first_name": mem.person.first_name,
+                    "middle_name": mem.person.middle_name,
+                    "last_name": mem.person.last_name,
+                    "date_of_birth": mem.person.date_of_birth.isoformat() if mem.person.date_of_birth else None,
+                    "gender": mem.person.gender.value if mem.person.gender else None,
+                    "email": mem.person.email,
+                    "phone": mem.person.phone,
+                    "address_line1": mem.person.address_line1,
+                    "address_line2": mem.person.address_line2,
+                    "city": mem.person.city,
+                    "postal_code": mem.person.postal_code,
+                    "notes": mem.person.notes,
+                } if mem.person else None,
             }
             for mem in ministry.members
         ],
@@ -355,6 +382,8 @@ async def list_ministry_events(
 ):
     """List events for a ministry the user belongs to."""
     from app.models.ministry import MinistryEvent
+    from app.services.ministry import MinistryService
+    from datetime import date as date_type, timedelta as td
 
     user_ministry_ids = {r["ministry_id"] for r in member.roles if r["ministry_id"]}
     if ministry_id not in user_ministry_ids:
@@ -367,6 +396,11 @@ async def list_ministry_events(
         .all()
     )
 
+    # Expand recurring events — show from today forward
+    today = date_type.today()
+    far_future = today + td(days=365)
+    expanded = MinistryService.expand_recurring_events(events, today, far_future)
+
     return {
         "events": [
             {
@@ -375,12 +409,96 @@ async def list_ministry_events(
                 "description": e.description,
                 "event_date": e.event_date.isoformat(),
                 "location": e.location,
-                "attendance_count": len(e.attendance),
+                "attendance_count": len(e.attendance) if e.attendance else 0,
             }
-            for e in events
+            for e in expanded
         ]
     }
 
+
+
+@router.get("/events")
+async def list_member_events(
+    member: Annotated[MemberUser, Depends(require_member)],
+    db: Annotated[Session, Depends(get_db)],
+    date_from: date | None = None,
+    date_to: date | None = None,
+):
+    """List events across all ministries the user belongs to, with RSVP status."""
+    from app.models.ministry import MinistryEvent, Ministry, EventRSVP
+    from app.models.person import Person
+
+    user_ministry_ids = {r["ministry_id"] for r in member.roles if r["ministry_id"]}
+    if not user_ministry_ids:
+        return []
+
+    # Get person record for RSVP lookup
+    person = db.query(Person).filter(Person.email == member.email).first()
+    user_rsvp_map = {}
+    if person:
+        rsvps = (
+            db.query(EventRSVP)
+            .filter(EventRSVP.person_id == person.id)
+            .all()
+        )
+        user_rsvp_map = {r.event_id: r.status for r in rsvps}
+
+    # Ministry names
+    ministry_names = {
+        m.id: m.name
+        for m in db.query(Ministry).filter(Ministry.id.in_(user_ministry_ids)).all()
+    }
+
+    query = db.query(MinistryEvent).filter(MinistryEvent.ministry_id.in_(user_ministry_ids))
+    # NOTE: date filters are NOT applied to the DB query — recurring events
+    # with original dates outside the range must still be loaded for expansion.
+
+    # Group by event to count RSVPs per event
+    from sqlalchemy import func
+    rsvp_counts = (
+        db.query(
+            EventRSVP.event_id,
+            func.count().label("going_count")
+        )
+        .filter(EventRSVP.status == "going")
+        .group_by(EventRSVP.event_id)
+        .all()
+    )
+    # DEBUG: log the raw result
+    import sys
+    print(f"\n[DEBUG list_member_events] rsvp_counts raw: {rsvp_counts}", file=sys.stderr)
+    rsvp_count_map = {eid: count for eid, count in rsvp_counts}
+    print(f"[DEBUG] rsvp_count_map: {rsvp_count_map}", file=sys.stderr)
+
+    events = query.order_by(MinistryEvent.event_date).all()
+
+    # Expand recurring events within the requested date range
+    # If only date_from is given, default date_to to 1 year out
+    from app.services.ministry import MinistryService
+    from datetime import timedelta as td
+    effective_date_to = date_to or (date_from + td(days=365) if date_from else None)
+    expanded_events = MinistryService.expand_recurring_events(events, date_from, effective_date_to)
+
+    result = []
+    for e in expanded_events:
+        result.append({
+            "id": e.id,
+            "title": e.title,
+            "description": e.description,
+            "event_date": e.event_date.isoformat(),
+            "start_time": e.start_time,
+            "end_time": e.end_time,
+            "location": e.location,
+            "event_type": e.event_type,
+            "capacity": e.capacity,
+            "is_cancelled": e.is_cancelled,
+            "attendance_count": len(e.attendance) if e.attendance else 0,
+            "ministry_id": e.ministry_id,
+            "ministry_name": ministry_names.get(e.ministry_id, ""),
+            "user_rsvp": user_rsvp_map.get(e.id),
+            "rsvp_count": rsvp_count_map.get(e.id, 0),
+        })
+    return result
 
 @router.post("/ministries/{ministry_id}/events")
 @limiter.limit("30/minute")
@@ -483,13 +601,38 @@ async def update_ministry_event(
         raise HTTPException(status_code=403, detail="Only leaders can edit events")
 
     update_data = body.model_dump(exclude_unset=True)
+
+    # Capture old values before mutation
+    old_values = {
+        "title": event.title,
+        "description": event.description,
+        "event_date": event.event_date.isoformat(),
+        "event_type": event.event_type,
+        "location": event.location,
+        "start_time": event.start_time,
+        "end_time": event.end_time,
+        "capacity": event.capacity,
+        "recurrence_rule": event.recurrence_rule,
+        "recurrence_end": event.recurrence_end.isoformat() if event.recurrence_end else None,
+        "is_cancelled": event.is_cancelled,
+    }
+
     for field, value in update_data.items():
         setattr(event, field, value)
+
+    # Convert date objects to strings for audit (JSON column)
+    audit_new = {}
+    for k, v in update_data.items():
+        if isinstance(v, date):
+            audit_new[k] = v.isoformat()
+        else:
+            audit_new[k] = v
 
     AuditService(db).log_update(
         resource_type="ministry_event",
         resource_id=event_id,
-        new_values=update_data,
+        old_values=old_values,
+        new_values=audit_new,
         user_email=member.email,
         description=f"Updated event '{event.title}'",
     )
@@ -705,7 +848,7 @@ async def get_event_detail(
 async def rsvp_event(
     request: Request,
     event_id: int,
-    body: "EventRSVPCreate",
+    body: EventRSVPCreate,
     member: Annotated[MemberUser, Depends(require_member)],
     db: Annotated[Session, Depends(get_db)],
 ):
@@ -841,7 +984,7 @@ async def get_event_rsvps(
 async def record_attendance(
     request: Request,
     event_id: int,
-    body: "AttendanceBatchCreate",
+    body: AttendanceBatchCreate,
     member: Annotated[MemberUser, Depends(require_member)],
     db: Annotated[Session, Depends(get_db)],
 ):

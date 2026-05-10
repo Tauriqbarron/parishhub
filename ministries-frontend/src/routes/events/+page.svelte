@@ -52,16 +52,16 @@
 </script>
 
 <div>
-	<h1 class="text-xl font-semibold text-gray-900 mb-4">Events</h1>
+	<h1 class="text-xl font-semibold text-brand-primary tracking-tight mb-4">Events</h1>
 
 	{#if loading}
 	<div class="space-y-3">
-		<div class="h-3 bg-gray-100 rounded w-20 animate-pulse"></div>
+		<div class="h-3 bg-brand-bg-muted rounded w-20 animate-pulse"></div>
 		{#each [1, 2, 3] as i}
-			<div class="animate-pulse bg-white rounded-lg border border-gray-200 p-4">
-				<div class="h-3 bg-gray-100 rounded w-24 mb-1.5"></div>
-				<div class="h-4 bg-gray-100 rounded w-36 mb-1"></div>
-				<div class="h-3 bg-gray-100 rounded w-28"></div>
+			<div class="animate-pulse bg-white rounded-lg border border-brand-border p-4">
+				<div class="h-3 bg-brand-bg-muted rounded w-24 mb-1.5"></div>
+				<div class="h-4 bg-brand-bg-muted rounded w-36 mb-1"></div>
+				<div class="h-3 bg-brand-bg-muted rounded w-28"></div>
 			</div>
 		{/each}
 	</div>
@@ -69,15 +69,15 @@
 		<div class="p-4 bg-red-50 rounded-lg text-red-700 text-sm">{error}</div>
 	{:else}
 		{#if upcomingEvents.length > 0}
-			<h2 class="text-sm font-medium text-gray-500 mb-2">Upcoming</h2>
+			<h2 class="text-sm font-medium text-brand-text-secondary mb-2">Upcoming</h2>
 			<div class="space-y-3 mb-6">
 				{#each upcomingEvents as event (event.id)}
-					<div class="bg-white rounded-lg border border-gray-200 p-4">
-						<span class="text-xs font-medium text-orange-600">{formatDate(event.event_date)}</span>
-						<h3 class="mt-0.5 text-sm font-medium text-gray-900">{event.title}</h3>
-						<p class="text-xs text-gray-400">{event.ministry_name}</p>
+					<div class="bg-white rounded-lg border border-brand-border p-4">
+						<span class="text-xs font-medium text-brand-accent">{formatDate(event.event_date)}</span>
+						<h3 class="mt-0.5 text-sm font-medium text-brand-primary">{event.title}</h3>
+						<p class="text-xs text-brand-text-muted">{event.ministry_name}</p>
 						{#if event.location}
-							<p class="mt-1 text-xs text-gray-400 flex items-center gap-0.5">
+							<p class="mt-1 text-xs text-brand-text-muted flex items-center gap-0.5">
 								<MapPin class="w-3 h-3" /> {event.location}
 							</p>
 						{/if}
@@ -87,22 +87,22 @@
 		{/if}
 
 		{#if pastEvents.length > 0}
-			<h2 class="text-sm font-medium text-gray-500 mb-2">Past</h2>
+			<h2 class="text-sm font-medium text-brand-text-secondary mb-2">Past</h2>
 			<div class="space-y-3">
 				{#each pastEvents as event (event.id)}
-					<div class="bg-white rounded-lg border border-gray-200 p-4 opacity-70">
-						<span class="text-xs text-gray-400">{formatDate(event.event_date)}</span>
-						<h3 class="mt-0.5 text-sm font-medium text-gray-700">{event.title}</h3>
-						<p class="text-xs text-gray-400">{event.ministry_name} · {event.attendance_count} attended</p>
+					<div class="bg-white rounded-lg border border-brand-border p-4 opacity-70">
+						<span class="text-xs text-brand-text-muted">{formatDate(event.event_date)}</span>
+						<h3 class="mt-0.5 text-sm font-medium text-brand-primary">{event.title}</h3>
+						<p class="text-xs text-brand-text-muted">{event.ministry_name} · {event.attendance_count} attended</p>
 					</div>
 				{/each}
 			</div>
 		{/if}
 
 		{#if upcomingEvents.length === 0 && pastEvents.length === 0}
-			<div class="bg-white rounded-lg border border-gray-200 p-8 text-center">
-				<Calendar class="mx-auto w-10 h-10 text-gray-300" />
-				<p class="mt-2 text-sm text-gray-500">No events yet</p>
+			<div class="bg-white rounded-lg border border-brand-border p-8 text-center">
+				<Calendar class="mx-auto w-10 h-10 text-brand-text-muted" />
+				<p class="mt-2 text-sm text-brand-text-secondary">No events yet</p>
 			</div>
 		{/if}
 	{/if}

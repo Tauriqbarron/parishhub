@@ -59,12 +59,14 @@
 	}
 </script>
 
-<div class="min-h-screen flex items-center justify-center px-4" style="background-color: var(--color-bg)">
+<div class="min-h-screen flex items-center justify-center px-4 bg-brand-bg-subtle">
 	<div class="w-full max-w-sm">
-		<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+		<div class="bg-white rounded-lg shadow-sm border border-brand-border p-8">
 			<div class="text-center mb-8">
-				<h1 class="text-2xl font-bold text-gray-900">Ministries</h1>
-				<p class="mt-1 text-sm text-gray-500">Sign in to manage your groups</p>
+				<img src="/logo.png" alt="ParishHub" class="w-14 h-14 mx-auto mb-3" />
+				<h1 class="text-2xl font-bold text-brand-primary tracking-tight">ParishHub</h1>
+				<p class="text-xs text-brand-text-muted font-medium tracking-tight mt-0.5">Ministries</p>
+				<p class="mt-1 text-sm text-brand-text-secondary">Sign in to manage your groups</p>
 			</div>
 
 			{#if error}
@@ -78,10 +80,10 @@
 			</div>
 
 			{#if loading}
-				<p class="mt-4 text-center text-sm text-gray-400">Signing in...</p>
+				<p class="mt-4 text-center text-sm text-brand-text-muted">Signing in...</p>
 			{/if}
 
-			<p class="mt-6 text-center text-xs text-gray-400">
+			<p class="mt-6 text-center text-xs text-brand-text-muted">
 				Only registered ministry members and leaders can sign in.
 				<br />
 				Contact your group leader for access.

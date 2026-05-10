@@ -82,6 +82,7 @@ async def member_google_login(request: Request, body: GoogleLoginRequest):
             email=email,
             name=google_user.get("name"),
             picture=google_user.get("picture"),
+            person_id=person.id if person else None,
             roles=role_list,
         )
 

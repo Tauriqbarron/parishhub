@@ -19,15 +19,20 @@ from app.logging_config import setup_logging, request_context
 from app.routers import (
     addresses,
     analytics,
+    announcement,
     deaths,
     households,
     mass_times,
     member,
     member_auth,
     ministries,
+    notification_delivery,
+    notification_preferences,
     persons,
     registration,
     relationships,
+    roster,
+    roster_member,
     sacraments,
     statistics,
 )
@@ -119,6 +124,11 @@ app.include_router(ministries.persons_router)
 app.include_router(ministries.calendar_router)
 app.include_router(member_auth.router)
 app.include_router(member.router)
+app.include_router(roster.router)
+app.include_router(roster_member.router)
+app.include_router(announcement.router)
+app.include_router(notification_preferences.router)
+app.include_router(notification_delivery.router)
 
 
 # Prometheus metrics instrumentation

@@ -948,6 +948,12 @@ export interface MinistryEvent {
 	attendance_count: number;
 	created_at: string;
 	updated_at: string;
+	start_time?: string | null;
+	end_time?: string | null;
+	event_type?: string | null;
+	capacity?: number | null;
+	recurrence_rule?: string | null;
+	recurrence_end?: string | null;
 }
 
 export interface MinistryEventCreate {
@@ -956,6 +962,12 @@ export interface MinistryEventCreate {
 	description?: string | null;
 	event_date: string;
 	location?: string | null;
+	start_time?: string | null;
+	end_time?: string | null;
+	event_type?: string | null;
+	capacity?: number | null;
+	recurrence_rule?: string | null;
+	recurrence_end?: string | null;
 }
 
 export interface MinistryEventUpdate {
@@ -963,6 +975,12 @@ export interface MinistryEventUpdate {
 	description?: string | null;
 	event_date?: string;
 	location?: string | null;
+	start_time?: string | null;
+	end_time?: string | null;
+	event_type?: string | null;
+	capacity?: number | null;
+	recurrence_rule?: string | null;
+	recurrence_end?: string | null;
 }
 
 export interface AttendanceRecord {
@@ -1057,6 +1075,8 @@ export interface CalendarEvent {
 	is_cancelled: boolean;
 	rsvp_count: number;
 	spots_remaining: number | null;
+	recurrence_rule: string | null;
+	recurrence_end: string | null;
 }
 
 export const calendarApi = {

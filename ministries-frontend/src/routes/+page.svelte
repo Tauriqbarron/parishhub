@@ -9,5 +9,5 @@
 </script>
 
 <div class="min-h-screen flex items-center justify-center">
-	<p class="text-sm text-gray-400">Redirecting...</p>
+	<p class="text-sm text-brand-text-muted">Redirecting...</p>
 </div>

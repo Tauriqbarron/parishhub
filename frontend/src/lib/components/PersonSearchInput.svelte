@@ -205,7 +205,7 @@
 
 		{#if showDropdown && (searchResults.length > 0 || (searchQuery.length >= 2 && !isSearching))}
 			<div
-				class="absolute z-10 mt-1 w-full border border-brand-border rounded-sm shadow-lg bg-white max-h-48 overflow-y-auto"
+				class="absolute z-50 mt-1 w-full border border-brand-border rounded-sm shadow-lg bg-white max-h-48 overflow-y-auto"
 				role="listbox"
 			>
 				{#each searchResults as person (person.id)}
