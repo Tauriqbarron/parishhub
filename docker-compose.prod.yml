@@ -57,16 +57,6 @@ services:
     networks:
       - parish-network
 
-  ministries-frontend:
-    build: ./ministries-frontend
-    restart: unless-stopped
-    environment:
-      - PUBLIC_API_URL=https://api.${DOMAIN_NAME}
-    depends_on:
-      - backend
-    networks:
-      - parish-network
-
   ministries:
     image: parishhub-ministries:latest
     restart: unless-stopped
@@ -89,7 +79,7 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
     depends_on:
       - frontend
-      - ministries-frontend
+      - ministries
       - backend
     networks:
       - parish-network
