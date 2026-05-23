@@ -36,7 +36,7 @@ rollback() {
     log "ROLLING BACK to ${previous_commit}..."
     git -C "$DEPLOY_DIR" checkout "$previous_commit"
     docker compose -f "$DEPLOY_DIR/$COMPOSE_FILE" build backend frontend
-    docker compose -f "$DEPLOY_DIR/$COMPOSE_FILE" up -d --no-deps backend frontend nginx
+    docker compose -f "$DEPLOY_DIR/$COMPOSE_FILE" up -d --no-deps backend frontend ministries nginx
     log "Rollback complete. Services restarted at ${previous_commit}."
 }
 
@@ -117,7 +117,7 @@ fi
 
 # Bring up services with new images
 log "Restarting services..."
-docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate backend frontend nginx
+docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate backend frontend ministries nginx
 
 # Ensure monitoring services are running
 log "Starting monitoring services..."
