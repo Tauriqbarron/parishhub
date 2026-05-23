@@ -149,6 +149,7 @@ class RosterInstanceResponse(BaseModel):
     published_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     assignments: list["RosterAssignmentResponse"] = []
+    slot_count: int = 0
     created_at: datetime
 
 
@@ -170,8 +171,9 @@ class RosterAssignmentResponse(BaseModel):
     id: int
     instance_id: int
     slot_id: int
-    person_id: int
+    person_id: Optional[int] = None  # nullable for placeholder assignments
     person_name: Optional[str] = None  # populated from relationship
+    template_name: Optional[str] = None
     slot_label: Optional[str] = None
     role_name: Optional[str] = None
     status: str
@@ -182,6 +184,7 @@ class RosterAssignmentResponse(BaseModel):
     completed_at: Optional[datetime] = None
     cancelled_at: Optional[datetime] = None
     notes: Optional[str] = None
+    instance_date: Optional[str] = None  # from relationship via instance
     created_at: datetime
 
 

@@ -68,7 +68,7 @@ class NotificationService:
             raise ValueError(
                 f"emit(): 'title' is required in template_data for event_type='{event_type}'"
             )
-        body = template_data.get("body") or str(template_data)
+        body = template_data.get("body") or ""
 
         own_session = db is None
         if own_session:

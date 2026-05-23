@@ -128,10 +128,27 @@
 				<input type="checkbox" checked={settings.allow_self_assign} onchange={(e) => (settings = { ...settings, allow_self_assign: e.currentTarget.checked })} />
 				Allow members to self-assign
 			</label>
-			<label>Auto-open hours <input type="number" bind:value={settings.auto_open_hours} min={1} max={720} /></label>
-		</section>
+		<label>
+			Publish roster before event
+			<select
+				value={Math.round(settings.auto_open_hours / 24)}
+				onchange={(e) => (settings = { ...settings, auto_open_hours: Number(e.currentTarget.value) * 24 })}
+			>
+				<option value={1}>1 day before</option>
+				<option value={2}>2 days before</option>
+				<option value={3}>3 days before</option>
+				<option value={5}>5 days before</option>
+				<option value={7}>1 week before</option>
+				<option value={10}>10 days before</option>
+				<option value={14}>2 weeks before</option>
+				<option value={21}>3 weeks before</option>
+				<option value={30}>30 days before</option>
+			</select>
+			<span class="helper">Roster automatically opens for members this far ahead of the event</span>
+		</label>
+	</section>
 
-		{#if error}<p class="form-error">{error}</p>{/if}
+	{#if error}<p class="form-error">{error}</p>{/if}
 		<div class="form-footer">
 			<button class="btn-secondary" onclick={() => goto('/rosters/templates')}>Cancel</button>
 			<button class="btn-primary" onclick={handleSave} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
@@ -153,7 +170,9 @@
 	.slot-row select { flex: 1; }
 	.slot-row input[type="text"] { flex: 2; }
 	.grip { color: var(--color-text-secondary); cursor: grab; }
-	.toggle-label { flex-direction: row; align-items: center; gap: 0.5rem; }
+	.toggle-label { flex-direction: row; align-items: center; gap: 0.5rem; cursor: pointer; }
+	input[type="checkbox"] { width: 1.125rem; height: 1.125rem; accent-color: var(--color-accent, #D97706); cursor: pointer; border-radius: 0.25rem; }
+	.toggle-label input[type="checkbox"] { margin: 0; }
 	.form-footer { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
 	.btn-primary, .btn-secondary { padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 0.375rem; }
 	.btn-primary { background: var(--color-accent); color: white; }
@@ -163,6 +182,7 @@
 	.icon-btn.danger:hover { color: var(--color-danger); }
 	.icon-sm { width: 1rem; height: 1rem; }
 	.back-btn { background: none; border: none; cursor: pointer; color: var(--color-text-secondary); font-size: 0.875rem; display: flex; align-items: center; gap: 0.25rem; margin-bottom: 1rem; }
+	.helper { font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 400; margin-top: 0.125rem; }
 	.form-error { color: var(--color-danger); font-size: 0.875rem; }
 	.loading { text-align: center; padding: 3rem; color: var(--color-text-secondary); }
 </style>

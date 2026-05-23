@@ -109,7 +109,7 @@ async def assign_role_to_person(
     user: Annotated[User, Depends(require_auth)],
 ) -> PersonRosterRoleResponse:
     try:
-        prr = service.assign_role_to_person(data.person_id, role_id, user.id)
+        prr = service.assign_role_to_person(data.person_id, role_id, None)  # Admin User has no id
         return PersonRosterRoleResponse.model_validate(prr)
     except RosterValidationError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.message)
@@ -160,7 +160,7 @@ async def create_template(
     service: Annotated[RosterService, Depends(get_roster_service)],
     user: Annotated[User, Depends(require_auth)],
 ) -> RosterTemplateResponse:
-    template = service.create_template(data, created_by=user.id)
+    template = service.create_template(data, created_by=None)  # Admin User has no id field
     return RosterTemplateResponse.model_validate(template)
 
 

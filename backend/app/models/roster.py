@@ -211,6 +211,14 @@ class RosterInstance(Base):
     def __repr__(self) -> str:
         return f"<RosterInstance(id={self.id}, template_id={self.template_id}, date={self.date})>"
 
+    @property
+    def slot_count(self) -> int:
+        return len(self.template.slots) if self.template else 0
+
+    @property
+    def template_name(self) -> Optional[str]:
+        return self.template.name if self.template else None
+
 
 # ---------------------------------------------------------------------------
 # RosterAssignment — a person assigned to a slot in an instance
@@ -230,8 +238,8 @@ class RosterAssignment(Base):
     slot_id: Mapped[int] = mapped_column(
         ForeignKey("roster_template_slots.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    person_id: Mapped[int] = mapped_column(
-        ForeignKey("persons.id", ondelete="CASCADE"), nullable=False, index=True
+    person_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("persons.id", ondelete="CASCADE"), nullable=True, index=True
     )
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="pending"
@@ -261,6 +269,30 @@ class RosterAssignment(Base):
             f"<RosterAssignment(id={self.id}, instance_id={self.instance_id}, "
             f"person_id={self.person_id}, status='{self.status}')>"
         )
+
+    @property
+    def person_name(self) -> Optional[str]:
+        if self.person:
+            return f"{self.person.first_name} {self.person.last_name}"
+        return None
+
+    @property
+    def template_name(self) -> Optional[str]:
+        if self.instance and self.instance.template:
+            return self.instance.template.name
+        return None
+
+    @property
+    def slot_label(self) -> Optional[str]:
+        return self.slot.label if self.slot else None
+
+    @property
+    def role_name(self) -> Optional[str]:
+        return self.slot.role.name if self.slot and self.slot.role else None
+
+    @property
+    def instance_date(self) -> Optional[str]:
+        return self.instance.date.isoformat() if self.instance and self.instance.date else None
 
 
 # ---------------------------------------------------------------------------

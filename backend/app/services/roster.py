@@ -78,6 +78,7 @@ class RosterService:
             .filter(
                 RosterAssignment.instance_id == instance_id,
                 RosterAssignment.slot_id == slot_id,
+                RosterAssignment.person_id.isnot(None),  # exclude placeholder assignments
             )
             .count()
         )
@@ -273,13 +274,22 @@ class RosterService:
         return template
 
     def list_templates(
-        self, ministry_id: Optional[int] = None, is_active: Optional[bool] = None
+        self, ministry_id: Optional[int] = None, is_active: Optional[bool] = None,
+        include_parish: bool = False,
     ) -> list[RosterTemplate]:
         query = self.db.query(RosterTemplate).options(
             joinedload(RosterTemplate.slots)
         )
         if ministry_id is not None:
-            query = query.filter(RosterTemplate.ministry_id == ministry_id)
+            if include_parish:
+                # Return templates for this ministry AND parish-wide templates
+                from sqlalchemy import or_
+                query = query.filter(or_(
+                    RosterTemplate.ministry_id == ministry_id,
+                    RosterTemplate.ministry_id.is_(None),
+                ))
+            else:
+                query = query.filter(RosterTemplate.ministry_id == ministry_id)
         if is_active is not None:
             query = query.filter(RosterTemplate.is_active == is_active)
         return query.order_by(RosterTemplate.name).all()
@@ -305,7 +315,8 @@ class RosterService:
         update_dict = data.model_dump(exclude_unset=True)
         for key, value in update_dict.items():
             if key == "settings" and value is not None:
-                setattr(template, key, value.model_dump())
+                # Already a dict from model_dump(exclude_unset=True) above
+                setattr(template, key, value)
             elif key != "slots":
                 setattr(template, key, value)
         self.db.commit()
@@ -369,6 +380,16 @@ class RosterService:
         self.db.add(instance)
         self.db.flush()
 
+        # Create placeholder assignments for each template slot
+        for slot in template.slots:
+            assignment = RosterAssignment(
+                instance_id=instance.id,
+                slot_id=slot.id,
+                person_id=None,
+                status="pending",
+            )
+            self.db.add(assignment)
+
         if template.settings.get("keep_assignee"):
             self._copy_assignments_from_previous(instance)
 
@@ -431,7 +452,10 @@ class RosterService:
     ) -> list[RosterInstance]:
         query = (
             self.db.query(RosterInstance)
-            .options(joinedload(RosterInstance.assignments))
+            .options(
+                joinedload(RosterInstance.assignments),
+                joinedload(RosterInstance.template).joinedload(RosterTemplate.slots),
+            )
         )
         if date_from:
             query = query.filter(RosterInstance.date >= date_from)
@@ -441,6 +465,30 @@ class RosterService:
             query = query.join(RosterTemplate).filter(
                 RosterTemplate.ministry_id == ministry_id
             )
+        return query.order_by(RosterInstance.date, RosterTemplate.name).all()
+
+    def list_parish_instances(
+        self,
+        date_from: Optional[date] = None,
+        date_to: Optional[date] = None,
+        status: Optional[str] = None,
+    ) -> list[RosterInstance]:
+        """Return instances from parish-wide templates (ministry_id IS NULL)."""
+        query = (
+            self.db.query(RosterInstance)
+            .options(
+                joinedload(RosterInstance.assignments),
+                joinedload(RosterInstance.template).joinedload(RosterTemplate.slots),
+            )
+            .join(RosterTemplate)
+            .filter(RosterTemplate.ministry_id.is_(None))
+        )
+        if date_from:
+            query = query.filter(RosterInstance.date >= date_from)
+        if date_to:
+            query = query.filter(RosterInstance.date <= date_to)
+        if status:
+            query = query.filter(RosterInstance.status == status)
         return query.order_by(RosterInstance.date, RosterTemplate.name).all()
 
     def get_instance(self, instance_id: int) -> RosterInstance:
@@ -480,6 +528,29 @@ class RosterService:
 
         # Check capacity
         self._validate_slot_capacity(instance_id, slot_id, slot.max_persons)
+
+        # Check for existing placeholder — reuse it instead of creating duplicate
+        placeholder = (
+            self.db.query(RosterAssignment)
+            .filter(
+                RosterAssignment.instance_id == instance_id,
+                RosterAssignment.slot_id == slot_id,
+                RosterAssignment.person_id.is_(None),
+            )
+            .first()
+        )
+        if placeholder:
+            placeholder.person_id = person_id
+            placeholder.status = "pending"
+            placeholder.assigned_by = assigned_by
+            placeholder.assigned_at = datetime.now(timezone.utc)
+            self.db.commit()
+            self.db.refresh(placeholder)
+            logger.info(
+                "roster_person_assigned: assignment_id=%s person_id=%s (reused placeholder)",
+                placeholder.id, person_id,
+            )
+            return placeholder
 
         # Check not already assigned to same slot in instance
         existing = (
@@ -528,6 +599,28 @@ class RosterService:
             )
 
         self._validate_slot_capacity(instance_id, slot_id, slot.max_persons)
+
+        # Check for existing placeholder assignment — update it instead of creating duplicate
+        existing = (
+            self.db.query(RosterAssignment)
+            .filter(
+                RosterAssignment.instance_id == instance_id,
+                RosterAssignment.slot_id == slot_id,
+                RosterAssignment.person_id.is_(None),
+            )
+            .first()
+        )
+        if existing:
+            existing.person_id = person_id
+            existing.status = "accepted"
+            existing.assigned_at = datetime.now(timezone.utc)
+            self.db.commit()
+            self.db.refresh(existing)
+            logger.info(
+                "roster_self_assigned: assignment_id=%s person_id=%s (reused placeholder)",
+                existing.id, person_id,
+            )
+            return existing
 
         assignment = RosterAssignment(
             instance_id=instance_id,
@@ -590,7 +683,17 @@ class RosterService:
     def cancel_assignment(
         self, assignment_id: int, person_id: Optional[int] = None
     ) -> RosterAssignment:
-        return self.update_assignment_status(assignment_id, "cancelled", person_id)
+        """Cancel an assignment and free the slot for others."""
+        assignment = self.update_assignment_status(assignment_id, "cancelled", person_id)
+        # Free the slot — reset to placeholder so others can take it
+        assignment.person_id = None
+        assignment.status = "pending"
+        assignment.assigned_at = None
+        assignment.accepted_at = None
+        assignment.cancelled_at = datetime.now(timezone.utc)
+        self.db.commit()
+        self.db.refresh(assignment)
+        return assignment
 
     def remove_assignment(self, assignment_id: int) -> None:
         assignment = self.db.get(RosterAssignment, assignment_id)
