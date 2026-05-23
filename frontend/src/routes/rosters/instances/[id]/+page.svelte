@@ -275,7 +275,7 @@
 						<Send class="icon-sm" /> Publish
 					</button>
 					<button class="btn-secondary" onclick={handleGenerate} disabled={generating}>
-						<RefreshCw class="icon-sm" class:spin={generating} /> Regenerate
+						<RefreshCw class={generating ? 'icon-sm spin' : 'icon-sm'} /> Regenerate
 					</button>
 				{:else if instance.status === 'published'}
 					<button class="btn-primary" onclick={handleComplete} disabled={mutating}>
