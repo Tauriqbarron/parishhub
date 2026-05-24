@@ -1,7 +1,7 @@
 """JWT-based authentication for Ministries member frontend."""
 
 import time
-from typing import Annotated, Optional
+from typing import Annotated
 
 import httpx
 import jwt

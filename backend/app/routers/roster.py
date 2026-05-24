@@ -3,24 +3,18 @@
 from datetime import date
 from typing import Annotated, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.auth import User, require_auth
-from app.database import get_db
 from app.schemas.roster import (
     PersonRosterRoleCreate,
     PersonRosterRoleResponse,
     RosterAssignmentCreate,
     RosterAssignmentResponse,
-    RosterAssignmentStatusUpdate,
     RosterInstanceResponse,
-    RosterInstanceStatusUpdate,
     RosterRoleCreate,
     RosterRoleResponse,
     RosterRoleUpdate,
-    RosterSwapCreate,
-    RosterSwapResponse,
     RosterTemplateCreate,
     RosterTemplateResponse,
     RosterTemplateUpdate,

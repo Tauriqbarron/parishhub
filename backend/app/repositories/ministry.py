@@ -16,9 +16,7 @@ from app.models.ministry import (
     MinistryMember,
     UserRole,
 )
-from app.models.person import Person
 from app.schemas.ministry import (
-    AttendanceBatchCreate,
     MinistryCreate,
     MinistryEventCreate,
     MinistryEventUpdate,
@@ -564,7 +562,6 @@ class FakeMinistryRepository(MinistryRepository):
     def record_attendance(self, event_id: int, person_ids: list[int]) -> int:
         count = 0
         for pid in person_ids:
-            key = (event_id, pid)
             if not any(
                 a.event_id == event_id and a.person_id == pid
                 for a in self._attendance.values()

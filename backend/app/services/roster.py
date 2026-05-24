@@ -6,7 +6,6 @@ import logging
 from typing import Optional
 
 from fastapi import Depends
-from sqlalchemy import and_
 from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
@@ -21,13 +20,8 @@ from app.models.roster import (
     RosterTemplateSlot,
 )
 from app.schemas.roster import (
-    PersonRosterRoleCreate,
-    RosterAssignmentCreate,
-    RosterAssignmentStatusUpdate,
-    RosterInstanceStatusUpdate,
     RosterRoleCreate,
     RosterRoleUpdate,
-    RosterSwapCreate,
     RosterTemplateCreate,
     RosterTemplateUpdate,
 )
@@ -914,7 +908,7 @@ class RosterService:
         templates = (
             self.db.query(RosterTemplate)
             .filter(
-                RosterTemplate.is_active == True,
+                RosterTemplate.is_active,
                 RosterTemplate.recurrence_rule != "none",
             )
             .all()
@@ -1007,7 +1001,7 @@ class RosterService:
             .join(RosterTemplate)
             .filter(
                 RosterInstance.status == "draft",
-                RosterTemplate.is_active == True,
+                RosterTemplate.is_active,
             )
             .all()
         )

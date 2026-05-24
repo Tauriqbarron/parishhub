@@ -1,9 +1,9 @@
 """Member-facing API endpoints for Ministries frontend."""
 
 from datetime import date, timedelta
-from typing import Annotated, Optional
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -35,7 +35,7 @@ async def get_week_dashboard(
     db: Annotated[Session, Depends(get_db)],
 ):
     """Get this week's events across all ministries the user belongs to."""
-    from app.models.ministry import Ministry, MinistryEvent, MinistryMember
+    from app.models.ministry import Ministry, MinistryEvent
 
     ministry_ids = [r["ministry_id"] for r in member.roles if r["ministry_id"]]
     if not ministry_ids:
@@ -92,7 +92,7 @@ async def get_my_ministries(
     db: Annotated[Session, Depends(get_db)],
 ):
     """Get ministries where the user is a leader or member."""
-    from app.models.ministry import Ministry, MinistryMember
+    from app.models.ministry import Ministry
 
     ministry_ids = list({r["ministry_id"] for r in member.roles if r["ministry_id"]})
     if not ministry_ids:
@@ -128,7 +128,7 @@ async def get_ministry_detail(
     db: Annotated[Session, Depends(get_db)],
 ):
     """Get ministry detail if user has access."""
-    from app.models.ministry import Ministry, MinistryEvent, MinistryMember
+    from app.models.ministry import Ministry
 
     # Check access
     user_ministry_ids = {r["ministry_id"] for r in member.roles if r["ministry_id"]}
@@ -746,10 +746,8 @@ async def get_event_detail(
     """Get full event detail with RSVP and attendance."""
     from app.models.ministry import (
         EventRSVP,
-        Ministry,
         MinistryEvent,
         MinistryEventAttendance,
-        MinistryMember,
     )
 
     event = db.get(MinistryEvent, event_id)

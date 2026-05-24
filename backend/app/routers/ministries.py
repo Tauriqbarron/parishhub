@@ -4,10 +4,9 @@ from datetime import date
 from typing import Annotated, Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
-from sqlalchemy.orm import Session
 
 from app.auth.dependencies import User, require_auth
-from app.auth.roles import require_ministry_role, require_role
+from app.auth.roles import require_role
 from app.database import get_db
 from app.limiter import limiter
 from app.schemas.ministry import (

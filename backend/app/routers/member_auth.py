@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from app.auth.member import (
     MemberUser,
     create_member_token,
-    get_current_member,
     verify_google_token,
 )
 from app.limiter import limiter

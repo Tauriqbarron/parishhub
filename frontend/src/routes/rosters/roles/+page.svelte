@@ -137,10 +137,12 @@
 
 <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Rosters', href: '/rosters' }, { label: 'Roles' }]} />
 
-<PageHeader title="Roster Roles" description="Manage capability badges assigned to parish members (Reader, Usher, Sacristan, etc.)">
-	<button class="btn-primary" onclick={openCreate}>
-		<Plus class="icon-sm" /> Add Role
-	</button>
+<PageHeader title="Roster Roles" subtitle="Manage capability badges assigned to parish members (Reader, Usher, Sacristan, etc.)">
+	{#snippet actions()}
+		<button class="btn-primary" onclick={openCreate}>
+			<Plus class="icon-sm" /> Add Role
+		</button>
+	{/snippet}
 </PageHeader>
 
 {#if error}

@@ -41,10 +41,12 @@
 
 <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Rosters' }]} />
 
-<PageHeader title="Roster Templates" description="Define reusable rosters with slots, recurrence, and settings">
-	<button class="btn-primary" onclick={() => goto('/rosters/templates/new')}>
-		<Plus class="icon-sm" /> Create Template
-	</button>
+<PageHeader title="Roster Templates" subtitle="Define reusable rosters with slots, recurrence, and settings">
+	{#snippet actions()}
+		<button class="btn-primary" onclick={() => goto('/rosters/templates/new')}>
+			<Plus class="icon-sm" /> Create Template
+		</button>
+	{/snippet}
 </PageHeader>
 
 <div class="tabs">

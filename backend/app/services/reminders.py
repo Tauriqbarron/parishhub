@@ -6,8 +6,7 @@ Uses ReminderLog for deduplication so each entity+hours_before combo fires once.
 """
 
 import logging
-from datetime import date, datetime, timezone, timedelta
-from typing import Optional
+from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session

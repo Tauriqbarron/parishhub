@@ -7,15 +7,13 @@ from typing import Any, Optional
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.ministry import Ministry, MinistryEvent, MinistryMember, UserRole
+from app.models.ministry import Ministry, MinistryEvent, MinistryMember
 from app.models.person import Person
 from app.repositories.ministry import (
-    FakeMinistryRepository,
     MinistryRepository,
     SqlAlchemyMinistryRepository,
 )
 from app.schemas.ministry import (
-    AttendanceBatchCreate,
     MinistryCreate,
     MinistryEventCreate,
     MinistryEventUpdate,

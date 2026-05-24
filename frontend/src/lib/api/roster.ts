@@ -75,6 +75,7 @@ export interface RosterTemplateCreate {
 	description?: string;
 	ministry_id?: number;
 	recurrence_rule?: string;
+	recurrence_end?: string;
 	settings?: RosterTemplateSettings;
 	is_active?: boolean;
 	slots?: RosterTemplateSlotCreate[];
@@ -143,12 +144,12 @@ export const rosterApi = {
 	createTemplate: (data: RosterTemplateCreate) => api.post<RosterTemplate>('/roster/templates', data),
 	updateTemplate: (id: number, data: Partial<RosterTemplateCreate>) =>
 		api.put<RosterTemplate>(`/roster/templates/${id}`, data),
-	deleteTemplate: (id: number) => api.delete(`/roster/templates/${id}`),
-	duplicateTemplate: (id: number) => api.post<RosterTemplate>(`/roster/templates/${id}/duplicate`),
+	deleteTemplate: (id: number) => api.delete<void>(`/roster/templates/${id}`),
+	duplicateTemplate: (id: number) => api.post<RosterTemplate>(`/roster/templates/${id}/duplicate`, {}),
 
 	// Instances
 	generateInstance: (templateId: number, date: string) =>
-		api.post<RosterInstance>(`/roster/templates/${templateId}/generate${qs({ date })}`),
+		api.post<RosterInstance>(`/roster/templates/${templateId}/generate${qs({ date })}`, {}),
 	listInstances: (params?: { date_from?: string; date_to?: string; ministry_id?: number }) =>
 		api.get<RosterInstance[]>(`/roster/instances${qs(params || {})}`),
 	getInstance: (id: number) => api.get<RosterInstance>(`/roster/instances/${id}`),
