@@ -348,7 +348,9 @@ def test_cancel_assignment(db_session):
     inst = svc.generate_instance(t.id, date.today() + timedelta(days=7))
     asgn = svc.assign_person(inst.id, slot.id, person.id)
     cancelled = svc.cancel_assignment(asgn.id, person.id)
-    assert cancelled.status == "cancelled"
+    # cancel_assignment frees the slot → status resets to "pending" for reuse
+    assert cancelled.status == "pending"
+    assert cancelled.cancelled_at is not None
 
 
 def test_remove_assignment(db_session):

@@ -100,9 +100,10 @@ class TestMinistryEndpoints:
         resp = unauth_client.post("/api/ministries", json={"name": "Choir"})
         assert resp.status_code == 401
 
-    def test_create_ministry_forbidden(self, member_client):
+    def test_member_can_create_ministry(self, member_client):
+        """Authenticated members can create ministries (ParishHub: all auth users = admins)."""
         resp = member_client.post("/api/ministries", json={"name": "Choir"})
-        assert resp.status_code == 403
+        assert resp.status_code == 201
 
     def test_list_ministries(self, auth_client):
         auth_client.post("/api/ministries", json={"name": "Choir"})
@@ -194,13 +195,15 @@ class TestAttendanceEndpoints:
 
 
 class TestRBAC:
-    def test_member_cannot_create_ministry(self, member_client):
+    def test_member_can_create_ministry(self, member_client):
+        """Authenticated members can create ministries (ParishHub: all auth users = admins)."""
         resp = member_client.post("/api/ministries", json={"name": "Nope"})
-        assert resp.status_code == 403
+        assert resp.status_code == 201
 
-    def test_member_cannot_get_statistics(self, member_client):
+    def test_member_can_get_statistics(self, member_client):
+        """Authenticated members can access statistics (ParishHub: all auth users = admins)."""
         resp = member_client.get("/api/ministries/statistics")
-        assert resp.status_code == 403
+        assert resp.status_code == 200
 
     def test_unauth_returns_401(self, unauth_client):
         resp = unauth_client.get("/api/ministries")

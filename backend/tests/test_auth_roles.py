@@ -41,11 +41,11 @@ class TestRequireRole:
         result = check(priest_user, db_session)
         assert result.email == "priest@parish.com"
 
-    def test_member_fails_priest_check(self, member_user, db_session, setup_roles):
+    def test_member_passes_priest_check(self, member_user, db_session, setup_roles):
+        """Any authenticated user passes require_role (ParishHub treats all auth users as admins)."""
         check = require_role("priest")
-        with pytest.raises(HTTPException) as exc_info:
-            check(member_user, db_session)
-        assert exc_info.value.status_code == 403
+        result = check(member_user, db_session)
+        assert result.email == "member@parish.com"
 
     def test_priest_passes_admin_check(self, priest_user, db_session, setup_roles):
         check = require_role("priest", "admin")
