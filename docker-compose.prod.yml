@@ -61,7 +61,7 @@ services:
     image: parishhub-ministries:latest
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_API_URL: https://${DOMAIN_NAME}/api
+      NEXT_PUBLIC_API_URL: https://${DOMAIN_NAME}
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     depends_on:
       - backend
