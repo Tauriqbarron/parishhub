@@ -10,7 +10,7 @@ server {
     add_header Referrer-Policy "no-referrer-when-downgrade" always;
     add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' https://accounts.google.com; frame-src 'self' https://accounts.google.com; img-src 'self' data: https://lh3.googleusercontent.com;" always;
 
-    location /ministries/ {
+    location /ministries {
         proxy_pass http://ministries:3000/ministries;
         proxy_http_version 1.1;
         proxy_redirect off;
