@@ -1,12 +1,11 @@
 <script lang="ts">
 	interface Props {
 		size?: number;
-		variant?: 'light' | 'dark';
 		detail?: 'simple' | 'full';
 		class?: string;
 	}
 
-	let { size = 32, variant = 'light', detail = 'full', class: className = '' }: Props = $props();
+	let { size = 32, detail = 'full', class: className = '' }: Props = $props();
 
 	const id = Math.random().toString(36).slice(2, 8); // unique ID for gradient defs
 </script>

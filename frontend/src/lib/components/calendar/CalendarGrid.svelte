@@ -44,11 +44,7 @@
 	}
 
 	function isPast(date: Date): boolean {
-		const today = new Date();
-		today.setHours(0, 0, 0, 0);
-		const d = new Date(date);
-		d.setHours(0, 0, 0, 0);
-		return d < today;
+		return date.getTime() < Date.now();
 	}
 
 	interface CalendarDay {

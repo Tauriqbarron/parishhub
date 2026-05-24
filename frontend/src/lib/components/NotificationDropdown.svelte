@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { Bell, Loader2 } from 'lucide-svelte';
 	import { notifications, loading, fetchRecent, markAsRead } from '$stores/notifications';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
 	interface Props {
@@ -50,7 +49,6 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <!-- Backdrop -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="fixed inset-0 bg-transparent z-50"
 	onclick={onClose}
