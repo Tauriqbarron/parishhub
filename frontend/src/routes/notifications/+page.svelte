@@ -50,9 +50,7 @@
 		markingAll = true;
 		try {
 			await markAsRead(unreadIds);
-			items = items.map((n) =>
-				unreadIds.includes(n.id) ? { ...n, is_read: true } : n
-			);
+			items = items.map((n) => (unreadIds.includes(n.id) ? { ...n, is_read: true } : n));
 		} catch {
 			// silently fail
 		} finally {
@@ -135,19 +133,17 @@
 					Mark all read
 				</button>
 			{/if}
-			<a
-				href="/announcements/new"
-				class="btn-primary text-sm"
-			>
-				New Announcement
-			</a>
+			<a href="/announcements/new" class="btn-primary text-sm"> New Announcement </a>
 		</div>
 	</div>
 
 	<!-- Filters -->
 	<div class="flex gap-1 bg-brand-bg-subtle rounded-sm p-1 w-fit mb-6">
 		<button
-			onclick={() => { status = 'all'; page = 1; }}
+			onclick={() => {
+				status = 'all';
+				page = 1;
+			}}
 			class="px-3 py-1.5 text-xs font-medium rounded-sm transition-colors {status === 'all'
 				? 'bg-white text-brand-primary shadow-sm'
 				: 'text-brand-text-secondary hover:text-brand-primary'}"
@@ -155,7 +151,10 @@
 			All
 		</button>
 		<button
-			onclick={() => { status = 'unread'; page = 1; }}
+			onclick={() => {
+				status = 'unread';
+				page = 1;
+			}}
 			class="px-3 py-1.5 text-xs font-medium rounded-sm transition-colors {status === 'unread'
 				? 'bg-white text-brand-primary shadow-sm'
 				: 'text-brand-text-secondary hover:text-brand-primary'}"
@@ -187,13 +186,17 @@
 		<div class="space-y-6">
 			{#each groupEntries as [dateLabel, dateItems]}
 				<div>
-					<h2 class="text-xs font-semibold text-brand-text-muted uppercase tracking-wider mb-3 px-1">
+					<h2
+						class="text-xs font-semibold text-brand-text-muted uppercase tracking-wider mb-3 px-1"
+					>
 						{dateLabel}
 					</h2>
 					<div class="card divide-y divide-brand-border overflow-hidden">
 						{#each dateItems as notif (notif.id)}
 							<button
-								class="w-full text-left flex items-start gap-3 px-4 py-3 transition-colors hover:bg-brand-bg-subtle {!notif.is_read ? 'bg-amber-50/50' : ''}"
+								class="w-full text-left flex items-start gap-3 px-4 py-3 transition-colors hover:bg-brand-bg-subtle {!notif.is_read
+									? 'bg-amber-50/50'
+									: ''}"
 								onclick={() => !notif.is_read && handleMarkOne(notif.id)}
 							>
 								<!-- Unread dot -->
@@ -207,7 +210,11 @@
 
 								<div class="min-w-0 flex-1">
 									<div class="flex items-start justify-between gap-2">
-										<p class="text-sm {!notif.is_read ? 'font-semibold text-brand-primary' : 'font-medium text-brand-text-secondary'}">
+										<p
+											class="text-sm {!notif.is_read
+												? 'font-semibold text-brand-primary'
+												: 'font-medium text-brand-text-secondary'}"
+										>
 											{notif.title}
 										</p>
 										<span class="text-xs text-brand-text-muted whitespace-nowrap flex-shrink-0">
@@ -218,7 +225,9 @@
 										{notif.body}
 									</p>
 									<div class="flex items-center gap-2 mt-2">
-										<span class="text-[10px] font-medium text-brand-text-muted uppercase tracking-wider bg-brand-bg-subtle px-1.5 py-0.5 rounded-sm">
+										<span
+											class="text-[10px] font-medium text-brand-text-muted uppercase tracking-wider bg-brand-bg-subtle px-1.5 py-0.5 rounded-sm"
+										>
 											{notif.category}
 										</span>
 										<span class="text-[10px] text-brand-text-muted">
@@ -238,7 +247,7 @@
 	{#if pages > 1}
 		<div class="flex items-center justify-center gap-2 mt-6">
 			<button
-				onclick={() => page = Math.max(1, page - 1)}
+				onclick={() => (page = Math.max(1, page - 1))}
 				disabled={page === 1 || loading}
 				class="px-3 py-1.5 text-sm rounded-sm border border-brand-border hover:bg-brand-bg-subtle disabled:opacity-40 transition-colors"
 			>
@@ -246,7 +255,7 @@
 			</button>
 			<span class="text-sm text-brand-text-muted">{page} of {pages}</span>
 			<button
-				onclick={() => page = Math.min(pages, page + 1)}
+				onclick={() => (page = Math.min(pages, page + 1))}
 				disabled={page === pages || loading}
 				class="px-3 py-1.5 text-sm rounded-sm border border-brand-border hover:bg-brand-bg-subtle disabled:opacity-40 transition-colors"
 			>

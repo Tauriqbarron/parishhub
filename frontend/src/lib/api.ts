@@ -1037,8 +1037,7 @@ export const ministryApi = {
 		api.delete<void>(`/ministries/${ministryId}/members/${memberId}`),
 
 	// Events
-	listEvents: (ministryId: number) =>
-		api.get<MinistryEvent[]>(`/ministries/${ministryId}/events`),
+	listEvents: (ministryId: number) => api.get<MinistryEvent[]>(`/ministries/${ministryId}/events`),
 
 	createEvent: (data: MinistryEventCreate) =>
 		api.post<MinistryEvent>(`/ministries/${data.ministry_id}/events`, data),

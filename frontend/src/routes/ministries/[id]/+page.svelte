@@ -37,7 +37,7 @@
 
 	// Filter members into leader + co-leaders only
 	const leaders = $derived(
-		ministry?.members.filter(m => m.role === 'leader' || m.role === 'co-leader') ?? []
+		ministry?.members.filter((m) => m.role === 'leader' || m.role === 'co-leader') ?? []
 	);
 
 	async function loadMinistry() {
@@ -150,12 +150,18 @@
 		<div class="p-6 text-center">
 			<h3 class="text-sm font-medium text-brand-primary">Error loading ministry</h3>
 			<p class="mt-1 text-sm text-brand-text-secondary">{error}</p>
-			<a href="/ministries" class="mt-4 inline-flex items-center gap-1 text-sm text-brand-accent hover:underline">
+			<a
+				href="/ministries"
+				class="mt-4 inline-flex items-center gap-1 text-sm text-brand-accent hover:underline"
+			>
 				<ArrowLeft class="w-4 h-4" /> Back to ministries
 			</a>
 		</div>
 	{:else if ministry}
-		<a href="/ministries" class="inline-flex items-center gap-1 text-sm text-brand-text-secondary hover:text-brand-primary mb-4">
+		<a
+			href="/ministries"
+			class="inline-flex items-center gap-1 text-sm text-brand-text-secondary hover:text-brand-primary mb-4"
+		>
 			<ArrowLeft class="w-4 h-4" /> Ministries
 		</a>
 
@@ -164,26 +170,52 @@
 			{#if isEditing}
 				<div class="space-y-4 max-w-lg">
 					<div>
-						<label for="edit-name" class="block text-sm font-medium text-brand-primary">Name *</label>
-						<input id="edit-name" type="text" bind:value={editName} required maxlength={200}
-							class="mt-1 block w-full rounded-sm border border-brand-border px-3 py-2 text-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none" />
+						<label for="edit-name" class="block text-sm font-medium text-brand-primary"
+							>Name *</label
+						>
+						<input
+							id="edit-name"
+							type="text"
+							bind:value={editName}
+							required
+							maxlength={200}
+							class="mt-1 block w-full rounded-sm border border-brand-border px-3 py-2 text-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none"
+						/>
 					</div>
 					<div>
-						<label for="edit-desc" class="block text-sm font-medium text-brand-primary">Description</label>
-						<textarea id="edit-desc" bind:value={editDescription} rows={3} maxlength={5000}
-							class="mt-1 block w-full rounded-sm border border-brand-border px-3 py-2 text-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none resize-y"></textarea>
+						<label for="edit-desc" class="block text-sm font-medium text-brand-primary"
+							>Description</label
+						>
+						<textarea
+							id="edit-desc"
+							bind:value={editDescription}
+							rows={3}
+							maxlength={5000}
+							class="mt-1 block w-full rounded-sm border border-brand-border px-3 py-2 text-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none resize-y"
+						></textarea>
 					</div>
 					<div class="flex items-center gap-2">
-						<input id="edit-active" type="checkbox" bind:checked={editIsActive} class="rounded border-brand-border text-brand-accent focus:ring-brand-accent" />
+						<input
+							id="edit-active"
+							type="checkbox"
+							bind:checked={editIsActive}
+							class="rounded border-brand-border text-brand-accent focus:ring-brand-accent"
+						/>
 						<label for="edit-active" class="text-sm text-brand-primary">Active</label>
 					</div>
 					<div class="flex items-center gap-2 pt-2">
-						<button onclick={saveEdit} disabled={saving || !editName.trim()}
-							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90 disabled:opacity-50">
-							<Check class="w-4 h-4" /> {saving ? 'Saving...' : 'Save'}
+						<button
+							onclick={saveEdit}
+							disabled={saving || !editName.trim()}
+							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90 disabled:opacity-50"
+						>
+							<Check class="w-4 h-4" />
+							{saving ? 'Saving...' : 'Save'}
 						</button>
-						<button onclick={cancelEditing}
-							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-brand-text-secondary hover:text-brand-primary">
+						<button
+							onclick={cancelEditing}
+							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-brand-text-secondary hover:text-brand-primary"
+						>
 							<X class="w-4 h-4" /> Cancel
 						</button>
 					</div>
@@ -194,7 +226,10 @@
 						<div class="flex items-center gap-2">
 							<h1 class="text-xl font-semibold text-brand-primary">{ministry.name}</h1>
 							{#if !ministry.is_active}
-								<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-bg-muted text-brand-text-secondary">Inactive</span>
+								<span
+									class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-bg-muted text-brand-text-secondary"
+									>Inactive</span
+								>
 							{/if}
 						</div>
 						{#if ministry.description}
@@ -202,12 +237,16 @@
 						{/if}
 					</div>
 					<div class="flex items-center gap-2">
-						<button onclick={startEditing}
-							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-brand-text-secondary hover:text-brand-primary border border-brand-border hover:border-brand-accent">
+						<button
+							onclick={startEditing}
+							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-brand-text-secondary hover:text-brand-primary border border-brand-border hover:border-brand-accent"
+						>
 							<Edit3 class="w-4 h-4" /> Edit
 						</button>
-						<button onclick={() => (showDeleteConfirm = true)}
-							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-red-600 hover:text-red-700 border border-red-200 hover:border-red-300">
+						<button
+							onclick={() => (showDeleteConfirm = true)}
+							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-red-600 hover:text-red-700 border border-red-200 hover:border-red-300"
+						>
 							<Trash2 class="w-4 h-4" /> Delete
 						</button>
 					</div>
@@ -237,46 +276,74 @@
 						/>
 					</div>
 					{#if leaderSearch}
-						<button onclick={addLeader} disabled={addingLeader}
-							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90 disabled:opacity-50 whitespace-nowrap">
-							<UserPlus class="w-4 h-4" /> {addingLeader ? 'Adding...' : 'Add'}
+						<button
+							onclick={addLeader}
+							disabled={addingLeader}
+							class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-sm text-white bg-brand-accent hover:opacity-90 disabled:opacity-50 whitespace-nowrap"
+						>
+							<UserPlus class="w-4 h-4" />
+							{addingLeader ? 'Adding...' : 'Add'}
 						</button>
-						<button onclick={() => (leaderSearch = null)}
-							class="px-2 py-1.5 text-sm text-brand-text-secondary"><X class="w-4 h-4" /></button>
+						<button
+							onclick={() => (leaderSearch = null)}
+							class="px-2 py-1.5 text-sm text-brand-text-secondary"><X class="w-4 h-4" /></button
+						>
 					{/if}
 				</div>
-				<p class="mt-1 text-xs text-brand-text-secondary">First person becomes the Leader, others become Co-Leaders.</p>
+				<p class="mt-1 text-xs text-brand-text-secondary">
+					First person becomes the Leader, others become Co-Leaders.
+				</p>
 			</div>
 
 			{#if leaders.length === 0}
-				<p class="p-6 text-sm text-brand-text-secondary text-center">No leadership assigned. Search above to add someone.</p>
+				<p class="p-6 text-sm text-brand-text-secondary text-center">
+					No leadership assigned. Search above to add someone.
+				</p>
 			{:else}
 				<div class="divide-y divide-brand-border">
 					{#each leaders as member (member.id)}
 						<div class="px-6 py-3 flex items-center justify-between">
 							<div class="flex items-center gap-3">
 								<a href="/people/{member.person_id}" class="group flex items-center gap-2">
-									<div class="w-8 h-8 rounded-full bg-brand-accent/10 flex items-center justify-center text-xs font-medium text-brand-accent">
-										{(member.person_name || '??').split(' ').map(n => n[0]).join('').slice(0, 2)}
+									<div
+										class="w-8 h-8 rounded-full bg-brand-accent/10 flex items-center justify-center text-xs font-medium text-brand-accent"
+									>
+										{(member.person_name || '??')
+											.split(' ')
+											.map((n) => n[0])
+											.join('')
+											.slice(0, 2)}
 									</div>
-									<p class="text-sm font-medium text-brand-primary group-hover:text-brand-accent transition-colors">
+									<p
+										class="text-sm font-medium text-brand-primary group-hover:text-brand-accent transition-colors"
+									>
 										{member.person_name || `Person #${member.person_id}`}
 									</p>
 								</a>
 								{#if member.role === 'leader'}
-									<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+									<span
+										class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800"
+									>
 										<Shield class="w-3 h-3" /> Leader
 									</span>
 								{:else if member.role === 'co-leader'}
-									<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+									<span
+										class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700"
+									>
 										<Shield class="w-3 h-3" /> Co-Leader
 									</span>
 								{/if}
 							</div>
 							<button
-								onclick={() => removeLeader(member.person_id, member.person_name || `Person #${member.person_id}`, member.role)}
+								onclick={() =>
+									removeLeader(
+										member.person_id,
+										member.person_name || `Person #${member.person_id}`,
+										member.role
+									)}
 								disabled={removingLeaderId === member.person_id}
-								class="text-red-400 hover:text-red-600 disabled:opacity-50">
+								class="text-red-400 hover:text-red-600 disabled:opacity-50"
+							>
 								<UserMinus class="w-4 h-4" />
 							</button>
 						</div>
@@ -291,12 +358,19 @@
 				<div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full mx-4">
 					<h3 class="text-lg font-medium text-brand-primary">Delete Ministry</h3>
 					<p class="mt-2 text-sm text-brand-text-secondary">
-						Delete <strong>{ministry.name}</strong>? This removes all members and events. Cannot be undone.
+						Delete <strong>{ministry.name}</strong>? This removes all members and events. Cannot be
+						undone.
 					</p>
 					<div class="mt-4 flex items-center gap-3 justify-end">
-						<button onclick={() => (showDeleteConfirm = false)} class="px-4 py-2 text-sm text-brand-text-secondary">Cancel</button>
-						<button onclick={handleDelete} disabled={deleting}
-							class="px-4 py-2 text-sm font-medium rounded-sm text-white bg-red-600 hover:bg-red-700 disabled:opacity-50">
+						<button
+							onclick={() => (showDeleteConfirm = false)}
+							class="px-4 py-2 text-sm text-brand-text-secondary">Cancel</button
+						>
+						<button
+							onclick={handleDelete}
+							disabled={deleting}
+							class="px-4 py-2 text-sm font-medium rounded-sm text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
+						>
 							{deleting ? 'Deleting...' : 'Delete'}
 						</button>
 					</div>

@@ -106,7 +106,9 @@
 	<!-- Day headers -->
 	<div class="grid grid-cols-7 border-b border-brand-border">
 		{#each DAY_NAMES as day}
-			<div class="px-2 py-2 text-center text-xs font-semibold text-brand-text-secondary uppercase tracking-wider">
+			<div
+				class="px-2 py-2 text-center text-xs font-semibold text-brand-text-secondary uppercase tracking-wider"
+			>
 				{day}
 			</div>
 		{/each}
@@ -114,7 +116,9 @@
 
 	<!-- Calendar grid -->
 	{#each weeks as week, weekIdx}
-		<div class="grid grid-cols-7 {weekIdx < weeks.length - 1 ? 'border-b border-brand-border' : ''}">
+		<div
+			class="grid grid-cols-7 {weekIdx < weeks.length - 1 ? 'border-b border-brand-border' : ''}"
+		>
 			{#each week as day}
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
@@ -125,17 +129,22 @@
 					role="button"
 					tabindex="0"
 					onclick={() => onDateClick?.(day.dateKey)}
-					onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDateClick?.(day.dateKey); } }}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							onDateClick?.(day.dateKey);
+						}
+					}}
 				>
 					<!-- Date number -->
 					<div class="flex items-center justify-between mb-1">
 						<span
 							class="inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
 								{isToday(day.date)
-									? 'bg-brand-accent text-white font-semibold'
-									: day.inCurrentMonth
-										? 'text-brand-primary font-medium'
-										: 'text-brand-text-muted'}"
+								? 'bg-brand-accent text-white font-semibold'
+								: day.inCurrentMonth
+									? 'text-brand-primary font-medium'
+									: 'text-brand-text-muted'}"
 						>
 							{day.date.getDate()}
 						</span>
@@ -150,7 +159,10 @@
 								class="w-full text-left px-1.5 py-0.5 rounded text-xs truncate
 									{color.bg} {color.text} border {color.border}
 									hover:opacity-80 transition-opacity cursor-pointer"
-								onclick={(e) => { e.stopPropagation(); onEventClick?.(event); }}
+								onclick={(e) => {
+									e.stopPropagation();
+									onEventClick?.(event);
+								}}
 								title="{event.title} — {event.ministry_name}"
 							>
 								{#if event.start_time}

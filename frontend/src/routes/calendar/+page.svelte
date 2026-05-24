@@ -200,8 +200,8 @@
 						onclick={() => (activeView = view as 'month' | 'week' | 'day')}
 						class="px-3 py-1.5 text-sm font-medium rounded-sm transition-colors capitalize
 							{activeView === view
-								? 'bg-white text-brand-primary shadow-sm'
-								: 'text-brand-text-secondary hover:text-brand-primary'}"
+							? 'bg-white text-brand-primary shadow-sm'
+							: 'text-brand-text-secondary hover:text-brand-primary'}"
 					>
 						{view}
 					</button>
@@ -229,7 +229,12 @@
 			</div>
 		</div>
 	{:else if activeView === 'month'}
-		<CalendarGrid {events} {currentDate} onEventClick={handleEventClick} onDateClick={handleDateClick} />
+		<CalendarGrid
+			{events}
+			{currentDate}
+			onEventClick={handleEventClick}
+			onDateClick={handleDateClick}
+		/>
 	{:else if activeView === 'week'}
 		{@const weekEvents = events}
 		<div class="bg-white rounded-lg border border-brand-border overflow-hidden">
@@ -248,7 +253,11 @@
 					<div class="p-4">
 						<div class="flex items-center gap-3 mb-2">
 							<span class="text-sm font-semibold text-brand-primary">
-								{day.toLocaleDateString('en-NZ', { weekday: 'short', month: 'short', day: 'numeric' })}
+								{day.toLocaleDateString('en-NZ', {
+									weekday: 'short',
+									month: 'short',
+									day: 'numeric'
+								})}
 							</span>
 							{#if dayEvents.length === 0}
 								<span class="text-xs text-brand-text-muted">No events</span>

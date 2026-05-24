@@ -65,7 +65,9 @@
 			</div>
 
 			<div>
-				<label for="description" class="block text-sm font-medium text-brand-primary">Description</label>
+				<label for="description" class="block text-sm font-medium text-brand-primary"
+					>Description</label
+				>
 				<textarea
 					id="description"
 					bind:value={description}
@@ -77,7 +79,12 @@
 			</div>
 
 			<div class="flex items-center gap-2">
-				<input id="is_active" type="checkbox" bind:checked={isActive} class="rounded border-brand-border text-brand-accent focus:ring-brand-accent" />
+				<input
+					id="is_active"
+					type="checkbox"
+					bind:checked={isActive}
+					class="rounded border-brand-border text-brand-accent focus:ring-brand-accent"
+				/>
 				<label for="is_active" class="text-sm text-brand-primary">Active</label>
 			</div>
 
@@ -89,7 +96,10 @@
 				>
 					{saving ? 'Creating...' : 'Create Ministry'}
 				</button>
-				<a href="/ministries" class="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-sm text-brand-text-secondary hover:text-brand-primary">
+				<a
+					href="/ministries"
+					class="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-sm text-brand-text-secondary hover:text-brand-primary"
+				>
 					<ArrowLeft class="w-4 h-4" /> Cancel
 				</a>
 			</div>

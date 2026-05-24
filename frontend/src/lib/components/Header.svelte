@@ -52,7 +52,13 @@
 		</div>
 		<!-- Full logo (desktop only) -->
 		<div class="hidden lg:flex items-center gap-3 pl-2">
-			<img src="/logo-double-border-shield-cross-church.png" alt="ParishHub" width="68" height="68" class="h-[68px] w-[68px]" />
+			<img
+				src="/logo-double-border-shield-cross-church.png"
+				alt="ParishHub"
+				width="68"
+				height="68"
+				class="h-[68px] w-[68px]"
+			/>
 			<h1 class="text-2xl font-bold text-brand-primary tracking-tight">ParishHub</h1>
 		</div>
 		<div class="pr-4 flex items-center gap-3">

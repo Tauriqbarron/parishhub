@@ -77,7 +77,10 @@
 		saveError = '';
 		try {
 			if (editingRole) {
-				await rosterApi.updateRole(editingRole.id, { name: nameInput, description: descInput || undefined });
+				await rosterApi.updateRole(editingRole.id, {
+					name: nameInput,
+					description: descInput || undefined
+				});
 			} else {
 				await rosterApi.createRole({ name: nameInput, description: descInput || undefined });
 			}
@@ -135,9 +138,14 @@
 	}
 </script>
 
-<Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Rosters', href: '/rosters' }, { label: 'Roles' }]} />
+<Breadcrumbs
+	items={[{ label: 'Home', href: '/' }, { label: 'Rosters', href: '/rosters' }, { label: 'Roles' }]}
+/>
 
-<PageHeader title="Roster Roles" subtitle="Manage capability badges assigned to parish members (Reader, Usher, Sacristan, etc.)">
+<PageHeader
+	title="Roster Roles"
+	subtitle="Manage capability badges assigned to parish members (Reader, Usher, Sacristan, etc.)"
+>
 	{#snippet actions()}
 		<button class="btn-primary" onclick={openCreate}>
 			<Plus class="icon-sm" /> Add Role
@@ -174,7 +182,8 @@
 						<td class="text-muted">{role.description || '—'}</td>
 						<td>
 							<button class="link-btn" onclick={() => openAssign(role)}>
-								{role.person_count} {role.person_count === 1 ? 'person' : 'persons'}
+								{role.person_count}
+								{role.person_count === 1 ? 'person' : 'persons'}
 							</button>
 						</td>
 						<td class="actions">
@@ -230,7 +239,9 @@
 			</div>
 			<div class="modal-body">
 				<p>Are you sure you want to delete <strong>{deletingRole.name}</strong>?</p>
-				<p class="text-muted text-sm">This cannot be undone. Roles referenced by template slots cannot be deleted.</p>
+				<p class="text-muted text-sm">
+					This cannot be undone. Roles referenced by template slots cannot be deleted.
+				</p>
 				{#if deleteError}<p class="form-error">{deleteError}</p>{/if}
 			</div>
 			<div class="modal-footer">
@@ -262,7 +273,9 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn-secondary" onclick={() => (assignRole = null)}>Cancel</button>
-				<button class="btn-primary" onclick={handleAssign} disabled={assigning || !selectedPersonId}>Assign</button>
+				<button class="btn-primary" onclick={handleAssign} disabled={assigning || !selectedPersonId}
+					>Assign</button
+				>
 			</div>
 		</div>
 	</div>
@@ -291,11 +304,22 @@
 		padding: 0.75rem 1rem;
 		border-bottom: 1px solid var(--color-border-subtle);
 	}
-	tr:last-child td { border-bottom: none; }
-	.font-medium { font-weight: 500; }
-	.text-muted { color: var(--color-text-secondary); }
-	.text-sm { font-size: 0.8125rem; }
-	.actions { display: flex; gap: 0.25rem; }
+	tr:last-child td {
+		border-bottom: none;
+	}
+	.font-medium {
+		font-weight: 500;
+	}
+	.text-muted {
+		color: var(--color-text-secondary);
+	}
+	.text-sm {
+		font-size: 0.8125rem;
+	}
+	.actions {
+		display: flex;
+		gap: 0.25rem;
+	}
 	.link-btn {
 		background: none;
 		border: none;
@@ -305,7 +329,9 @@
 		padding: 0;
 		text-decoration: underline;
 	}
-	.link-btn:hover { color: var(--color-accent-hover); }
+	.link-btn:hover {
+		color: var(--color-accent-hover);
+	}
 	.icon-btn {
 		background: none;
 		border: none;
@@ -314,9 +340,16 @@
 		border-radius: 0.25rem;
 		color: var(--color-text-secondary);
 	}
-	.icon-btn:hover { background: var(--color-bg-hover); }
-	.icon-btn.danger:hover { color: var(--color-danger); background: var(--color-danger-bg); }
-	.btn-primary, .btn-secondary, .btn-danger {
+	.icon-btn:hover {
+		background: var(--color-bg-hover);
+	}
+	.icon-btn.danger:hover {
+		color: var(--color-danger);
+		background: var(--color-danger-bg);
+	}
+	.btn-primary,
+	.btn-secondary,
+	.btn-danger {
 		padding: 0.5rem 1rem;
 		border-radius: 0.375rem;
 		font-size: 0.875rem;
@@ -327,12 +360,29 @@
 		align-items: center;
 		gap: 0.375rem;
 	}
-	.btn-primary { background: var(--color-accent); color: white; }
-	.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-	.btn-secondary { background: var(--color-bg-hover); color: var(--color-text); border: 1px solid var(--color-border); }
-	.btn-danger { background: var(--color-danger); color: white; }
-	.icon-sm { width: 1rem; height: 1rem; }
-	.loading, .empty-state {
+	.btn-primary {
+		background: var(--color-accent);
+		color: white;
+	}
+	.btn-primary:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.btn-secondary {
+		background: var(--color-bg-hover);
+		color: var(--color-text);
+		border: 1px solid var(--color-border);
+	}
+	.btn-danger {
+		background: var(--color-danger);
+		color: white;
+	}
+	.icon-sm {
+		width: 1rem;
+		height: 1rem;
+	}
+	.loading,
+	.empty-state {
 		text-align: center;
 		padding: 3rem 1rem;
 		color: var(--color-text-secondary);
@@ -347,7 +397,7 @@
 	.modal-overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0,0,0,0.4);
+		background: rgba(0, 0, 0, 0.4);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -358,9 +408,11 @@
 		border-radius: 0.5rem;
 		width: 100%;
 		max-width: 28rem;
-		box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
 	}
-	.modal-sm { max-width: 24rem; }
+	.modal-sm {
+		max-width: 24rem;
+	}
 	.modal-header {
 		display: flex;
 		justify-content: space-between;
@@ -368,7 +420,10 @@
 		padding: 1rem 1.25rem;
 		border-bottom: 1px solid var(--color-border);
 	}
-	.modal-header h2 { font-size: 1rem; margin: 0; }
+	.modal-header h2 {
+		font-size: 1rem;
+		margin: 0;
+	}
 	.modal-body {
 		padding: 1.25rem;
 		display: flex;
@@ -382,7 +437,9 @@
 		font-size: 0.8125rem;
 		font-weight: 500;
 	}
-	.modal-body input, .modal-body textarea, .modal-body select {
+	.modal-body input,
+	.modal-body textarea,
+	.modal-body select {
 		padding: 0.5rem 0.75rem;
 		border: 1px solid var(--color-border);
 		border-radius: 0.375rem;

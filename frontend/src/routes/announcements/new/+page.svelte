@@ -201,16 +201,12 @@
 				class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
 			>
 				{#if submitting}
-					<span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+					<span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+					></span>
 				{/if}
 				{submitting ? 'Sending...' : 'Send Announcement'}
 			</button>
-			<a
-				href="/announcements"
-				class="btn-secondary"
-			>
-				Cancel
-			</a>
+			<a href="/announcements" class="btn-secondary"> Cancel </a>
 		</div>
 	</form>
 </div>

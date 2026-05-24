@@ -74,7 +74,7 @@
 		loading = true;
 		error = '';
 		try {
-			const data = await rosterApi.getParishAggregate(d) as any;
+			const data = (await rosterApi.getParishAggregate(d)) as any;
 			// Normalize: the API may return flat or grouped data
 			if (data && data.parish_rosters !== undefined) {
 				aggregate = data as ParishAggregate;
@@ -117,7 +117,7 @@
 			date: i.date,
 			status: i.status || 'draft',
 			assignment_count: i.assignments?.length ?? i.assignment_count ?? 0,
-			total_slots: i.total_slots ?? i.slot_count ?? (i.assignments?.length ?? 0)
+			total_slots: i.total_slots ?? i.slot_count ?? i.assignments?.length ?? 0
 		};
 	}
 
@@ -131,30 +131,15 @@
 
 <PageHeader title="Parish Roster" subtitle="View and manage all rosters for a given date">
 	{#snippet actions()}
-		<a
-			href="/rosters/templates"
-			class="btn-secondary"
-		>
-			Manage Templates
-		</a>
-		<a
-			href="/rosters/roles"
-			class="btn-secondary"
-		>
-			Manage Roles
-		</a>
+		<a href="/rosters/templates" class="btn-secondary"> Manage Templates </a>
+		<a href="/rosters/roles" class="btn-secondary"> Manage Roles </a>
 	{/snippet}
 </PageHeader>
 
 <div class="date-bar">
 	<label class="date-label">
 		<Calendar class="icon-sm" />
-		<input
-			type="date"
-			value={date}
-			onchange={handleDateChange}
-			class="date-input"
-		/>
+		<input type="date" value={date} onchange={handleDateChange} class="date-input" />
 	</label>
 	<span class="date-display">{formatDate(date)}</span>
 </div>
@@ -195,7 +180,9 @@
 							<div class="fill-bar-track">
 								<div
 									class="fill-bar-fill"
-									style="width: {Math.min(fillPercent(inst), 100)}%; background: {fillColor(fillPercent(inst))}"
+									style="width: {Math.min(fillPercent(inst), 100)}%; background: {fillColor(
+										fillPercent(inst)
+									)}"
 								></div>
 							</div>
 							<div class="card-meta">
@@ -228,7 +215,9 @@
 							<div class="fill-bar-track">
 								<div
 									class="fill-bar-fill"
-									style="width: {Math.min(fillPercent(inst), 100)}%; background: {fillColor(fillPercent(inst))}"
+									style="width: {Math.min(fillPercent(inst), 100)}%; background: {fillColor(
+										fillPercent(inst)
+									)}"
 								></div>
 							</div>
 							<div class="card-meta">
@@ -333,7 +322,7 @@
 		transition: box-shadow 0.15s;
 	}
 	.card:hover {
-		box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 	}
 	.card-top {
 		display: flex;
@@ -424,7 +413,9 @@
 		height: 1.5rem;
 	}
 	@keyframes spin {
-		to { transform: rotate(360deg); }
+		to {
+			transform: rotate(360deg);
+		}
 	}
 	.error-state {
 		text-align: center;
@@ -462,7 +453,8 @@
 	}
 
 	/* Buttons */
-	.btn-primary, .btn-secondary {
+	.btn-primary,
+	.btn-secondary {
 		padding: 0.5rem 1rem;
 		border-radius: 0.375rem;
 		font-size: 0.875rem;

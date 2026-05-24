@@ -2,12 +2,28 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import {
-		ArrowLeft, Users, UserPlus, Trash2, X, Check, Search,
-		Send, Ban, CheckCircle, Loader2, Calendar, RefreshCw
+		ArrowLeft,
+		Users,
+		UserPlus,
+		Trash2,
+		X,
+		Check,
+		Search,
+		Send,
+		Ban,
+		CheckCircle,
+		Loader2,
+		Calendar,
+		RefreshCw
 	} from 'lucide-svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
-	import { rosterApi, type RosterInstance, type RosterAssignment, type RosterTemplate } from '$lib/api/roster';
+	import {
+		rosterApi,
+		type RosterInstance,
+		type RosterAssignment,
+		type RosterTemplate
+	} from '$lib/api/roster';
 	import { api } from '$lib/api';
 
 	interface PersonResult {
@@ -140,7 +156,9 @@
 		}
 		searching = true;
 		try {
-			personResults = await api.get<PersonResult[]>(`/persons?search=${encodeURIComponent(query)}&limit=10`);
+			personResults = await api.get<PersonResult[]>(
+				`/persons?search=${encodeURIComponent(query)}&limit=10`
+			);
 		} catch {
 			personResults = [];
 		} finally {
@@ -212,11 +230,15 @@
 
 	function getAvailableSlots() {
 		if (!instance) return [];
-		const assignedSlotIds = new Set(instance.assignments.map(a => a.slot_id));
+		const assignedSlotIds = new Set(instance.assignments.map((a) => a.slot_id));
 		// We need template slots from the instance — fallback: derive from assignments
 		return instance.assignments
-			.filter(a => !assignedSlotIds.has(a.slot_id) || true) // show all slots
-			.map(a => ({ id: a.slot_id, label: a.slot_label || `Slot #${a.slot_id}`, role_name: a.role_name }));
+			.filter((a) => !assignedSlotIds.has(a.slot_id) || true) // show all slots
+			.map((a) => ({
+				id: a.slot_id,
+				label: a.slot_label || `Slot #${a.slot_id}`,
+				role_name: a.role_name
+			}));
 	}
 
 	// Deduplicate slots for the dropdown
@@ -227,18 +249,24 @@
 		for (const a of instance.assignments) {
 			if (!seen.has(a.slot_id)) {
 				seen.add(a.slot_id);
-				result.push({ id: a.slot_id, label: a.slot_label || `Slot #${a.slot_id}`, role_name: a.role_name });
+				result.push({
+					id: a.slot_id,
+					label: a.slot_label || `Slot #${a.slot_id}`,
+					role_name: a.role_name
+				});
 			}
 		}
 		return result;
 	}
 </script>
 
-<Breadcrumbs items={[
-	{ label: 'Home', href: '/' },
-	{ label: 'Rosters', href: '/rosters' },
-	{ label: instance?.template_name || 'Instance' }
-]} />
+<Breadcrumbs
+	items={[
+		{ label: 'Home', href: '/' },
+		{ label: 'Rosters', href: '/rosters' },
+		{ label: instance?.template_name || 'Instance' }
+	]}
+/>
 
 {#if loading}
 	<div class="loading-state">
@@ -248,7 +276,9 @@
 {:else if error}
 	<div class="error-state">
 		<p>{error}</p>
-		<button class="btn-secondary" onclick={() => loadInstance(Number($page.params.id))}>Retry</button>
+		<button class="btn-secondary" onclick={() => loadInstance(Number($page.params.id))}
+			>Retry</button
+		>
 	</div>
 {:else if instance}
 	<div class="instance-page">
@@ -300,19 +330,19 @@
 			</div>
 			<div class="stat">
 				<span class="stat-value">
-					{instance.assignments.filter(a => a.person_id).length}
+					{instance.assignments.filter((a) => a.person_id).length}
 				</span>
 				<span class="stat-label">Filled</span>
 			</div>
 			<div class="stat">
 				<span class="stat-value">
-					{instance.assignments.filter(a => a.status === 'accepted').length}
+					{instance.assignments.filter((a) => a.status === 'accepted').length}
 				</span>
 				<span class="stat-label">Accepted</span>
 			</div>
 			<div class="stat">
 				<span class="stat-value">
-					{instance.assignments.filter(a => a.status === 'declined').length}
+					{instance.assignments.filter((a) => a.status === 'declined').length}
 				</span>
 				<span class="stat-label">Declined</span>
 			</div>
@@ -349,7 +379,9 @@
 						<tbody>
 							{#each instance.assignments as assignment}
 								<tr>
-									<td class="font-medium">{assignment.slot_label || `Slot #${assignment.slot_id}`}</td>
+									<td class="font-medium"
+										>{assignment.slot_label || `Slot #${assignment.slot_id}`}</td
+									>
 									<td class="text-muted">{assignment.role_name || '—'}</td>
 									<td>
 										{#if assignment.person_name}
@@ -403,7 +435,8 @@
 						<option value={null}>-- Choose a slot --</option>
 						{#each uniqueSlots() as slot}
 							<option value={slot.id}>
-								{slot.label}{#if slot.role_name} ({slot.role_name}){/if}
+								{slot.label}{#if slot.role_name}
+									({slot.role_name}){/if}
 							</option>
 						{/each}
 					</select>
@@ -533,10 +566,22 @@
 		text-transform: uppercase;
 		letter-spacing: 0.025em;
 	}
-	.badge-draft { background: #f3f4f6; color: #6b7280; }
-	.badge-published { background: #ecfdf5; color: #059669; }
-	.badge-completed { background: #eff6ff; color: #2563eb; }
-	.badge-cancelled { background: #fef2f2; color: #dc2626; }
+	.badge-draft {
+		background: #f3f4f6;
+		color: #6b7280;
+	}
+	.badge-published {
+		background: #ecfdf5;
+		color: #059669;
+	}
+	.badge-completed {
+		background: #eff6ff;
+		color: #2563eb;
+	}
+	.badge-cancelled {
+		background: #fef2f2;
+		color: #dc2626;
+	}
 
 	/* Stats row */
 	.stats-row {
@@ -647,11 +692,26 @@
 		border-radius: 999px;
 		text-transform: capitalize;
 	}
-	.asgn-pending { background: #f3f4f6; color: #6b7280; }
-	.asgn-accepted { background: #ecfdf5; color: #059669; }
-	.asgn-declined { background: #fef2f2; color: #dc2626; }
-	.asgn-completed { background: #eff6ff; color: #2563eb; }
-	.asgn-cancelled { background: #f3f4f6; color: #9ca3af; }
+	.asgn-pending {
+		background: #f3f4f6;
+		color: #6b7280;
+	}
+	.asgn-accepted {
+		background: #ecfdf5;
+		color: #059669;
+	}
+	.asgn-declined {
+		background: #fef2f2;
+		color: #dc2626;
+	}
+	.asgn-completed {
+		background: #eff6ff;
+		color: #2563eb;
+	}
+	.asgn-cancelled {
+		background: #f3f4f6;
+		color: #9ca3af;
+	}
 
 	/* Empty assignments */
 	.empty-assignments {
@@ -698,7 +758,9 @@
 	}
 
 	/* Buttons */
-	.btn-primary, .btn-secondary, .btn-danger-outline {
+	.btn-primary,
+	.btn-secondary,
+	.btn-danger-outline {
 		padding: 0.5rem 1rem;
 		border-radius: 0.375rem;
 		font-size: 0.875rem;
@@ -709,9 +771,19 @@
 		align-items: center;
 		gap: 0.375rem;
 	}
-	.btn-primary { background: var(--color-accent); color: white; }
-	.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-	.btn-secondary { background: var(--color-bg-hover); color: var(--color-text); border: 1px solid var(--color-border); }
+	.btn-primary {
+		background: var(--color-accent);
+		color: white;
+	}
+	.btn-primary:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.btn-secondary {
+		background: var(--color-bg-hover);
+		color: var(--color-text);
+		border: 1px solid var(--color-border);
+	}
 	.btn-danger-outline {
 		background: transparent;
 		color: var(--color-danger);
@@ -728,9 +800,18 @@
 		border-radius: 0.25rem;
 		color: var(--color-text-secondary);
 	}
-	.icon-btn:hover { background: var(--color-bg-hover); }
-	.icon-btn.danger:hover { color: var(--color-danger); background: var(--color-danger-bg); }
-	.icon-sm { width: 1rem; height: 1rem; flex-shrink: 0; }
+	.icon-btn:hover {
+		background: var(--color-bg-hover);
+	}
+	.icon-btn.danger:hover {
+		color: var(--color-danger);
+		background: var(--color-danger-bg);
+	}
+	.icon-sm {
+		width: 1rem;
+		height: 1rem;
+		flex-shrink: 0;
+	}
 
 	/* Spinner */
 	.spinner {
@@ -742,14 +823,16 @@
 		animation: spin 1s linear infinite;
 	}
 	@keyframes spin {
-		to { transform: rotate(360deg); }
+		to {
+			transform: rotate(360deg);
+		}
 	}
 
 	/* Modal */
 	.modal-overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0,0,0,0.4);
+		background: rgba(0, 0, 0, 0.4);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -760,7 +843,7 @@
 		border-radius: 0.5rem;
 		width: 100%;
 		max-width: 28rem;
-		box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
 	}
 	.modal-header {
 		display: flex;

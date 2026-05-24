@@ -130,22 +130,30 @@ export const rosterApi = {
 	// Roles
 	listRoles: () => api.get<RosterRole[]>('/roster/roles'),
 	createRole: (data: RosterRoleCreate) => api.post<RosterRole>('/roster/roles', data),
-	updateRole: (id: number, data: RosterRoleUpdate) => api.put<RosterRole>(`/roster/roles/${id}`, data),
+	updateRole: (id: number, data: RosterRoleUpdate) =>
+		api.put<RosterRole>(`/roster/roles/${id}`, data),
 	deleteRole: (id: number) => api.delete(`/roster/roles/${id}`),
 	assignRole: (roleId: number, personId: number) =>
-		api.post<PersonRosterRole>(`/roster/roles/${roleId}/assign`, { person_id: personId, role_id: roleId }),
+		api.post<PersonRosterRole>(`/roster/roles/${roleId}/assign`, {
+			person_id: personId,
+			role_id: roleId
+		}),
 	removeRole: (roleId: number, personId: number) =>
 		api.delete(`/roster/roles/${roleId}/persons/${personId}`),
 
 	// Templates
 	listTemplates: (params?: { ministry_id?: number; is_active?: boolean }) =>
-		api.get<RosterTemplate[]>(`/roster/templates${qs({ ministry_id: params?.ministry_id, is_active: params?.is_active })}`),
+		api.get<RosterTemplate[]>(
+			`/roster/templates${qs({ ministry_id: params?.ministry_id, is_active: params?.is_active })}`
+		),
 	getTemplate: (id: number) => api.get<RosterTemplate>(`/roster/templates/${id}`),
-	createTemplate: (data: RosterTemplateCreate) => api.post<RosterTemplate>('/roster/templates', data),
+	createTemplate: (data: RosterTemplateCreate) =>
+		api.post<RosterTemplate>('/roster/templates', data),
 	updateTemplate: (id: number, data: Partial<RosterTemplateCreate>) =>
 		api.put<RosterTemplate>(`/roster/templates/${id}`, data),
 	deleteTemplate: (id: number) => api.delete<void>(`/roster/templates/${id}`),
-	duplicateTemplate: (id: number) => api.post<RosterTemplate>(`/roster/templates/${id}/duplicate`, {}),
+	duplicateTemplate: (id: number) =>
+		api.post<RosterTemplate>(`/roster/templates/${id}/duplicate`, {}),
 
 	// Instances
 	generateInstance: (templateId: number, date: string) =>
@@ -163,5 +171,5 @@ export const rosterApi = {
 	removeAssignment: (id: number) => api.delete(`/roster/assignments/${id}`),
 
 	// Parish aggregate
-	getParishAggregate: (date: string) => api.get(`/roster/parish${qs({ date })}`),
+	getParishAggregate: (date: string) => api.get(`/roster/parish${qs({ date })}`)
 };

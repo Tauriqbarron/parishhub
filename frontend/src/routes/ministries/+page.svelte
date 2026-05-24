@@ -43,11 +43,7 @@
 	</PageHeader>
 
 	<div class="space-y-4 mb-6">
-		<SearchInput
-			value={searchValue}
-			placeholder="Search ministries..."
-			onSearch={handleSearch}
-		/>
+		<SearchInput value={searchValue} placeholder="Search ministries..." onSearch={handleSearch} />
 	</div>
 
 	<div class="bg-white rounded-lg border border-brand-border overflow-hidden">
@@ -78,7 +74,9 @@
 				<Users class="mx-auto h-12 w-12 text-brand-text-muted" />
 				<h3 class="mt-2 text-sm font-medium text-brand-primary">No ministries</h3>
 				<p class="mt-1 text-sm text-brand-text-secondary">
-					{searchValue ? 'No ministries match your search.' : 'Create your first ministry to get started.'}
+					{searchValue
+						? 'No ministries match your search.'
+						: 'Create your first ministry to get started.'}
 				</p>
 				{#if !searchValue}
 					<div class="mt-6">
@@ -104,16 +102,22 @@
 								<div class="flex items-center gap-2">
 									<h3 class="text-sm font-medium text-brand-primary truncate">{ministry.name}</h3>
 									{#if !ministry.is_active}
-										<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-bg-muted text-brand-text-secondary">Inactive</span>
+										<span
+											class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-bg-muted text-brand-text-secondary"
+											>Inactive</span
+										>
 									{/if}
 								</div>
 								{#if ministry.description}
-									<p class="mt-0.5 text-sm text-brand-text-secondary truncate">{ministry.description}</p>
+									<p class="mt-0.5 text-sm text-brand-text-secondary truncate">
+										{ministry.description}
+									</p>
 								{/if}
 							</div>
 							<div class="flex items-center gap-4 ml-4 text-sm text-brand-text-secondary">
 								<span class="flex items-center gap-1">
-									<Users class="w-4 h-4" /> {ministry.member_count}
+									<Users class="w-4 h-4" />
+									{ministry.member_count}
 								</span>
 							</div>
 						</div>

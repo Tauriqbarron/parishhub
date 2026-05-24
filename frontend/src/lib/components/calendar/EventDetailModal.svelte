@@ -31,7 +31,15 @@
 
 <!-- Modal overlay -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="fixed inset-0 z-modal flex items-center justify-center bg-black/40" onclick={onClose} onkeydown={(e) => e.key === 'Escape' && onClose()} role="dialog" aria-modal="true" aria-label="Event details" tabindex="-1">
+<div
+	class="fixed inset-0 z-modal flex items-center justify-center bg-black/40"
+	onclick={onClose}
+	onkeydown={(e) => e.key === 'Escape' && onClose()}
+	role="dialog"
+	aria-modal="true"
+	aria-label="Event details"
+	tabindex="-1"
+>
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="bg-white rounded-lg shadow-lg max-w-md w-full mx-4 overflow-hidden"
@@ -100,7 +108,12 @@
 			{#if event.recurrence_rule && event.recurrence_rule !== 'none'}
 				<div class="flex items-center gap-2 text-sm text-brand-accent pt-1">
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width={1.5}
+							d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+						/>
 					</svg>
 					<span class="font-medium capitalize">Repeats {event.recurrence_rule}</span>
 					{#if event.recurrence_end}
@@ -110,7 +123,9 @@
 			{/if}
 
 			<div class="pt-1">
-				<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-bg-subtle text-brand-text-secondary capitalize">
+				<span
+					class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-bg-subtle text-brand-text-secondary capitalize"
+				>
 					{event.event_type.replace('_', ' ')}
 				</span>
 			</div>

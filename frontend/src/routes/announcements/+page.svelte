@@ -101,7 +101,9 @@
 						</span>
 					</div>
 					<div class="flex items-center gap-2 mt-3">
-						<span class="text-[10px] font-medium text-brand-text-muted uppercase bg-brand-bg-subtle px-1.5 py-0.5 rounded-sm">
+						<span
+							class="text-[10px] font-medium text-brand-text-muted uppercase bg-brand-bg-subtle px-1.5 py-0.5 rounded-sm"
+						>
 							{a.scope}
 						</span>
 						{#each a.channels as ch}

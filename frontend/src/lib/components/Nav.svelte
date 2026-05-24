@@ -1,7 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { tick } from 'svelte';
-	import { Home, Users, Building2, BarChart3, ClipboardCheck, ClipboardList, Settings, X, Heart, Calendar } from 'lucide-svelte';
+	import {
+		Home,
+		Users,
+		Building2,
+		BarChart3,
+		ClipboardCheck,
+		ClipboardList,
+		Settings,
+		X,
+		Heart,
+		Calendar
+	} from 'lucide-svelte';
 	import Logo from './Logo.svelte';
 
 	type IconComponent = typeof Home;

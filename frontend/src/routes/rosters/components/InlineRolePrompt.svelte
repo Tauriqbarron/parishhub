@@ -17,14 +17,7 @@
 		onDismiss: () => void;
 	}
 
-	let {
-		firstName,
-		roleName,
-		roleId,
-		personId,
-		onResolved,
-		onDismiss
-	}: Props = $props();
+	let { firstName, roleName, roleId, personId, onResolved, onDismiss }: Props = $props();
 
 	let status = $state<'idle' | 'assigning' | 'success' | 'error'>('idle');
 	let errorMessage = $state('');
@@ -71,22 +64,14 @@
 				<X class="icon-sm" /> Dismiss
 			</button>
 		{:else}
-			<button
-				class="btn-primary-inline"
-				onclick={handleAssign}
-				disabled={status === 'assigning'}
-			>
+			<button class="btn-primary-inline" onclick={handleAssign} disabled={status === 'assigning'}>
 				{#if status === 'assigning'}
 					<Loader class="icon-sm spin" /> Assigning…
 				{:else}
 					<UserPlus class="icon-sm" /> Assign Role
 				{/if}
 			</button>
-			<button
-				class="btn-dismiss"
-				onclick={onDismiss}
-				disabled={status === 'assigning'}
-			>
+			<button class="btn-dismiss" onclick={onDismiss} disabled={status === 'assigning'}>
 				<X class="icon-sm" /> Dismiss
 			</button>
 		{/if}
@@ -251,7 +236,9 @@
 	}
 
 	@keyframes spin {
-		to { transform: rotate(360deg); }
+		to {
+			transform: rotate(360deg);
+		}
 	}
 
 	@media (max-width: 480px) {
