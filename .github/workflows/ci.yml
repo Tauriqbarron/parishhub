@@ -32,8 +32,8 @@ jobs:
 
       - name: Run linter
         run: |
-          prettier --check .
-          eslint . --max-warnings 100 || echo "ESLint warnings (non-blocking)"
+          npx prettier --check .
+          npx eslint . --max-warnings 100 || echo "ESLint warnings (non-blocking)"
 
       - name: Build
         run: npm run build
