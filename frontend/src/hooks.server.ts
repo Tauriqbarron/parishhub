@@ -66,7 +66,7 @@ const httpsRedirect: Handle = async ({ event, resolve }) => {
 
 // Protect non-public routes by requiring authentication
 const protectRoutes: Handle = async ({ event, resolve }) => {
-	const publicPaths = ['/register', '/login', '/auth', '/api/auth', '/api/register'];
+	const publicPaths = ['/register', '/login', '/auth', '/api/auth', '/api/register', '/api/'];
 	if (publicPaths.some((path) => event.url.pathname.startsWith(path))) {
 		return resolve(event);
 	}
