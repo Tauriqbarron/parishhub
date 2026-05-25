@@ -218,7 +218,7 @@ async def add_ministry_member(
 
     # Check user is leader (or admin) for this ministry
     user_roles_for_ministry = [
-        r for r in member.roles if r["ministry_id"] == ministry_id and r["role"] in ("leader", "admin")
+        r for r in member.roles if r["ministry_id"] == ministry_id and r["role"] in ("leader", "admin", "co-leader")
     ]
     if not user_roles_for_ministry:
         raise HTTPException(
@@ -327,7 +327,7 @@ async def remove_ministry_member(
 
     # Check user is leader
     user_roles_for_ministry = [
-        r for r in member.roles if r["ministry_id"] == ministry_id and r["role"] in ("leader", "admin")
+        r for r in member.roles if r["ministry_id"] == ministry_id and r["role"] in ("leader", "admin", "co-leader")
     ]
     if not user_roles_for_ministry:
         raise HTTPException(status_code=403, detail="Only ministry leaders can remove members")
@@ -356,6 +356,112 @@ async def remove_ministry_member(
     db.commit()
 
     return {"message": "Member removed"}
+
+
+class UpdateMemberRoleRequest(BaseModel):
+    role: str
+
+
+@router.patch("/ministries/{ministry_id}/members/{person_id}")
+async def update_member_role(
+    ministry_id: int,
+    person_id: int,
+    body: UpdateMemberRoleRequest,
+    member: Annotated[MemberUser, Depends(require_member)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """Leader or co-leader updates a member's role. Co-leaders cannot promote to leader."""
+    from app.models.ministry import MinistryMember, UserRole
+    from app.models.person import Person
+
+    # Validate role
+    if body.role not in ("member", "leader", "co-leader"):
+        raise HTTPException(
+            status_code=400,
+            detail="Role must be one of: member, leader, co-leader",
+        )
+
+    # Check user is leader or co-leader for this ministry
+    user_roles_for_ministry = [
+        r for r in member.roles
+        if r["ministry_id"] == ministry_id
+        and r["role"] in ("leader", "admin", "co-leader")
+    ]
+    if not user_roles_for_ministry:
+        raise HTTPException(
+            status_code=403,
+            detail="Only ministry leaders can update member roles",
+        )
+
+    # Co-leaders cannot promote anyone to leader
+    is_co_leader = all(r["role"] == "co-leader" for r in user_roles_for_ministry)
+    if is_co_leader and body.role == "leader":
+        raise HTTPException(
+            status_code=403,
+            detail="Co-leaders cannot promote members to leader",
+        )
+
+    # Find the membership by person_id
+    membership = (
+        db.query(MinistryMember)
+        .filter(
+            MinistryMember.ministry_id == ministry_id,
+            MinistryMember.person_id == person_id,
+        )
+        .first()
+    )
+    if not membership:
+        raise HTTPException(status_code=404, detail="Member not found")
+
+    old_role = membership.role
+
+    # Update membership role
+    membership.role = body.role
+
+    # Sync user_roles table
+    person = membership.person
+    if person and person.email:
+        # Remove old role
+        db.query(UserRole).filter(
+            UserRole.user_email == person.email,
+            UserRole.ministry_id == ministry_id,
+            UserRole.role == old_role,
+        ).delete()
+        # Add new role
+        existing = (
+            db.query(UserRole)
+            .filter(
+                UserRole.user_email == person.email,
+                UserRole.ministry_id == ministry_id,
+                UserRole.role == body.role,
+            )
+            .first()
+        )
+        if not existing:
+            db.add(UserRole(
+                user_email=person.email,
+                role=body.role,
+                ministry_id=ministry_id,
+            ))
+
+    AuditService(db).log_update(
+        resource_type="ministry_member",
+        resource_id=ministry_id,
+        old_values={"person_id": person_id, "role": old_role},
+        new_values={"person_id": person_id, "role": body.role},
+        user_email=member.email,
+        description=f"Changed role of person {person_id} from {old_role} to {body.role} in ministry {ministry_id}",
+    )
+
+    db.commit()
+    db.refresh(membership)
+
+    return {
+        "person_id": person_id,
+        "role": body.role,
+        "message": f"Role updated to {body.role}",
+        "person_name": f"{person.first_name} {person.last_name}" if person else None,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -513,7 +619,7 @@ async def create_ministry_event(
     from app.models.ministry import MinistryEvent
 
     user_roles_for_ministry = [
-        r for r in member.roles if r["ministry_id"] == ministry_id and r["role"] in ("leader", "admin")
+        r for r in member.roles if r["ministry_id"] == ministry_id and r["role"] in ("leader", "admin", "co-leader")
     ]
     if not user_roles_for_ministry:
         raise HTTPException(status_code=403, detail="Only leaders can create events")
@@ -595,7 +701,7 @@ async def update_ministry_event(
 
     # Check user is leader of this ministry
     user_roles_for_ministry = [
-        r for r in member.roles if r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin")
+        r for r in member.roles if r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin", "co-leader")
     ]
     if not user_roles_for_ministry:
         raise HTTPException(status_code=403, detail="Only leaders can edit events")
@@ -674,7 +780,7 @@ async def delete_ministry_event(
 
     # Check user is leader of this ministry
     user_roles_for_ministry = [
-        r for r in member.roles if r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin")
+        r for r in member.roles if r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin", "co-leader")
     ]
     if not user_roles_for_ministry:
         raise HTTPException(status_code=403, detail="Only leaders can delete events")
@@ -760,7 +866,7 @@ async def get_event_detail(
         raise HTTPException(status_code=403, detail="Access denied")
 
     is_leader = any(
-        r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin")
+        r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin", "co-leader")
         for r in member.roles
     )
 
@@ -945,7 +1051,7 @@ async def get_event_rsvps(
 
     # Check leader access
     is_leader = any(
-        r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin")
+        r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin", "co-leader")
         for r in member.roles
     )
     if not is_leader:
@@ -995,7 +1101,7 @@ async def record_attendance(
 
     # Check leader access
     is_leader = any(
-        r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin")
+        r["ministry_id"] == event.ministry_id and r["role"] in ("leader", "admin", "co-leader")
         for r in member.roles
     )
     if not is_leader:

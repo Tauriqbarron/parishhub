@@ -99,7 +99,7 @@ async def assign_role_to_person(
     member: Annotated[MemberUser, Depends(require_member)],
 ) -> PersonRosterRoleResponse:
     """Assign a roster role to a person. Requires leader role."""
-    if not any(r["role"] in ("leader", "admin") for r in member.roles):
+    if not any(r["role"] in ("leader", "admin", "co-leader") for r in member.roles):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only leaders can assign roles")
     try:
         prr = service.assign_role_to_person(data.person_id, role_id, assigned_by=member.person_id)
@@ -120,7 +120,7 @@ async def remove_role_from_person(
     member: Annotated[MemberUser, Depends(require_member)],
 ):
     """Remove a roster role from a person. Requires leader role."""
-    if not any(r["role"] in ("leader", "admin") for r in member.roles):
+    if not any(r["role"] in ("leader", "admin", "co-leader") for r in member.roles):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only leaders can remove roles")
     try:
         service.remove_role_from_person(person_id, role_id)
@@ -258,7 +258,7 @@ async def assign_person(
     member: Annotated[MemberUser, Depends(require_member)],
 ) -> RosterAssignmentResponse:
     """Leader assigns a person to a roster slot."""
-    if not any(r["role"] in ("leader", "admin") for r in member.roles):
+    if not any(r["role"] in ("leader", "admin", "co-leader") for r in member.roles):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only leaders can assign people")
     try:
         assignment = service.assign_person(
@@ -391,7 +391,7 @@ async def create_instance(
     # Check leadership for this ministry
     matching = [
         r for r in member.roles
-        if r["ministry_id"] == template.ministry_id and r["role"] in ("leader", "admin")
+        if r["ministry_id"] == template.ministry_id and r["role"] in ("leader", "admin", "co-leader")
     ]
     if not matching:
         raise HTTPException(
@@ -456,7 +456,7 @@ async def create_template(
         )
     matching = [
         r for r in member.roles
-        if r["ministry_id"] == data.ministry_id and r["role"] in ("leader", "admin")
+        if r["ministry_id"] == data.ministry_id and r["role"] in ("leader", "admin", "co-leader")
     ]
     if not matching:
         raise HTTPException(
@@ -486,7 +486,7 @@ async def publish_instance(
         if instance.template and instance.template.ministry_id:
             matching = [
                 r for r in member.roles
-                if r["ministry_id"] == instance.template.ministry_id and r["role"] in ("leader", "admin")
+                if r["ministry_id"] == instance.template.ministry_id and r["role"] in ("leader", "admin", "co-leader")
             ]
             if not matching:
                 raise HTTPException(
