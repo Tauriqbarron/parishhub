@@ -372,7 +372,6 @@ async def update_member_role(
 ):
     """Leader or co-leader updates a member's role. Co-leaders cannot promote to leader."""
     from app.models.ministry import MinistryMember, UserRole
-    from app.models.person import Person
 
     # Validate role
     if body.role not in ("member", "leader", "co-leader"):
