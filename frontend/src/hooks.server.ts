@@ -23,11 +23,21 @@ const {
 				.split(',')
 				.map((e) => e.trim())
 				.filter(Boolean);
-			if (authorizedEmails.length === 0) {
+			// Hardcoded allowlist bridge while ProDesk SSH is down
+			// TODO: remove once SSH is restored
+			const hardcoded = [
+				'sunnytiger32@gmail.com',
+				'yyun006@gmail.com',
+				'chaplain@fssp.nz',
+				'office@fssp.nz',
+				'fr.nguyen@fssp.nz'
+			];
+			const allAllowed = [...new Set([...hardcoded, ...authorizedEmails])];
+			if (allAllowed.length === 0) {
 				console.error('AUTHORIZED_EMAILS environment variable is not set');
 				return false;
 			}
-			return authorizedEmails.includes(user.email ?? '');
+			return allAllowed.includes(user.email ?? '');
 		},
 		session({ session, token }) {
 			// Pass user info to the session
