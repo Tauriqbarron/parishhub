@@ -20,21 +20,11 @@ const { handle: authHandle } = SvelteKitAuth({
 				.split(',')
 				.map((e) => e.trim())
 				.filter(Boolean);
-			// Hardcoded allowlist bridge while ProDesk SSH is down
-			// TODO: remove once SSH is restored
-			const hardcoded = [
-				'sunnytiger32@gmail.com',
-				'yyun006@gmail.com',
-				'chaplain@fssp.nz',
-				'office@fssp.nz',
-				'fr.nguyen@fssp.nz'
-			];
-			const allAllowed = [...new Set([...hardcoded, ...authorizedEmails])];
-			if (allAllowed.length === 0) {
+			if (authorizedEmails.length === 0) {
 				console.error('AUTHORIZED_EMAILS environment variable is not set');
 				return false;
 			}
-			return allAllowed.includes(user.email ?? '');
+			return authorizedEmails.includes(user.email ?? '');
 		},
 		session({ session, token }) {
 			if (session.user && token.sub) {

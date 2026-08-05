@@ -40,23 +40,7 @@ class Settings(BaseSettings):
 
     @property
     def authorized_emails_list(self) -> list[str]:
-        env_emails = [e.strip() for e in self.authorized_emails.split(",") if e.strip()]
-        # Hardcoded allowlist — bridge while ProDesk SSH is down
-        # TODO: remove once SSH is restored and .env is updated directly
-        hardcoded = [
-            "sunnytiger32@gmail.com",
-            "yyun006@gmail.com",
-            "chaplain@fssp.nz",
-            "office@fssp.nz",
-            "fr.nguyen@fssp.nz",
-        ]
-        seen = set()
-        result = []
-        for email in hardcoded + env_emails:
-            if email and email not in seen:
-                seen.add(email)
-                result.append(email)
-        return result
+        return [e.strip() for e in self.authorized_emails.split(",") if e.strip()]
 
     auth_secret: str = ""
 
