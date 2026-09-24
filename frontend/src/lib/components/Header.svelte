@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { signOut } from '@auth/sveltekit/client';
 	import type { Session } from '@auth/core/types';
-	import { Menu, Bell } from 'lucide-svelte';
+	import { Menu, Bell, CircleHelp } from 'lucide-svelte';
+	import { page } from '$app/stores';
+	import { helpHref } from '$lib/help/anchors';
 	import Logo from './Logo.svelte';
 	import NotificationDropdown from './NotificationDropdown.svelte';
 	import { unreadCount, startPolling, stopPolling } from '$stores/notifications';
@@ -62,6 +64,19 @@
 			<h1 class="text-2xl font-bold text-brand-primary tracking-tight">ParishHub</h1>
 		</div>
 		<div class="pr-4 flex items-center gap-3">
+			<!-- Opens the user guide at the section for the current page -->
+			<a
+				href={helpHref($page.url.pathname)}
+				target="_blank"
+				rel="noopener"
+				class="flex items-center gap-1.5 p-2 text-brand-text-muted hover:text-brand-primary hover:bg-brand-bg-subtle rounded-sm transition-colors"
+				aria-label="Help for this page (opens in a new tab)"
+				title="Help for this page"
+				data-testid="help-link"
+			>
+				<CircleHelp class="w-5 h-5" />
+				<span class="hidden sm:inline text-sm">Help</span>
+			</a>
 			<!-- Notification bell -->
 			<div class="relative">
 				<button
