@@ -84,6 +84,13 @@
 			<p class="mt-6 text-center text-xs text-brand-text-muted">
 				Only authorized email addresses can access this application.
 			</p>
+			<p class="mt-3 text-center">
+				<a
+					href="/help/sign-in"
+					class="text-sm font-medium text-brand-primary hover:underline"
+					data-testid="login-help-link">How to get access</a
+				>
+			</p>
 		</div>
 	</div>
 </div>

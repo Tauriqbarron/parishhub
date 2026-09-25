@@ -67,6 +67,8 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: https://${DOMAIN_NAME}
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      # Server-side checks (e.g. the /help guide) call the backend directly on the Docker network.
+      BACKEND_URL: http://backend:8000
     depends_on:
       - backend
     networks:
