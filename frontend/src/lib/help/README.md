@@ -13,19 +13,36 @@ The guide for the parish office, ministry leaders and members.
 3. Reference images as `img/<file>.png` and include their `width` and `height`. The width and height stop the page shifting after a deep link has jumped to a section.
 4. Run `npm test -- src/tests/help` in `frontend/`.
 
-## Ministries app edition
+## What's public
 
-ParishHub Ministries (repo `Tauriqbarron/parishhub-ministries`) ships a leaders-and-members edition at `/ministries/help`. It's generated from this guide.
+Only sign-in and account setup help is public. Everything else needs a sign-in.
 
-- Elements marked `data-only="office"` are left out, and so are links that point into them. Part letters are renumbered to match.
-- To regenerate it, run from `frontend/`:
+| Page                       | Who can open it                                                                                                     | Built from                                        |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `/help` (admin)            | Signed-in admins on the allowlist                                                                                   | `guide.html`, served by `routes/help/+server.ts`  |
+| `/help/sign-in` (admin)    | Anyone                                                                                                              | `sign-in.generated.html`                          |
+| `/ministries/help`         | Signed-in Ministries users. The page fetches the guide with the user's token; the server checks it with the backend | Ministries repo `src/help/guide.generated.ts`     |
+| `/ministries/help/sign-in` | Anyone                                                                                                              | Ministries repo `public/help-assets/sign-in.html` |
 
-  ```bash
-  npm run export:ministries-guide -- ../../parishhub-ministries/public/help
-  ```
+Sections and FAQ entries go on the public pages by tag:
 
-- Commit the result in the Ministries repo.
-- The Ministries Help button's route map is in that repo at `src/lib/help.ts`.
+- `data-public="office"` puts it on the admin sign-in page.
+- `data-public="ministries"` puts it on the Ministries one.
+- `data-public="both"` puts it on both.
+
+`data-only="office"` keeps an element out of the Ministries edition.
+
+The screenshot files are the exception to "everything needs a sign-in". They're plain static files in both apps, so anyone with the exact URL can open them. They show demo data only.
+
+## Regenerating the generated files
+
+After editing `guide.html`, run from `frontend/`:
+
+```bash
+npm run export:guides -- --ministries ../../parishhub-ministries
+```
+
+This rewrites `sign-in.generated.html` here, and the guide, sign-in page and screenshots in the Ministries repo. Commit both repos. A test fails if `sign-in.generated.html` is out of date.
 
 ## Regenerating the PDF
 

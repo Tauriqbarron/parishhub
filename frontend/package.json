@@ -14,7 +14,7 @@
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
 		"prepare": "husky",
-		"export:ministries-guide": "node scripts/export-ministries-guide.mjs"
+		"export:guides": "node scripts/export-guides.mjs"
 	},
 	"dependencies": {
 		"@auth/core": "^0.37.0",

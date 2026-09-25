@@ -862,6 +862,7 @@
 		<ol>
 			<li><a href="#roles">Leaders, co-leaders, members</a></li>
 			<li><a href="#sign-in">Sign in</a></li>
+			<li><a href="#google-account">Get a Google account</a></li>
 			<li><a href="#around">Finding your way around</a></li>
 		</ol>
 		<h4>Members</h4>
@@ -1043,7 +1044,7 @@
 				</div>
 			</section>
 
-			<section class="task" id="admin-access">
+			<section class="task" id="admin-access" data-public="office">
 				<h3>Admin access: who can use ParishHub</h3>
 				<p class="intro">
 					ParishHub admins are the people who can sign in at <strong>parishhub.net</strong>. There's
@@ -1085,25 +1086,17 @@
 				</div>
 				<div class="task-body">
 					<div style="display: grid; gap: 12px; max-width: 62ch">
-						<p><strong>Getting a Google account</strong></p>
+						<p><strong>Getting access</strong></p>
 						<ol class="steps">
 							<li>
 								<span
-									>A Gmail address, or a work address the parish runs on Google Workspace, already
-									is a Google account. Skip to step 3.</span
+									>Make sure you have a Google account for the email you'll use. See
+									<a href="#google-account">Get a Google account</a>.</span
 								>
 							</li>
 							<li>
 								<span
-									>For any other email (for example an Outlook or parish address), go to
-									<strong>accounts.google.com/signup</strong>, choose
-									<strong>Use my current email address instead</strong>, and follow the steps.
-									Google sends a code to that email to confirm it.</span
-								>
-							</li>
-							<li>
-								<span
-									>Send your ParishHub administrator the exact email address of the Google account.
+									>Send your ParishHub administrator the exact email address of that Google account.
 									It must match letter for letter.</span
 								>
 							</li>
@@ -1943,7 +1936,7 @@
 				</div>
 			</section>
 
-			<section class="task" id="sign-in">
+			<section class="task" id="sign-in" data-public="ministries">
 				<h3>Sign in to ParishHub Ministries</h3>
 				<div class="task-body">
 					<ol class="steps">
@@ -1986,6 +1979,43 @@
 						check which email they have for you.
 					</p>
 				</div>
+			</section>
+
+			<section class="task" id="google-account" data-public="both">
+				<h3>Get a Google account</h3>
+				<p class="intro">
+					ParishHub and ParishHub Ministries both sign you in with Google. You don't need Gmail: any
+					email address can have a Google account.
+				</p>
+				<ol class="steps">
+					<li>
+						<span
+							>If your email is a Gmail address, or a work address the parish runs on Google
+							Workspace, you already have a Google account. Skip to step 3.</span
+						>
+					</li>
+					<li>
+						<span
+							>For any other email (for example an Outlook or parish address), go to
+							<strong>accounts.google.com/signup</strong>, choose
+							<strong>Use my current email address instead</strong>, and follow the steps. Google
+							sends a code to that email to confirm it.</span
+						>
+					</li>
+					<li>
+						<span
+							>Give the exact email address to whoever is adding you: your ministry leader for
+							ParishHub Ministries, or the ParishHub administrator for parish office access. It must
+							match letter for letter.</span
+						>
+					</li>
+					<li>
+						<span
+							>Once they've added you, sign in and choose that Google account. If you have more than
+							one Google account, pick the one with the email the parish has.</span
+						>
+					</li>
+				</ol>
 			</section>
 
 			<section class="task" id="around">
@@ -3057,7 +3087,7 @@
 			<section class="task" id="faq">
 				<h3>Problems and questions</h3>
 				<div class="faq">
-					<details open>
+					<details open data-public="ministries">
 						<summary>I can't sign in, or it says I haven't been added</summary>
 						<div>
 							<p>
@@ -3067,7 +3097,7 @@
 							</p>
 						</div>
 					</details>
-					<details open>
+					<details open data-public="ministries">
 						<summary>The sign-in page keeps coming back</summary>
 						<div>
 							<p>
@@ -3116,7 +3146,7 @@
 						<summary>Can I choose email or text notifications?</summary>
 						<div><p>Not yet. The notifications you see come through the bell in the app.</p></div>
 					</details>
-					<details data-only="office" open>
+					<details data-only="office" open data-public="office">
 						<summary>I can't sign in to ParishHub (parishhub.net)</summary>
 						<div>
 							<p>
