@@ -131,7 +131,8 @@ export function initGuideSearch(doc) {
 		const target = doc.getElementById(id);
 		if (!target) return;
 		doc.defaultView?.history.replaceState(null, '', `#${id}`);
-		target.scrollIntoView({ block: 'start' });
+		const reduceMotion = doc.defaultView?.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+		target.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'instant' : 'smooth' });
 		target.classList.remove('search-hit');
 		void target.offsetWidth;
 		target.classList.add('search-hit');
@@ -165,6 +166,14 @@ export function initGuideSearch(doc) {
 			if (i === active) el.scrollIntoView({ block: 'nearest' });
 		});
 	}
+
+	// Deep links (/help#section) jump before images and fonts settle; jump again once loaded.
+	function jumpToHash() {
+		const id = decodeURIComponent(doc.defaultView?.location.hash.slice(1) ?? '');
+		if (id) doc.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+	}
+	if (doc.readyState === 'complete') jumpToHash();
+	else doc.defaultView?.addEventListener('load', jumpToHash, { once: true });
 
 	input.addEventListener('input', render);
 	input.addEventListener('keydown', (event) => {

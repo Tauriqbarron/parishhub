@@ -78,14 +78,6 @@
 	* {
 		box-sizing: border-box;
 	}
-	html {
-		scroll-behavior: smooth;
-	}
-	@media (prefers-reduced-motion: reduce) {
-		html {
-			scroll-behavior: auto;
-		}
-	}
 	body {
 		margin: 0;
 		background: var(--bg);
@@ -677,6 +669,13 @@
 			flex-basis: 100%;
 			max-width: none;
 		}
+		.task,
+		.part {
+			scroll-margin-top: 150px;
+		}
+	}
+	#guide-results[hidden] {
+		display: none;
 	}
 	.sr-only {
 		position: absolute;
@@ -840,8 +839,8 @@
 			</svg>
 			ParishHub Guide
 		</div>
-		<h4>Parish office</h4>
-		<ol>
+		<h4 data-only="office">Parish office</h4>
+		<ol data-only="office">
 			<li><a href="#office-sign-in">Sign in and the dashboard</a></li>
 			<li><a href="#admin-access">Admin access</a></li>
 			<li><a href="#find-person">Find a person</a></li>
@@ -892,7 +891,7 @@
 		<ol>
 			<li><a href="#status">What the status words mean</a></li>
 			<li><a href="#faq">Problems and questions</a></li>
-			<li><a href="#appendix-admins">Appendix: managing admins</a></li>
+			<li data-only="office"><a href="#appendix-admins">Appendix: managing admins</a></li>
 		</ol>
 	</nav>
 
@@ -944,7 +943,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
+						<tr data-only="office">
 							<td><strong>ParishHub</strong></td>
 							<td><strong>parishhub.net</strong></td>
 							<td>Parish office and clergy</td>
@@ -969,7 +968,7 @@
 				The screenshots use a made-up parish with demo names. Your screens will show your own people
 				and ministries.
 			</p>
-			<div class="print-only">
+			<div data-only="office" class="print-only">
 				<p class="meta" style="margin-top: 24px">
 					Contents: Part A, for the parish office · ParishHub Ministries: start here · Part B, for
 					members · Part C, for ministry leaders · Help · Appendix, managing admins
@@ -978,7 +977,7 @@
 		</header>
 
 		<!-- PARISH OFFICE -->
-		<section class="part" aria-labelledby="h-office">
+		<section data-only="office" class="part" aria-labelledby="h-office">
 			<div class="part-head">
 				<div class="who">
 					<span class="chip lead">Parish office</span><span class="chip lead">Clergy</span>
@@ -1870,7 +1869,7 @@
 			<div class="part-head">
 				<div class="who"><span class="chip">Leaders</span><span class="chip">Members</span></div>
 				<h2 id="h-everyone">ParishHub Ministries: start here</h2>
-				<p>
+				<p data-only="office">
 					Parts B and C cover ParishHub Ministries at <strong>parishhub.net/ministries</strong>, the
 					app for ministry leaders and members. The parish office uses it too when they belong to a
 					ministry.
@@ -3117,7 +3116,7 @@
 						<summary>Can I choose email or text notifications?</summary>
 						<div><p>Not yet. The notifications you see come through the bell in the app.</p></div>
 					</details>
-					<details open>
+					<details data-only="office" open>
 						<summary>I can't sign in to ParishHub (parishhub.net)</summary>
 						<div>
 							<p>
@@ -3127,7 +3126,7 @@
 							</p>
 						</div>
 					</details>
-					<details open>
+					<details data-only="office" open>
 						<summary>A leader says they can't see their ministry</summary>
 						<div>
 							<p>
@@ -3149,7 +3148,7 @@
 			</section>
 		</section>
 		<!-- APPENDIX -->
-		<section class="part" aria-labelledby="h-appendix">
+		<section data-only="office" class="part" aria-labelledby="h-appendix">
 			<div class="part-head">
 				<div class="who"><span class="chip">Technical administrator</span></div>
 				<h2 id="h-appendix">Appendix: adding or removing a ParishHub admin</h2>

@@ -109,6 +109,19 @@ describe('the real guide', () => {
 		expect(list.hidden).toBe(true);
 	});
 
+	it('scrolls to the section in the URL once the page has loaded', () => {
+		window.history.replaceState(null, '', '#households');
+		const target = document.getElementById('households')!;
+		const spy = vi.fn();
+		target.scrollIntoView = spy;
+		initGuideSearch(document);
+		expect(spy).toHaveBeenCalledWith({ block: 'start', behavior: 'instant' });
+	});
+
+	it('hides the results box until there is a query', () => {
+		expect(document.getElementById('guide-results')?.hidden).toBe(true);
+	});
+
 	it('says so when nothing matches', () => {
 		const input = document.getElementById('guide-search') as HTMLInputElement;
 		input.value = 'zzqx';
