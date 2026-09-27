@@ -11,6 +11,9 @@ LOG_DIR="/var/log/parish-deploy"
 BACKUP_DIR="/var/backups/parish-db"
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
 LOG_FILE="${LOG_DIR}/deploy-${TIMESTAMP}.log"
+# Last commit that deployed and passed the health check. In CI (--force) mode the checkout is
+# already the new commit, so HEAD can't be used as the rollback target.
+LAST_GOOD_FILE="${LOG_DIR}/last-good-commit"
 FORCE_DEPLOY=false
 
 # Parse flags
@@ -36,7 +39,9 @@ rollback() {
     log "ROLLING BACK to ${previous_commit}..."
     git -C "$DEPLOY_DIR" checkout "$previous_commit"
     docker compose -f "$DEPLOY_DIR/$COMPOSE_FILE" build backend frontend
-    docker compose -f "$DEPLOY_DIR/$COMPOSE_FILE" up -d --no-deps backend frontend ministries nginx
+    # Recreate nginx too: it resolves upstream hostnames once at startup, and recreated
+    # containers can come back on each other's IPs.
+    docker compose -f "$DEPLOY_DIR/$COMPOSE_FILE" up -d --no-deps --force-recreate backend frontend ministries nginx
     log "Rollback complete. Services restarted at ${previous_commit}."
 }
 
@@ -52,8 +57,12 @@ if [ -f "$DEPLOY_DIR/.env" ]; then
     set +a
 fi
 
-# Record current commit for rollback
-PREVIOUS_COMMIT="$(git rev-parse HEAD)"
+# Record the commit to roll back to: the last good deploy if known, else the current checkout
+if [ -s "$LAST_GOOD_FILE" ]; then
+    PREVIOUS_COMMIT="$(cat "$LAST_GOOD_FILE")"
+else
+    PREVIOUS_COMMIT="$(git rev-parse HEAD)"
+fi
 log "Previous commit: ${PREVIOUS_COMMIT}"
 
 # Pull latest code (skip in CI/force mode since checkout already has latest)
@@ -143,4 +152,5 @@ docker image prune -f > /dev/null 2>&1
 cleanup_old_logs
 cleanup_old_backups
 
+echo "$CURRENT_COMMIT" > "$LAST_GOOD_FILE"
 log "=== Deploy complete: ${CURRENT_COMMIT} ==="
