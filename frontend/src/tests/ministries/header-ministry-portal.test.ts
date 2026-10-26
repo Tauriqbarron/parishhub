@@ -22,4 +22,9 @@ describe('Header ministry portal link', () => {
 		expect(link).not.toHaveAttribute('target');
 		expect(link).toHaveAccessibleName('Open the Ministry Portal');
 	});
+
+	it('forces a full page load so the nginx proxy serves the ministries app', () => {
+		render(Header, { props: { session: { user: { email: 'office@example.org' }, expires: '' } } });
+		expect(screen.getByTestId('ministry-portal-link')).toHaveAttribute('data-sveltekit-reload');
+	});
 });
