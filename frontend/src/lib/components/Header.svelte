@@ -64,9 +64,13 @@
 			<h1 class="text-2xl font-bold text-brand-primary tracking-tight">ParishHub</h1>
 		</div>
 		<div class="pr-4 flex items-center gap-3">
-			<!-- Same-tab entry point to the ministries app for group leaders and members -->
+			<!-- Same-tab entry point to the ministries app for group leaders and members.
+			     data-sveltekit-reload forces a real navigation: client-side routing would
+			     resolve /ministries to this app's own admin route, and only a full page
+			     load reaches the ministries app behind the nginx proxy. -->
 			<a
 				href="/ministries"
+				data-sveltekit-reload
 				class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-primary hover:bg-brand-bg-subtle rounded-sm transition-colors"
 				aria-label="Open the Ministry Portal"
 				data-testid="ministry-portal-link"
